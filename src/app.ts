@@ -1,5 +1,7 @@
 import Fastify from 'fastify'
+import cors from '@fastify/cors'
 import { env } from './config/env'
+import authPlugin from './plugins/auth.plugin'
 
 export async function buildApp() {
   const app = Fastify({
@@ -57,6 +59,15 @@ export async function buildApp() {
     // Disable x-powered-by header for security
     disableRequestLogging: env.isProduction,
   })
+
+  // Register CORS plugin
+  await app.register(cors, {
+    origin: env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+
+  // Register authentication plugin
+  await app.register(authPlugin)
 
   // Root route - Hello World
   app.get('/', async () => {

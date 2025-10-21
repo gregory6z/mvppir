@@ -6,7 +6,6 @@ config()
 const envSchema = z.object({
   // Database
   DATABASE_URL: z
-    .string()
     .url()
     .refine((val) => val.startsWith('postgresql://'), {
       message: 'DATABASE_URL must be a valid PostgreSQL connection string',
@@ -17,6 +16,13 @@ const envSchema = z.object({
 
   // Environment
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+
+  // Authentication
+  AUTH_SECRET: z.string().min(32, {
+    message: 'AUTH_SECRET must be at least 32 characters long',
+  }),
+  API_BASE_URL: z.string().url().default('http://localhost:3333'),
+  FRONTEND_URL: z.string().url().default('http://localhost:3000'),
 })
 
 const parsedEnv = envSchema.safeParse(process.env)
