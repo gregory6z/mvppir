@@ -1,0 +1,482 @@
+# PRD - Product Requirements Document
+## MVP v2.0 - Transferências, Saques e Administração
+
+**Versão:** 2.0
+**Data:** 21 de Outubro de 2025
+**Status:** Planejamento
+**Autor:** Equipe de Desenvolvimento
+
+---
+
+## 📋 Índice
+
+1. [Visão Geral](#visão-geral)
+2. [O que foi entregue no v1.0](#o-que-foi-entregue-no-v10)
+3. [Objetivos do v2.0](#objetivos-do-v20)
+4. [Funcionalidades v2.0](#funcionalidades-v20)
+5. [Fora do Escopo v2.0](#fora-do-escopo-v20)
+6. [Especificações Técnicas](#especificações-técnicas)
+
+---
+
+## 🎯 Visão Geral
+
+O MVP v2.0 completa o ciclo financeiro do sistema, implementando transferências em lote, sistema de saques, e ferramentas administrativas para gerenciar a plataforma.
+
+### Problema a Resolver
+
+Com o v1.0, usuários podem:
+- ✅ Criar conta e fazer login
+- ✅ Receber endereço de depósito
+- ✅ Fazer depósitos (qualquer token)
+- ✅ Ver saldo e transações
+
+**Mas não podem:**
+- ❌ Sacar fundos
+- ❌ Admins não têm controle sobre transferências
+- ❌ Tokens ficam espalhados em múltiplos endereços (alto custo de gas)
+
+---
+
+## ✅ O que foi entregue no v1.0
+
+### Funcionalidades Implementadas
+1. **Autenticação** - Better Auth (email/password)
+2. **Sistema de Conta Virtual** - Status INACTIVE → ACTIVE
+3. **Ativação Automática** - Após depósito >= $100 USD
+4. **Endereço Fixo Polygon** - 1 por usuário, permanente
+5. **Detecção de Depósitos** - Webhook Moralis (qualquer token)
+6. **Conversão de Preços** - CoinGecko API (tokens → USD)
+7. **Gestão de Saldo** - Multi-token, calculado em tempo real
+8. **Histórico de Transações** - Completo por usuário
+
+### Banco de Dados v1.0
+- ✅ User (autenticação + conta)
+- ✅ DepositAddress (1 por usuário)
+- ✅ WalletTransaction (histórico)
+- ✅ GlobalWallet (criado mas não usado)
+
+### Status Atual
+- Tokens ficam nos endereços individuais dos usuários
+- Global Wallet existe mas não recebe fundos
+- Sistema preparado para próxima fase
+
+---
+
+## 🎯 Objetivos do v2.0
+
+### Objetivos de Negócio
+1. Permitir que usuários saquem seus fundos
+2. Centralizar fundos na Global Wallet (reduzir custo de gas)
+3. Dar aos admins controle sobre o fluxo financeiro
+4. Preparar infraestrutura para MLM (fase 3)
+
+### Objetivos Técnicos
+1. ✅ Implementar job/rota de transferência em lote
+2. ✅ Implementar sistema completo de saques
+3. ✅ Criar painel administrativo básico
+4. ✅ Otimizar custos de gas com batch transfers
+5. ✅ Adicionar rate limiting e segurança
+
+---
+
+## 📦 Funcionalidades v2.0
+
+### F1: Transferência em Lote para Global Wallet
+
+**Descrição:** Rota administrativa que transfere todos os tokens de todos os endereços de usuários para a Global Wallet em uma única operação em lote.
+
+**Critérios de Aceitação:**
+- ✅ Rota protegida por autenticação de admin
+- ✅ Busca todos os endereços com saldo > 0
+- ✅ **Fase 1:** Distribui MATIC da global para endereços que precisam
+- ✅ **Fase 2:** Transfere todos os tokens → global
+- ✅ **Fase 3:** Recupera MATIC que sobrou
+- ✅ Atualiza status das transações para `SENT_TO_GLOBAL`
+- ✅ Registra hash de cada transferência
+- ✅ Tratamento robusto de erros (retry, logging)
+- ✅ Endpoint retorna relatório detalhado da operação
+
+**Endpoints:**
+```
+POST /admin/transfers/batch-collect
+Authorization: Bearer <admin-token>
+
+Response:
+{
+  "success": true,
+  "summary": {
+    "totalAddresses": 25,
+    "maticDistributed": "1.25",
+    "tokensTransferred": {
+      "USDC": "5000.00",
+      "USDT": "2500.00",
+      "MATIC": "500.00"
+    },
+    "maticRecovered": "0.85",
+    "totalGasCost": "0.45 MATIC",
+    "transactionsUpdated": 73
+  },
+  "details": [...],
+  "errors": [...]
+}
+```
+
+**Regras de Negócio:**
+- Apenas admins podem executar
+- Verifica se global wallet tem MATIC suficiente antes de iniciar
+- Deixa ~0.01 MATIC de reserva em cada endereço
+- Se falhar em algum endereço, continua com os próximos
+- Log completo de cada operação
+- Pode ser executado manualmente ou via cron (futuro)
+
+---
+
+### F2: Sistema de Saques
+
+**Descrição:** Usuários podem solicitar saque de seus fundos. Admin aprova e sistema processa automaticamente.
+
+**Critérios de Aceitação:**
+- ✅ Usuário pode solicitar saque (especificar token, valor, endereço destino)
+- ✅ Validações: saldo suficiente, endereço válido, valor mínimo
+- ✅ Saque fica com status `PENDING_APPROVAL`
+- ✅ Admin pode aprovar ou rejeitar
+- ✅ Após aprovação, sistema transfere da Global Wallet → endereço do usuário
+- ✅ Atualiza saldo do usuário
+- ✅ Registra hash da transação
+- ✅ Notifica usuário (via endpoint, futuro: email/push)
+
+**Endpoints:**
+```
+# Usuário solicita saque
+POST /user/withdrawals/request
+{
+  "tokenSymbol": "USDC",
+  "amount": "500.00",
+  "destinationAddress": "0x..."
+}
+
+# Usuário lista seus saques
+GET /user/withdrawals
+
+# Admin lista todos os saques pendentes
+GET /admin/withdrawals?status=PENDING_APPROVAL
+
+# Admin aprova saque
+POST /admin/withdrawals/:id/approve
+
+# Admin rejeita saque
+POST /admin/withdrawals/:id/reject
+{
+  "reason": "Saldo insuficiente"
+}
+```
+
+**Regras de Negócio:**
+- **Saque mínimo: $500 USD**
+- Taxa de saque: configurável (ex: $5 fixo ou 1%)
+- Verifica se global wallet tem saldo suficiente
+- Apenas 1 saque pendente por vez por usuário
+- Após aprovação, processamento automático
+- Se processamento falhar, volta para `PENDING_APPROVAL`
+- Usuário não pode cancelar após aprovação
+
+---
+
+### F3: Dashboard Administrativo
+
+**Descrição:** Painel web simples para admins gerenciarem a plataforma.
+
+**Critérios de Aceitação:**
+- ✅ Login de admin separado (role-based)
+- ✅ Estatísticas gerais (total usuários, depósitos, saques)
+- ✅ Lista de usuários (com filtros e busca)
+- ✅ Detalhes de cada usuário (saldo, transações, status)
+- ✅ Gestão de saques (aprovar/rejeitar)
+- ✅ Executar batch transfer
+- ✅ Ver saldo da Global Wallet
+- ✅ Logs de operações críticas
+
+**Endpoints:**
+```
+# Estatísticas
+GET /admin/stats
+
+# Usuários
+GET /admin/users?page=1&limit=20&search=email
+
+# Detalhes de usuário
+GET /admin/users/:id
+
+# Bloquear/desbloquear usuário
+POST /admin/users/:id/block
+POST /admin/users/:id/unblock
+
+# Global Wallet
+GET /admin/wallet/balance
+GET /admin/wallet/transactions
+
+# Logs
+GET /admin/logs?type=TRANSFER&date=2025-10-21
+```
+
+**Regras de Negócio:**
+- Apenas usuários com `role: ADMIN` podem acessar
+- Logs de todas as ações de admin
+- Não pode deletar usuários (apenas bloquear)
+- Dashboard pode ser React/Next.js (frontend separado) ou server-side rendered
+
+---
+
+### F4: Otimizações e Segurança
+
+**Descrição:** Melhorias de performance, segurança e monitoramento.
+
+**Critérios de Aceitação:**
+
+**Rate Limiting:**
+- ✅ 100 req/15min por IP em rotas públicas
+- ✅ 1000 req/15min em rotas autenticadas
+- ✅ 10 req/min em rotas de saque/transferência
+
+**Validações:**
+- ✅ Endereço Polygon válido (checksum)
+- ✅ Valor numérico positivo
+- ✅ Token suportado
+
+**Monitoramento:**
+- ✅ Log estruturado (Pino/Winston)
+- ✅ Métricas de latência
+- ✅ Alertas para erros críticos
+- ✅ Health check endpoint
+
+**Backup:**
+- ✅ Backup automático do banco
+- ✅ Backup das private keys (encrypted)
+
+---
+
+## ❌ Fora do Escopo v2.0
+
+### Funcionalidades para v3.0+
+- ❌ Sistema MLM (comissões, indicações, árvore genealógica)
+- ❌ Notificações push/email
+- ❌ KYC/Verificação de identidade
+- ❌ Suporte a múltiplas blockchains
+- ❌ Exchange interno (swap de tokens)
+- ❌ Staking/Rendimentos
+- ❌ App mobile (React Native)
+
+---
+
+## 🔧 Especificações Técnicas
+
+### Novos Models Prisma
+
+```prisma
+enum WithdrawalStatus {
+  PENDING_APPROVAL
+  APPROVED
+  PROCESSING
+  COMPLETED
+  REJECTED
+  FAILED
+}
+
+model Withdrawal {
+  id                  String           @id @default(uuid())
+  userId              String
+  tokenSymbol         String
+  tokenAddress        String?
+  amount              Decimal          @db.Decimal(20, 8)
+  destinationAddress  String
+  fee                 Decimal          @db.Decimal(20, 8)
+  status              WithdrawalStatus @default(PENDING_APPROVAL)
+  txHash              String?          @unique
+  approvedBy          String?          // Admin userId
+  approvedAt          DateTime?
+  rejectedReason      String?
+  processedAt         DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("withdrawals")
+}
+
+model AdminLog {
+  id        String   @id @default(uuid())
+  adminId   String
+  action    String   // "APPROVE_WITHDRAWAL", "BATCH_TRANSFER", etc
+  entityId  String?  // ID do withdrawal, user, etc
+  details   Json?    // Detalhes adicionais
+  createdAt DateTime @default(now())
+
+  @@map("admin_logs")
+}
+
+// Adicionar ao User model:
+model User {
+  // ... campos existentes ...
+  role      String   @default("user") // "user" ou "admin" (Better Auth já suporta)
+
+  withdrawals Withdrawal[]
+}
+```
+
+### Variáveis de Ambiente Adicionais
+
+```env
+# Saque
+WITHDRAWAL_MIN_USD=500
+WITHDRAWAL_FEE_USD=5
+WITHDRAWAL_FEE_PERCENT=1
+
+# Admin
+ADMIN_JWT_SECRET="different-from-user-jwt"
+
+# Rate Limiting
+RATE_LIMIT_PUBLIC=100
+RATE_LIMIT_AUTHENTICATED=1000
+RATE_LIMIT_CRITICAL=10
+
+# Monitoring
+SENTRY_DSN="https://..."
+LOG_LEVEL=info
+```
+
+### Estrutura de Módulos
+
+```
+src/modules/
+├─ admin/
+│  ├─ controllers/
+│  │  ├─ get-stats-controller.ts
+│  │  ├─ list-users-controller.ts
+│  │  ├─ get-user-details-controller.ts
+│  │  └─ block-user-controller.ts
+│  ├─ use-cases/
+│  │  ├─ get-platform-stats.ts
+│  │  └─ manage-user-status.ts
+│  └─ routes.ts
+│
+├─ transfer/
+│  ├─ controllers/
+│  │  └─ batch-collect-controller.ts
+│  ├─ use-cases/
+│  │  └─ batch-collect-to-global.ts
+│  └─ routes.ts
+│
+├─ withdrawal/
+│  ├─ controllers/
+│  │  ├─ request-withdrawal-controller.ts
+│  │  ├─ list-withdrawals-controller.ts
+│  │  ├─ approve-withdrawal-controller.ts
+│  │  └─ reject-withdrawal-controller.ts
+│  ├─ use-cases/
+│  │  ├─ request-withdrawal.ts
+│  │  ├─ approve-withdrawal.ts
+│  │  ├─ process-withdrawal.ts
+│  │  └─ reject-withdrawal.ts
+│  └─ routes.ts
+│
+└─ wallet/
+   ├─ controllers/
+   │  └─ get-global-balance-controller.ts
+   ├─ use-cases/
+   │  ├─ get-global-wallet-balance.ts
+   │  └─ decrypt-private-key.ts
+   └─ routes.ts
+```
+
+---
+
+## 📊 Métricas de Sucesso
+
+### Métricas de Produto
+- ✅ 95% dos saques processados em < 10 minutos
+- ✅ 100% dos batch transfers bem-sucedidos
+- ✅ Redução de 80% no custo de gas vs transferências individuais
+- ✅ 0 saques perdidos ou duplicados
+
+### Métricas Técnicas
+- ✅ Admin dashboard load time < 2s
+- ✅ Withdrawal approval API < 500ms
+- ✅ Batch transfer completa em < 5min para 100 endereços
+- ✅ 99.9% uptime
+
+### Métricas de Segurança
+- ✅ 0 private keys expostas
+- ✅ 100% das ações de admin logadas
+- ✅ Rate limiting efetivo (0 ataques bem-sucedidos)
+
+---
+
+## 🚨 Riscos e Mitigações
+
+### Risco 1: Global Wallet Comprometida
+**Impacto:** Crítico
+**Probabilidade:** Baixa
+**Mitigação:**
+- Multi-sig wallet (fase futura)
+- Monitoramento 24/7
+- Limites diários de saque
+- Cold wallet para fundos maiores
+
+### Risco 2: Falha no Batch Transfer
+**Impacto:** Alto
+**Probabilidade:** Média
+**Mitigação:**
+- Retry automático (3 tentativas)
+- Continuar mesmo se alguns falharem
+- Alertas imediatos
+- Rollback se > 50% falhar
+
+### Risco 3: Saque Processado Duas Vezes
+**Impacto:** Alto
+**Probabilidade:** Baixa
+**Mitigação:**
+- Lock pessimista no banco
+- Idempotência (verificar txHash)
+- Status intermediário `PROCESSING`
+- Logs detalhados
+
+---
+
+## 📝 Cronograma Estimado
+
+### Sprint 1 (1 semana)
+- [ ] Criar models Prisma (Withdrawal, AdminLog)
+- [ ] Implementar autenticação de admin (role-based)
+- [ ] Endpoints básicos de admin (stats, users)
+
+### Sprint 2 (1 semana)
+- [ ] Implementar batch transfer completo
+- [ ] Testes extensivos de batch transfer
+- [ ] Documentação técnica
+
+### Sprint 3 (1 semana)
+- [ ] Sistema de saques (request, approve, process)
+- [ ] Validações e rate limiting
+- [ ] Testes de saque
+
+### Sprint 4 (1 semana)
+- [ ] Dashboard administrativo (frontend básico)
+- [ ] Logs e monitoramento
+- [ ] Testes end-to-end completos
+
+**Total estimado:** 4 semanas
+
+---
+
+## 📚 Referências
+
+- [PRD v1.0](./PRD-MVP-v1.md)
+- [Ethers.js Batch Transactions](https://docs.ethers.org/v6/api/providers/#Provider-sendTransaction)
+- [Polygon Gas Optimization](https://docs.polygon.technology/docs/develop/network-details/gas-token/)
+
+---
+
+**Última atualização:** 21/10/2025
+**Próxima revisão:** Após conclusão do v2.0
