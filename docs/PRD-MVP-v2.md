@@ -141,10 +141,12 @@ Response:
 - ✅ Validações: saldo suficiente, endereço válido, valor mínimo
 - ✅ Saque fica com status `PENDING_APPROVAL`
 - ✅ Admin pode aprovar ou rejeitar
-- ✅ Após aprovação, sistema transfere da Global Wallet → endereço do usuário
+- ✅ **Após aprovação, usuário recebe notificação de autorização**
+- ✅ Sistema transfere da Global Wallet → endereço do usuário
+- ✅ **Usuário recebe notificação de conclusão (com txHash)**
+- ✅ **Se rejeitado, usuário recebe notificação com motivo**
 - ✅ Atualiza saldo do usuário
 - ✅ Registra hash da transação
-- ✅ Notifica usuário (via endpoint, futuro: email/push)
 
 **Endpoints:**
 ```
@@ -159,16 +161,33 @@ POST /user/withdrawals/request
 # Usuário lista seus saques
 GET /user/withdrawals
 
+# Usuário consulta notificações de saque
+GET /user/withdrawals/:id/status
+
 # Admin lista todos os saques pendentes
 GET /admin/withdrawals?status=PENDING_APPROVAL
 
-# Admin aprova saque
+# Admin aprova saque (envia notificação ao usuário)
 POST /admin/withdrawals/:id/approve
+Response:
+{
+  "success": true,
+  "withdrawal": {...},
+  "notificationSent": true,
+  "message": "Withdrawal approved and user notified"
+}
 
-# Admin rejeita saque
+# Admin rejeita saque (envia notificação ao usuário)
 POST /admin/withdrawals/:id/reject
 {
   "reason": "Saldo insuficiente"
+}
+Response:
+{
+  "success": true,
+  "withdrawal": {...},
+  "notificationSent": true,
+  "message": "Withdrawal rejected and user notified"
 }
 ```
 
@@ -315,12 +334,44 @@ model AdminLog {
   @@map("admin_logs")
 }
 
+enum NotificationType {
+  WITHDRAWAL_APPROVED
+  WITHDRAWAL_REJECTED
+  WITHDRAWAL_COMPLETED
+  WITHDRAWAL_FAILED
+}
+
+model WithdrawalNotification {
+  id           String           @id @default(uuid())
+  userId       String
+  withdrawalId String
+  type         NotificationType
+  title        String           // "Saque Aprovado!"
+  message      String           // "Seu saque de 500 USDC foi aprovado pelo administrador"
+  data         Json?            // Dados adicionais (txHash, motivo rejeição, etc)
+  read         Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+
+  user       User       @relation(fields: [userId], references: [id])
+  withdrawal Withdrawal @relation(fields: [withdrawalId], references: [id])
+
+  @@index([userId, read]) // Para query de notificações não lidas
+  @@map("withdrawal_notifications")
+}
+
 // Adicionar ao User model:
 model User {
   // ... campos existentes ...
   role      String   @default("user") // "user" ou "admin" (Better Auth já suporta)
 
-  withdrawals Withdrawal[]
+  withdrawals              Withdrawal[]
+  withdrawalNotifications  WithdrawalNotification[]
+}
+
+// Adicionar ao Withdrawal model:
+model Withdrawal {
+  // ... campos existentes ...
+  notifications WithdrawalNotification[]
 }
 ```
 
@@ -343,6 +394,34 @@ RATE_LIMIT_CRITICAL=10
 # Monitoring
 SENTRY_DSN="https://..."
 LOG_LEVEL=info
+```
+
+### Endpoints de Notificação
+
+```
+# Usuário lista suas notificações
+GET /user/notifications
+Response:
+{
+  "notifications": [
+    {
+      "id": "uuid",
+      "type": "WITHDRAWAL_APPROVED",
+      "title": "Saque Aprovado!",
+      "message": "Seu saque de 500 USDC foi aprovado",
+      "data": { "withdrawalId": "uuid", "amount": "500" },
+      "read": false,
+      "createdAt": "2025-10-21T10:00:00Z"
+    }
+  ],
+  "unreadCount": 3
+}
+
+# Marcar notificação como lida
+PATCH /user/notifications/:id/read
+
+# Marcar todas como lidas
+PATCH /user/notifications/read-all
 ```
 
 ### Estrutura de Módulos
@@ -378,6 +457,18 @@ src/modules/
 │  │  ├─ approve-withdrawal.ts
 │  │  ├─ process-withdrawal.ts
 │  │  └─ reject-withdrawal.ts
+│  ├─ services/
+│  │  └─ notification.service.ts  // Envia notificações
+│  └─ routes.ts
+│
+├─ notification/
+│  ├─ controllers/
+│  │  ├─ list-notifications-controller.ts
+│  │  ├─ mark-as-read-controller.ts
+│  │  └─ mark-all-read-controller.ts
+│  ├─ use-cases/
+│  │  ├─ create-notification.ts
+│  │  └─ get-user-notifications.ts
 │  └─ routes.ts
 │
 └─ wallet/
@@ -436,6 +527,22 @@ src/modules/
 **Impacto:** Alto (perda financeira)
 **Probabilidade:** Baixa
 **Mitigação (Defense in Depth):**
+
+**Camada 0: Aprovação Manual por Admin (Linha de Frente)**
+```typescript
+// NENHUM saque é processado automaticamente
+// Fluxo obrigatório:
+// 1. Usuário solicita → status: PENDING_APPROVAL
+// 2. Admin revisa manualmente
+// 3. Admin aprova → status: APPROVED
+// 4. Sistema processa → status: PROCESSING → COMPLETED
+
+// Vantagens:
+// - Humano verifica cada saque antes de processar
+// - Admin pode validar: endereço, valor, usuário, histórico
+// - Previne fraudes e erros
+// - Admin vê se já foi processado antes de aprovar
+```
 
 **Camada 1: Lock Pessimista no Banco**
 ```typescript
