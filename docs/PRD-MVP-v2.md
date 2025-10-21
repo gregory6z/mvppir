@@ -261,7 +261,6 @@ GET /admin/logs?type=TRANSFER&date=2025-10-21
 ### Funcionalidades para v3.0+
 - ❌ Sistema MLM (comissões, indicações, árvore genealógica)
 - ❌ Notificações push/email
-- ❌ KYC/Verificação de identidade
 - ❌ Suporte a múltiplas blockchains
 - ❌ Exchange interno (swap de tokens)
 - ❌ Staking/Rendimentos
@@ -434,39 +433,124 @@ src/modules/
 - Rollback se > 50% falhar
 
 ### Risco 3: Saque Processado Duas Vezes
-**Impacto:** Alto
+**Impacto:** Alto (perda financeira)
 **Probabilidade:** Baixa
-**Mitigação:**
-- Lock pessimista no banco
-- Idempotência (verificar txHash)
-- Status intermediário `PROCESSING`
-- Logs detalhados
+**Mitigação (Defense in Depth):**
+
+**Camada 1: Lock Pessimista no Banco**
+```typescript
+// Usa SELECT FOR UPDATE para lock da linha
+const withdrawal = await prisma.$transaction(async (tx) => {
+  const w = await tx.withdrawal.findUnique({
+    where: { id: withdrawalId },
+    // Lock pessimista - impede leitura concorrente
+  });
+
+  // Verifica status - deve estar APPROVED
+  if (w.status !== 'APPROVED') {
+    throw new Error('Invalid status for processing');
+  }
+
+  // Atualiza para PROCESSING atomicamente
+  return tx.withdrawal.update({
+    where: { id: withdrawalId },
+    data: {
+      status: 'PROCESSING',
+      processedAt: new Date()
+    }
+  });
+}, {
+  isolationLevel: 'Serializable' // Máximo nível de isolamento
+});
+```
+
+**Camada 2: Status Intermediário**
+- `APPROVED` → `PROCESSING` → `COMPLETED`
+- Apenas saques com status `APPROVED` podem ser processados
+- `PROCESSING` impede reprocessamento
+
+**Camada 3: Verificação de txHash**
+```typescript
+// Antes de processar, verifica se já existe txHash
+if (withdrawal.txHash) {
+  throw new Error('Withdrawal already has txHash - already processed');
+}
+
+// Após enviar transação blockchain
+await prisma.withdrawal.update({
+  where: { id: withdrawalId },
+  data: {
+    txHash: txHash,
+    status: 'COMPLETED'
+  }
+});
+```
+
+**Camada 4: Idempotency Key**
+```typescript
+// Gera chave única para cada tentativa de processamento
+const idempotencyKey = `withdrawal-${withdrawalId}-${Date.now()}`;
+
+// Armazena em cache (Redis) por 24h
+await redis.setex(idempotencyKey, 86400, 'processing');
+
+// Se já existe, rejeita
+if (await redis.exists(idempotencyKey)) {
+  throw new Error('Duplicate processing attempt');
+}
+```
+
+**Camada 5: Unique Constraint no Banco**
+```prisma
+model Withdrawal {
+  // ...
+  txHash String? @unique // Garante que não pode ter 2 saques com mesmo txHash
+}
+```
+
+**Camada 6: Rate Limiting por Usuário**
+```typescript
+// Máximo 1 saque em processamento por usuário
+const processing = await prisma.withdrawal.count({
+  where: {
+    userId: withdrawal.userId,
+    status: 'PROCESSING'
+  }
+});
+
+if (processing > 0) {
+  throw new Error('User already has withdrawal being processed');
+}
+```
+
+**Camada 7: Auditoria e Alertas**
+```typescript
+// Log toda tentativa de processamento
+await prisma.adminLog.create({
+  data: {
+    adminId: adminId,
+    action: 'PROCESS_WITHDRAWAL',
+    entityId: withdrawalId,
+    details: {
+      status: withdrawal.status,
+      amount: withdrawal.amount,
+      timestamp: new Date()
+    }
+  }
+});
+
+// Alerta se detectar tentativa duplicada
+if (isDuplicate) {
+  await sendAlert({
+    type: 'CRITICAL',
+    message: `Duplicate withdrawal processing attempt: ${withdrawalId}`,
+    admin: adminId
+  });
+}
+```
 
 ---
 
-## 📝 Cronograma Estimado
-
-### Sprint 1 (1 semana)
-- [ ] Criar models Prisma (Withdrawal, AdminLog)
-- [ ] Implementar autenticação de admin (role-based)
-- [ ] Endpoints básicos de admin (stats, users)
-
-### Sprint 2 (1 semana)
-- [ ] Implementar batch transfer completo
-- [ ] Testes extensivos de batch transfer
-- [ ] Documentação técnica
-
-### Sprint 3 (1 semana)
-- [ ] Sistema de saques (request, approve, process)
-- [ ] Validações e rate limiting
-- [ ] Testes de saque
-
-### Sprint 4 (1 semana)
-- [ ] Dashboard administrativo (frontend básico)
-- [ ] Logs e monitoramento
-- [ ] Testes end-to-end completos
-
-**Total estimado:** 4 semanas
 
 ---
 
