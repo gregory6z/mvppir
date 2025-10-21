@@ -2,6 +2,9 @@ import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { env } from './config/env'
 import authPlugin from './plugins/auth.plugin'
+import { userRoutes } from './modules/user/routes'
+import { depositRoutes } from './modules/deposit/routes'
+import { webhookRoutes } from './modules/webhook/routes'
 
 export async function buildApp() {
   const app = Fastify({
@@ -86,6 +89,11 @@ export async function buildApp() {
       timestamp: new Date().toISOString()
     }
   })
+
+  // Register module routes
+  await app.register(userRoutes, { prefix: '/user' })
+  await app.register(depositRoutes, { prefix: '/deposit' })
+  await app.register(webhookRoutes, { prefix: '/webhooks' })
 
   return app
 }

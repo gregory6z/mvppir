@@ -13,7 +13,16 @@
     "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"],
+      "@/lib/*": ["./lib/*"],
+      "@/modules/*": ["./modules/*"],
+      "@/middlewares/*": ["./middlewares/*"],
+      "@/plugins/*": ["./plugins/*"],
+      "@/config/*": ["./config/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
