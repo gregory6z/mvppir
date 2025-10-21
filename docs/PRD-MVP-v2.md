@@ -593,18 +593,30 @@ await prisma.withdrawal.update({
 });
 ```
 
-**Camada 4: Idempotency Key**
+**Camada 4: processedAt como Lock Natural**
 ```typescript
-// Gera chave única para cada tentativa de processamento
-const idempotencyKey = `withdrawal-${withdrawalId}-${Date.now()}`;
+// Usa updateMany com WHERE para garantir atomicidade
+// Só atualiza se processedAt ainda for null
+const updated = await tx.withdrawal.updateMany({
+  where: {
+    id: withdrawalId,
+    status: 'APPROVED',
+    processedAt: null,  // Só se ainda não foi processado
+    txHash: null,
+  },
+  data: {
+    status: 'PROCESSING',
+    processedAt: new Date(),
+  }
+});
 
-// Armazena em cache (Redis) por 24h
-await redis.setex(idempotencyKey, 86400, 'processing');
-
-// Se já existe, rejeita
-if (await redis.exists(idempotencyKey)) {
-  throw new Error('Duplicate processing attempt');
+// Se count = 0, significa que já foi processado
+if (updated.count === 0) {
+  throw new Error('Withdrawal already processed or invalid status');
 }
+
+// Nenhuma tabela extra ou Redis necessário!
+// O campo processedAt já existe no model Withdrawal
 ```
 
 **Camada 5: Unique Constraint no Banco**
@@ -630,30 +642,61 @@ if (processing > 0) {
 }
 ```
 
-**Camada 7: Auditoria e Alertas**
+**Camada 7: Rastreabilidade - Qual Admin Autorizou**
 ```typescript
-// Log toda tentativa de processamento
-await prisma.adminLog.create({
+// Quando admin aprova o saque, registra quem autorizou
+await prisma.withdrawal.update({
+  where: { id: withdrawalId },
   data: {
-    adminId: adminId,
-    action: 'PROCESS_WITHDRAWAL',
-    entityId: withdrawalId,
-    details: {
-      status: withdrawal.status,
-      amount: withdrawal.amount,
-      timestamp: new Date()
-    }
+    status: 'APPROVED',
+    approvedBy: adminId,        // ← Registra qual admin aprovou
+    approvedAt: new Date(),
   }
 });
 
+// Quando processa, verifica quem autorizou
+const withdrawal = await prisma.withdrawal.findUnique({
+  where: { id: withdrawalId },
+  include: {
+    user: true,  // Usuário que solicitou
+  }
+});
+
+// Log completo com rastreabilidade
+await prisma.adminLog.create({
+  data: {
+    adminId: processingAdminId,    // Admin processando
+    action: 'PROCESS_WITHDRAWAL',
+    entityId: withdrawalId,
+    details: {
+      approvedBy: withdrawal.approvedBy,  // Admin que aprovou
+      approvedAt: withdrawal.approvedAt,
+      userId: withdrawal.userId,
+      amount: withdrawal.amount.toString(),
+      tokenSymbol: withdrawal.tokenSymbol,
+    }
+  }
+});
+```
+
+**Camada 8: Auditoria e Alertas**
+```typescript
 // Alerta se detectar tentativa duplicada
 if (isDuplicate) {
   await sendAlert({
     type: 'CRITICAL',
     message: `Duplicate withdrawal processing attempt: ${withdrawalId}`,
-    admin: adminId
+    approvedBy: withdrawal.approvedBy,
+    processingAttemptBy: adminId,
   });
 }
+
+// Notifica admin que aprovou sobre conclusão
+await notifyAdmin({
+  adminId: withdrawal.approvedBy,
+  type: 'WITHDRAWAL_COMPLETED',
+  message: `Saque aprovado por você foi processado: ${txHash}`
+});
 ```
 
 ---
