@@ -1,7 +1,10 @@
 import { config } from 'dotenv'
 import { z } from 'zod'
+import { resolve } from 'path'
 
-config()
+// Carrega .env.test se NODE_ENV=test, senão carrega .env
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+config({ path: resolve(process.cwd(), envFile) })
 
 const envSchema = z.object({
   // Database

@@ -18,11 +18,16 @@ interface GetUserBalanceResponse {
 export async function getUserBalance({
   userId,
 }: GetUserBalanceRequest): Promise<GetUserBalanceResponse> {
-  // Busca todas as transações confirmadas do usuário
+  // Busca todas as transações CONFIRMADAS do usuário
+  // CONFIRMED = blockchain confirmou, dinheiro na carteira individual
+  // SENT_TO_GLOBAL = já movido para a carteira global
+  // NÃO inclui PENDING (ainda aguardando confirmação da blockchain)
   const transactions = await prisma.walletTransaction.findMany({
     where: {
       userId,
-      status: "SENT_TO_GLOBAL",
+      status: {
+        in: ["CONFIRMED", "SENT_TO_GLOBAL"]
+      }
     },
     select: {
       tokenSymbol: true,

@@ -53,7 +53,7 @@ export async function getOrCreateDepositAddress({
   const newAddress = await prisma.depositAddress.create({
     data: {
       userId,
-      polygonAddress: wallet.address,
+      polygonAddress: wallet.address.toLowerCase(), // Sempre em lowercase
       privateKey: encryptedPrivateKey,
       status: "ACTIVE",
     },
@@ -67,8 +67,8 @@ export async function getOrCreateDepositAddress({
 
   // Adiciona o endereço ao Moralis Stream para monitoramento automático
   try {
-    await addAddressToStream(wallet.address);
-    console.log(`✅ Endereço ${wallet.address} adicionado ao Moralis Stream`);
+    await addAddressToStream(wallet.address.toLowerCase());
+    console.log(`✅ Endereço ${wallet.address.toLowerCase()} adicionado ao Moralis Stream`);
   } catch (error) {
     console.error(
       `⚠️  Erro ao adicionar endereço ${wallet.address} ao Moralis Stream:`,

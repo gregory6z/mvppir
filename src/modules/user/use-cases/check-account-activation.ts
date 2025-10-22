@@ -48,6 +48,8 @@ export async function checkAccountActivation({
   }
 
   // Calcula saldo total em USD de todas as transações confirmadas
+  // CONFIRMED = blockchain confirmou o depósito
+  // SENT_TO_GLOBAL = já foi consolidado na Global Wallet
   const transactions = await prisma.walletTransaction.findMany({
     where: {
       userId,

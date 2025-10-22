@@ -99,14 +99,55 @@ export async function processMoralisWebhook({
     return { message: "Zero value transaction ignored", txHash: payload.txHash };
   }
 
-  // Verifica se a transação já foi processada
+  // Verifica se a transação já existe
   const existingTx = await prisma.walletTransaction.findUnique({
     where: { txHash: payload.txHash },
   });
 
-  if (existingTx) {
-    console.log(`ℹ️  Transação já processada: ${payload.txHash}`);
-    return { message: "Transaction already processed", txHash: payload.txHash };
+  // Se já existe e está confirmada, ignora
+  if (existingTx && existingTx.status === "CONFIRMED") {
+    console.log(`ℹ️  Transação já confirmada: ${payload.txHash}`);
+    return { message: "Transaction already confirmed", txHash: payload.txHash };
+  }
+
+  // Se existe como PENDING e agora está confirmed = true, atualiza para CONFIRMED
+  if (existingTx && existingTx.status === "PENDING" && payload.confirmed) {
+    const updated = await prisma.walletTransaction.update({
+      where: { txHash: payload.txHash },
+      data: { status: "CONFIRMED" },
+    });
+
+    console.log(`✅ Transação confirmada pela blockchain:`, {
+      transactionId: updated.id,
+      txHash: payload.txHash,
+      previousStatus: "PENDING",
+      newStatus: "CONFIRMED",
+    });
+
+    // Verifica ativação de conta após confirmação
+    try {
+      const activationResult = await checkAccountActivation({
+        userId: existingTx.userId,
+      });
+
+      if (activationResult.activated) {
+        console.log(`🎉 Conta ativada! Total depositado: $${activationResult.currentTotalUSD.toFixed(2)} USD`);
+      }
+    } catch (error) {
+      console.error("⚠️  Erro ao verificar ativação de conta:", error);
+    }
+
+    return {
+      message: "Transaction confirmed",
+      transactionId: updated.id,
+      status: "CONFIRMED",
+    };
+  }
+
+  // Se já existe como PENDING mas confirmed ainda é false, ignora (aguarda confirmação)
+  if (existingTx && existingTx.status === "PENDING" && !payload.confirmed) {
+    console.log(`⏳ Transação ainda aguardando confirmação: ${payload.txHash}`);
+    return { message: "Transaction already pending confirmation", txHash: payload.txHash };
   }
 
   // Busca o endereço de depósito
@@ -163,7 +204,10 @@ export async function processMoralisWebhook({
     };
   }
 
-  // Cria transação válida
+  // Determina status inicial baseado na confirmação
+  const initialStatus = payload.confirmed ? "CONFIRMED" : "PENDING";
+
+  // Cria transação
   const transaction = await prisma.walletTransaction.create({
     data: {
       userId: depositAddress.userId,
@@ -175,34 +219,48 @@ export async function processMoralisWebhook({
       amount,
       rawAmount,
       txHash: payload.txHash,
-      status: "PENDING", // Será processado pelo job de transferência em lote
+      status: initialStatus,
     },
   });
 
-  console.log(`✅ Transação registrada com sucesso:`, {
-    transactionId: transaction.id,
-    userId: depositAddress.userId,
-    amount: amount.toString(),
-    token: token.symbol,
-    txHash: payload.txHash,
-  });
-
-  // Verifica se a conta deve ser ativada (depósito >= $100 USD)
-  try {
-    const activationResult = await checkAccountActivation({
+  if (initialStatus === "PENDING") {
+    console.log(`⏳ Transação registrada (aguardando confirmação):`, {
+      transactionId: transaction.id,
       userId: depositAddress.userId,
+      amount: amount.toString(),
+      token: token.symbol,
+      txHash: payload.txHash,
+      status: "PENDING",
     });
+  } else {
+    console.log(`✅ Transação confirmada e registrada:`, {
+      transactionId: transaction.id,
+      userId: depositAddress.userId,
+      amount: amount.toString(),
+      token: token.symbol,
+      txHash: payload.txHash,
+      status: "CONFIRMED",
+    });
+  }
 
-    if (activationResult.activated) {
-      console.log(`🎉 Conta ativada! Total depositado: $${activationResult.currentTotalUSD.toFixed(2)} USD`);
-    } else {
-      console.log(
-        `⏳ Faltam $${activationResult.missingUSD.toFixed(2)} USD para ativar a conta`
-      );
+  // Só verifica ativação se transação já está confirmada
+  if (initialStatus === "CONFIRMED") {
+    try {
+      const activationResult = await checkAccountActivation({
+        userId: depositAddress.userId,
+      });
+
+      if (activationResult.activated) {
+        console.log(`🎉 Conta ativada! Total depositado: $${activationResult.currentTotalUSD.toFixed(2)} USD`);
+      } else {
+        console.log(
+          `⏳ Faltam $${activationResult.missingUSD.toFixed(2)} USD para ativar a conta`
+        );
+      }
+    } catch (error) {
+      // Não falha a operação se a verificação de ativação falhar
+      console.error("⚠️  Erro ao verificar ativação de conta:", error);
     }
-  } catch (error) {
-    // Não falha a operação se a verificação de ativação falhar
-    console.error("⚠️  Erro ao verificar ativação de conta:", error);
   }
 
   return {
