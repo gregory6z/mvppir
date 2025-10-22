@@ -375,6 +375,359 @@ model Withdrawal {
 }
 ```
 
+---
+
+### Arquitetura de Saldo: UserBalance vs WalletTransaction
+
+**Decisão Arquitetural:** A partir do v2.0, implementamos uma tabela separada `UserBalance` para armazenar saldos, mantendo `WalletTransaction` apenas como histórico/auditoria.
+
+#### Problema com Arquitetura Atual (v1.0)
+
+No v1.0, o saldo é calculado dinamicamente a cada consulta:
+
+```typescript
+// GET /user/balance → SELECT todas transactions → SUM por token
+const transactions = await prisma.walletTransaction.findMany({
+  where: { userId, status: { in: ["CONFIRMED", "SENT_TO_GLOBAL"] } }
+});
+
+// Agrupa e soma (O(n) a cada consulta)
+for (const tx of transactions) {
+  if (tx.type === "CREDIT") balance += tx.amount;
+  else balance -= tx.amount;
+}
+```
+
+**Problemas:**
+1. ❌ **Performance** - Query pesada a cada consulta de saldo
+2. ❌ **Escala mal** - 1000 transações = 1000 rows para somar
+3. ❌ **Validação complexa** - Difícil prevenir saldo negativo
+4. ❌ **Race conditions** - Validação de saque pode ter conflitos
+5. ❌ **Sem locking natural** - Precisa implementar manualmente
+
+#### Nova Arquitetura (v2.0)
+
+**UserBalance Model:**
+
+```prisma
+model UserBalance {
+  id               String   @id @default(uuid())
+  userId           String
+  tokenSymbol      String
+  tokenAddress     String?
+  availableBalance Decimal  @db.Decimal(20, 8) // Saldo disponível
+  lockedBalance    Decimal  @db.Decimal(20, 8) @default(0) // Saques pendentes
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tokenSymbol])
+  @@index([userId])
+  @@map("user_balances")
+}
+
+// Adicionar ao User model:
+model User {
+  // ... campos existentes ...
+  balances UserBalance[]
+}
+```
+
+**Vantagens:**
+1. ✅ **Performance** - Saldo já calculado (SELECT direto)
+2. ✅ **Validação simples** - `WHERE availableBalance >= amount`
+3. ✅ **Row-level locking** - PostgreSQL impede conflitos automaticamente
+4. ✅ **Saldo bloqueado** - Saques pendentes "reservam" valor
+5. ✅ **Auditoria preservada** - WalletTransaction continua existindo
+
+#### Sincronização: Transaction → Balance
+
+**Toda operação que cria transação DEVE atualizar saldo atomicamente:**
+
+```typescript
+// Depósito confirmado
+await prisma.$transaction([
+  // 1. Cria transação (histórico)
+  prisma.walletTransaction.create({
+    data: {
+      userId,
+      type: "CREDIT",
+      amount: 100,
+      tokenSymbol: "USDC",
+      status: "CONFIRMED",
+      ...
+    }
+  }),
+
+  // 2. Atualiza saldo (upsert = cria se não existir)
+  prisma.userBalance.upsert({
+    where: {
+      userId_tokenSymbol: { userId, tokenSymbol: "USDC" }
+    },
+    create: {
+      userId,
+      tokenSymbol: "USDC",
+      availableBalance: 100,
+      lockedBalance: 0
+    },
+    update: {
+      availableBalance: { increment: 100 }
+    }
+  })
+]);
+```
+
+**Saque solicitado (reserva saldo):**
+
+```typescript
+await prisma.$transaction([
+  // 1. Cria withdrawal
+  prisma.withdrawal.create({
+    data: { userId, amount: 50, tokenSymbol: "USDC", ... }
+  }),
+
+  // 2. Move de available → locked
+  prisma.userBalance.update({
+    where: { userId_tokenSymbol: { userId, tokenSymbol: "USDC" } },
+    data: {
+      availableBalance: { decrement: 50 },
+      lockedBalance: { increment: 50 }
+    }
+  })
+]);
+```
+
+**Saque aprovado e processado:**
+
+```typescript
+await prisma.$transaction([
+  // 1. Cria transação DEBIT (histórico)
+  prisma.walletTransaction.create({
+    data: {
+      userId,
+      type: "DEBIT",
+      amount: 50,
+      tokenSymbol: "USDC",
+      status: "CONFIRMED",
+      txHash: blockchainTxHash
+    }
+  }),
+
+  // 2. Remove de locked (saldo já foi decrementado quando solicitou)
+  prisma.userBalance.update({
+    where: { userId_tokenSymbol: { userId, tokenSymbol: "USDC" } },
+    data: {
+      lockedBalance: { decrement: 50 }
+    }
+  }),
+
+  // 3. Atualiza withdrawal
+  prisma.withdrawal.update({
+    where: { id: withdrawalId },
+    data: { status: "COMPLETED", txHash: blockchainTxHash }
+  })
+]);
+```
+
+**Saque rejeitado (devolve saldo):**
+
+```typescript
+await prisma.$transaction([
+  prisma.withdrawal.update({
+    where: { id: withdrawalId },
+    data: { status: "REJECTED", rejectedReason: "..." }
+  }),
+
+  // Devolve locked → available
+  prisma.userBalance.update({
+    where: { userId_tokenSymbol: { userId, tokenSymbol } },
+    data: {
+      availableBalance: { increment: amount },
+      lockedBalance: { decrement: amount }
+    }
+  })
+]);
+```
+
+#### Validações com UserBalance
+
+**Prevenir saldo negativo:**
+
+```typescript
+// Antes de criar withdrawal
+const balance = await prisma.userBalance.findUnique({
+  where: { userId_tokenSymbol: { userId, tokenSymbol } }
+});
+
+if (!balance || balance.availableBalance.lt(amount)) {
+  throw new Error("INSUFFICIENT_BALANCE");
+}
+
+// Atomicamente no transaction:
+const updated = await tx.userBalance.updateMany({
+  where: {
+    userId_tokenSymbol: { userId, tokenSymbol },
+    availableBalance: { gte: amount } // Só atualiza se tiver saldo
+  },
+  data: {
+    availableBalance: { decrement: amount },
+    lockedBalance: { increment: amount }
+  }
+});
+
+if (updated.count === 0) {
+  throw new Error("INSUFFICIENT_BALANCE"); // Race condition evitada!
+}
+```
+
+#### GET /user/balance (v2.0)
+
+**Novo endpoint otimizado:**
+
+```typescript
+// SELECT direto na tabela user_balances
+const balances = await prisma.userBalance.findMany({
+  where: { userId },
+  select: {
+    tokenSymbol: true,
+    tokenAddress: true,
+    availableBalance: true,
+    lockedBalance: true
+  }
+});
+
+// Calcula total USD
+const totalUSD = await calculateTotalUSD(balances);
+
+return {
+  balances: balances.map(b => ({
+    tokenSymbol: b.tokenSymbol,
+    available: b.availableBalance,
+    locked: b.lockedBalance,
+    total: b.availableBalance.add(b.lockedBalance)
+  })),
+  totalUSD
+};
+```
+
+**Response:**
+
+```json
+{
+  "balances": [
+    {
+      "tokenSymbol": "USDC",
+      "available": "100.00",
+      "locked": "50.00",
+      "total": "150.00"
+    },
+    {
+      "tokenSymbol": "MATIC",
+      "available": "25.50",
+      "locked": "0.00",
+      "total": "25.50"
+    }
+  ],
+  "totalUSD": 175.50
+}
+```
+
+#### Auditoria e Reconciliação
+
+**WalletTransaction continua sendo source of truth para auditoria:**
+
+```typescript
+// Script de reconciliação (rodar periodicamente)
+async function reconcileBalances() {
+  const users = await prisma.user.findMany();
+
+  for (const user of users) {
+    // Calcula saldo "verdadeiro" das transações
+    const transactions = await prisma.walletTransaction.findMany({
+      where: { userId: user.id }
+    });
+
+    const calculatedBalance = transactions.reduce((acc, tx) => {
+      if (tx.type === "CREDIT") return acc.add(tx.amount);
+      else return acc.sub(tx.amount);
+    }, new Decimal(0));
+
+    // Compara com UserBalance
+    const storedBalance = await prisma.userBalance.findUnique({
+      where: { userId_tokenSymbol: { userId: user.id, tokenSymbol: "USDC" } }
+    });
+
+    const total = storedBalance.availableBalance.add(storedBalance.lockedBalance);
+
+    if (!total.equals(calculatedBalance)) {
+      console.error(`⚠️  DESYNC: User ${user.id} - Expected ${calculatedBalance}, Got ${total}`);
+      // Alertar admins, investigar
+    }
+  }
+}
+```
+
+#### Migration para v2.0
+
+**Passo 1: Criar tabela UserBalance**
+
+```bash
+npx prisma migrate dev --name add_user_balance
+```
+
+**Passo 2: Popular com saldos existentes**
+
+```typescript
+// scripts/migrate-to-user-balance.ts
+async function migrateBalances() {
+  const users = await prisma.user.findMany();
+
+  for (const user of users) {
+    const transactions = await prisma.walletTransaction.findMany({
+      where: {
+        userId: user.id,
+        status: { in: ["CONFIRMED", "SENT_TO_GLOBAL"] }
+      }
+    });
+
+    // Agrupa por token
+    const balances = new Map<string, Decimal>();
+    for (const tx of transactions) {
+      const current = balances.get(tx.tokenSymbol) || new Decimal(0);
+      if (tx.type === "CREDIT") {
+        balances.set(tx.tokenSymbol, current.add(tx.amount));
+      } else {
+        balances.set(tx.tokenSymbol, current.sub(tx.amount));
+      }
+    }
+
+    // Cria UserBalance
+    for (const [tokenSymbol, balance] of balances) {
+      await prisma.userBalance.create({
+        data: {
+          userId: user.id,
+          tokenSymbol,
+          availableBalance: balance,
+          lockedBalance: 0
+        }
+      });
+    }
+
+    console.log(`✅ Migrated balances for user ${user.id}`);
+  }
+}
+```
+
+**Passo 3: Atualizar código**
+
+- ✅ Modificar `process-moralis-webhook.ts` para atualizar UserBalance
+- ✅ Modificar `get-user-balance.ts` para ler de UserBalance
+- ✅ Criar lógica de withdrawal com locking
+- ✅ Adicionar reconciliação periódica
+
+---
+
 ### Better Auth - Configuração de Admin
 
 **Descrição:** Better Auth suporta roles nativamente. Vamos usar o campo `role` do User para diferenciar admins de usuários comuns.
