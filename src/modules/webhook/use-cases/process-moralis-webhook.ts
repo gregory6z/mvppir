@@ -54,9 +54,35 @@ export async function processMoralisWebhook({
 
   // Se existe como PENDING e agora está confirmed = true, atualiza para CONFIRMED
   if (existingTx && existingTx.status === "PENDING" && payload.confirmed) {
-    const updated = await prisma.walletTransaction.update({
-      where: { txHash: payload.txHash },
-      data: { status: "CONFIRMED" },
+    // Usa transaction para atomicidade
+    const updated = await prisma.$transaction(async (tx) => {
+      // 1. Atualiza transação
+      const updatedTx = await tx.walletTransaction.update({
+        where: { txHash: payload.txHash },
+        data: { status: "CONFIRMED" },
+      });
+
+      // 2. Atualiza/cria saldo (CREDIT = aumenta availableBalance)
+      await tx.balance.upsert({
+        where: {
+          userId_tokenSymbol: {
+            userId: existingTx.userId,
+            tokenSymbol: existingTx.tokenSymbol,
+          },
+        },
+        create: {
+          userId: existingTx.userId,
+          tokenSymbol: existingTx.tokenSymbol,
+          tokenAddress: existingTx.tokenAddress,
+          availableBalance: existingTx.amount,
+          lockedBalance: new Decimal(0),
+        },
+        update: {
+          availableBalance: { increment: existingTx.amount },
+        },
+      });
+
+      return updatedTx;
     });
 
     console.log(`✅ Transação confirmada pela blockchain:`, {
@@ -149,20 +175,47 @@ export async function processMoralisWebhook({
   // Determina status inicial baseado na confirmação
   const initialStatus = payload.confirmed ? "CONFIRMED" : "PENDING";
 
-  // Cria transação
-  const transaction = await prisma.walletTransaction.create({
-    data: {
-      userId: depositAddress.userId,
-      depositAddressId: depositAddress.id,
-      type: "CREDIT",
-      tokenSymbol: token.symbol,
-      tokenAddress,
-      tokenDecimals: token.decimals,
-      amount,
-      rawAmount,
-      txHash: payload.txHash,
-      status: initialStatus,
-    },
+  // Cria transação (e atualiza saldo se CONFIRMED)
+  const transaction = await prisma.$transaction(async (tx) => {
+    // 1. Cria transação
+    const newTx = await tx.walletTransaction.create({
+      data: {
+        userId: depositAddress.userId,
+        depositAddressId: depositAddress.id,
+        type: "CREDIT",
+        tokenSymbol: token.symbol,
+        tokenAddress,
+        tokenDecimals: token.decimals,
+        amount,
+        rawAmount,
+        txHash: payload.txHash,
+        status: initialStatus,
+      },
+    });
+
+    // 2. Se CONFIRMED, atualiza saldo imediatamente
+    if (initialStatus === "CONFIRMED") {
+      await tx.balance.upsert({
+        where: {
+          userId_tokenSymbol: {
+            userId: depositAddress.userId,
+            tokenSymbol: token.symbol,
+          },
+        },
+        create: {
+          userId: depositAddress.userId,
+          tokenSymbol: token.symbol,
+          tokenAddress,
+          availableBalance: amount,
+          lockedBalance: new Decimal(0),
+        },
+        update: {
+          availableBalance: { increment: amount },
+        },
+      });
+    }
+
+    return newTx;
   });
 
   if (initialStatus === "PENDING") {

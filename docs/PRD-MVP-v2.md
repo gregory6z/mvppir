@@ -377,9 +377,9 @@ model Withdrawal {
 
 ---
 
-### Arquitetura de Saldo: UserBalance vs WalletTransaction
+### Arquitetura de Saldo: Balance vs WalletTransaction
 
-**Decisão Arquitetural:** A partir do v2.0, implementamos uma tabela separada `UserBalance` para armazenar saldos, mantendo `WalletTransaction` apenas como histórico/auditoria.
+**Decisão Arquitetural:** A partir do v2.0, implementamos uma tabela separada `Balance` para armazenar saldos, mantendo `WalletTransaction` apenas como histórico/auditoria.
 
 #### Problema com Arquitetura Atual (v1.0)
 
@@ -407,10 +407,10 @@ for (const tx of transactions) {
 
 #### Nova Arquitetura (v2.0)
 
-**UserBalance Model:**
+**Balance Model:**
 
 ```prisma
-model UserBalance {
+model Balance {
   id               String   @id @default(uuid())
   userId           String
   tokenSymbol      String
@@ -430,7 +430,7 @@ model UserBalance {
 // Adicionar ao User model:
 model User {
   // ... campos existentes ...
-  balances UserBalance[]
+  balances Balance[]
 }
 ```
 
@@ -461,7 +461,7 @@ await prisma.$transaction([
   }),
 
   // 2. Atualiza saldo (upsert = cria se não existir)
-  prisma.userBalance.upsert({
+  prisma.balance.upsert({
     where: {
       userId_tokenSymbol: { userId, tokenSymbol: "USDC" }
     },
@@ -488,7 +488,7 @@ await prisma.$transaction([
   }),
 
   // 2. Move de available → locked
-  prisma.userBalance.update({
+  prisma.balance.update({
     where: { userId_tokenSymbol: { userId, tokenSymbol: "USDC" } },
     data: {
       availableBalance: { decrement: 50 },
@@ -515,7 +515,7 @@ await prisma.$transaction([
   }),
 
   // 2. Remove de locked (saldo já foi decrementado quando solicitou)
-  prisma.userBalance.update({
+  prisma.balance.update({
     where: { userId_tokenSymbol: { userId, tokenSymbol: "USDC" } },
     data: {
       lockedBalance: { decrement: 50 }
@@ -540,7 +540,7 @@ await prisma.$transaction([
   }),
 
   // Devolve locked → available
-  prisma.userBalance.update({
+  prisma.balance.update({
     where: { userId_tokenSymbol: { userId, tokenSymbol } },
     data: {
       availableBalance: { increment: amount },
@@ -550,13 +550,13 @@ await prisma.$transaction([
 ]);
 ```
 
-#### Validações com UserBalance
+#### Validações com Balance
 
 **Prevenir saldo negativo:**
 
 ```typescript
 // Antes de criar withdrawal
-const balance = await prisma.userBalance.findUnique({
+const balance = await prisma.balance.findUnique({
   where: { userId_tokenSymbol: { userId, tokenSymbol } }
 });
 
@@ -587,7 +587,7 @@ if (updated.count === 0) {
 
 ```typescript
 // SELECT direto na tabela user_balances
-const balances = await prisma.userBalance.findMany({
+const balances = await prisma.balance.findMany({
   where: { userId },
   select: {
     tokenSymbol: true,
@@ -653,8 +653,8 @@ async function reconcileBalances() {
       else return acc.sub(tx.amount);
     }, new Decimal(0));
 
-    // Compara com UserBalance
-    const storedBalance = await prisma.userBalance.findUnique({
+    // Compara com Balance
+    const storedBalance = await prisma.balance.findUnique({
       where: { userId_tokenSymbol: { userId: user.id, tokenSymbol: "USDC" } }
     });
 
@@ -670,7 +670,7 @@ async function reconcileBalances() {
 
 #### Migration para v2.0
 
-**Passo 1: Criar tabela UserBalance**
+**Passo 1: Criar tabela Balance**
 
 ```bash
 npx prisma migrate dev --name add_user_balance
@@ -702,9 +702,9 @@ async function migrateBalances() {
       }
     }
 
-    // Cria UserBalance
+    // Cria Balance
     for (const [tokenSymbol, balance] of balances) {
-      await prisma.userBalance.create({
+      await prisma.balance.create({
         data: {
           userId: user.id,
           tokenSymbol,
@@ -721,8 +721,8 @@ async function migrateBalances() {
 
 **Passo 3: Atualizar código**
 
-- ✅ Modificar `process-moralis-webhook.ts` para atualizar UserBalance
-- ✅ Modificar `get-user-balance.ts` para ler de UserBalance
+- ✅ Modificar `process-moralis-webhook.ts` para atualizar Balance
+- ✅ Modificar `get-user-balance.ts` para ler de Balance
 - ✅ Criar lógica de withdrawal com locking
 - ✅ Adicionar reconciliação periódica
 

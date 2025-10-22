@@ -51,6 +51,7 @@ model User {
   // App relations
   depositAddresses DepositAddress[]
   transactions     WalletTransaction[]
+  balances         Balance[]
 
   @@map("users")
 }
@@ -136,6 +137,23 @@ model WalletTransaction {
   @@map("wallet_transactions")
 }
 
+model Balance {
+  id               String   @id @default(uuid())
+  userId           String
+  tokenSymbol      String // "USDC", "MATIC", "USDT", etc
+  tokenAddress     String? // Contract address (null para MATIC)
+  availableBalance Decimal  @db.Decimal(20, 8) // Saldo disponível para saque
+  lockedBalance    Decimal  @db.Decimal(20, 8) @default(0) // Saldo bloqueado (saques pendentes)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tokenSymbol])
+  @@index([userId])
+  @@map("balances")
+}
+
 model GlobalWallet {
   id             String   @id @default(uuid())
   polygonAddress String   @unique
@@ -143,5 +161,23 @@ model GlobalWallet {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  balances GlobalWalletBalance[]
+
   @@map("global_wallets")
+}
+
+model GlobalWalletBalance {
+  id              String   @id @default(uuid())
+  globalWalletId  String
+  tokenSymbol     String // "USDC", "MATIC", "USDT", etc
+  tokenAddress    String? // Contract address (null para MATIC)
+  balance         Decimal  @db.Decimal(20, 8) // Saldo total da Global Wallet
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  globalWallet GlobalWallet @relation(fields: [globalWalletId], references: [id], onDelete: Cascade)
+
+  @@unique([globalWalletId, tokenSymbol])
+  @@index([globalWalletId])
+  @@map("global_wallet_balances")
 }

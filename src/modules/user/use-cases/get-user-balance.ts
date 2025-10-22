@@ -9,7 +9,9 @@ interface GetUserBalanceRequest {
 interface TokenBalance {
   tokenSymbol: string;
   tokenAddress: string | null;
-  balance: Decimal;
+  available: Decimal;
+  locked: Decimal;
+  total: Decimal;
 }
 
 interface GetUserBalanceResponse {
@@ -20,54 +22,30 @@ interface GetUserBalanceResponse {
 export async function getUserBalance({
   userId,
 }: GetUserBalanceRequest): Promise<GetUserBalanceResponse> {
-  // Busca todas as transações CONFIRMADAS do usuário
-  // CONFIRMED = blockchain confirmou, dinheiro na carteira individual
-  // SENT_TO_GLOBAL = já movido para a carteira global
-  // NÃO inclui PENDING (ainda aguardando confirmação da blockchain)
-  const transactions = await prisma.walletTransaction.findMany({
-    where: {
-      userId,
-      status: {
-        in: ["CONFIRMED", "SENT_TO_GLOBAL"]
-      }
-    },
+  // Busca saldos da tabela Balance (otimizado)
+  const userBalances = await prisma.balance.findMany({
+    where: { userId },
     select: {
       tokenSymbol: true,
       tokenAddress: true,
-      amount: true,
-      type: true,
+      availableBalance: true,
+      lockedBalance: true,
     },
   });
 
-  // Agrupa por token e calcula saldo
-  const balanceMap = new Map<string, { tokenAddress: string | null; balance: Decimal }>();
+  // Converte para formato de resposta
+  const balances: TokenBalance[] = userBalances.map((b) => ({
+    tokenSymbol: b.tokenSymbol,
+    tokenAddress: b.tokenAddress,
+    available: b.availableBalance,
+    locked: b.lockedBalance,
+    total: b.availableBalance.add(b.lockedBalance),
+  }));
 
-  for (const tx of transactions) {
-    const key = tx.tokenSymbol;
-    const current = balanceMap.get(key) || { tokenAddress: tx.tokenAddress, balance: new Decimal(0) };
-
-    if (tx.type === "CREDIT") {
-      current.balance = current.balance.add(tx.amount);
-    } else {
-      current.balance = current.balance.sub(tx.amount);
-    }
-
-    balanceMap.set(key, current);
-  }
-
-  // Converte para array
-  const balances: TokenBalance[] = Array.from(balanceMap.entries()).map(
-    ([tokenSymbol, { tokenAddress, balance }]) => ({
-      tokenSymbol,
-      tokenAddress,
-      balance,
-    })
-  );
-
-  // Calcula total em USD
+  // Calcula total em USD (usa o total = available + locked)
   const balancesByToken: Record<string, number> = {};
-  for (const { tokenSymbol, balance } of balances) {
-    balancesByToken[tokenSymbol] = balance.toNumber();
+  for (const { tokenSymbol, total } of balances) {
+    balancesByToken[tokenSymbol] = total.toNumber();
   }
 
   const totalUSD = await calculateTotalUSD(balancesByToken);
