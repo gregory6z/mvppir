@@ -1,10 +1,12 @@
 # PRD - Product Requirements Document
 ## MVP v2.0 - Transferências, Saques e Administração
 
-**Versão:** 2.0
-**Data:** 21 de Outubro de 2025
-**Status:** Planejamento
+**Versão:** 2.0 Core
+**Data:** 22 de Outubro de 2025
+**Status:** ✅ Core Complete - Pronto para Testes
 **Autor:** Equipe de Desenvolvimento
+
+> **MVP v2.0 Core** está completo com as funcionalidades essenciais (F1 + F2). Dashboard Admin (F3) e Otimizações (F4) serão implementadas em futuras iterações.
 
 ---
 
