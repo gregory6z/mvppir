@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Wallet } from "ethers";
-import crypto from "crypto";
+import { encryptPrivateKey } from "@/lib/encryption";
 import { addAddressToStream } from "../services/moralis-stream.service";
 
 interface GetOrCreateDepositAddressRequest {
@@ -12,20 +12,6 @@ interface GetOrCreateDepositAddressResponse {
   polygonAddress: string;
   status: string;
   createdAt: Date;
-}
-
-// Função auxiliar para criptografar private key
-function encryptPrivateKey(privateKey: string): string {
-  const algorithm = "aes-256-gcm";
-  const key = Buffer.from(process.env.ENCRYPTION_KEY!, "hex");
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-
-  let encrypted = cipher.update(privateKey, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  const authTag = cipher.getAuthTag();
-
-  return `${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted}`;
 }
 
 export async function getOrCreateDepositAddress({

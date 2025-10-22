@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import { checkAccountActivation } from "@/modules/user/use-cases/check-account-activation";
+import { identifyToken, KNOWN_TOKENS } from "@/lib/tokens";
 
 interface MoralisWebhookPayload {
   confirmed: boolean;
@@ -21,65 +22,6 @@ interface MoralisWebhookPayload {
 
 interface ProcessMoralisWebhookRequest {
   payload: MoralisWebhookPayload;
-}
-
-// Tokens conhecidos na Polygon Mainnet (para referência)
-// Qualquer outro token ERC20 também será aceito usando os dados do Moralis
-const KNOWN_TOKENS = {
-  // USDC (Circle)
-  "0x2791bca1f2de4661ed88a30c99a7a9449aa84174": {
-    symbol: "USDC",
-    decimals: 6,
-    name: "USD Coin",
-  },
-  // USDT (Tether)
-  "0xc2132d05d31c914a87c6611c10748aeb04b58e8f": {
-    symbol: "USDT",
-    decimals: 6,
-    name: "Tether USD",
-  },
-  // MATIC (nativo)
-  NATIVE: {
-    symbol: "MATIC",
-    decimals: 18,
-    name: "Polygon",
-  },
-} as const;
-
-interface TokenInfo {
-  symbol: string;
-  decimals: number;
-  name: string;
-}
-
-/**
- * Identifica o token recebido (conhecido ou desconhecido)
- * Aceita QUALQUER token ERC20
- */
-function identifyToken(payload: MoralisWebhookPayload): TokenInfo {
-  const isNativeToken = !payload.tokenAddress;
-
-  // Transação nativa (MATIC)
-  if (isNativeToken) {
-    return KNOWN_TOKENS.NATIVE;
-  }
-
-  const tokenAddress = payload.tokenAddress!.toLowerCase();
-
-  // Verifica se é um token conhecido
-  const knownToken = KNOWN_TOKENS[tokenAddress as keyof typeof KNOWN_TOKENS];
-
-  if (knownToken) {
-    return knownToken;
-  }
-
-  // Token desconhecido - usa dados do Moralis
-  // Se o Moralis não enviou os dados, usa valores padrão
-  return {
-    symbol: payload.tokenSymbol || "UNKNOWN",
-    decimals: parseInt(payload.tokenDecimals || "18"),
-    name: payload.tokenName || "Unknown Token",
-  };
 }
 
 export async function processMoralisWebhook({

@@ -36,3 +36,4 @@ coverage/
 # Prisma
 prisma/migrations/**
 !prisma/migrations/.gitkeep
+.env.test
