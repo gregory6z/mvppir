@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## How to Use This Document
+
+This is a **living document** that defines conventions, patterns, and critical knowledge for working on mvppir. Claude Code automatically loads this file into context at the start of every session.
+
+**What's in here:**
+- Development workflow and best practices
+- Architecture patterns and layer responsibilities
+- Code style conventions and TypeScript guidelines
+- Security rules and common gotchas
+- Testing strategy and database commands
+
+**Quick Navigation:**
+- New to project? Read: [Project Overview](#project-overview), [Development Workflow](#development-workflow), [Architecture](#architecture)
+- Starting a task? Review: [Code Style Conventions](#code-style-conventions), [Important Rules (Do NOT)](#important-rules-do-not)
+- Debugging? Check: [Common Gotchas](#common-gotchas)
+
+**Updating this file:**
+- Press `#` key in Claude Code to add instructions automatically
+- Keep it concise - only include what Claude needs to know to do the work
+- Commit changes to Git (this is the single source of truth for the team)
+
 ## Project Overview
 
 This is **mvppir**, a cryptocurrency deposit/withdrawal platform built with Fastify, Prisma, and PostgreSQL. The system manages user deposits on Polygon blockchain, tracks wallet transactions, and implements a virtual account system with automatic activation based on deposit thresholds.
@@ -12,6 +33,52 @@ This is **mvppir**, a cryptocurrency deposit/withdrawal platform built with Fast
 - **Authentication:** Better Auth (email/password)
 - **Blockchain:** Ethers.js + Moralis webhooks (Polygon network)
 - **Testing:** Node.js native test runner
+
+## Development Workflow
+
+When working on this codebase, follow this systematic approach:
+
+1. **Analysis Phase**
+   - First, think about the problem and understand the requirements
+   - Read the codebase to understand current implementation
+   - Identify all relevant files and dependencies
+   - Review related documentation (PRD, tests, etc.)
+
+2. **Planning**
+   - Create a mental plan with clear task breakdown
+   - Track tasks using TodoWrite for complex multi-step work
+   - Identify potential risks or edge cases
+   - Consider backward compatibility and migration needs
+
+3. **Validation**
+   - Before starting significant changes, contact the user to validate approach
+   - Discuss architectural decisions that impact multiple modules
+   - Confirm breaking changes or schema modifications
+
+4. **Implementation**
+   - Work on tasks systematically, one at a time
+   - Mark tasks as completed in TodoWrite as progress is made
+   - Write tests alongside implementation (TDD when appropriate)
+   - Follow existing code patterns and conventions
+
+5. **Documentation**
+   - At each step, provide detailed explanations of changes made
+   - Document reasoning behind technical decisions
+   - Update relevant documentation (CLAUDE.md, PRD, etc.)
+   - Add inline comments for complex business logic
+
+6. **Simplicity**
+   - Make each task and code change as simple as possible
+   - Avoid massive or complex changes - break them down
+   - Each change should impact the code minimally
+   - Prefer incremental improvements over rewrites
+   - **Everything comes down to simplicity**
+
+7. **Review**
+   - Provide comprehensive summary of changes made
+   - Highlight any relevant information or gotchas
+   - Verify tests pass and code quality is maintained
+   - Ensure commits are atomic and well-documented
 
 ## Development Commands
 
@@ -66,10 +133,11 @@ NODE_ENV=test node --import tsx --test src/tests/integration/deposit-webhook.tes
 
 This codebase follows **Clean Architecture** with strict separation of concerns:
 
-1. **Controllers** - Handle HTTP requests/responses, validate input, call use cases
-2. **Use Cases** - Business logic, orchestrate multiple operations
-3. **Services** - External integrations (Moralis, blockchain)
-4. **Lib** - Shared utilities (encryption, token identification, Prisma client)
+1. **Controllers** - Handle HTTP requests/responses, validate input (Zod), call use cases
+2. **Use Cases** - Business logic, orchestrate multiple operations, throw errors (no HTTP logic)
+3. **Providers** - External API integrations (Moralis, CoinGecko, blockchain RPC)
+4. **Lib** - Internal utilities (encryption, token identification, Prisma client)
+5. **Middlewares** - Cross-cutting concerns (authentication, authorization, error handling)
 
 ### Module Structure
 
@@ -78,17 +146,43 @@ All business features live in `src/modules/`, organized by domain:
 ```
 src/modules/
 ├── deposit/          # Deposit address generation
-│   ├── controllers/
-│   ├── use-cases/
-│   └── services/     # Moralis Stream integration
+│   ├── controllers/  # HTTP handlers
+│   ├── use-cases/    # Business logic
+│   └── (no providers here - deposit uses shared providers)
 ├── user/            # User account management, balance, transactions
-│   ├── controllers/
-│   └── use-cases/
+│   ├── controllers/  # HTTP handlers
+│   └── use-cases/    # Business logic
 ├── webhook/         # Moralis webhook processing
-│   ├── controllers/
-│   └── use-cases/
+│   ├── controllers/  # HTTP handlers
+│   └── use-cases/    # Business logic
 └── wallet/          # Global wallet operations (planned for v2.0)
 ```
+
+**Supporting Layers:**
+
+```
+src/
+├── lib/             # Internal utilities (encryption, tokens, prisma)
+│   ├── auth.ts
+│   ├── encryption.ts
+│   ├── tokens.ts
+│   └── prisma.ts
+├── providers/       # External integrations (Moralis, pricing)
+│   ├── moralis/
+│   │   └── stream.provider.ts
+│   └── price/
+│       └── price.provider.ts
+├── middlewares/     # Fastify middleware (auth, admin, error handling)
+└── config/          # Environment validation (Zod schemas)
+```
+
+**Layer Responsibilities:**
+
+- **Controllers** - HTTP request/response, input validation (Zod), call use cases
+- **Use Cases** - Pure business logic, orchestrate operations, throw errors
+- **Providers** - External API integrations (Moralis, CoinGecko, etc.)
+- **Lib** - Internal utilities (encryption, token mapping, database client)
+- **Middlewares** - Cross-cutting concerns (auth, CORS, rate limiting)
 
 ### Key Architectural Patterns
 
@@ -359,6 +453,32 @@ See `docs/TESTING-INTEGRATION.md` for complete testing documentation.
 4. **Validate early** - Zod for input validation in controllers
 5. **Keep use cases pure** - no HTTP logic, only business rules
 6. **One responsibility per file** - split large use cases into smaller ones
+7. **TypeScript strict mode** - all files must pass strict type checking
+8. **No `any` types** - use proper TypeScript types or `unknown` with type guards
+9. **Functional approach** - prefer pure functions, avoid side effects where possible
+10. **Explicit over implicit** - be explicit about types, dependencies, and behavior
+
+## Important Rules (Do NOT)
+
+**NEVER do these things in this codebase:**
+
+1. **DO NOT skip signature validation** on Moralis webhooks (security critical)
+2. **DO NOT log unencrypted private keys** anywhere (logs, console, errors)
+3. **DO NOT use `Number` for token amounts** - always use Prisma `Decimal` type
+4. **DO NOT update Balance without WalletTransaction** - breaks audit trail
+5. **DO NOT create admin users via signup** - only via direct database access
+6. **DO NOT run tests against production database** - always use `NODE_ENV=test`
+7. **DO NOT commit `.env` files** - use `.env.example` for templates
+8. **DO NOT store private keys in environment variables** - encrypt in database
+9. **DO NOT use `prisma.$executeRaw` for user input** - use parameterized queries
+10. **DO NOT skip atomic transactions** when updating related records
+
+**Additional Security Rules:**
+
+- **DO NOT disable CORS** in production
+- **DO NOT expose stack traces** to API responses in production
+- **DO NOT trust webhook data** without signature verification
+- **DO NOT allow case-sensitive address matching** - always `.toLowerCase()`
 
 ## Common Gotchas
 
@@ -391,8 +511,52 @@ See `docs/TESTING-INTEGRATION.md` for complete testing documentation.
    - Reconcile Balance vs WalletTransaction periodically to catch sync issues
    - For withdrawals: move from `availableBalance` to `lockedBalance` atomically
 
+## Key Files Reference
+
+**Core Application:**
+- `src/app.ts` - Fastify app setup, plugin registration, routes
+- `src/server.ts` - Server entry point, starts HTTP server
+- `src/config/env.ts` - Environment validation (Zod schema)
+
+**Database:**
+- `prisma/schema.prisma` - Database schema (source of truth)
+- `src/lib/prisma.ts` - Prisma client instance
+
+**Authentication & Authorization:**
+- `src/lib/auth.ts` - Better Auth instance
+- `src/middlewares/auth.middleware.ts` - Session validation
+- `src/middlewares/admin.middleware.ts` - Admin role check
+
+**Blockchain & Webhooks:**
+- `src/modules/webhook/use-cases/process-moralis-webhook.ts` - Main webhook handler
+- `src/lib/webhook-signature.ts` - Keccak256 signature validation
+- `src/lib/tokens.ts` - Token identification system
+- `src/providers/moralis/stream.provider.ts` - Moralis Stream API
+
+**Critical Use Cases:**
+- `src/modules/user/use-cases/get-user-balance.ts` - Balance query (O(1))
+- `src/modules/user/use-cases/check-account-activation.ts` - $100 threshold check
+- `src/modules/deposit/use-cases/get-or-create-deposit-address.ts` - Address generation
+
+**Utilities:**
+- `src/lib/encryption.ts` - AES-256-GCM private key encryption
+- `src/providers/price/price.provider.ts` - CoinGecko price fetching
+
+**Scripts:**
+- `scripts/migrate-to-balance.ts` - One-time Balance table migration
+
+**Documentation:**
+- `docs/PRD-MVP-v2.md` - Product requirements (detailed feature specs)
+- `docs/TESTING-INTEGRATION.md` - Testing strategy and examples
+- `docs/ROADMAP.md` - Product evolution roadmap
+
 ## Related Documentation
 
 - **Full PRD:** `docs/PRD-MVP-v2.md` - Detailed product requirements
 - **Testing Guide:** `docs/TESTING-INTEGRATION.md` - How to run tests
 - **Roadmap:** `docs/ROADMAP.md` - Project evolution plan
+
+---
+
+**Last Updated:** 2025-10-22
+**Claude Code Version:** Optimized for claude-sonnet-4-5
