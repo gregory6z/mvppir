@@ -21,10 +21,7 @@ export async function batchCollectController(
 
     const result = await batchCollectToGlobal({ adminId });
 
-    return reply.status(200).send({
-      success: true,
-      ...result,
-    });
+    return reply.status(200).send(result);
   } catch (error) {
     request.log.error({ error }, "Error in batch collect");
 

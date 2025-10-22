@@ -6,6 +6,7 @@ import { userRoutes } from './modules/user/routes'
 import { depositRoutes } from './modules/deposit/routes'
 import { webhookRoutes } from './modules/webhook/routes'
 import { userWithdrawalRoutes, adminWithdrawalRoutes } from './modules/withdrawal/routes'
+import { transferRoutes } from './modules/transfer/routes'
 
 export async function buildApp() {
   const app = Fastify({
@@ -99,6 +100,9 @@ export async function buildApp() {
   // Withdrawal routes
   await app.register(userWithdrawalRoutes, { prefix: '/user/withdrawals' })
   await app.register(adminWithdrawalRoutes, { prefix: '/admin/withdrawals' })
+
+  // Transfer routes (admin only)
+  await app.register(transferRoutes, { prefix: '/admin/transfers' })
 
   return app
 }
