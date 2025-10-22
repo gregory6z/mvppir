@@ -43,3 +43,6 @@ export async function authMiddleware(
     });
   }
 }
+
+// Alias para ser mais descritivo
+export const requireAuth = authMiddleware;

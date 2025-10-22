@@ -1,4 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
+import { prisma } from "@/lib/prisma";
 
 /**
  * GET /user/withdrawals
@@ -11,7 +12,7 @@ export async function listWithdrawalsController(
   try {
     const userId = request.user!.id;
 
-    const withdrawals = await request.server.prisma.withdrawal.findMany({
+    const withdrawals = await prisma.withdrawal.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
       select: {

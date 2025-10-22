@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 import { WithdrawalStatus } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
 const querySchema = z.object({
   status: z
@@ -36,7 +37,7 @@ export async function listAllWithdrawalsController(
     const where = status ? { status: status as WithdrawalStatus } : {};
 
     const [withdrawals, total] = await Promise.all([
-      request.server.prisma.withdrawal.findMany({
+      prisma.withdrawal.findMany({
         where,
         skip,
         take: limitNum,
@@ -51,7 +52,7 @@ export async function listAllWithdrawalsController(
           },
         },
       }),
-      request.server.prisma.withdrawal.count({ where }),
+      prisma.withdrawal.count({ where }),
     ]);
 
     return reply.status(200).send({

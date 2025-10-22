@@ -76,9 +76,11 @@ export async function requestWithdrawal({
   // 6. Atomicamente: move saldo + cria withdrawal
   const withdrawal = await prisma.$transaction(async (tx) => {
     // Move de availableBalance → lockedBalance
+    // Nota: updateMany não suporta composite keys diretamente, então usamos AND
     const updated = await tx.balance.updateMany({
       where: {
-        userId_tokenSymbol: { userId, tokenSymbol },
+        userId,
+        tokenSymbol,
         availableBalance: { gte: amount }, // Garante que tem saldo (race condition protection)
       },
       data: {

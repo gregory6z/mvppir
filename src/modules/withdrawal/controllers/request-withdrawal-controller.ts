@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 import { Decimal } from "@prisma/client/runtime/library";
 import { requestWithdrawal } from "@/modules/withdrawal/use-cases/request-withdrawal";
+import { prisma } from "@/lib/prisma";
 
 const bodySchema = z.object({
   tokenSymbol: z.string().min(1),
@@ -25,7 +26,7 @@ export async function requestWithdrawalController(
     );
 
     // Busca tokenAddress do Balance (se existir)
-    const balance = await request.server.prisma.balance.findUnique({
+    const balance = await prisma.balance.findUnique({
       where: {
         userId_tokenSymbol: { userId, tokenSymbol },
       },
