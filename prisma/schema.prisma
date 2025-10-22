@@ -32,6 +32,22 @@ enum TransactionStatus {
   FAILED
 }
 
+enum WithdrawalStatus {
+  PENDING_APPROVAL
+  APPROVED
+  PROCESSING
+  COMPLETED
+  REJECTED
+  FAILED
+}
+
+enum NotificationType {
+  WITHDRAWAL_APPROVED
+  WITHDRAWAL_REJECTED
+  WITHDRAWAL_COMPLETED
+  WITHDRAWAL_FAILED
+}
+
 model User {
   id            String     @id @default(uuid())
   email         String     @unique
@@ -49,9 +65,11 @@ model User {
   accounts Account[]
 
   // App relations
-  depositAddresses DepositAddress[]
-  transactions     WalletTransaction[]
-  balances         Balance[]
+  depositAddresses        DepositAddress[]
+  transactions            WalletTransaction[]
+  balances                Balance[]
+  withdrawals             Withdrawal[]
+  withdrawalNotifications WithdrawalNotification[]
 
   @@map("users")
 }
@@ -180,4 +198,56 @@ model GlobalWalletBalance {
   @@unique([globalWalletId, tokenSymbol])
   @@index([globalWalletId])
   @@map("global_wallet_balances")
+}
+
+model Withdrawal {
+  id                 String           @id @default(uuid())
+  userId             String
+  tokenSymbol        String
+  tokenAddress       String?
+  amount             Decimal          @db.Decimal(20, 8)
+  destinationAddress String
+  fee                Decimal          @db.Decimal(20, 8)
+  status             WithdrawalStatus @default(PENDING_APPROVAL)
+  txHash             String?          @unique
+  approvedBy         String? // Admin userId
+  approvedAt         DateTime?
+  rejectedReason     String?
+  processedAt        DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  user          User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifications WithdrawalNotification[]
+
+  @@map("withdrawals")
+}
+
+model AdminLog {
+  id        String   @id @default(uuid())
+  adminId   String
+  action    String // "APPROVE_WITHDRAWAL", "BATCH_TRANSFER", etc
+  entityId  String? // ID do withdrawal, user, etc
+  details   Json? // Detalhes adicionais
+  createdAt DateTime @default(now())
+
+  @@map("admin_logs")
+}
+
+model WithdrawalNotification {
+  id           String           @id @default(uuid())
+  userId       String
+  withdrawalId String
+  type         NotificationType
+  title        String // "Saque Aprovado!"
+  message      String // "Seu saque de 500 USDC foi aprovado pelo administrador"
+  data         Json? // Dados adicionais (txHash, motivo rejeição, etc)
+  read         Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  withdrawal Withdrawal @relation(fields: [withdrawalId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read]) // Para query de notificações não lidas
+  @@map("withdrawal_notifications")
 }
