@@ -189,6 +189,15 @@ Response:
   "notificationSent": true,
   "message": "Withdrawal rejected and user notified"
 }
+
+# Admin retenta saque que falhou (apenas erros recuperáveis)
+POST /admin/withdrawals/:id/retry
+Response:
+{
+  "success": true,
+  "withdrawalId": "uuid",
+  "message": "Withdrawal retry initiated"
+}
 ```
 
 **Regras de Negócio:**
@@ -197,7 +206,10 @@ Response:
 - Verifica se global wallet tem saldo suficiente
 - Apenas 1 saque pendente por vez por usuário
 - Após aprovação, processamento automático
-- Se processamento falhar, volta para `PENDING_APPROVAL`
+- **Sistema de Retry para Falhas:**
+  - Erros RECUPERÁVEIS (sem gas, sem saldo): saldo fica locked, admin pode retry
+  - Erros PERMANENTES (endereço inválido): saldo devolvido automaticamente
+  - Apenas saques FAILED podem ser retried
 - Usuário não pode cancelar após aprovação
 
 ---
