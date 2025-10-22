@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { calculateTotalUSD } from "@/services/price.service";
+import { calculateTotalUSD } from "@/providers/price/price.provider";
 import { Decimal } from "@prisma/client/runtime/library";
 
 const ACTIVATION_THRESHOLD_USD = 100; // $100 USD

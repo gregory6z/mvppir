@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Wallet } from "ethers";
 import { encryptPrivateKey } from "@/lib/encryption";
-import { addAddressToStream } from "../services/moralis-stream.service";
+import { addAddressToStream } from "@/providers/moralis/stream.provider";
 
 interface GetOrCreateDepositAddressRequest {
   userId: string;

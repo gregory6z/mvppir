@@ -1,5 +1,5 @@
 /**
- * Serviço de conversão de preços de tokens para USD
+ * Provider de conversão de preços de tokens para USD
  *
  * Usa API pública da CoinGecko (grátis, sem auth necessária)
  * Limite: 10-50 req/min (suficiente para MVP)
