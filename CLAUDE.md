@@ -23,6 +23,15 @@ This is a **living document** that defines conventions, patterns, and critical k
 - Keep it concise - only include what Claude needs to know to do the work
 - Commit changes to Git (this is the single source of truth for the team)
 
+**What to include/exclude:**
+- ✅ Include: Business rules, architectural patterns, security constraints, gotchas
+- ✅ Include: Workflow guidelines, non-obvious conventions, critical file locations
+- ❌ Exclude: Complete API documentation (link to files instead)
+- ❌ Exclude: Exhaustive field definitions (refer to source code)
+- ❌ Exclude: Implementation details already clear in code
+
+**Rule of thumb:** If it's not essential for Claude to complete tasks correctly, it doesn't belong here. Brevity saves context space for actual code.
+
 ## Project Overview
 
 This is **mvppir**, a cryptocurrency deposit/withdrawal platform built with Fastify, Prisma, and PostgreSQL. The system manages user deposits on Polygon blockchain, tracks wallet transactions, and implements a virtual account system with automatic activation based on deposit thresholds.
@@ -266,43 +275,28 @@ await prisma.$transaction(async (tx) => {
 
 This ensures Balance always reflects confirmed transactions, with PostgreSQL providing row-level locking to prevent race conditions.
 
-### Database Schema (Key Models)
+### Database Schema
 
-```prisma
-User
-  ├─ status: INACTIVE | ACTIVE | BLOCKED
-  ├─ role: user | admin (v2.0)
-  ├─ activatedAt: DateTime?
-  └─ Relations: depositAddresses[], transactions[], balances[]
+**Complete schema:** See `prisma/schema.prisma` (source of truth)
 
-DepositAddress
-  ├─ polygonAddress: String (unique, lowercase)
-  ├─ privateKey: String (encrypted)
-  └─ status: ACTIVE | INACTIVE
+**Key Models & Business Rules:**
 
-WalletTransaction
-  ├─ type: CREDIT | DEBIT
-  ├─ status: PENDING | CONFIRMED | SENT_TO_GLOBAL | FAILED
-  ├─ tokenSymbol, tokenAddress, tokenDecimals
-  ├─ amount: Decimal (converted with decimals)
-  └─ rawAmount: String (blockchain raw value)
+- **Balance** - Performance layer, O(1) lookups
+  - `availableBalance` (withdrawable) + `lockedBalance` (pending withdrawals)
+  - Atomically synced with WalletTransaction via `prisma.$transaction`
+  - Composite key: `userId + tokenSymbol`
 
-Balance (Performance Layer)
-  ├─ userId + tokenSymbol (unique composite key)
-  ├─ availableBalance: Decimal (withdrawable funds)
-  ├─ lockedBalance: Decimal (pending withdrawals)
-  └─ Atomically synced with WalletTransaction on CONFIRMED status
+- **WalletTransaction** - Audit trail, immutable event sourcing
+  - Status flow: `PENDING → CONFIRMED → SENT_TO_GLOBAL`
+  - Stores both `amount` (human) and `rawAmount` (blockchain)
 
-GlobalWallet
-  ├─ Central wallet to receive all funds (v2.0 feature)
-  ├─ privateKey stored encrypted (not in .env)
-  └─ Relations: balances[]
+- **User** - Account status: `INACTIVE | ACTIVE | BLOCKED`, role: `user | admin`
 
-GlobalWalletBalance (v2.0)
-  ├─ globalWalletId + tokenSymbol (unique composite key)
-  ├─ balance: Decimal (total balance per token)
-  └─ Tracks global wallet holdings for withdrawal processing
-```
+- **DepositAddress** - One per user, `privateKey` encrypted, addresses stored lowercase
+
+- **GlobalWallet** & **GlobalWalletBalance** - Central wallet for withdrawals
+
+**Rule:** Only document schema peculiarities here (encryption, business logic, sync patterns). For field definitions, refer to `prisma/schema.prisma`.
 
 ### Environment Configuration
 
