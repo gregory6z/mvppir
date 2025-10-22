@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { getGlobalWallet } from "@/modules/wallet/use-cases/get-global-wallet";
 import { Contract, parseUnits, formatUnits } from "ethers";
+import {
+  categorizeWithdrawalError,
+  FailureType,
+} from "@/modules/withdrawal/use-cases/categorize-withdrawal-error";
 
 interface ProcessWithdrawalRequest {
   withdrawalId: string;
@@ -187,43 +191,61 @@ export async function processWithdrawal({
       txHash,
     };
   } catch (error) {
-    // Em caso de erro, marca como FAILED e notifica
-    console.error(`❌ Failed to process withdrawal ${withdrawalId}:`, error);
+    // Categoriza erro: RECOVERABLE (sem gas/saldo) ou PERMANENT (endereço inválido, etc)
+    const failureType = categorizeWithdrawalError(
+      error instanceof Error ? error : new Error(String(error))
+    );
+
+    console.error(
+      `❌ Failed to process withdrawal ${withdrawalId} (${failureType}):`,
+      error
+    );
 
     await prisma.$transaction(async (tx) => {
-      // Atualiza Withdrawal para FAILED
+      // Atualiza Withdrawal para FAILED com motivo
       await tx.withdrawal.update({
         where: { id: withdrawalId },
         data: {
           status: "FAILED",
+          rejectedReason: `${failureType}: ${error instanceof Error ? error.message : String(error)}`,
         },
       });
 
-      // Devolve saldo: lockedBalance → availableBalance
-      await tx.balance.update({
-        where: {
-          userId_tokenSymbol: {
-            userId: withdrawal.userId,
-            tokenSymbol: withdrawal.tokenSymbol,
+      // ✅ APENAS devolve saldo se erro for PERMANENTE
+      // Se RECOVERABLE, saldo fica locked (admin pode fazer retry)
+      if (failureType === FailureType.PERMANENT) {
+        await tx.balance.update({
+          where: {
+            userId_tokenSymbol: {
+              userId: withdrawal.userId,
+              tokenSymbol: withdrawal.tokenSymbol,
+            },
           },
-        },
-        data: {
-          availableBalance: { increment: withdrawal.amount },
-          lockedBalance: { decrement: withdrawal.amount },
-        },
-      });
+          data: {
+            availableBalance: { increment: withdrawal.amount },
+            lockedBalance: { decrement: withdrawal.amount },
+          },
+        });
+      }
 
-      // Cria notificação de falha
+      // Cria notificação adequada ao tipo de erro
       await tx.withdrawalNotification.create({
         data: {
           userId: withdrawal.userId,
           withdrawalId,
           type: "WITHDRAWAL_FAILED",
-          title: "Saque Falhou",
-          message: `Seu saque de ${withdrawal.amount.toString()} ${withdrawal.tokenSymbol} falhou durante o processamento. O saldo foi devolvido para sua conta.`,
+          title:
+            failureType === FailureType.RECOVERABLE
+              ? "Saque Temporariamente Falhou"
+              : "Saque Cancelado",
+          message:
+            failureType === FailureType.RECOVERABLE
+              ? `Seu saque de ${withdrawal.amount.toString()} ${withdrawal.tokenSymbol} falhou temporariamente. O administrador irá tentar novamente. Motivo: ${error instanceof Error ? error.message : "Unknown error"}`
+              : `Seu saque de ${withdrawal.amount.toString()} ${withdrawal.tokenSymbol} foi cancelado permanentemente. O saldo foi devolvido para sua conta. Motivo: ${error instanceof Error ? error.message : "Unknown error"}`,
           data: {
             amount: withdrawal.amount.toString(),
             tokenSymbol: withdrawal.tokenSymbol,
+            failureType,
             error: error instanceof Error ? error.message : "Unknown error",
           },
         },

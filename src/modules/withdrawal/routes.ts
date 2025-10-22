@@ -5,6 +5,7 @@ import { requestWithdrawalController } from "@/modules/withdrawal/controllers/re
 import { listWithdrawalsController } from "@/modules/withdrawal/controllers/list-withdrawals-controller";
 import { approveWithdrawalController } from "@/modules/withdrawal/controllers/approve-withdrawal-controller";
 import { rejectWithdrawalController } from "@/modules/withdrawal/controllers/reject-withdrawal-controller";
+import { retryWithdrawalController } from "@/modules/withdrawal/controllers/retry-withdrawal-controller";
 import { listAllWithdrawalsController } from "@/modules/withdrawal/controllers/list-all-withdrawals-controller";
 
 /**
@@ -36,4 +37,7 @@ export async function adminWithdrawalRoutes(app: FastifyInstance) {
 
   // Rejeitar saque
   app.post("/:id/reject", rejectWithdrawalController);
+
+  // Reprocessar saque que falhou (apenas erros recuperáveis)
+  app.post("/:id/retry", retryWithdrawalController);
 }
