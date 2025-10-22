@@ -126,9 +126,11 @@ Completar o ciclo financeiro com transferências, saques e administração.
 
 **Commits:** 27bda3b, 30c00d4, a859497, a1ee16c
 
-### Funcionalidades Pendentes
+### Funcionalidades Adiadas para Futuras Iterações
 
-#### F3: Dashboard Administrativo
+> **Nota:** F3 (Dashboard Administrativo) e F4 (Segurança & Otimizações) foram adiadas para implementação em futuras iterações. O Core do v2.0 (F0, F1, F2) está completo e pronto para testes.
+
+#### F3: Dashboard Administrativo (ADIADO)
 - [ ] Autenticação de admin (role-based)
 - [ ] Estatísticas gerais da plataforma
 - [ ] Gestão de usuários (listar, buscar, bloquear)
@@ -142,7 +144,7 @@ Completar o ciclo financeiro com transferências, saques e administração.
 - Gráficos e métricas
 - Filtros e busca
 
-#### F4: Segurança & Otimizações
+#### F4: Segurança & Otimizações (ADIADO)
 - [ ] Rate limiting (100/15min público, 1000/15min autenticado)
 - [ ] Validação de endereços Polygon
 - [ ] Log estruturado (Pino/Winston)
