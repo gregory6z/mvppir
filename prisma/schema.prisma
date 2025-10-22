@@ -38,6 +38,7 @@ model User {
   name          String
   emailVerified Boolean    @default(false)
   image         String?
+  role          String     @default("user") // "user" ou "admin"
   status        UserStatus @default(INACTIVE) // Inicia INATIVA até depósito de 100 EUR
   activatedAt   DateTime?  // Data de ativação da conta
   createdAt     DateTime   @default(now())
