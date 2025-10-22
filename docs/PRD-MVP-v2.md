@@ -84,6 +84,76 @@ Com o v1.0, usuários podem:
 
 ## 📦 Funcionalidades v2.0
 
+### F0: Sistema de Administração (Role-Based Access Control)
+
+**Descrição:** Implementação de controle de acesso baseado em roles para diferenciar usuários comuns de administradores, permitindo proteção de rotas sensíveis.
+
+**Critérios de Aceitação:**
+- ✅ Campo `role` no User model (valores: "user" | "admin")
+- ✅ Middleware `requireAdmin` para proteção de rotas administrativas
+- ✅ Integração com Better Auth session
+- ✅ Type definitions para FastifyRequest com user
+- ✅ AdminLog para auditoria de ações administrativas
+- ✅ Verificação de status (admin pode ser bloqueado)
+
+**Arquitetura:**
+
+```typescript
+// src/middlewares/admin.middleware.ts
+export async function requireAdmin(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  // 1. Verifica sessão Better Auth
+  const session = await auth.api.getSession({ headers: request.headers });
+
+  // 2. Busca usuário completo do banco
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id, email, name, role, status }
+  });
+
+  // 3. Valida role === "admin" e status !== "BLOCKED"
+  if (user.role !== "admin") {
+    return reply.status(403).send({ error: "FORBIDDEN" });
+  }
+
+  // 4. Adiciona user ao request
+  request.user = user;
+}
+```
+
+**Uso em Rotas:**
+
+```typescript
+// src/modules/transfer/routes.ts
+export async function transferRoutes(app: FastifyInstance) {
+  // Todas as rotas de transfer requerem permissão de admin
+  app.addHook("onRequest", requireAdmin);
+
+  app.post("/batch-collect", batchCollectController);
+}
+```
+
+**Criação de Admins:**
+
+- **Desenvolvimento:** SQL direto, Prisma Studio, ou seed script
+- **Produção:** Apenas SQL direto via SSH (segurança)
+- **Regra:** Admins NÃO podem se auto-promover via API
+
+**Regras de Negócio:**
+- Apenas usuários com `role: "admin"` acessam rotas `/admin/*`
+- Admins podem ser bloqueados (status: BLOCKED)
+- Todas ações de admin são logadas em AdminLog
+- Type safety com FastifyRequest.user
+
+**Arquivos:**
+- `src/middlewares/admin.middleware.ts` - Middleware de autorização
+- `src/types/fastify.d.ts` - Type definitions
+- `prisma/schema.prisma` - Campo `role` no User model
+
+---
+
 ### F1: Transferência em Lote para Global Wallet
 
 **Descrição:** Rota administrativa que transfere todos os tokens de todos os endereços de usuários para a Global Wallet em uma única operação em lote.

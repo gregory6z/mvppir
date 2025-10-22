@@ -64,6 +64,22 @@ Completar o ciclo financeiro com transferências, saques e administração.
 
 ### Funcionalidades Implementadas
 
+#### ✅ F0: Sistema de Administração (CONCLUÍDO - 22/10/2025)
+- ✅ Role-based access control (user/admin)
+- ✅ Middleware `requireAdmin` para proteção de rotas
+- ✅ Extensão de Better Auth com roles
+- ✅ Criação manual de admins via banco de dados
+- ✅ Type definitions para FastifyRequest
+- ✅ AdminLog para auditoria de ações
+
+**Arquitetura:**
+- Middleware admin.middleware.ts (verificação de role)
+- Integração com Better Auth session
+- Suporte a usuários admin bloqueados
+- Rastreabilidade completa de ações administrativas
+
+**Commits:** Implementado ao longo do desenvolvimento v2.0
+
 #### ✅ F1: Transferência em Lote (CONCLUÍDO - 22/10/2025)
 - ✅ Rota administrativa protegida
 - ✅ Batch transfer: todos endereços → Global Wallet
@@ -210,6 +226,7 @@ Completar o ciclo financeiro com transferências, saques e administração.
 | Depósitos | ✅ | ✅ | ✅ |
 | Ativação de Conta | ✅ | ✅ | ✅ |
 | Saldo Multi-token | ✅ | ✅ | ✅ |
+| Role-Based Admin | ❌ | ✅ | ✅ |
 | Batch Transfers | ❌ | ✅ | ✅ |
 | Saques | ❌ | ✅ | ✅ |
 | Dashboard Admin | ❌ | 🚧 | ✅ |
