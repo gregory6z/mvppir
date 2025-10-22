@@ -375,16 +375,854 @@ model Withdrawal {
 }
 ```
 
+### Better Auth - Configuração de Admin
+
+**Descrição:** Better Auth suporta roles nativamente. Vamos usar o campo `role` do User para diferenciar admins de usuários comuns.
+
+#### 1. Configuração do Better Auth com Roles
+
+```typescript
+// src/lib/auth.ts
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { prisma } from "./prisma";
+
+export const auth = betterAuth({
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false, // Mudar para true em produção
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 dias
+    updateAge: 60 * 60 * 24, // Atualiza a cada 24h
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutos
+    },
+  },
+  // Hook para adicionar role ao session
+  async onSession(session) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true },
+    });
+
+    return {
+      ...session,
+      user: {
+        ...session.user,
+        role: user?.role || "user",
+      },
+    };
+  },
+});
+```
+
+#### 2. Middleware de Admin
+
+**Arquivo:** `src/middlewares/admin.middleware.ts`
+
+```typescript
+import { FastifyRequest, FastifyReply } from "fastify";
+import { auth } from "@/lib/auth";
+
+/**
+ * Middleware que verifica se o usuário está autenticado E é admin
+ */
+export async function requireAdmin(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    // Extrai session do cookie/header
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    });
+
+    if (!session) {
+      return reply.status(401).send({
+        error: "UNAUTHORIZED",
+        message: "Authentication required",
+      });
+    }
+
+    // Busca usuário completo do banco
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        status: true,
+      },
+    });
+
+    if (!user) {
+      return reply.status(401).send({
+        error: "USER_NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    // Verifica se é admin
+    if (user.role !== "admin") {
+      return reply.status(403).send({
+        error: "FORBIDDEN",
+        message: "Admin access required",
+      });
+    }
+
+    // Verifica se admin está bloqueado
+    if (user.status === "BLOCKED") {
+      return reply.status(403).send({
+        error: "ACCOUNT_BLOCKED",
+        message: "Your admin account has been blocked",
+      });
+    }
+
+    // Adiciona user completo no request para uso nos controllers
+    request.user = user;
+  } catch (error) {
+    request.log.error({ error }, "Admin authentication error");
+    return reply.status(401).send({
+      error: "AUTHENTICATION_ERROR",
+      message: "Failed to authenticate admin",
+    });
+  }
+}
+```
+
+#### 3. Middleware de Autenticação Normal (já existe)
+
+**Arquivo:** `src/middlewares/auth.middleware.ts`
+
+```typescript
+import { FastifyRequest, FastifyReply } from "fastify";
+import { auth } from "@/lib/auth";
+
+/**
+ * Middleware que verifica se o usuário está autenticado (qualquer role)
+ */
+export async function requireAuth(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    });
+
+    if (!session) {
+      return reply.status(401).send({
+        error: "UNAUTHORIZED",
+        message: "Authentication required",
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        status: true,
+      },
+    });
+
+    if (!user) {
+      return reply.status(401).send({
+        error: "USER_NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    if (user.status === "BLOCKED") {
+      return reply.status(403).send({
+        error: "ACCOUNT_BLOCKED",
+        message: "Your account has been blocked",
+      });
+    }
+
+    request.user = user;
+  } catch (error) {
+    request.log.error({ error }, "Authentication error");
+    return reply.status(401).send({
+      error: "AUTHENTICATION_ERROR",
+      message: "Failed to authenticate",
+    });
+  }
+}
+```
+
+#### 4. Type Definitions para Request
+
+**Arquivo:** `src/types/fastify.d.ts`
+
+```typescript
+import 'fastify';
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    user?: {
+      id: string;
+      email: string;
+      name: string;
+      role: string;
+      status: string;
+    };
+  }
+}
+```
+
+#### 5. Exemplo de Uso em Rotas Admin
+
+**Arquivo:** `src/modules/admin/routes.ts`
+
+```typescript
+import { FastifyInstance } from "fastify";
+import { requireAdmin } from "@/middlewares/admin.middleware";
+import { getStatsController } from "./controllers/get-stats-controller";
+import { listUsersController } from "./controllers/list-users-controller";
+import { blockUserController } from "./controllers/block-user-controller";
+
+export async function adminRoutes(app: FastifyInstance) {
+  // TODAS as rotas admin usam o middleware requireAdmin
+  app.addHook("onRequest", requireAdmin);
+
+  // Estatísticas
+  app.get("/stats", getStatsController);
+
+  // Gestão de usuários
+  app.get("/users", listUsersController);
+  app.get("/users/:id", getUserDetailsController);
+  app.post("/users/:id/block", blockUserController);
+  app.post("/users/:id/unblock", unblockUserController);
+
+  // Saques
+  app.get("/withdrawals", listAllWithdrawalsController);
+  app.post("/withdrawals/:id/approve", approveWithdrawalController);
+  app.post("/withdrawals/:id/reject", rejectWithdrawalController);
+
+  // Transfers
+  app.post("/transfers/batch-collect", batchCollectController);
+
+  // Global Wallet
+  app.get("/wallet/balance", getGlobalBalanceController);
+  app.get("/wallet/transactions", getGlobalTransactionsController);
+
+  // Logs
+  app.get("/logs", getAdminLogsController);
+}
+```
+
+#### 6. Exemplo de Controller Admin
+
+**Arquivo:** `src/modules/admin/controllers/approve-withdrawal-controller.ts`
+
+```typescript
+import { FastifyRequest, FastifyReply } from "fastify";
+import { z } from "zod";
+import { approveWithdrawal } from "../use-cases/approve-withdrawal";
+
+const paramsSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export async function approveWithdrawalController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    // request.user já está disponível graças ao middleware requireAdmin
+    const adminId = request.user!.id; // Sabemos que existe por causa do middleware
+
+    const { id: withdrawalId } = paramsSchema.parse(request.params);
+
+    const result = await approveWithdrawal({
+      withdrawalId,
+      adminId, // Passa o ID do admin que aprovou
+    });
+
+    return reply.status(200).send({
+      success: true,
+      withdrawal: result.withdrawal,
+      notificationSent: result.notificationSent,
+      message: "Withdrawal approved and user notified",
+    });
+  } catch (error) {
+    request.log.error({ error }, "Error approving withdrawal");
+
+    if (error instanceof Error) {
+      return reply.status(400).send({
+        error: "APPROVAL_FAILED",
+        message: error.message,
+      });
+    }
+
+    return reply.status(500).send({
+      error: "INTERNAL_ERROR",
+      message: "Failed to approve withdrawal",
+    });
+  }
+}
+```
+
+#### 7. Como Criar Administradores
+
+**IMPORTANTE: Admins são criados APENAS manualmente por segurança.**
+
+Não existe rota de signup para admins. Eles devem ser criados diretamente no banco de dados.
+
+**Fluxo de Criação:**
+
+1. Usuário cria conta normal via `/api/auth/sign-up` (frontend)
+2. DBA/Desenvolvedor promove esse usuário para admin
+
+---
+
+### Desenvolvimento
+
+**Opção 1: Seed Script (Recomendado - cria 4 admins)**
+
+```bash
+npx tsx prisma/seed-admins.ts
+```
+
+**Admins criados:**
+- `alpha@admin.com` - Nome: Alpha - Senha: `Admin@2025`
+- `bravo@admin.com` - Nome: Bravo - Senha: `Admin@2025`
+- `charlie@admin.com` - Nome: Charlie - Senha: `Admin@2025`
+- `delta@admin.com` - Nome: Delta - Senha: `Admin@2025`
+
+⚠️ **Trocar senhas em produção!**
+
+**Opção 2: Prisma Studio (Permitido em dev)**
+
+```bash
+npx prisma studio
+```
+
+1. Navegue até a tabela `users`
+2. Encontre o usuário que será admin
+3. Edite o campo `role` de `"user"` para `"admin"`
+4. Salve as mudanças
+
+**Opção 3: SQL Direto via psql**
+
+```bash
+psql -U postgres -d mvppir
+```
+
+```sql
+UPDATE users
+SET role = 'admin', status = 'ACTIVE'
+WHERE email = 'admin@example.com'
+RETURNING id, email, role, status;
+```
+
+---
+
+### Produção
+
+**NUNCA use Prisma Studio em produção** (não deve estar disponível).
+
+**Método ÚNICO: SQL Direto via SSH**
+
+```bash
+# 1. SSH no servidor de produção
+ssh user@production-server
+
+# 2. Conecta no banco PostgreSQL
+psql $DATABASE_URL
+
+# 3. Promove usuário para admin
+UPDATE users
+SET role = 'admin', status = 'ACTIVE'
+WHERE email = 'admin@empresa.com'
+RETURNING id, email, role, status, "createdAt";
+
+# 4. Verifica
+SELECT id, email, role, status FROM users WHERE role = 'admin';
+
+# 5. Sai
+\q
+```
+
+**Alternativa: Cliente PostgreSQL Remoto**
+
+Use **pgAdmin**, **DBeaver** ou **TablePlus** conectando remotamente no banco:
+
+```sql
+UPDATE users
+SET role = 'admin', status = 'ACTIVE'
+WHERE email = 'admin@empresa.com'
+RETURNING id, email, role, status;
+```
+
+---
+
+### Regras de Segurança
+
+- ❌ **NÃO** criar rota `/api/auth/admin-signup`
+- ❌ **NÃO** permitir auto-promoção via API
+- ❌ **NÃO** expor Prisma Studio em produção
+- ✅ Apenas DBAs/Desenvolvedores podem criar admins
+- ✅ Usar SQL direto em produção
+- ✅ Documentar quem criou cada admin (logs SSH)
+- ✅ Sempre usar `RETURNING` para confirmar operação
+- 💡 Email não precisa existir/ser válido (é apenas identificador)
+
+---
+
+### Scripts Úteis
+
+**Listar todos os admins:**
+
+```sql
+SELECT
+  id,
+  email,
+  name,
+  role,
+  status,
+  "createdAt",
+  "activatedAt"
+FROM users
+WHERE role = 'admin'
+ORDER BY "createdAt" DESC;
+```
+
+**Remover permissão de admin (rebaixar para user):**
+
+```sql
+UPDATE users
+SET role = 'user'
+WHERE email = 'ex-admin@example.com'
+RETURNING id, email, role;
+```
+
+---
+
+### Implementação do Seeder de Admins
+
+**Arquivo:** `prisma/seed-admins.ts`
+
+Cria 4 admins com codinomes @admin.com para desenvolvimento.
+
+```typescript
+import { PrismaClient } from "@prisma/client";
+import { hash } from "bcrypt";
+
+const prisma = new PrismaClient();
+
+const ADMIN_ACCOUNTS = [
+  { email: "alpha@admin.com", name: "Alpha" },
+  { email: "bravo@admin.com", name: "Bravo" },
+  { email: "charlie@admin.com", name: "Charlie" },
+  { email: "delta@admin.com", name: "Delta" },
+];
+
+const DEFAULT_PASSWORD = "Admin@2025";
+
+async function main() {
+  console.log("🔐 Creating admin accounts...\n");
+
+  const hashedPassword = await hash(DEFAULT_PASSWORD, 10);
+
+  for (const admin of ADMIN_ACCOUNTS) {
+    const user = await prisma.user.upsert({
+      where: { email: admin.email },
+      update: {},
+      create: {
+        email: admin.email,
+        name: admin.name,
+        role: "admin",
+        status: "ACTIVE",
+        emailVerified: true,
+        accounts: {
+          create: {
+            accountId: `${admin.name.toLowerCase()}-account`,
+            providerId: "credential",
+            password: hashedPassword,
+          },
+        },
+      },
+    });
+
+    console.log(`✅ ${admin.email} (${admin.name})`);
+  }
+
+  console.log("\n🎉 All admin accounts created!");
+  console.log(`📧 Default password: ${DEFAULT_PASSWORD}`);
+  console.log("⚠️  Remember to change passwords in production!");
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+```
+
+**Executar:**
+
+```bash
+npx tsx prisma/seed-admins.ts
+```
+
+**Package.json script (opcional):**
+
+```json
+{
+  "scripts": {
+    "seed:admins": "tsx prisma/seed-admins.ts"
+  }
+}
+```
+
+Então pode rodar: `npm run seed:admins`
+
+#### 8. Logging de Ações Admin
+
+**Todas as ações críticas de admin devem ser logadas:**
+
+```typescript
+// src/lib/admin-logger.ts
+import { prisma } from "./prisma";
+
+export async function logAdminAction({
+  adminId,
+  action,
+  entityId,
+  details,
+}: {
+  adminId: string;
+  action: string;
+  entityId?: string;
+  details?: Record<string, any>;
+}) {
+  await prisma.adminLog.create({
+    data: {
+      adminId,
+      action,
+      entityId,
+      details: details ? JSON.parse(JSON.stringify(details)) : null,
+    },
+  });
+
+  console.log(`🔒 Admin Action: ${action} by ${adminId}`, {
+    entityId,
+    details,
+  });
+}
+```
+
+**Uso:**
+
+```typescript
+// Após aprovar um saque
+await logAdminAction({
+  adminId: request.user.id,
+  action: "APPROVE_WITHDRAWAL",
+  entityId: withdrawalId,
+  details: {
+    amount: withdrawal.amount.toString(),
+    tokenSymbol: withdrawal.tokenSymbol,
+    userId: withdrawal.userId,
+  },
+});
+```
+
+#### 9. Proteção Extra: Rate Limiting Admin
+
+**Mesmo admins devem ter rate limiting:**
+
+```typescript
+// src/plugins/rate-limit.plugin.ts
+import rateLimit from "@fastify/rate-limit";
+
+export async function rateLimitPlugin(app: FastifyInstance) {
+  await app.register(rateLimit, {
+    max: 100, // Requisições
+    timeWindow: '15 minutes',
+
+    // Rate limit específico para admins
+    keyGenerator: (request) => {
+      const user = request.user;
+      if (user?.role === 'admin') {
+        return `admin:${user.id}`;
+      }
+      return request.ip;
+    },
+  });
+}
+```
+
+---
+
+### Setup da Global Wallet (v2.0)
+
+**Descrição:** A Global Wallet é a carteira central que recebe todos os tokens dos usuários via batch transfers e processa os saques.
+
+No v1.0, a Global Wallet existe no banco mas **não é usada**. No v2.0, ela se torna **crítica** para o sistema.
+
+#### Por que precisamos da Global Wallet?
+
+1. **Batch Transfers** - Centraliza fundos de múltiplos endereços (reduz custo de gas)
+2. **Withdrawals** - Processa saques de usuários a partir de um único endereço
+3. **Liquidez** - Mantém saldo de MATIC para pagar gas das transferências
+
+#### Como Criar e Configurar
+
+**Arquivo:** `scripts/create-global-wallet.ts`
+
+Script helper que gera a wallet, encripta a private key e mostra como adicionar no `.env`.
+
+```typescript
+import { Wallet } from "ethers";
+import { encryptPrivateKey } from "../src/lib/encryption";
+import { prisma } from "../src/lib/prisma";
+
+async function createGlobalWallet() {
+  console.log("🔐 Creating Global Wallet...\n");
+
+  // 1. Gera wallet aleatória
+  const wallet = Wallet.createRandom();
+
+  console.log("✅ Wallet generated!");
+  console.log(`📍 Address: ${wallet.address}`);
+  console.log(`🔑 Private Key (RAW): ${wallet.privateKey}\n`);
+
+  // 2. Encripta private key
+  const encryptedPrivateKey = encryptPrivateKey(wallet.privateKey);
+
+  console.log("🔒 Private Key encrypted!");
+  console.log(`🔐 Encrypted: ${encryptedPrivateKey}\n`);
+
+  // 3. Salva no banco de dados
+  const globalWallet = await prisma.globalWallet.create({
+    data: {
+      polygonAddress: wallet.address.toLowerCase(),
+      privateKey: encryptedPrivateKey,
+    },
+  });
+
+  console.log("💾 Global Wallet saved to database!");
+  console.log(`🆔 Database ID: ${globalWallet.id}\n`);
+
+  // 4. Instruções finais
+  console.log("✅ Global Wallet configurada com sucesso!\n");
+
+  console.log("📋 Próximos passos:\n");
+  console.log("1. Fund this address with MATIC for gas fees:");
+  console.log(`   ${wallet.address}\n`);
+  console.log("2. Recommended: 10-50 MATIC to start\n");
+
+  console.log("🔐 Segurança:");
+  console.log("✅ Private key armazenada ENCRIPTADA no banco");
+  console.log("✅ ENCRYPTION_KEY necessária para descriptografar (está no .env)");
+  console.log("✅ Atacante precisa comprometer banco + .env\n");
+
+  console.log("⚠️  IMPORTANTE:");
+  console.log("1. Backup do banco = backup da Global Wallet");
+  console.log("2. NUNCA compartilhe a ENCRYPTION_KEY");
+  console.log("3. Em produção, considere hardware wallet ou multi-sig\n");
+
+  console.log("✨ Setup completo!");
+}
+
+createGlobalWallet()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+```
+
+**Executar:**
+
+```bash
+npx tsx scripts/create-global-wallet.ts
+```
+
+**Saída esperada:**
+
+```
+🔐 Creating Global Wallet...
+
+✅ Wallet generated!
+📍 Address: 0x1234567890abcdef1234567890abcdef12345678
+🔑 Private Key (RAW): 0xabcdef...
+
+🔒 Private Key encrypted!
+🔐 Encrypted: U2FsdGVkX1...
+
+💾 Global Wallet saved to database!
+🆔 Database ID: uuid-here
+
+✅ Global Wallet configurada com sucesso!
+
+📋 Próximos passos:
+
+1. Fund this address with MATIC for gas fees:
+   0x1234567890abcdef1234567890abcdef12345678
+
+2. Recommended: 10-50 MATIC to start
+
+🔐 Segurança:
+✅ Private key armazenada ENCRIPTADA no banco
+✅ ENCRYPTION_KEY necessária para descriptografar (está no .env)
+✅ Atacante precisa comprometer banco + .env
+
+⚠️  IMPORTANTE:
+1. Backup do banco = backup da Global Wallet
+2. NUNCA compartilhe a ENCRYPTION_KEY
+3. Em produção, considere hardware wallet ou multi-sig
+
+✨ Setup completo!
+```
+
+#### Funding da Global Wallet
+
+Após criar a Global Wallet, você **DEVE** enviar MATIC para ela:
+
+```bash
+# 1. Copie o endereço da Global Wallet
+echo $GLOBAL_WALLET_ADDRESS
+
+# 2. Envie MATIC via MetaMask ou exchange
+# Recomendado: 10-50 MATIC para começar
+```
+
+**Por que precisa de MATIC?**
+- Pagar gas das transferências em lote
+- Pagar gas dos saques de usuários
+- Sem MATIC = sistema travado ⚠️
+
+#### Verificar Saldo da Global Wallet
+
+```typescript
+// GET /admin/wallet/balance
+{
+  "address": "0x1234...",
+  "balances": {
+    "MATIC": "25.5",
+    "USDC": "10000.00",
+    "USDT": "5000.00"
+  },
+  "totalUSD": "15025.50"
+}
+```
+
+#### Package.json script (opcional):
+
+```json
+{
+  "scripts": {
+    "setup:global-wallet": "tsx scripts/create-global-wallet.ts"
+  }
+}
+```
+
+#### Como Usar a Global Wallet no Código
+
+**Buscar do banco e descriptografar quando necessário:**
+
+```typescript
+// src/modules/wallet/use-cases/get-global-wallet.ts
+import { prisma } from "@/lib/prisma";
+import { decryptPrivateKey } from "@/lib/encryption";
+import { Wallet, JsonRpcProvider } from "ethers";
+
+export async function getGlobalWallet() {
+  // 1. Busca do banco
+  const globalWallet = await prisma.globalWallet.findFirst({
+    orderBy: { createdAt: 'desc' }
+  });
+
+  if (!globalWallet) {
+    throw new Error("Global Wallet not found in database");
+  }
+
+  // 2. Descriptografa private key
+  const privateKey = decryptPrivateKey(globalWallet.privateKey);
+
+  // 3. Cria instância do Wallet
+  const provider = new JsonRpcProvider(process.env.POLYGON_RPC_URL);
+  const wallet = new Wallet(privateKey, provider);
+
+  return {
+    address: globalWallet.polygonAddress,
+    wallet, // Pronta para usar (enviar transações)
+  };
+}
+```
+
+**Exemplo de uso (batch transfer):**
+
+```typescript
+// src/modules/transfer/use-cases/batch-collect-to-global.ts
+import { getGlobalWallet } from "@/modules/wallet/use-cases/get-global-wallet";
+
+export async function batchCollectToGlobal() {
+  // Obtém Global Wallet do banco
+  const { wallet: globalWallet, address } = await getGlobalWallet();
+
+  // Usa para enviar MATIC, processar saques, etc
+  const tx = await globalWallet.sendTransaction({
+    to: userAddress,
+    value: parseEther("0.1"),
+  });
+
+  await tx.wait();
+}
+```
+
+#### Segurança da Global Wallet
+
+⚠️ **CRÍTICO: Esta wallet controla TODOS os fundos da plataforma!**
+
+**Proteções Implementadas:**
+- ✅ Private key **encriptada no banco** (AES-256-GCM)
+- ✅ ENCRYPTION_KEY separada no .env (segurança em camadas)
+- ✅ Atacante precisa comprometer **banco + .env**
+- ✅ Apenas admins podem ver saldo
+- ✅ Apenas admins podem executar transfers/withdrawals
+- ✅ Monitoramento 24/7 de transações suspeitas
+- ✅ Rate limiting em rotas de saque/transfer
+- ✅ Logs de todas as operações (AdminLog)
+- ✅ Backup automático do banco = backup da wallet
+
+**Recomendações para Produção:**
+- 🔐 Usar hardware wallet (Ledger/Trezor)
+- 🔐 Multi-sig wallet (Gnosis Safe) para grandes volumes
+- 🔐 Cold wallet para reservas (> $100k)
+- 🔐 Hot wallet (Global Wallet) apenas com liquidez necessária
+- 🔐 Rotação periódica da ENCRYPTION_KEY
+- 🔐 Alertas automáticos para movimentações grandes
+- 🔐 Auditoria de segurança profissional
+
+---
+
 ### Variáveis de Ambiente Adicionais
+
+**IMPORTANTE:** A partir do v2.0, a Global Wallet private key é armazenada **encriptada no banco**, não mais no `.env`.
 
 ```env
 # Saque
 WITHDRAWAL_MIN_USD=500
 WITHDRAWAL_FEE_USD=5
 WITHDRAWAL_FEE_PERCENT=1
-
-# Admin
-ADMIN_JWT_SECRET="different-from-user-jwt"
 
 # Rate Limiting
 RATE_LIMIT_PUBLIC=100
@@ -394,6 +1232,10 @@ RATE_LIMIT_CRITICAL=10
 # Monitoring
 SENTRY_DSN="https://..."
 LOG_LEVEL=info
+
+# NOTA: GLOBAL_WALLET_ADDRESS e GLOBAL_WALLET_PRIVATE_KEY foram REMOVIDAS
+# Agora a Global Wallet é armazenada no banco de dados (tabela global_wallets)
+# Apenas a ENCRYPTION_KEY é necessária no .env para descriptografar
 ```
 
 ### Endpoints de Notificação
