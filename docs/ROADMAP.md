@@ -57,10 +57,12 @@
 
 ---
 
-## 🚧 MVP v2.0 - EM ANDAMENTO (22/10/2025)
+## ✅ MVP v2.0 Core - COMPLETO (22/10/2025)
 
 ### Objetivo
 Completar o ciclo financeiro com transferências, saques e administração.
+
+**Status:** Core features (F0, F1, F2) implementadas e prontas para testes. Dashboard Admin (F3) e Otimizações (F4) adiadas para futuras iterações.
 
 ### Funcionalidades Implementadas
 
@@ -158,24 +160,26 @@ Completar o ciclo financeiro com transferências, saques e administração.
 ✅ Balance (available + locked para performance)
 ```
 
-### Estatísticas v2.0 (Em Andamento)
+### Estatísticas v2.0 Core (Completo)
 
-**Concluído até agora:**
-- **Arquivos criados:** 11 (controllers) + 7 (use cases) + 3 (routes)
-- **Linhas de código:** +1,500 (aproximado)
-- **Endpoints:** 9 novos
-- **Models Prisma:** 5 novos
-- **Commits:** 6
-- **Features:** 2/4 (50%)
+**Concluído:**
+- **Arquivos criados:** 13+ (controllers + middleware + types)
+- **Linhas de código:** +1,800 (aproximado)
+- **Endpoints:** 9 novos (admin + withdrawal)
+- **Models Prisma:** 5 novos (Withdrawal, Balance, AdminLog, WithdrawalNotification, GlobalWalletBalance)
+- **Commits:** 10+
+- **Features Core:** 3/3 (100%) - F0, F1, F2 completos
+- **Features Total:** 3/4 (75%) - F3 e F4 adiados para futuras iterações
 
 ### Cronograma
 
-**Sprint 1 (1 semana):** ✅ Models + Balance Architecture
-**Sprint 2 (1 semana):** ✅ Sistema de Saques + Retry
-**Sprint 3 (1 semana):** ✅ Batch Transfer com otimizações
-**Sprint 4 (1 semana):** 🚧 Dashboard Admin + Rate Limiting (em andamento)
+**Sprint 1:** ✅ Models + Balance Architecture
+**Sprint 2:** ✅ Sistema de Saques + Retry
+**Sprint 3:** ✅ Batch Transfer com otimizações + Admin System
+**Sprint 4:** ⏸️ Dashboard Admin + Rate Limiting (adiados para futuras iterações)
 
-**Progresso:** 75% concluído
+**Progresso Core:** ✅ 100% completo (F0 + F1 + F2)
+**Progresso Total:** 75% (F3 e F4 pendentes)
 
 ---
 
@@ -267,4 +271,4 @@ Completar o ciclo financeiro com transferências, saques e administração.
 - Cada versão deve ser production-ready
 - Testes completos em cada fase
 
-**Última atualização:** 21/10/2025
+**Última atualização:** 22/10/2025
