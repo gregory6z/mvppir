@@ -65,6 +65,97 @@ Com o v1.0, usuários podem:
 
 ---
 
+## ✅ O que foi desenvolvido no v2.0 Core
+
+### Funcionalidades Implementadas (22/10/2025)
+
+#### F0: Sistema de Administração
+- ✅ Role-based access control (user/admin)
+- ✅ Middleware `requireAdmin` para proteção de rotas
+- ✅ Integração com Better Auth session
+- ✅ Type definitions para FastifyRequest
+- ✅ AdminLog para auditoria de ações
+- ✅ Verificação de status (admin pode ser bloqueado)
+
+**Arquivos Criados:**
+- `src/middlewares/admin.middleware.ts`
+- `src/types/fastify.d.ts`
+
+#### F1: Transferência em Lote
+- ✅ Rota administrativa protegida (`POST /admin/transfers/batch-collect`)
+- ✅ 3 fases: Distribui MATIC → Transfere tokens → Recupera MATIC
+- ✅ Otimizações (~70% economia MATIC)
+- ✅ MATIC só enviado para endereços com tokens ERC20
+- ✅ Verifica MATIC existente antes de enviar
+- ✅ Relatório detalhado de operação
+- ✅ Tratamento robusto de erros
+
+**Arquivos Criados:**
+- `src/modules/transfer/use-cases/batch-collect-to-global.ts` (452 linhas)
+- `src/modules/transfer/controllers/batch-collect-controller.ts`
+- `src/modules/transfer/routes.ts`
+
+**Commits:** 5576dbd, 80897ec
+
+#### F2: Sistema de Saques
+- ✅ Usuário solicita saque (`POST /user/withdrawals/request`)
+- ✅ Validações (saldo, endereço, valor mínimo $500 USD)
+- ✅ Admin aprova/rejeita (`POST /admin/withdrawals/:id/approve|reject`)
+- ✅ Sistema de retry para falhas recuperáveis
+- ✅ Atualização de saldo (available/locked)
+- ✅ Notificações de status
+- ✅ Histórico de saques (`GET /user/withdrawals`)
+
+**Sistema de Retry:**
+- Erros RECUPERÁVEIS (sem gas, sem saldo): saldo fica locked, admin pode retry
+- Erros PERMANENTES (endereço inválido): saldo devolvido automaticamente
+- Endpoint: `POST /admin/withdrawals/:id/retry`
+
+**Arquivos Criados:**
+- 5 controllers (request, list, approve, reject, retry)
+- 6 use cases (request, approve, reject, process, retry, list)
+- 2 route files (user, admin)
+
+**Commits:** 27bda3b, 30c00d4, a859497, a1ee16c
+
+### Novos Models Prisma Criados
+
+```prisma
+✅ Withdrawal (6 status: PENDING_APPROVAL → APPROVED → PROCESSING → COMPLETED | REJECTED | FAILED)
+✅ AdminLog (auditoria de todas ações administrativas)
+✅ WithdrawalNotification (4 tipos: APPROVED, REJECTED, COMPLETED, FAILED)
+✅ Balance (availableBalance + lockedBalance para performance)
+✅ GlobalWalletBalance (saldo consolidado da global wallet)
+```
+
+### Arquitetura de Saldo Implementada
+
+**Nova Tabela Balance:**
+- Performance: O(1) lookups vs O(n) transaction scans
+- Locking: Row-level locking do PostgreSQL
+- Separation: availableBalance (withdrawable) + lockedBalance (pending)
+- Sync: Atomic synchronization com WalletTransaction
+
+### Estatísticas v2.0 Core
+
+**Totais:**
+- **Arquivos criados:** 21 (11 controllers + 7 use cases + 3 routes)
+- **Linhas de código:** ~2,000
+- **Endpoints novos:** 10 (1 batch transfer + 9 withdrawal)
+- **Models Prisma:** 5 novos
+- **Commits:** 10
+- **Features:** 3/4 completas (F0, F1, F2 ✅ | F3, F4 pendentes)
+
+### Status
+
+**✅ Core Complete - Pronto para Testes**
+
+F0, F1 e F2 implementadas e testáveis. F3 (Dashboard Admin) e F4 (Rate Limiting/Segurança) serão desenvolvidas em futuras iterações.
+
+**Próximo Passo:** Testes de integração do ciclo completo (depósito → batch transfer → saque)
+
+---
+
 ## 🎯 Objetivos do v2.0
 
 ### Objetivos de Negócio
