@@ -5,6 +5,7 @@ import authPlugin from './plugins/auth.plugin'
 import { userRoutes } from './modules/user/routes'
 import { depositRoutes } from './modules/deposit/routes'
 import { webhookRoutes } from './modules/webhook/routes'
+import { userWithdrawalRoutes, adminWithdrawalRoutes } from './modules/withdrawal/routes'
 
 export async function buildApp() {
   const app = Fastify({
@@ -94,6 +95,10 @@ export async function buildApp() {
   await app.register(userRoutes, { prefix: '/user' })
   await app.register(depositRoutes, { prefix: '/deposit' })
   await app.register(webhookRoutes, { prefix: '/webhooks' })
+
+  // Withdrawal routes
+  await app.register(userWithdrawalRoutes, { prefix: '/user/withdrawals' })
+  await app.register(adminWithdrawalRoutes, { prefix: '/admin/withdrawals' })
 
   return app
 }
