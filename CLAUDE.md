@@ -37,7 +37,12 @@ npm run prisma:generate
 
 # Open Prisma Studio (database GUI)
 npm run prisma:studio
+
+# Migrate existing transactions to Balance table (one-time)
+npx tsx scripts/migrate-to-balance.ts
 ```
+
+**Note:** `migrate-to-balance.ts` is a one-time migration script that populates the Balance table from existing WalletTransaction records. It should only be run once after adding the Balance table to an existing database with transaction history.
 
 ### Testing
 
@@ -125,13 +130,56 @@ Located in `src/lib/tokens.ts`, this system:
 - Falls back to webhook-provided metadata for unknown tokens
 - Never rejects deposits for unrecognized tokens (accepts all)
 
+**5. Balance Architecture (Performance Layer)**
+
+The system uses a dual-table approach for balance management:
+
+**WalletTransaction (Event Sourcing / Audit Trail)**
+- Immutable record of every deposit/withdrawal
+- Source of truth for audit and reconciliation
+- Allows historical balance reconstruction
+
+**Balance (Performance Layer)**
+- Pre-calculated balances for O(1) lookups (vs O(n) transaction scans)
+- Atomically synchronized with WalletTransaction via `prisma.$transaction`
+- Supports withdrawal workflow with available/locked distinction
+
+**Available vs Locked Balance:**
+- `availableBalance` - Funds available for withdrawal
+- `lockedBalance` - Funds locked in pending withdrawals (awaiting admin approval)
+- `total = availableBalance + lockedBalance`
+
+**Atomic Synchronization Pattern:**
+
+When deposits are confirmed, `process-moralis-webhook.ts` uses atomic transactions to sync both tables:
+
+```typescript
+await prisma.$transaction(async (tx) => {
+  // 1. Update WalletTransaction status
+  await tx.walletTransaction.update({
+    where: { txHash },
+    data: { status: "CONFIRMED" },
+  });
+
+  // 2. Update Balance atomically
+  await tx.balance.upsert({
+    where: { userId_tokenSymbol: { userId, tokenSymbol } },
+    create: { userId, tokenSymbol, availableBalance: amount, lockedBalance: 0 },
+    update: { availableBalance: { increment: amount } },
+  });
+});
+```
+
+This ensures Balance always reflects confirmed transactions, with PostgreSQL providing row-level locking to prevent race conditions.
+
 ### Database Schema (Key Models)
 
 ```prisma
 User
   ├─ status: INACTIVE | ACTIVE | BLOCKED
+  ├─ role: user | admin (v2.0)
   ├─ activatedAt: DateTime?
-  └─ Relations: depositAddresses[], transactions[]
+  └─ Relations: depositAddresses[], transactions[], balances[]
 
 DepositAddress
   ├─ polygonAddress: String (unique, lowercase)
@@ -145,8 +193,21 @@ WalletTransaction
   ├─ amount: Decimal (converted with decimals)
   └─ rawAmount: String (blockchain raw value)
 
+Balance (Performance Layer)
+  ├─ userId + tokenSymbol (unique composite key)
+  ├─ availableBalance: Decimal (withdrawable funds)
+  ├─ lockedBalance: Decimal (pending withdrawals)
+  └─ Atomically synced with WalletTransaction on CONFIRMED status
+
 GlobalWallet
-  └─ Central wallet to receive all funds (v2.0 feature)
+  ├─ Central wallet to receive all funds (v2.0 feature)
+  ├─ privateKey stored encrypted (not in .env)
+  └─ Relations: balances[]
+
+GlobalWalletBalance (v2.0)
+  ├─ globalWalletId + tokenSymbol (unique composite key)
+  ├─ balance: Decimal (total balance per token)
+  └─ Tracks global wallet holdings for withdrawal processing
 ```
 
 ### Environment Configuration
@@ -257,15 +318,17 @@ const expectedSignature = keccak256(rawBody + MORALIS_STREAM_SECRET)
 - ✅ User authentication
 - ✅ Deposit address generation
 - ✅ Webhook processing (any token)
-- ✅ Balance calculation
+- ✅ Balance calculation (dual-table architecture with Balance + WalletTransaction)
 - ✅ Account activation ($100 threshold)
 - ✅ Transaction history
+- ✅ Admin role-based access control
 
-### MVP v2.0 (Planned - See docs/PRD-MVP-v2.md)
-- Batch transfer to global wallet
-- Withdrawal system with admin approval
-- Admin dashboard
-- Rate limiting and security hardening
+### MVP v2.0 (In Progress - See docs/PRD-MVP-v2.md)
+- ✅ Balance table architecture (available/locked balances)
+- ⏳ Batch transfer to global wallet
+- ⏳ Withdrawal system with admin approval
+- ⏳ Admin dashboard
+- ⏳ Rate limiting and security hardening
 
 ### MVP v3.0+ (Future)
 - MLM system (commissions, referrals)
@@ -320,6 +383,13 @@ See `docs/TESTING-INTEGRATION.md` for complete testing documentation.
    - Use `credentials: true` in CORS config
    - Session cookie is HTTP-only (can't access from JS)
    - Get user from `request.headers.get('authorization')`
+
+6. **Balance table synchronization**
+   - Always use `prisma.$transaction` when updating both WalletTransaction and Balance
+   - Never update Balance without creating/updating corresponding WalletTransaction (audit trail)
+   - Query balances from Balance table for performance (use `getUserBalance` use case)
+   - Reconcile Balance vs WalletTransaction periodically to catch sync issues
+   - For withdrawals: move from `availableBalance` to `lockedBalance` atomically
 
 ## Related Documentation
 
