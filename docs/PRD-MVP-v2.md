@@ -124,10 +124,13 @@ Response:
 
 **Regras de Negócio:**
 - Apenas admins podem executar
-- Verifica se global wallet tem MATIC suficiente antes de iniciar
-- Deixa ~0.01 MATIC de reserva em cada endereço
+- Verifica se global wallet tem MATIC suficiente antes de iniciar (mínimo 5 MATIC)
+- **MATIC só é enviado para endereços que TÊM tokens ERC20** (USDC, USDT, etc)
+- Endereços com apenas MATIC nativo NÃO recebem MATIC (não precisam de gas ERC20)
+- Verifica MATIC existente antes de enviar (economiza gas)
+- Deixa 0.001 MATIC de reserva em cada endereço
 - Se falhar em algum endereço, continua com os próximos
-- Log completo de cada operação
+- Log completo de cada operação em `AdminLog`
 - Pode ser executado manualmente ou via cron (futuro)
 
 ---

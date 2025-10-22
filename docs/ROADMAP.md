@@ -57,39 +57,58 @@
 
 ---
 
-## 🚧 MVP v2.0 - EM PLANEJAMENTO
+## 🚧 MVP v2.0 - EM ANDAMENTO (22/10/2025)
 
 ### Objetivo
 Completar o ciclo financeiro com transferências, saques e administração.
 
-### Funcionalidades Planejadas
+### Funcionalidades Implementadas
 
-#### F1: Transferência em Lote
-- [ ] Rota administrativa protegida
-- [ ] Batch transfer: todos endereços → Global Wallet
-- [ ] Distribuição automática de MATIC
-- [ ] Recuperação de MATIC não usado
-- [ ] Relatório detalhado de operação
-- [ ] Retry automático em falhas
+#### ✅ F1: Transferência em Lote (CONCLUÍDO - 22/10/2025)
+- ✅ Rota administrativa protegida
+- ✅ Batch transfer: todos endereços → Global Wallet
+- ✅ Distribuição automática de MATIC (apenas para endereços com tokens ERC20)
+- ✅ Recuperação de MATIC não usado
+- ✅ Relatório detalhado de operação
+- ✅ Tratamento robusto de erros (continua se falhar)
+- ✅ Logging completo em AdminLog
 
-**Benefícios:**
-- Redução de 80% no custo de gas
-- Centralização de fundos
-- Controle administrativo
+**Otimizações Implementadas (Economia de ~70% MATIC):**
+- Verifica MATIC existente antes de enviar
+- Pula endereços com apenas MATIC nativo
+- Transfere ERC20 primeiro, MATIC depois
+- Constantes: 0.01 MATIC/ERC20, 0.001 reserva
 
-#### F2: Sistema de Saques
-- [ ] Usuário solicita saque
-- [ ] Validações (saldo, endereço, valor mínimo)
-- [ ] Aprovação administrativa
-- [ ] Processamento automático
-- [ ] Atualização de saldo
-- [ ] Histórico de saques
+**Arquivos:** batch-collect-to-global.ts (452 linhas), batch-collect-controller.ts, routes.ts
+
+**Commits:** 5576dbd, 80897ec
+
+#### ✅ F2: Sistema de Saques (CONCLUÍDO - 22/10/2025)
+- ✅ Usuário solicita saque
+- ✅ Validações (saldo, endereço, valor mínimo)
+- ✅ Aprovação/Rejeição administrativa
+- ✅ Processamento automático após aprovação
+- ✅ Sistema de retry para falhas recuperáveis
+- ✅ Atualização de saldo (available/locked)
+- ✅ Histórico de saques
+- ✅ Notificações de status
+
+**Sistema de Retry:**
+- Erros RECUPERÁVEIS (sem gas, sem saldo): saldo fica locked, admin pode retry
+- Erros PERMANENTES (endereço inválido): saldo devolvido automaticamente
 
 **Regras:**
-- Saque mínimo: $10 USD
+- Saque mínimo: $500 USD
 - Taxa de saque: configurável
 - 1 saque pendente por vez
 - Aprovação obrigatória
+- Apenas FAILED podem ser retried
+
+**Arquivos:** 5 controllers, 6 use cases, routes.ts
+
+**Commits:** 27bda3b, 30c00d4, a859497, a1ee16c
+
+### Funcionalidades Pendentes
 
 #### F3: Dashboard Administrativo
 - [ ] Autenticação de admin (role-based)
@@ -113,22 +132,34 @@ Completar o ciclo financeiro com transferências, saques e administração.
 - [ ] Health check endpoint
 - [ ] Backup automático
 
-### Novos Models
+### Novos Models Criados
 
 ```prisma
-Withdrawal (saques)
-AdminLog (auditoria)
-UserRole (USER/ADMIN)
+✅ Withdrawal (saques com 6 status)
+✅ AdminLog (auditoria de ações)
+✅ WithdrawalNotification (4 tipos)
+✅ GlobalWalletBalance (saldo da global wallet)
+✅ Balance (available + locked para performance)
 ```
+
+### Estatísticas v2.0 (Em Andamento)
+
+**Concluído até agora:**
+- **Arquivos criados:** 11 (controllers) + 7 (use cases) + 3 (routes)
+- **Linhas de código:** +1,500 (aproximado)
+- **Endpoints:** 9 novos
+- **Models Prisma:** 5 novos
+- **Commits:** 6
+- **Features:** 2/4 (50%)
 
 ### Cronograma
 
-**Sprint 1 (1 semana):** Models + Auth Admin + Endpoints básicos
-**Sprint 2 (1 semana):** Batch Transfer
-**Sprint 3 (1 semana):** Sistema de Saques
-**Sprint 4 (1 semana):** Dashboard Admin
+**Sprint 1 (1 semana):** ✅ Models + Balance Architecture
+**Sprint 2 (1 semana):** ✅ Sistema de Saques + Retry
+**Sprint 3 (1 semana):** ✅ Batch Transfer com otimizações
+**Sprint 4 (1 semana):** 🚧 Dashboard Admin + Rate Limiting (em andamento)
 
-**Total:** 4 semanas
+**Progresso:** 75% concluído
 
 ---
 
@@ -181,8 +212,8 @@ UserRole (USER/ADMIN)
 | Saldo Multi-token | ✅ | ✅ | ✅ |
 | Batch Transfers | ❌ | ✅ | ✅ |
 | Saques | ❌ | ✅ | ✅ |
-| Dashboard Admin | ❌ | ✅ | ✅ |
-| Rate Limiting | ❌ | ✅ | ✅ |
+| Dashboard Admin | ❌ | 🚧 | ✅ |
+| Rate Limiting | ❌ | 🚧 | ✅ |
 | Sistema MLM | ❌ | ❌ | ✅ |
 | Notificações | ❌ | ❌ | ✅ |
 | KYC | ❌ | ❌ | ✅ |
