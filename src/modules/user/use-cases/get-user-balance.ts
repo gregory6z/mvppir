@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
+import { calculateTotalUSD } from "@/providers/price/price.provider";
 
 interface GetUserBalanceRequest {
   userId: string;
@@ -13,6 +14,7 @@ interface TokenBalance {
 
 interface GetUserBalanceResponse {
   balances: TokenBalance[];
+  totalUSD: number;
 }
 
 export async function getUserBalance({
@@ -62,5 +64,13 @@ export async function getUserBalance({
     })
   );
 
-  return { balances };
+  // Calcula total em USD
+  const balancesByToken: Record<string, number> = {};
+  for (const { tokenSymbol, balance } of balances) {
+    balancesByToken[tokenSymbol] = balance.toNumber();
+  }
+
+  const totalUSD = await calculateTotalUSD(balancesByToken);
+
+  return { balances, totalUSD };
 }
