@@ -1152,6 +1152,221 @@ Se precisar do dinheiro, saque só as comissões!
 
 ---
 
+#### 💵 Exemplo E: Impacto de Depósitos ($500 por Direto)
+
+**Cenário: "E se cada direto depositar mais $500?"**
+
+Vamos ver o impacto REAL de cada direto adicionar $500 na conta:
+
+---
+
+**🥉 ANA - BRONZE (5 diretos)**
+
+**ANTES:**
+
+```
+5 diretos com saldos variados:
+├─ João: $600
+├─ Maria: $500
+├─ Pedro: $400
+├─ Lucas: $300
+└─ Sofia: $200
+Total: $2,000
+
+Comissão Ana (1.05%):
+$2,000 × 1.05% = $21.00/dia
+```
+
+**DEPOIS (cada um adiciona +$500):**
+
+```
+5 diretos com novos saldos:
+├─ João: $1,100 (+$500)
+├─ Maria: $1,000 (+$500)
+├─ Pedro: $900 (+$500)
+├─ Lucas: $800 (+$500)
+└─ Sofia: $700 (+$500)
+Total: $4,500 (+$2,500)
+
+Comissão Ana (1.05%):
+$4,500 × 1.05% = $47.25/dia (+$26.25/dia!)
+
+┌─────────────┬──────────┬──────────┬─────────────┐
+│ Métrica     │ Antes    │ Depois   │ Aumento     │
+├─────────────┼──────────┼──────────┼─────────────┤
+│ Saldo Rede  │ $2,000   │ $4,500   │ +125%       │
+│ Comissão/Dia│ $21.00   │ $47.25   │ +125%       │
+│ Comissão/Mês│ $630     │ $1,417   │ +$787/mês!  │
+│ Comissão/Ano│ $7,665   │ $17,246  │ +$9,581/ano!│
+└─────────────┴──────────┴──────────┴─────────────┘
+
+Ana: "Com $2,500 total depositados pelos meus diretos,
+minha comissão DOBROU de $630 para $1,417/mês! 🚀"
+```
+
+**Investimento vs Retorno para Ana:**
+
+```
+Investimento dos diretos: 5 × $500 = $2,500
+Retorno extra para Ana: +$787/mês
+
+ROI para Ana: Infinito (não gastou nada, seus diretos que depositaram!)
+Incentivo: Ana vai MOTIVAR muito seus diretos a depositarem! 💪
+```
+
+---
+
+**🥈 ROBERTO - PRATA (15 diretos)**
+
+**ANTES:**
+
+```
+15 diretos com saldo médio $533:
+Total N1: $8,000
+
+Comissão Roberto (1.80%):
+N1: $8,000 × 1.80% = $144.00/dia
+(+ N2 e N3 = $182/dia total)
+```
+
+**DEPOIS (cada um adiciona +$500):**
+
+```
+15 diretos com novos saldos:
+├─ Cada um tinha ~$533
+├─ Cada um adiciona +$500
+└─ Cada um agora tem ~$1,033
+Total N1: $15,500 (+$7,500)
+
+Comissão Roberto (1.80%):
+N1: $15,500 × 1.80% = $279.00/dia (+$135/dia!)
+(+ N2 e N3 = $317/dia total)
+
+┌─────────────┬──────────┬──────────┬─────────────┐
+│ Métrica     │ Antes    │ Depois   │ Aumento     │
+├─────────────┼──────────┼──────────┼─────────────┤
+│ Saldo N1    │ $8,000   │ $15,500  │ +94%        │
+│ Comissão/Dia│ $182     │ $317     │ +74%        │
+│ Comissão/Mês│ $5,460   │ $9,510   │ +$4,050/mês!│
+│ Comissão/Ano│ $66,430  │ $115,705 │ +$49,275!   │
+└─────────────┴──────────┴──────────┴─────────────┘
+
+Roberto: "Com $7,500 depositados pelos meus 15 diretos,
+minha comissão subiu $4,050/mês! Agora tiro $9,510/mês!" 💰
+```
+
+---
+
+**🥇 PEDRO - OURO (30 diretos)**
+
+**ANTES:**
+
+```
+30 diretos com saldo médio $1,000:
+Total N1: $30,000
+
+Comissão Pedro (2.60%):
+N1: $30,000 × 2.60% = $780.00/dia
+(+ N2, N3, N4 = $1,385/dia total)
+```
+
+**DEPOIS (cada um adiciona +$500):**
+
+```
+30 diretos com novos saldos:
+├─ Cada um tinha $1,000
+├─ Cada um adiciona +$500
+└─ Cada um agora tem $1,500
+Total N1: $45,000 (+$15,000)
+
+Comissão Pedro (2.60%):
+N1: $45,000 × 2.60% = $1,170.00/dia (+$390/dia!)
+(+ N2, N3, N4 = $1,775/dia total)
+
+┌─────────────┬──────────┬──────────┬─────────────┐
+│ Métrica     │ Antes    │ Depois   │ Aumento     │
+├─────────────┼──────────┼──────────┼─────────────┤
+│ Saldo N1    │ $30,000  │ $45,000  │ +50%        │
+│ Comissão/Dia│ $1,385   │ $1,775   │ +28%        │
+│ Comissão/Mês│ $41,550  │ $53,250  │ +$11,700/mês│
+│ Comissão/Ano│ $505,525 │ $647,875 │ +$142,350!  │
+└─────────────┴──────────┴──────────┴─────────────┘
+
+Pedro: "Com $15,000 depositados pelos meus 30 diretos,
+minha comissão aumentou $11,700/mês!
+Agora ganho $647K/ano! 🚀💎"
+```
+
+---
+
+**📊 Comparação: Impacto do Depósito de $500 por Direto**
+
+```
+┌───────────┬─────────┬────────────────┬─────────────┬──────────────┐
+│ Rank      │ Diretos │ Depósito Total │ Aumento/Mês │ Aumento/Ano  │
+├───────────┼─────────┼────────────────┼─────────────┼──────────────┤
+│ 🥉 Bronze │ 5       │ $2,500         │ +$787       │ +$9,581      │
+│ 🥈 Prata  │ 15      │ $7,500         │ +$4,050     │ +$49,275     │
+│ 🥇 Ouro   │ 30      │ $15,000        │ +$11,700    │ +$142,350    │
+└───────────┴─────────┴────────────────┴─────────────┴──────────────┘
+```
+
+**Conclusões Importantes:**
+
+```
+💡 Insight #1: Quanto MAIS diretos, MAIOR o impacto!
+├─ Bronze (5 diretos): +$787/mês por $2,500 depositado
+├─ Prata (15 diretos): +$4,050/mês por $7,500 depositado
+└─ Ouro (30 diretos): +$11,700/mês por $15,000 depositado
+
+Ouro ganha 15x mais que Bronze com o mesmo depósito por pessoa!
+
+💡 Insight #2: Percentual MAIOR = impacto ainda MAIOR!
+├─ Bronze: 1.05%/dia
+├─ Prata: 1.80%/dia (71% mais!)
+└─ Ouro: 2.60%/dia (148% mais que Bronze!)
+
+💡 Insight #3: Motivar diretos a depositar é CRUCIAL!
+Se você é Bronze e conseguir que cada direto adicione $500:
+└─ Você ganha +$787/mês SEM FAZER NADA!
+
+💡 Insight #4: ROI infinito para você!
+├─ VOCÊ não gastou nada
+├─ SEUS DIRETOS depositaram
+└─ VOCÊ ganha comissões eternas! 🎉
+
+Estratégia: SEMPRE incentive seus diretos a depositarem mais!
+É literalmente dinheiro grátis para você! 💰
+```
+
+---
+
+**🎯 Estratégia Prática: Como Motivar Diretos a Depositarem**
+
+```
+✅ Mostre seus ganhos (prova social)
+"Olha quanto eu ganhei esse mês! Você também pode!"
+
+✅ Explique o efeito multiplicador
+"Se você depositar $500, eu ganho $5.25/dia,
+mas VOCÊ vai ganhar ainda mais dos seus diretos!"
+
+✅ Ofereça ajuda no recrutamento
+"Vou te ensinar a recrutar, assim você sobe de rank também!"
+
+✅ Crie competições
+"Quem depositar mais esse mês ganha reconhecimento!"
+
+✅ Compartilhe resultados da rede
+"Nossa rede cresceu 50% esse mês! Estamos bombando!"
+
+Lembre-se: Seus diretos depositarem = WIN-WIN!
+├─ Você ganha mais comissões
+└─ Eles ganham mais comissões dos diretos deles!
+```
+
+---
+
 ### Parte 2: Casos Avançados
 
 #### Exemplo 1: João Vira Bronze
