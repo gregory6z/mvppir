@@ -203,21 +203,32 @@ Para ganhar de N3+: Suba para Prata ou acima!
 
 ### Exemplo de Cálculo de Comissão
 
-**Situação:**
-- Você: Ouro 🥇
-- 10 diretos (N1) com $1,000 cada = $10,000 total
-- 50 netos (N2) com $500 cada = $25,000 total
-- 100 bisnetos (N3) com $300 cada = $30,000 total
-- 200 tataranetos (N4) com $100 cada = $20,000 total
+**Situação: Bronze (Iniciante)**
+- Você: Bronze 🥉
+- 5 diretos (N1) com $500 cada = $2,500 total
+- 15 netos (N2) com $200 cada = $3,000 total
 
 **Cálculo:**
 ```
-N1: $10,000 × 2.60% = $260/dia
-N2: $25,000 × 0.40% = $100/dia
-N3: $30,000 × 0.15% = $45/dia
-N4: $20,000 × 0.08% = $16/dia
+N1: $2,500 × 1.05% = $26.25/dia
+N2: $3,000 × 0.15% = $4.50/dia
 ────────────────────────────────
-TOTAL: $421/dia = $153,665/ano! 💰
+TOTAL: $30.75/dia = $11,223/ano! 💰
+```
+
+**Situação: Prata (Intermediário)**
+- Você: Prata 🥈
+- 15 diretos (N1) com $600 cada = $9,000 total
+- 45 netos (N2) com $300 cada = $13,500 total
+- 80 bisnetos (N3) com $150 cada = $12,000 total
+
+**Cálculo:**
+```
+N1: $9,000 × 1.80% = $162/dia
+N2: $13,500 × 0.25% = $33.75/dia
+N3: $12,000 × 0.10% = $12/dia
+────────────────────────────────
+TOTAL: $207.75/dia = $75,828/ano! 💰
 ```
 
 ---
@@ -380,32 +391,33 @@ MÊS 3: DOWNRANK PERMANENTE
 └─ Ciclo reseta (começa do zero)
 ```
 
-### Exemplo Prático: Diamante Perdendo Rank
+### Exemplo Prático: Prata Perdendo Rank
 
 ```
 Janeiro 2025:
-├─ Rank: DIAMANTE 💎
-├─ Requisitos: 200 ativos + $12M/mês
-├─ Real: 150 ativos + $8M ❌
+├─ Rank: PRATA 🥈
+├─ Requisitos: 8 ativos + $6K/mês
+├─ Real: 5 ativos + $3K ❌
 └─ Resultado: AVISO (Mês 1)
 
 Fevereiro 2025:
-├─ Rank: DIAMANTE (mantido temporariamente)
+├─ Rank: PRATA (mantido temporariamente)
 ├─ Status: "⚠️ Em Aviso"
 ├─ Não corrigiu em 7 dias ❌
 └─ Resultado: Passa para Mês 2
 
 Março 2025:
-├─ Rank: PLATINA 💍 (downrank -1)
+├─ Rank: BRONZE 🥉 (downrank -1)
 ├─ Status: "⏰ Downrank Temporário"
-├─ Chance de recuperar para Diamante
+├─ Chance de recuperar para Prata
 ├─ Não atingiu requisitos ❌
 └─ Resultado: Passa para Mês 3
 
 Abril 2025:
-├─ Rank: OURO 🥇 (downrank -2 permanente)
+├─ Rank: RECRUTA 🎖️ (downrank -2 permanente)
 ├─ Status: "🔻 Downranked"
-├─ Deve reconquistar Platina e depois Diamante
+├─ Comissão: 0.00% ❌ (zero comissão!)
+├─ Deve reconquistar Bronze e depois Prata
 └─ Ciclo reseta
 ```
 
@@ -568,10 +580,15 @@ Tempo total: 2-25 horas (depende do admin)
 └────────────┴─────────┴──────────────────┘
 ```
 
-**Exemplo:**
-- Comissão base: $1,000/dia
+**Exemplo (Bronze):**
+- Comissão base: $25/dia
 - Streak 90 dias: +20%
-- Comissão final: $1,200/dia! 🔥
+- Comissão final: $30/dia! 🔥
+
+**Exemplo (Prata):**
+- Comissão base: $180/dia
+- Streak 90 dias: +20%
+- Comissão final: $216/dia! 🔥
 
 ### 2. Matching Bonus
 
@@ -592,10 +609,14 @@ Tempo total: 2-25 horas (depende do admin)
 └────┴──────────────────┴──────────────┘
 ```
 
-**Exemplo:**
-- Você: Diamante (matching 30%)
-- Seu direto João (Platina): ganha $500/dia
-- Você ganha: $500 × 30% = $150/dia EXTRA! 💰
+**⚠️ Observação:** Matching Bonus só está disponível para Ouro+ (ranks superiores). Bronze e Prata não têm acesso a este recurso.
+
+**Exemplo (Ouro+):**
+- Você: Ouro (matching 10%)
+- Seu direto João (Bronze): ganha $30/dia
+- Você ganha: $30 × 10% = $3/dia EXTRA! 💰
+
+*Ranks superiores (Platina, Diamante, etc.) têm matching bonus maior, mas exigem muito mais esforço para conquistar.*
 
 ### 3. Pool Global
 
@@ -1257,48 +1278,6 @@ minha comissão subiu $4,050/mês! Agora tiro $9,510/mês!" 💰
 
 ---
 
-**🥇 PEDRO - OURO (30 diretos)**
-
-**ANTES:**
-
-```
-30 diretos com saldo médio $1,000:
-Total N1: $30,000
-
-Comissão Pedro (2.60%):
-N1: $30,000 × 2.60% = $780.00/dia
-(+ N2, N3, N4 = $1,385/dia total)
-```
-
-**DEPOIS (cada um adiciona +$500):**
-
-```
-30 diretos com novos saldos:
-├─ Cada um tinha $1,000
-├─ Cada um adiciona +$500
-└─ Cada um agora tem $1,500
-Total N1: $45,000 (+$15,000)
-
-Comissão Pedro (2.60%):
-N1: $45,000 × 2.60% = $1,170.00/dia (+$390/dia!)
-(+ N2, N3, N4 = $1,775/dia total)
-
-┌─────────────┬──────────┬──────────┬─────────────┐
-│ Métrica     │ Antes    │ Depois   │ Aumento     │
-├─────────────┼──────────┼──────────┼─────────────┤
-│ Saldo N1    │ $30,000  │ $45,000  │ +50%        │
-│ Comissão/Dia│ $1,385   │ $1,775   │ +28%        │
-│ Comissão/Mês│ $41,550  │ $53,250  │ +$11,700/mês│
-│ Comissão/Ano│ $505,525 │ $647,875 │ +$142,350!  │
-└─────────────┴──────────┴──────────┴─────────────┘
-
-Pedro: "Com $15,000 depositados pelos meus 30 diretos,
-minha comissão aumentou $11,700/mês!
-Agora ganho $647K/ano! 🚀💎"
-```
-
----
-
 **📊 Comparação: Impacto do Depósito de $500 por Direto**
 
 ```
@@ -1307,8 +1286,9 @@ Agora ganho $647K/ano! 🚀💎"
 ├───────────┼─────────┼────────────────┼─────────────┼──────────────┤
 │ 🥉 Bronze │ 5       │ $2,500         │ +$787       │ +$9,581      │
 │ 🥈 Prata  │ 15      │ $7,500         │ +$4,050     │ +$49,275     │
-│ 🥇 Ouro   │ 30      │ $15,000        │ +$11,700    │ +$142,350    │
 └───────────┴─────────┴────────────────┴─────────────┴──────────────┘
+
+(Ranks superiores requerem muito mais esforço e tempo)
 ```
 
 **Conclusões Importantes:**
@@ -1316,10 +1296,9 @@ Agora ganho $647K/ano! 🚀💎"
 ```
 💡 Insight #1: Quanto MAIS diretos, MAIOR o impacto!
 ├─ Bronze (5 diretos): +$787/mês por $2,500 depositado
-├─ Prata (15 diretos): +$4,050/mês por $7,500 depositado
-└─ Ouro (30 diretos): +$11,700/mês por $15,000 depositado
+└─ Prata (15 diretos): +$4,050/mês por $7,500 depositado
 
-Ouro ganha 15x mais que Bronze com o mesmo depósito por pessoa!
+Prata ganha 5x mais que Bronze com o mesmo depósito por pessoa!
 
 💡 Insight #2: Percentual MAIOR = impacto ainda MAIOR!
 ├─ Bronze: 1.05%/dia
@@ -1367,118 +1346,290 @@ Lembre-se: Seus diretos depositarem = WIN-WIN!
 
 ---
 
-### Parte 2: Casos Avançados
+### Parte 2: Casos Realistas (Bronze e Prata)
 
-#### Exemplo 1: João Vira Bronze
+#### Exemplo 1: Como Maria Constrói Rede Profunda (Bronze)
 
-**Mês 1-2: Recrutamento**
-```
-João convida 5 amigos:
-├─ Maria deposita $500
-├─ Carlos deposita $300
-├─ Ana deposita $400
-├─ Pedro deposita $600
-└─ Lucas deposita $200
-
-Total: 5 diretos ✅
-Volume gerado: $2,000
-```
-
-**Mês 3: João Deposita**
-```
-João deposita mais $500
-├─ Volume acumulado: $2,000 + $500 = $2,500 ✅
-├─ Saldo de João: $500 bloqueado ✅
-└─ João vira BRONZE! 🥉
-```
-
-**Mês 4: Primeiras Comissões**
-```
-Saldo dos diretos:
-├─ Maria: $500 → João ganha $5.25/dia (1.05%)
-├─ Carlos: $300 → João ganha $3.15/dia
-├─ Ana: $400 → João ganha $4.20/dia
-├─ Pedro: $600 → João ganha $6.30/dia
-└─ Lucas: $200 → João ganha $2.10/dia
-
-Total: $21/dia = $630/mês = $7,665/ano! 💰
-```
-
-### Exemplo 2: Maria Constrói Rede Profunda
-
-**Maria é Bronze, seus diretos recrutam:**
+**Maria acabou de virar Bronze e seus diretos começam a recrutar:**
 
 ```
 MARIA (Bronze 🥉)
 │
-├─ N1: João deposita $1,000
-│  └─ N2: Pedro deposita $500 (convidado por João)
+├─ N1: João deposita $800
+│  └─ N2: Pedro deposita $400 (convidado por João)
 │
-├─ N1: Ana deposita $800
+├─ N1: Ana deposita $600
 │  └─ N2: Lucas deposita $300
 │
-└─ N1: Carlos deposita $600
-   └─ N2: Sofia deposita $400
+└─ N1: Carlos deposita $500
+   └─ N2: Sofia deposita $250
+
+Rede de Maria:
+├─ 3 Diretos (N1) com total: $1,900
+└─ 3 Netos (N2) com total: $950
 
 Comissões de Maria (Bronze = N1 + N2):
-├─ N1 total: $1,000 + $800 + $600 = $2,400
-├─ N2 total: $500 + $300 + $400 = $1,200
-│
-├─ N1: $2,400 × 1.05% = $25.20/dia
-├─ N2: $1,200 × 0.15% = $1.80/dia
-└─ TOTAL: $27/dia = $810/mês = $9,855/ano! 💰
+├─ N1: $1,900 × 1.05% = $19.95/dia
+├─ N2: $950 × 0.15% = $1.43/dia
+└─ TOTAL: $21.38/dia = $641/mês = $7,696/ano! 💰
+
+Maria: "Meus diretos estão recrutando!
+Minha rede cresce mesmo eu não fazendo nada!" 🎉
 ```
 
-### Exemplo 3: Pedro Vira Ouro
+**Lição de Maria:**
+- Ensine seus diretos a recrutarem
+- Eles crescem = Você cresce
+- N2 (netos) gera renda passiva!
 
-**Pedro tem rede grande:**
+---
 
-```
-PEDRO (Ouro 🥇)
-├─ 30 diretos (N1) com média $1,000 = $30,000
-├─ 150 netos (N2) com média $500 = $75,000
-├─ 500 bisnetos (N3) com média $300 = $150,000
-└─ 1,000 tataranetos (N4) com média $100 = $100,000
+#### Exemplo 2: Lucas Perdeu o Emprego e Focou no MLM (Bronze → Prata em 6 meses)
 
-Comissões:
-├─ N1: $30,000 × 2.60% = $780/dia
-├─ N2: $75,000 × 0.40% = $300/dia
-├─ N3: $150,000 × 0.15% = $225/dia
-├─ N4: $100,000 × 0.08% = $80/dia
-└─ TOTAL: $1,385/dia = $41,550/mês = $505,525/ano! 🚀
-```
-
-**Pedro também ganha:**
-- Matching bonus (10% do que diretos ganham)
-- Streak bonus (se mantém rank consecutivamente)
-- Pool global (se for top Ouro)
-
-**Total estimado:** $600K-700K/ano! 💎
-
-### Exemplo 4: Ana Perde Rank (Downrank)
-
-**Ana é Prata, mas não mantém requisitos:**
+**Situação Inicial:**
 
 ```
-Janeiro:
-├─ Rank: Prata 🥈
-├─ Requisitos: 8 ativos + $6K/mês
-├─ Real: 5 ativos + $3K ❌
-└─ MÊS 1: AVISO
-
-Fevereiro:
-├─ Ainda: 5 ativos + $3K ❌
-├─ MÊS 2: DOWNRANK para Bronze 🥉
-├─ Comissão: 1.80% → 1.05%
-└─ Perde $0.75% de comissão!
-
-Março:
-├─ Ana se esforça: 10 ativos + $8K ✅
-├─ Atingiu requisitos de PRATA!
-└─ RECUPERA rank Prata! 🥈 (volta ao normal)
+Mês 1-2: Bronze
+├─ Lucas: 5 diretos, $600/mês de comissões
+├─ Trabalho: Emprego formal
+└─ MLM: Tempo parcial (noites/fins de semana)
 ```
 
-**Lição:** Mantenha sua rede ativa para não perder rank! 📊
+**Mês 3: Lucas Perde Emprego**
+
+```
+Lucas decide: "Vou me dedicar 100% ao MLM!"
+
+Estratégia:
+├─ Foca em recrutar + ajudar diretos
+├─ Passa dias inteiros ensinando a rede
+└─ Meta: Virar Prata em 3 meses
+```
+
+**Mês 3-5: Dedicação Total**
+
+```
+Crescimento acelerado:
+├─ Mês 3: 8 diretos, $1,200/mês
+├─ Mês 4: 12 diretos, $2,800/mês
+└─ Mês 5: 15 diretos, $4,500/mês ✅
+
+Volume vida: $30,000 atingido! ✅
+Bloqueia: $2,000 ✅
+```
+
+**Mês 6: PRATA Conquistado!**
+
+```
+Lucas agora Prata 🥈:
+├─ 15 N1, 48 N2, 95 N3
+├─ Comissões: $5,800/mês
+└─ Substituiu o salário formal! 🎉
+
+Lucas: "Perder o emprego foi a melhor coisa que aconteceu!
+Agora ganho MAIS e sou meu próprio chefe!" 💪
+```
+
+**Comparação Antes vs Depois:**
+
+```
+Emprego Formal:
+├─ Salário: $3,000/mês
+├─ Chefe mandando
+├─ Horário fixo
+└─ Sem crescimento
+
+MLM Prata:
+├─ Comissões: $5,800/mês (+93%!)
+├─ Trabalha de casa
+├─ Horário flexível
+└─ Crescimento infinito 🚀
+```
+
+**Lição de Lucas:**
+- Dedicação TOTAL = resultados RÁPIDOS
+- 6 meses Bronze → Prata (focado)
+- Pode substituir salário formal
+- Liberdade + mais dinheiro
+
+---
+
+#### Exemplo 3: Ana Perde Rank (Downrank Realista de Prata → Bronze)
+
+**Situação: Ana conquistou Prata mas relaxou na manutenção**
+
+**Ana em Dezembro:**
+
+```
+Rank: Prata 🥈
+├─ 15 diretos recrutados (lifetime) ✅
+├─ 8 diretos ativos (cumpre requisito) ✅
+├─ Volume mensal: $7,500 ✅
+├─ Saldo bloqueado: $2,200 ✅
+├─ Comissões: $180/dia = $5,400/mês
+└─ Status: MANTENDO PRATA! 🎉
+```
+
+**Janeiro: Problemas Começam**
+
+```
+Ana relaxou:
+├─ Parou de motivar diretos
+├─ 3 diretos ficaram inativos (não logam há 35 dias)
+├─ 2 diretos sacaram tudo e ficaram com <$100
+├─ Rede depositou pouco esse mês
+└─ Resultado:
+
+Requisitos Prata:
+├─ 8 ativos: Ana tem 6 ❌ (faltam 2!)
+├─ $6K/mês: Rede gerou $3,500 ❌ (faltam $2,500!)
+├─ $2K bloqueado: Ana tem $2,200 ✅
+└─ MÊS 1: AVISO ⚠️
+
+Sistema envia email:
+"⚠️ Atenção Ana! Você não atingiu requisitos de Prata.
+Grace period: 7 dias para corrigir.
+Se não corrigir, terá downrank temporário no próximo mês!"
+```
+
+**Ana Tenta Corrigir (7 dias):**
+
+```
+Ana entra em pânico e tenta:
+├─ Liga para 3 diretos inativos
+│  └─ 1 responde, 2 ignoram
+├─ Pede para diretos depositarem
+│  └─ Consegue +$1,500 extra
+├─ Resultado após 7 dias:
+│  ├─ 7 ativos (falta 1!)
+│  ├─ $5,000 volume (falta $1K!)
+│  └─ Ainda não atingiu requisitos ❌
+
+Sistema: "Grace period expirado. Você entrará em Mês 2 (downrank temporário)."
+```
+
+**Fevereiro: Downrank Temporário**
+
+```
+Ana PERDE Prata temporariamente:
+├─ Rank anterior: Prata 🥈
+├─ Rank atual: Bronze 🥉 (downrank -1)
+├─ Status: "⏰ Downrank Temporário"
+├─ Chance de recuperação: SIM! ✅
+
+Comissões Impactadas:
+├─ Antes (Prata): 1.80% N1, 0.25% N2, 0.10% N3
+├─ Agora (Bronze): 1.05% N1, 0.15% N2, 0% N3 ❌
+
+Rede de Ana:
+├─ N1 (15 diretos): $8,000
+├─ N2 (45 netos): $12,000
+├─ N3 (80 bisnetos): $8,000
+
+Comissões ANTES (Prata):
+├─ N1: $8,000 × 1.80% = $144/dia
+├─ N2: $12,000 × 0.25% = $30/dia
+├─ N3: $8,000 × 0.10% = $8/dia
+└─ TOTAL: $182/dia = $5,460/mês
+
+Comissões AGORA (Bronze):
+├─ N1: $8,000 × 1.05% = $84/dia ❌ (perdeu $60/dia!)
+├─ N2: $12,000 × 0.15% = $18/dia ❌ (perdeu $12/dia!)
+├─ N3: $8,000 × 0.00% = $0/dia ❌ (perdeu $8/dia!)
+└─ TOTAL: $102/dia = $3,060/mês ❌
+
+Ana PERDEU: $2,400/mês! 😱
+
+Ana: "Preciso URGENTE recuperar Prata esse mês!
+Se não conseguir, vou cair -2 ranks permanente!" 😰
+```
+
+**Fevereiro: Ana se Esforça (Recuperação)**
+
+```
+Ana trabalha duro:
+├─ Entra em contato com TODOS os 15 diretos
+├─ Motiva os inativos a voltarem
+├─ Ajuda diretos a depositarem mais
+├─ Organiza chamada de grupo incentivando rede
+└─ Resultado no fim do mês:
+
+Requisitos de Prata (para recuperar):
+├─ 8 ativos: Ana agora tem 10! ✅ (2 voltaram!)
+├─ $6K/mês: Rede gerou $8,500! ✅ (esforço valeu!)
+├─ $2K bloqueado: Ana mantém $2,200 ✅
+└─ ATINGIU REQUISITOS DE PRATA! 🎉
+```
+
+**Março: Recuperação de Rank!**
+
+```
+Ana RECUPERA Prata! 🥈
+├─ Rank: Prata (de volta!)
+├─ Comissões: $182/dia = $5,460/mês ✅
+├─ Status: "✅ Rank Recuperado"
+└─ Downrank cancelado! Ciclo reseta!
+
+Ana: "UFA! Aprendi a lição!
+NUNCA mais vou relaxar na manutenção!" 💪
+```
+
+**Comparação de Impacto Financeiro:**
+
+```
+┌──────────┬──────────────┬─────────────┬────────────┐
+│ Mês      │ Rank         │ Comissão/Mês│ Observação │
+├──────────┼──────────────┼─────────────┼────────────┤
+│ Dezembro │ Prata 🥈     │ $5,460      │ Mantendo   │
+│ Janeiro  │ Prata (Aviso)│ $5,460      │ Grace 7d   │
+│ Fevereiro│ Bronze 🥉    │ $3,060      │ -$2,400! ❌│
+│ Março    │ Prata 🥈     │ $5,460      │ Recuperou! │
+└──────────┴──────────────┴─────────────┴────────────┘
+
+Custo do relaxamento: $2,400 perdido em Fevereiro! 😰
+Lição aprendida: Manter requisitos mensais é CRUCIAL!
+```
+
+**E Se Ana NÃO Recuperasse?**
+
+```
+Cenário alternativo: Ana não se esforça
+
+Março (Mês 3):
+├─ Ainda não cumpre requisitos
+├─ Downrank PERMANENTE -2 do original
+├─ Prata → Recruta 🎖️ (perde 2 ranks!)
+├─ Comissão: 0.00% ❌ (zero comissão!)
+├─ Ana perde TUDO: $5,460/mês → $0/mês
+└─ Deve reconquistar Bronze e depois Prata do zero!
+
+Ana teria que:
+1. Reconquistar Bronze (5 diretos + $2,500 volume vida)
+2. Reconquistar Prata (15 diretos + $30K volume vida)
+3. Levaria 6-12 meses para voltar ao Prata!
+
+Perderia: ~$30,000 em comissões nesses 6 meses! 💸
+```
+
+**Lições do Caso de Ana:**
+
+```
+✅ SEMPRE mantenha requisitos mensais!
+✅ Fique de olho nos diretos ativos (precisa 50%)
+✅ Incentive depósitos todo mês ($6K Prata)
+✅ Se receber AVISO, CORRA para corrigir (7 dias)!
+✅ Mês 2 (temporário) ainda dá pra recuperar!
+✅ NUNCA deixe chegar no Mês 3 (permanente)!
+
+❌ Não relaxe depois de conquistar rank
+❌ Não ignore avisos do sistema
+❌ Não espere até o último dia
+❌ Não deixe diretos ficarem inativos
+
+Mantenha sua rede ativa = Seu dinheiro seguro! 💰
+```
+
+---
 
 ---
 
