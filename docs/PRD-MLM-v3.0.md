@@ -361,17 +361,12 @@ Rede do usuário:
 - 500 N3 com $300 cada = $150,000 total N3
 - 1,000 N4 com $100 cada = $100,000 total N4
 
-Comissões Ouro (NOVA estrutura sustentável):
+Comissões Ouro:
 - N1: $30,000 × 2.60% = $780/dia ⭐ (foco principal!)
 - N2: $75,000 × 0.40% = $300/dia
 - N3: $150,000 × 0.15% = $225/dia
 - N4: $100,000 × 0.08% = $80/dia
 - **Total: $1,385/dia = $505,525/ano** 💰
-
-**Comparação vs Versão Antiga:**
-- Antiga: $2,180/dia (insustentável ❌)
-- Nova: $1,385/dia (sustentável ✅)
-- **Ainda assim:** Mais de $500K por ano! 🎯
 
 ### Compressão Dinâmica
 
@@ -460,33 +455,7 @@ Comissão para você: $1,000 × 1.40% (N2) = $14/dia
 └─ Você recebe: $820 ❌ (perdeu $60 extra!)
 ```
 
-### 3. Saque Rápido (Fast Withdrawal)
-
-**Opção premium: saque imediato com taxa extra!**
-
-```
-┌──────────────────┬─────────────┬──────────────────┐
-│ Tipo de Saque    │ Tempo       │ Taxa Extra       │
-├──────────────────┼─────────────┼──────────────────┤
-│ Normal           │ 24-48h      │ 0%               │
-│ Rápido (Fast)    │ Imediato    │ +10%             │
-│ Urgente (Ultra)  │ < 5 min     │ +20%             │
-└──────────────────┴─────────────┴──────────────────┘
-```
-
-**Exemplo Prata:**
-
-```
-Saque de $1,000:
-
-Normal: Taxa 10% = $100 → Recebe $900 em 48h
-Fast: Taxa 20% = $200 → Recebe $800 AGORA
-Ultra: Taxa 30% = $300 → Recebe $700 em 5min
-
-Pagou $200 a mais pela pressa! 💸
-```
-
-### 4. Bônus de Retenção (Loyalty Tiers)
+### 3. Bônus de Retenção (Loyalty Tiers)
 
 **Quanto MAIS TEMPO sem sacar, MENOR a taxa!**
 
@@ -515,7 +484,7 @@ Saque de $1,000:
 └─ Você recebe: $940 (economizou $60!) ✅
 ```
 
-### 5. Penalidade por Quebra de Rank
+### 4. Penalidade por Quebra de Rank
 
 **Se sacar abaixo do saldo bloqueado mínimo:**
 
@@ -535,7 +504,7 @@ Melhor estratégia:
 └─ NÃO saque! Mantenha $5,000 e continue Ouro ganhando 2.60%/dia
 ```
 
-### 6. Limites Globais de Proteção
+### 5. Limites Globais de Proteção
 
 **Proteção contra bank run:**
 
@@ -557,22 +526,26 @@ Se saques > 10% TVL em 24h:
 └─ Protege plataforma de colapso
 ```
 
-### 7. Fórmula Completa de Taxa
+### 6. Fórmula Completa de Taxa
 
 ```typescript
-taxaFinal = taxaBase + taxaProgressiva - descontoLoyalty + taxaFast + penalidade
+taxaFinal = taxaBase + taxaProgressiva - descontoLoyalty + penalidade + gasFee
 
 // Exemplo completo:
 // Rank: Bronze (12%)
 // 2º saque do mês (+3%)
 // 150 dias sem sacar (-4% loyalty Veterano)
-// Saque normal (0% fast)
 // Não quebra rank (0% penalidade)
+// Gas fee: $0.50
 
-taxaFinal = 12% + 3% - 4% + 0% + 0% = 11%
+taxaFinal = 12% + 3% - 4% + 0% = 11%
+Taxa em dólares: $1,000 × 11% = $110
+Gas fee: +$0.50
+Total: $110.50
+Você recebe: $889.50
 ```
 
-### 8. Caps de Comissões por Rank (Proteção Anti-Whale)
+### 7. Caps de Comissões por Rank (Proteção Anti-Whale)
 
 **Ninguém pode ganhar mais que X por dia (protege sustentabilidade):**
 
@@ -593,7 +566,7 @@ taxaFinal = 12% + 3% - 4% + 0% + 0% = 11%
 
 **Benefício:** Protege plataforma de cenários extremos (whales sacando tudo de uma vez)
 
-### 9. Receita de Taxas (Projeção)
+### 8. Receita de Taxas (Projeção)
 
 ```
 TVL: $100M
@@ -916,42 +889,46 @@ model Withdrawal {
   baseFee           Decimal  @db.Decimal(5, 2) // Taxa base do rank
   progressiveFee    Decimal  @default(0) @db.Decimal(5, 2) // Taxa por frequência
   loyaltyDiscount   Decimal  @default(0) @db.Decimal(5, 2) // Desconto fidelidade
-  fastFee           Decimal  @default(0) @db.Decimal(5, 2) // Taxa fast withdrawal
   rankBreakPenalty  Decimal  @default(0) @db.Decimal(5, 2) // Penalidade quebra rank
+  gasFee            Decimal  @default(0) @db.Decimal(10, 2) // Taxa gas blockchain
 
   // Detalhes
   destinationAddress String  // Endereço blockchain de destino
-  type              WithdrawalType // Normal, Fast, Ultra
-  status            WithdrawalStatus @default(PENDING)
+  tokenSymbol       String  // MATIC, USDC, USDT, etc
+  status            WithdrawalStatus @default(PENDING_APPROVAL)
 
   // Tracking
   rank              MLMRank  // Rank no momento do saque
   loyaltyTier       LoyaltyTier // Tier no momento do saque
   withdrawalNumber  Int      // Número do saque no mês (1º, 2º, 3º...)
 
+  // Aprovação Admin
+  approvedBy        String?  // Admin ID que aprovou
+  approvedAt        DateTime? // Quando foi aprovado
+  rejectedBy        String?  // Admin ID que rejeitou
+  rejectedAt        DateTime? // Quando foi rejeitado
+  rejectionReason   String?  // Motivo da rejeição
+
   // Blockchain
   txHash            String?  // Hash da transação
   processedAt       DateTime? // Quando foi processado
 
-  createdAt         DateTime @default(now())
+  // Timestamps
+  requestedAt       DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   @@index([userId, status])
-  @@index([status, createdAt])
-}
-
-enum WithdrawalType {
-  NORMAL  // 24-48h
-  FAST    // Imediato (+10%)
-  ULTRA   // < 5min (+20%)
+  @@index([status, requestedAt])
 }
 
 enum WithdrawalStatus {
-  PENDING      // Aguardando processamento
-  PROCESSING   // Em processamento
-  COMPLETED    // Concluído
-  FAILED       // Falhou
-  CANCELLED    // Cancelado pelo usuário
+  PENDING_APPROVAL  // Aguardando aprovação admin
+  APPROVED          // Admin aprovou, processando blockchain
+  PROCESSING        // Transação enviada, aguardando confirmação
+  COMPLETED         // Concluído com sucesso
+  REJECTED          // Admin rejeitou
+  CANCELLED         // Usuário cancelou
+  FAILED            // Erro no processamento
 }
 ```
 
