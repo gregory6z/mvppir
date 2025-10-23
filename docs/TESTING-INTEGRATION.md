@@ -1,8 +1,10 @@
 # Testes de Integração
 
-Testes do fluxo completo: **Depósito + Webhook**
+Testes dos fluxos completos: **MVP v1.0 + MVP v2.0 Core**
 
 ## O que é testado
+
+### MVP v1.0 - Depósito + Webhook
 
 O teste cobre o fluxo completo de depósito:
 
@@ -11,6 +13,28 @@ O teste cobre o fluxo completo de depósito:
 3. **Obter endereço de depósito** - GET /deposit/my-address
 4. **Simular webhook Moralis** - POST /webhooks/moralis com assinatura válida
 5. **Verificar transação criada** - Confirma que a transação foi salva no banco
+
+### MVP v2.0 Core - Batch Transfer + Withdrawals + Retry
+
+#### Batch Transfer (F1)
+1. **Criar admin** - Signup e promover para role admin
+2. **Criar Global Wallet** - Wallet para consolidar fundos
+3. **Criar usuário com saldo** - Simular depósito confirmado
+4. **Executar batch transfer** - POST /admin/transfers/batch-collect
+5. **Verificar proteção admin** - Usuário comum recebe 403
+
+#### Withdrawal Flow (F2)
+1. **Fluxo completo**: Request → Approve → Process
+   - Usuário solicita saque (POST /user/withdrawals/request)
+   - Admin lista saques pendentes (GET /admin/withdrawals/pending)
+   - Admin aprova saque (POST /admin/withdrawals/:id/approve)
+   - Sistema processa (automático após aprovação)
+2. **Validação de saldo**: Rejeita saques acima do saldo disponível
+3. **Rejeição de saque**: Admin rejeita e saldo é devolvido
+
+#### Withdrawal Retry
+1. **Proteção admin**: Endpoint de retry acessível apenas por admin
+2. **Verificação de acesso**: Usuário comum recebe 403
 
 ## Pré-requisitos
 
