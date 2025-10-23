@@ -660,7 +660,501 @@ Tempo total: 2-25 horas (depende do admin)
 
 ## 📚 Exemplos Práticos
 
-### Exemplo 1: João Vira Bronze
+### Parte 1: Ranks Baixos em Detalhe (Iniciantes)
+
+#### 🎖️ Exemplo A: Carlos - RECRUTA (Dia 1)
+
+**Situação Inicial:**
+
+```
+Carlos acabou de se cadastrar:
+├─ Depositou: $100 (mínimo obrigatório)
+├─ Diretos: 0
+├─ Rank: RECRUTA 🎖️
+└─ Comissão: 0.00% ❌ (não ganha nada ainda!)
+```
+
+**O Que Carlos Ganha?**
+
+```
+Comissões Diárias: $0/dia
+Comissões Mensais: $0/mês
+Comissões Anuais: $0/ano
+
+Carlos pensa: "Preciso URGENTE convidar 5 pessoas
+para virar Bronze e começar a ganhar!" 😰
+```
+
+**Se Carlos Tentar Sacar $100:**
+
+```
+Saque de $100:
+├─ Taxa base Recruta: 15% = $15 ❌ MUITO ALTO!
+├─ Cooldown: 7 dias (precisa esperar 1 semana entre saques)
+├─ Limite diário: $500
+└─ Recebe: $85
+
+Carlos: "15% de taxa?! Melhor convidar gente logo!" 💡
+```
+
+**Objetivo de Carlos:**
+- Convidar 5 amigos
+- Ajudá-los a depositar (gerar $2,500 volume)
+- Bloquear $500 na conta
+- **Virar Bronze em 1-2 meses!**
+
+---
+
+#### 🥉 Exemplo B: Ana - BRONZE (Primeiras Comissões)
+
+**Como Ana Conquistou Bronze:**
+
+```
+Semana 1-4: Recrutamento
+├─ Convidou 5 amigos (diretos N1)
+├─ Total de 5 diretos ✅
+└─ Eles depositaram: $2,500 total
+
+Semana 5: Bloqueio
+├─ Ana depositou mais $500
+├─ Saldo bloqueado: $500 ✅
+└─ VIROU BRONZE! 🥉
+```
+
+**Rede Atual de Ana (detalhada):**
+
+```
+📊 Rede de Ana (Bronze):
+
+N1 (Diretos) - 5 pessoas:
+├─ João: $600 saldo
+├─ Maria: $500 saldo
+├─ Pedro: $400 saldo
+├─ Lucas: $300 saldo
+└─ Sofia: $200 saldo
+Total N1: $2,000
+
+N2 (Netos) - 3 pessoas:
+├─ Carla: $300 (filha do João)
+├─ Bruno: $200 (filho do João)
+└─ Rita: $100 (filha da Maria)
+Total N2: $600
+
+Total da Rede: $2,600
+```
+
+**Quanto Ana Ganha?**
+
+```
+Comissões Diárias (cálculo completo):
+
+N1 (Diretos):
+├─ João: $600 × 1.05% = $6.30/dia
+├─ Maria: $500 × 1.05% = $5.25/dia
+├─ Pedro: $400 × 1.05% = $4.20/dia
+├─ Lucas: $300 × 1.05% = $3.15/dia
+└─ Sofia: $200 × 1.05% = $2.10/dia
+SUBTOTAL N1: $21.00/dia ⭐
+
+N2 (Netos):
+├─ Carla: $300 × 0.15% = $0.45/dia
+├─ Bruno: $200 × 0.15% = $0.30/dia
+└─ Rita: $100 × 0.15% = $0.15/dia
+SUBTOTAL N2: $0.90/dia
+
+───────────────────────────────────
+TOTAL: $21.90/dia
+
+Comissões Mensais: $21.90 × 30 = $657/mês 💰
+Comissões Anuais: $657 × 12 = $7,884/ano 🎉
+
+Ana: "Minha primeira renda! Vou trabalhar pra virar Prata!" 😊
+```
+
+**Requisitos Mensais (o que Ana precisa fazer TODO MÊS):**
+
+```
+Para CONTINUAR Bronze:
+├─ ✅ 3 diretos ativos (50% de 5) → Ana tem 5 ativos
+├─ ✅ $500 volume mensal → Rede gerando $800/mês
+├─ ✅ $500 saldo bloqueado → Ana mantém $650
+└─ Status: MANTENDO BRONZE! 🥉
+
+Ana só perde Bronze se:
+❌ Sacar abaixo de $500 (quebra saldo bloqueado)
+❌ Rede parar de depositar (<$500/mês por 3 meses)
+❌ Menos de 3 diretos ativos (por 3 meses)
+```
+
+**Se Ana Tentar Sacar $200:**
+
+```
+Primeiro saque do mês:
+├─ Taxa base Bronze: 12% = $24
+├─ Taxa progressiva (1º): +0% (sem taxa extra)
+├─ Loyalty (sem tempo): 0%
+├─ Cooldown: 5 dias
+├─ Limite diário: $1,000
+└─ Recebe: $176
+
+Ana: "12% ainda é alto, mas já melhor que 15%!
+E em 2 meses sem sacar vou ter desconto!" 💡
+```
+
+**Objetivo de Ana:**
+- Manter requisitos mensais
+- Ajudar diretos a recrutarem (crescer N2)
+- Convidar mais 10 pessoas (total 15)
+- **Virar Prata em 3-6 meses!**
+
+---
+
+#### 🥈 Exemplo C: Roberto - PRATA (Rede Crescendo)
+
+**Como Roberto Conquistou Prata:**
+
+```
+Mês 1-3: Bronze
+├─ Tinha 5 diretos
+├─ Ganhava ~$20/dia
+
+Mês 4-6: Expansão
+├─ Convidou mais 10 pessoas (total 15 diretos)
+├─ Seus diretos começaram a recrutar
+├─ Rede cresceu para N3
+└─ Volume vida atingiu $30,000 ✅
+
+Mês 7: Bloqueio
+├─ Roberto depositou mais $1,500
+├─ Saldo bloqueado total: $2,000 ✅
+└─ VIROU PRATA! 🥈
+```
+
+**Rede Detalhada de Roberto:**
+
+```
+📊 Rede de Roberto (Prata):
+
+N1 (Diretos) - 15 pessoas:
+Exemplo de alguns:
+├─ João (Bronze): $800 saldo
+├─ Maria (Bronze): $700 saldo
+├─ Pedro (Recruta): $500 saldo
+├─ Ana (Bronze): $600 saldo
+├─ Carlos (Recruta): $400 saldo
+└─ ... mais 10 pessoas
+Total N1: $8,000
+
+N2 (Netos) - 45 pessoas:
+(Filhos dos 15 diretos)
+├─ Cada direto convidou ~3 pessoas
+├─ Saldo médio: $265/pessoa
+└─ Total N2: $12,000
+
+N3 (Bisnetos) - 80 pessoas:
+(Filhos dos netos - rede profunda!)
+├─ Alguns netos já recrutaram
+├─ Saldo médio: $100/pessoa
+└─ Total N3: $8,000
+
+Total da Rede: $28,000 (vs $2,600 quando era Bronze!)
+Total de Pessoas: 140 pessoas (vs 8 quando era Bronze!)
+```
+
+**Quanto Roberto Ganha?**
+
+```
+Comissões Diárias (detalhadas):
+
+N1 (15 diretos):
+$8,000 × 1.80% = $144.00/dia ⭐⭐
+
+N2 (45 netos):
+$12,000 × 0.25% = $30.00/dia ⭐
+
+N3 (80 bisnetos):
+$8,000 × 0.10% = $8.00/dia
+
+───────────────────────────────────
+TOTAL: $182.00/dia
+
+Comissões Mensais: $182 × 30 = $5,460/mês 💰💰
+Comissões Anuais: $5,460 × 12 = $65,520/ano 🎉🎉
+
+Roberto: "Agora sim! É quase um salário completo extra!
+Vou investir em virar Ouro!" 🚀
+```
+
+**Comparação: Bronze Ana vs Prata Roberto**
+
+```
+┌──────────────┬─────────────┬────────────────┬──────────────┐
+│ Métrica      │ Bronze Ana  │ Prata Roberto  │ Crescimento  │
+├──────────────┼─────────────┼────────────────┼──────────────┤
+│ Diretos      │ 5           │ 15             │ +200%        │
+│ Rede Total   │ 8           │ 140            │ +1,650%      │
+│ Saldo Rede   │ $2,600      │ $28,000        │ +977%        │
+│ Comissão/Dia │ $21.90      │ $182.00        │ +731%        │
+│ Comissão/Mês │ $657        │ $5,460         │ +731%        │
+│ Comissão/Ano │ $7,884      │ $65,520        │ +731%        │
+│ Taxa Saque   │ 12%         │ 10%            │ -2%          │
+│ Limite/Dia   │ $1,000      │ $2,500         │ +150%        │
+└──────────────┴─────────────┴────────────────┴──────────────┘
+
+Crescimento brutal de Bronze → Prata! 🚀
+```
+
+**Requisitos Mensais (o que Roberto precisa fazer TODO MÊS):**
+
+```
+Para CONTINUAR Prata:
+├─ ✅ 8 diretos ativos (50% de 15) → Roberto tem 12 ativos
+├─ ✅ $6,000 volume mensal → Rede gerando $9,000/mês
+├─ ✅ $2,000 bloqueados → Roberto mantém $2,500
+└─ Status: MANTENDO PRATA! 🥈
+
+Roberto está confortável e pensa:
+"Se eu conseguir 30 diretos + $150K vida,
+viro OURO e ganho 2.60% de N1!
+Também ganho de N4 e matching bonus 10%!" 💪
+```
+
+**Se Roberto Sacar $1,000:**
+
+```
+Segundo saque do mês:
+├─ Taxa base Prata: 10% = $100
+├─ Taxa progressiva (2º): +3% = +$30
+├─ 60 dias sem sacar: -2% (Tier Fiel) = -$20
+├─ Taxa final: 10% + 3% - 2% = 11% = $110
+├─ Cooldown: 3 dias
+├─ Limite diário: $2,500
+└─ Recebe: $890
+
+Roberto: "11% tá OK! E se eu ficar 180 dias sem sacar,
+vou ter -6% desconto (Tier Veterano)!" 💡
+```
+
+**Objetivo de Roberto:**
+- Manter requisitos Prata
+- Convidar mais 15 pessoas (total 30)
+- Crescer volume vida para $150K
+- **Virar Ouro em 6-12 meses!**
+
+---
+
+#### 📈 Exemplo D: Evolução Completa - João (3 Meses)
+
+**Cronologia Real de Crescimento:**
+
+**Mês 1: Recruta → Bronze**
+
+```
+Semana 1:
+├─ João se cadastra + deposita $100
+├─ Rank: Recruta 🎖️
+├─ Comissões: $0
+└─ Convida 2 amigos
+
+Semana 2:
+├─ Mais 3 amigos convidados (total 5 diretos) ✅
+├─ Deposita mais $400 ($500 total para bloqueio)
+└─ VIRA BRONZE! 🥉
+
+Semanas 3-4:
+├─ Primeiras comissões: $15/dia
+├─ Ganhou no mês: $15 × 14 dias = $210
+└─ João: "Minha primeira comissão!" 🎉
+```
+
+**Mês 2: Consolidando Bronze**
+
+```
+João trabalha na rede:
+├─ Ajuda seus 5 diretos a recrutarem
+├─ Agora tem: 5 N1 + 15 N2
+├─ Comissões crescem: $25/dia × 30 = $750/mês
+├─ Mantém requisitos mensais ✅
+└─ João: "Dobrando meus ganhos todo mês!" 📈
+```
+
+**Mês 3: Bronze → Prata**
+
+```
+Explosão da rede:
+├─ João convida mais 10 diretos (total 15 diretos) ✅
+├─ Rede profunda: 15 N1 + 45 N2 + 80 N3
+├─ Volume vida chega em $30,000 ✅
+├─ Deposita $1,500 (total $2,000 bloqueado) ✅
+└─ VIRA PRATA! 🥈
+
+Nova realidade:
+├─ Comissões: $180/dia × 30 = $5,400/mês
+├─ Em 3 meses: $0 → $5,400/mês
+└─ João: "Isso mudou minha vida!" 💰
+```
+
+**Ganhos Acumulados de João (3 meses):**
+
+```
+Mês 1 (Recruta + Bronze): $210
+Mês 2 (Bronze): $750
+Mês 3 (Bronze → Prata): $3,300
+───────────────────────────────
+Total 3 meses: $4,260 ganho! 🎉
+
+E agora ganha $5,400/mês fixo como Prata!
+Investimento inicial: $500 (bloqueado)
+ROI: 852% em 3 meses! 🚀
+```
+
+---
+
+#### 💡 Comparação Visual dos 3 Ranks Baixos
+
+```
+🎖️ RECRUTA (Carlos)
+├─ Saldo mínimo: $100
+├─ Diretos: 0
+├─ Comissão: 0% (não ganha!)
+├─ Ganho mensal: $0
+├─ Taxa saque: 15% ❌
+├─ Cooldown: 7 dias
+├─ Limite/dia: $500
+└─ Objetivo: "Sair daqui RÁPIDO e virar Bronze!"
+
+🥉 BRONZE (Ana - 5 diretos)
+├─ Saldo bloqueado: $500
+├─ Comissão N1: 1.05%, N2: 0.15%
+├─ Ganho típico: $20-50/dia ($600-1,500/mês)
+├─ Taxa saque: 12%
+├─ Cooldown: 5 dias
+├─ Limite/dia: $1,000
+└─ Objetivo: "Primeira renda! Crescer para Prata!"
+
+🥈 PRATA (Roberto - 15 diretos)
+├─ Saldo bloqueado: $2,000
+├─ Comissão N1: 1.80%, N2: 0.25%, N3: 0.10%
+├─ Ganho típico: $100-300/dia ($3K-9K/mês)
+├─ Taxa saque: 10%
+├─ Cooldown: 3 dias
+├─ Limite/dia: $2,500
+└─ Objetivo: "Renda boa! Virar Ouro para matching bonus!"
+```
+
+---
+
+#### ⏱️ Quanto Tempo para Subir? (Cenários Realistas)
+
+**Cenário Conservador (dedicação parcial):**
+
+```
+Recruta → Bronze: 1-3 meses
+├─ Convidar 5 pessoas
+├─ Gerar $2,500 volume
+└─ Juntar $500 para bloquear
+
+Bronze → Prata: 6-12 meses
+├─ Convidar mais 10 (total 15)
+├─ Rede crescer naturalmente para N3
+├─ Gerar $30K volume vida
+└─ Juntar $2,000 para bloquear
+
+Prata → Ouro: 12-24 meses
+├─ Convidar mais 15 (total 30)
+├─ Rede expandir para N4
+├─ Gerar $150K volume vida
+└─ Juntar $5,000 para bloquear
+
+TOTAL: 2-3 anos até Ouro 🥇
+```
+
+**Cenário Agressivo (dedicação total):**
+
+```
+Mês 1: Recruta → Bronze
+Mês 3: Bronze → Prata
+Mês 9: Prata → Ouro
+Mês 18: Ouro → Platina
+
+TOTAL: 1.5 anos até Platina! 💎
+Badge desbloqueado: "Velocista" ⚡
+```
+
+---
+
+#### ❌ Erros Comuns em Ranks Baixos
+
+**Erro 1: Sacar Muito Cedo**
+
+```
+❌ João (Bronze):
+├─ Ganhou $500 em comissões
+├─ Quer sacar tudo logo
+├─ Taxa: 12% = $60 perdido
+├─ Recebe: $440
+└─ Perdeu $60 + parou de compor!
+
+✅ Melhor:
+├─ Deixar acumular 2-3 meses
+├─ Reinvestir para subir rank
+├─ Sacar só emergências
+└─ Economiza taxas + cresce mais rápido!
+```
+
+**Erro 2: Não Ajudar Diretos**
+
+```
+❌ Maria (Bronze):
+├─ Convidou 5 pessoas
+├─ Elas não sabem o que fazer
+├─ Ficam inativas
+├─ Após 3 meses: <3 ativos
+└─ Maria PERDE Bronze! ❌
+
+✅ Correção:
+├─ Ensinar diretos a recrutar
+├─ Manter contato regular
+├─ Motivar com resultados
+├─ Ajudar quando travam
+└─ Crescer JUNTO! ✅
+```
+
+**Erro 3: Sacar Saldo Bloqueado**
+
+```
+❌ Pedro (Prata):
+├─ Precisa $2,000 bloqueados
+├─ Saldo atual: $2,200
+├─ Quer sacar $500
+├─ Novo saldo: $1,700 (< $2,000!)
+└─ DOWNRANK para Bronze IMEDIATO! ❌
+
+⚠️ NUNCA saque abaixo do mínimo bloqueado!
+Se precisar do dinheiro, saque só as comissões!
+```
+
+**Erro 4: Pular Ranks Rápido Demais**
+
+```
+❌ Ana virou Prata mas:
+├─ Não consegue manter 8 ativos
+├─ Não gera $6K/mês consistente
+├─ Ficou apertada
+└─ Após 3 meses: DOWNRANK para Bronze
+
+✅ Melhor:
+├─ Consolidar cada rank
+├─ Só subir quando confortável
+├─ Garantir que mantém requisitos
+└─ Melhor Bronze estável que Prata perdido!
+```
+
+---
+
+### Parte 2: Casos Avançados
+
+#### Exemplo 1: João Vira Bronze
 
 **Mês 1-2: Recrutamento**
 ```
