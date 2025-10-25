@@ -34,6 +34,11 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
     user: {
       create: {
         after: async (user, context) => {
+          // Check if context is available
+          if (!context) {
+            return;
+          }
+
           // Extract referral code from request context
           const body = context.body as any;
           const referralCode = body?.referralCode;

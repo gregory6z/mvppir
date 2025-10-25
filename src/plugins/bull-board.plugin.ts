@@ -38,7 +38,6 @@ export async function bullBoardPlugin(fastify: FastifyInstance) {
   // Register the Bull Board routes
   await fastify.register(serverAdapter.registerPlugin(), {
     prefix: "/admin/queues",
-    basePath: "/admin/queues",
   });
 
   console.log("✅ Bull Board dashboard available at /admin/queues");
