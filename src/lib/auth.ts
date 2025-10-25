@@ -28,4 +28,47 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
       maxAge: 5 * 60, // 5 minutos
     },
   },
+
+  // Database hooks para processar referral code
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user, context) => {
+          // Extract referral code from request context
+          const body = context.body as any;
+          const referralCode = body?.referralCode;
+
+          if (!referralCode) {
+            return; // No referral code provided
+          }
+
+          console.log(`🔍 Processing referral code: ${referralCode} for user ${user.id}`);
+
+          // Find referrer by referral code
+          const referrer = await prisma.user.findUnique({
+            where: { referralCode: referralCode.toUpperCase() },
+            select: { id: true, status: true },
+          });
+
+          console.log("🔍 Referrer found:", referrer);
+
+          // Validate referrer exists and is ACTIVE
+          if (!referrer || referrer.status !== "ACTIVE") {
+            console.warn(`❌ Invalid or inactive referral code: ${referralCode}`);
+            return; // Don't block user creation
+          }
+
+          // Update new user with referrerId
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { referrerId: referrer.id },
+          });
+
+          console.log(
+            `✅ User ${user.id} (${user.email}) linked to referrer ${referrer.id} via code ${referralCode}`
+          );
+        },
+      },
+    },
+  },
 });

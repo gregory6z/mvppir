@@ -89,6 +89,9 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
+  // Referral System
+  referralCode  String?    @unique // Código único para convites (ex: "GREGORY123")
+
   // ===== MLM v1.0 Fields =====
 
   // Rank Management
@@ -136,6 +139,7 @@ model User {
   @@index([referrerId])
   @@index([currentRank])
   @@index([rankStatus])
+  @@index([referralCode])
   @@map("users")
 }
 
