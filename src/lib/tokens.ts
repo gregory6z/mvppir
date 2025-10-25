@@ -1,13 +1,19 @@
 // Tokens conhecidos na Polygon Mainnet (para referência)
 // Qualquer outro token ERC20 também será aceito usando os dados do Moralis
 export const KNOWN_TOKENS = {
-  // USDC (Circle)
+  // TestUSDC (Polygon Amoy Testnet) - Deploy de teste
+  "0xd7acd2a9fd159e69bb102a1ca21c9a3e3a5f771b": {
+    symbol: "USDC",
+    decimals: 6,
+    name: "Test USDC",
+  },
+  // USDC (Circle - Polygon Mainnet)
   "0x2791bca1f2de4661ed88a30c99a7a9449aa84174": {
     symbol: "USDC",
     decimals: 6,
     name: "USD Coin",
   },
-  // USDT (Tether)
+  // USDT (Tether - Polygon Mainnet)
   "0xc2132d05d31c914a87c6611c10748aeb04b58e8f": {
     symbol: "USDT",
     decimals: 6,

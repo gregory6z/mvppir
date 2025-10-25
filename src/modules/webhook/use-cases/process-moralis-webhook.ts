@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import { checkAccountActivation } from "@/modules/user/use-cases/check-account-activation";
+import { autoCheckAndPromote } from "@/modules/mlm/use-cases/check-rank-progression";
 import { identifyToken, KNOWN_TOKENS } from "@/lib/tokens";
 
 interface MoralisWebhookPayload {
@@ -103,6 +104,17 @@ export async function processMoralisWebhook({
       }
     } catch (error) {
       console.error("⚠️  Erro ao verificar ativação de conta:", error);
+    }
+
+    // Verifica progressão de rank (MLM)
+    try {
+      const promoted = await autoCheckAndPromote(existingTx.userId);
+
+      if (promoted) {
+        console.log(`🎖️  Usuário promovido de rank automaticamente!`);
+      }
+    } catch (error) {
+      console.error("⚠️  Erro ao verificar progressão de rank:", error);
     }
 
     return {
@@ -255,6 +267,17 @@ export async function processMoralisWebhook({
     } catch (error) {
       // Não falha a operação se a verificação de ativação falhar
       console.error("⚠️  Erro ao verificar ativação de conta:", error);
+    }
+
+    // Verifica progressão de rank (MLM)
+    try {
+      const promoted = await autoCheckAndPromote(depositAddress.userId);
+
+      if (promoted) {
+        console.log(`🎖️  Usuário promovido de rank automaticamente!`);
+      }
+    } catch (error) {
+      console.error("⚠️  Erro ao verificar progressão de rank:", error);
     }
   }
 

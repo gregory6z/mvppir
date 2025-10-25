@@ -11,6 +11,7 @@ import {
   formatEther,
 } from "ethers";
 import { Decimal } from "@prisma/client/runtime/library";
+import { env } from "@/config/env";
 
 // Constantes otimizadas
 const GAS_PER_ERC20_TRANSFER = 0.01; // MATIC por transferência ERC20
@@ -66,6 +67,40 @@ export async function batchCollectToGlobal({
   adminId,
 }: BatchCollectRequest) {
   console.log("🚀 Iniciando Batch Collect to Global Wallet...");
+
+  // 0. Em modo de teste, apenas simula sucesso sem processar blockchain
+  if (env.SKIP_BLOCKCHAIN_PROCESSING) {
+    console.log("⚠️ Blockchain processing skipped for batch collect (test mode)");
+
+    // Loga ação do admin mesmo em teste
+    await prisma.adminLog.create({
+      data: {
+        adminId,
+        action: "BATCH_COLLECT_TO_GLOBAL",
+        details: {
+          testMode: true,
+          message: "Batch collect skipped in test mode",
+        },
+      },
+    });
+
+    return {
+      success: true,
+      summary: {
+        totalAddresses: 0,
+        successfulAddresses: 0,
+        failedAddresses: 0,
+        maticDistributed: "0",
+        tokensTransferred: {},
+        maticRecovered: "0",
+        totalGasCost: "0",
+        transactionsUpdated: 0,
+      },
+      details: [],
+      errors: [],
+      message: "Batch collect skipped in test mode",
+    };
+  }
 
   // 1. Busca Global Wallet
   const { wallet: globalWallet, address: globalAddress } =

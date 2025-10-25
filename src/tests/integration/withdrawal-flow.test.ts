@@ -222,7 +222,7 @@ describe("Withdrawal Flow (F2)", () => {
     // ====================
     const listPending = await app.inject({
       method: "GET",
-      url: "/admin/withdrawals/pending",
+      url: "/admin/withdrawals?status=PENDING_APPROVAL",
       headers: { cookie: adminCookie },
     });
 
@@ -232,13 +232,13 @@ describe("Withdrawal Flow (F2)", () => {
       "List pending deve retornar 200"
     );
 
-    const pendingWithdrawals = listPending.json();
+    const pendingResponse = listPending.json();
     assert.ok(
-      Array.isArray(pendingWithdrawals),
+      Array.isArray(pendingResponse.withdrawals),
       "Deve retornar array de saques"
     );
     assert.ok(
-      pendingWithdrawals.length > 0,
+      pendingResponse.withdrawals.length > 0,
       "Deve ter pelo menos 1 saque pendente"
     );
 
@@ -257,9 +257,9 @@ describe("Withdrawal Flow (F2)", () => {
       "Approve deve retornar 200"
     );
 
-    const approvedWithdrawal = approveResponse.json();
+    const approvedResponse = approveResponse.json();
     assert.strictEqual(
-      approvedWithdrawal.status,
+      approvedResponse.withdrawal.status,
       "APPROVED",
       "Status deve ser APPROVED"
     );
@@ -276,31 +276,22 @@ describe("Withdrawal Flow (F2)", () => {
     assert.strictEqual(adminLog.action, "APPROVE_WITHDRAWAL", "Ação deve ser APPROVE_WITHDRAWAL");
 
     // ====================
-    // PASSO 8: Verificar que processamento foi tentado (ou falhou)
+    // PASSO 8: Verificar que saque foi aprovado
     // ====================
-    // NOTA: O processamento automático tentará fazer transação blockchain,
-    // mas como não há fundos reais, deve falhar e status ficar como FAILED.
-    // O teste verifica que o fluxo funciona até este ponto.
-
-    // Aguardar processamento (pode ser assíncrono)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // NOTA: Em modo de teste (SKIP_BLOCKCHAIN_PROCESSING=true), o processamento
+    // blockchain não é executado. O teste verifica apenas que o fluxo de aprovação
+    // funciona corretamente até este ponto.
 
     const finalWithdrawal = await prisma.withdrawal.findUnique({
       where: { id: withdrawalId },
     });
 
-    // Status pode ser PROCESSING (se ainda não processou) ou FAILED (se falhou)
-    assert.ok(
-      finalWithdrawal?.status === "PROCESSING" ||
-        finalWithdrawal?.status === "FAILED" ||
-        finalWithdrawal?.status === "APPROVED",
-      `Status final deve ser PROCESSING, FAILED ou APPROVED, recebido: ${finalWithdrawal?.status}`
+    // Status deve ficar como APPROVED (processamento blockchain desabilitado em testes)
+    assert.strictEqual(
+      finalWithdrawal?.status,
+      "APPROVED",
+      `Status deve permanecer APPROVED em modo de teste, recebido: ${finalWithdrawal?.status}`
     );
-
-    // Se falhou, apenas confirmar que o status mudou
-    if (finalWithdrawal?.status === "FAILED") {
-      console.log("⚠️ Withdrawal falhou conforme esperado (sem blockchain real)");
-    }
 
     console.log("✅ Teste completo: Fluxo de saque validado com sucesso!");
   });
@@ -490,9 +481,9 @@ describe("Withdrawal Flow (F2)", () => {
 
     assert.strictEqual(rejectResponse.statusCode, 200, "Reject deve retornar 200");
 
-    const rejectedWithdrawal = rejectResponse.json();
+    const rejectedResponse = rejectResponse.json();
     assert.strictEqual(
-      rejectedWithdrawal.status,
+      rejectedResponse.withdrawal.status,
       "REJECTED",
       "Status deve ser REJECTED"
     );

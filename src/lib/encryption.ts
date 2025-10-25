@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { env } from "@/config/env";
 
 const ALGORITHM = "aes-256-gcm";
 
@@ -8,7 +9,7 @@ const ALGORITHM = "aes-256-gcm";
  * @returns String no formato: iv:authTag:encrypted
  */
 export function encryptPrivateKey(privateKey: string): string {
-  const key = Buffer.from(process.env.ENCRYPTION_KEY!, "hex");
+  const key = Buffer.from(env.ENCRYPTION_KEY, "hex");
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
 
@@ -25,7 +26,7 @@ export function encryptPrivateKey(privateKey: string): string {
  * @returns Private key em texto plano
  */
 export function decryptPrivateKey(encryptedData: string): string {
-  const key = Buffer.from(process.env.ENCRYPTION_KEY!, "hex");
+  const key = Buffer.from(env.ENCRYPTION_KEY, "hex");
   const [ivHex, authTagHex, encrypted] = encryptedData.split(":");
 
   const iv = Buffer.from(ivHex, "hex");

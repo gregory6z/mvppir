@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { processWithdrawal } from "@/modules/withdrawal/use-cases/process-withdrawal";
+import { env } from "@/config/env";
 
 interface RetryWithdrawalRequest {
   withdrawalId: string;
@@ -70,17 +71,21 @@ export async function retryWithdrawal({
     });
   });
 
-  // 4. Processa automaticamente
+  // 4. Processa automaticamente (se não estiver em modo de teste)
   // IMPORTANTE: não aguardamos para não travar a resposta HTTP
   // O resultado será atualizado no banco (COMPLETED ou FAILED)
-  processWithdrawal({ withdrawalId })
-    .then(() => {
-      console.log(`✅ Retry successful for withdrawal ${withdrawalId}`);
-    })
-    .catch((error) => {
-      console.error(`❌ Retry failed for withdrawal ${withdrawalId}:`, error);
-      // Falhou novamente - fica como FAILED no banco
-    });
+  if (!env.SKIP_BLOCKCHAIN_PROCESSING) {
+    processWithdrawal({ withdrawalId })
+      .then(() => {
+        console.log(`✅ Retry successful for withdrawal ${withdrawalId}`);
+      })
+      .catch((error) => {
+        console.error(`❌ Retry failed for withdrawal ${withdrawalId}:`, error);
+        // Falhou novamente - fica como FAILED no banco
+      });
+  } else {
+    console.log(`⚠️ Blockchain processing skipped for retry ${withdrawalId} (test mode)`);
+  }
 
   return {
     message: "Withdrawal retry initiated",

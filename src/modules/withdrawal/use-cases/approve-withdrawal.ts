@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { processWithdrawal } from "@/modules/withdrawal/use-cases/process-withdrawal";
+import { env } from "@/config/env";
 
 interface ApproveWithdrawalRequest {
   withdrawalId: string;
@@ -81,17 +82,21 @@ export async function approveWithdrawal({
     return updated;
   });
 
-  // 3. Processa saque automaticamente em background
+  // 3. Processa saque automaticamente em background (se não estiver em modo de teste)
   // IMPORTANTE: processWithdrawal é async mas não aguardamos para não travar a resposta ao admin
-  processWithdrawal({ withdrawalId })
-    .then(() => {
-      console.log(`✅ Withdrawal ${withdrawalId} processed successfully`);
-    })
-    .catch((error) => {
-      console.error(`❌ Failed to process withdrawal ${withdrawalId}:`, error);
-      // Em caso de erro, o saque fica como APPROVED mas não processado
-      // Admin pode tentar reprocessar manualmente ou será retried automaticamente
-    });
+  if (!env.SKIP_BLOCKCHAIN_PROCESSING) {
+    processWithdrawal({ withdrawalId })
+      .then(() => {
+        console.log(`✅ Withdrawal ${withdrawalId} processed successfully`);
+      })
+      .catch((error) => {
+        console.error(`❌ Failed to process withdrawal ${withdrawalId}:`, error);
+        // Em caso de erro, o saque fica como APPROVED mas não processado
+        // Admin pode tentar reprocessar manualmente ou será retried automaticamente
+      });
+  } else {
+    console.log(`⚠️ Blockchain processing skipped for withdrawal ${withdrawalId} (test mode)`);
+  }
 
   return {
     withdrawal: approved,
