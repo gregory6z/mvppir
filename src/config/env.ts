@@ -15,6 +15,9 @@ const envSchema = z.object({
       message: 'DATABASE_URL must be a valid PostgreSQL connection string',
     }),
 
+  // Redis (BullMQ for cron jobs)
+  REDIS_URL: z.string().default('redis://localhost:6379'),
+
   // Server
   PORT: z.coerce.number().int().positive().default(3333),
 
@@ -52,6 +55,9 @@ const envSchema = z.object({
   GLOBAL_WALLET_PRIVATE_KEY: z.string().min(1, {
     message: 'GLOBAL_WALLET_PRIVATE_KEY is required',
   }),
+
+  // Testing
+  SKIP_BLOCKCHAIN_PROCESSING: z.coerce.boolean().default(false),
 })
 
 const parsedEnv = envSchema.safeParse(process.env)

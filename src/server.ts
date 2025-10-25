@@ -1,5 +1,9 @@
 import { buildApp } from './app'
 import { env } from './config/env'
+import { initializeRepeatingJobs } from './lib/queues'
+import { startDailyCommissionsWorker } from './modules/mlm/workers/daily-commissions.worker'
+import { startMonthlyMaintenanceWorker } from './modules/mlm/workers/monthly-maintenance.worker'
+import { startGracePeriodRecoveryWorker } from './modules/mlm/workers/grace-period-recovery.worker'
 
 async function start() {
   const app = await buildApp()
@@ -7,6 +11,18 @@ async function start() {
   try {
     await app.listen({ port: env.PORT, host: '0.0.0.0' })
     app.log.info(`Server listening on http://0.0.0.0:${env.PORT}`)
+
+    // Initialize BullMQ cron jobs
+    app.log.info('Initializing BullMQ cron jobs...')
+    await initializeRepeatingJobs()
+
+    // Start workers
+    app.log.info('Starting BullMQ workers...')
+    startDailyCommissionsWorker()
+    startMonthlyMaintenanceWorker()
+    startGracePeriodRecoveryWorker()
+
+    app.log.info('✅ All workers started successfully')
   } catch (err) {
     app.log.error(err)
     process.exit(1)

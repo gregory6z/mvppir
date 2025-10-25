@@ -48,6 +48,35 @@ enum NotificationType {
   WITHDRAWAL_FAILED
 }
 
+// ===== MLM v1.0 Enums =====
+
+enum MLMRank {
+  RECRUIT // Recruta
+  BRONZE  // Bronze
+  SILVER  // Prata
+  GOLD    // Ouro
+}
+
+enum RankStatus {
+  ACTIVE              // Rank ativo, requisitos cumpridos
+  WARNING             // Mês 1: Aviso (grace period 7 dias)
+  TEMPORARY_DOWNRANK  // Mês 2: Downrank temporário -1
+  DOWNRANKED          // Mês 3: Downrank permanente -2
+}
+
+enum LoyaltyTier {
+  NORMAL    // < 30 dias sem sacar
+  FAITHFUL  // 30-90 dias (Fiel)
+  LOYAL     // 90-180 dias (Leal)
+  VETERAN   // 180+ dias (Veterano)
+}
+
+enum CommissionStatus {
+  PENDING   // Comissão calculada mas não paga
+  PAID      // Comissão paga ao usuário
+  CANCELLED // Comissão cancelada (ex: usuário bloqueado)
+}
+
 model User {
   id            String     @id @default(uuid())
   email         String     @unique
@@ -60,6 +89,35 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
+  // ===== MLM v1.0 Fields =====
+
+  // Rank Management
+  currentRank       MLMRank    @default(RECRUIT)
+  rankStatus        RankStatus @default(ACTIVE)
+  rankConqueredAt   DateTime?  // Data que conquistou o rank atual
+
+  // Downrank System (3 months)
+  warningCount      Int        @default(0) // 0, 1, 2, 3
+  originalRank      MLMRank?   // Rank original antes do downrank temporário
+  gracePeriodEndsAt DateTime?  // Fim do grace period de 7 dias (WARNING status)
+
+  // Network Stats (cached for performance)
+  totalDirects   Int     @default(0) // Total lifetime de diretos (nunca diminui)
+  lifetimeVolume Decimal @default(0) @db.Decimal(20, 2) // Volume total da rede (nunca diminui)
+
+  // Blocked Balance (requisito de rank)
+  blockedBalance Decimal @default(0) @db.Decimal(20, 2) // Saldo que deve manter bloqueado
+
+  // Withdrawal Tracking
+  lastWithdrawalAt   DateTime?   // Última data de saque
+  withdrawalCount30d Int         @default(0) // Contador de saques nos últimos 30 dias
+  loyaltyTier        LoyaltyTier @default(NORMAL) // Tier de lealdade (desconto em taxas)
+
+  // MLM Network (referral tree)
+  referrerId String? // ID do usuário que convidou
+  referrer   User?   @relation("MLMNetwork", fields: [referrerId], references: [id])
+  referrals  User[]  @relation("MLMNetwork") // Usuários diretos (N1)
+
   // Better Auth relations
   sessions Session[]
   accounts Account[]
@@ -71,6 +129,13 @@ model User {
   withdrawals             Withdrawal[]
   withdrawalNotifications WithdrawalNotification[]
 
+  // MLM relations
+  commissions  Commission[]
+  monthlyStats MonthlyStats[]
+
+  @@index([referrerId])
+  @@index([currentRank])
+  @@index([rankStatus])
   @@map("users")
 }
 
@@ -217,9 +282,25 @@ model Withdrawal {
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
 
+  // ===== MLM v1.0 Fields =====
+
+  // Fee Breakdown (taxas aplicadas)
+  baseFee         Decimal @default(0) @db.Decimal(5, 2) // Taxa base por rank (8%-15%)
+  progressiveFee  Decimal @default(0) @db.Decimal(5, 2) // Taxa progressiva (frequência)
+  loyaltyDiscount Decimal @default(0) @db.Decimal(5, 2) // Desconto de lealdade (-2% a -6%)
+  gasFee          Decimal @default(0) @db.Decimal(10, 8) // Gas fee da blockchain
+  netAmount       Decimal @default(0) @db.Decimal(20, 8) // Valor líquido (amount - fee)
+
+  // Tracking (snapshot no momento do saque)
+  rank             MLMRank?     // Rank do usuário no momento do saque
+  loyaltyTier      LoyaltyTier? // Loyalty tier no momento do saque
+  withdrawalNumber Int? // Número do saque no mês (1º, 2º, 3º...)
+
   user          User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   notifications WithdrawalNotification[]
 
+  @@index([userId, status])
+  @@index([status, createdAt])
   @@map("withdrawals")
 }
 
@@ -250,4 +331,58 @@ model WithdrawalNotification {
 
   @@index([userId, read]) // Para query de notificações não lidas
   @@map("withdrawal_notifications")
+}
+
+// ===== MLM v1.0 Models =====
+
+model Commission {
+  id         String           @id @default(uuid())
+  userId     String // Usuário que RECEBE a comissão
+  fromUserId String // Usuário que GEROU a comissão (da rede)
+
+  // Valores
+  baseAmount  Decimal @db.Decimal(20, 8) // Saldo total do fromUser
+  level       Int // 1 (N1), 2 (N2), 3 (N3)
+  percentage  Decimal @db.Decimal(5, 2) // Ex: 1.05, 2.60
+  finalAmount Decimal @db.Decimal(20, 8) // baseAmount × (percentage / 100)
+
+  // Tracking
+  referenceDate DateTime // Data do cálculo (ontem)
+  paidAt        DateTime? // Data que foi creditada no balance
+  status        CommissionStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, referenceDate])
+  @@index([status])
+  @@index([fromUserId])
+  @@map("commissions")
+}
+
+model MonthlyStats {
+  id     String @id @default(uuid())
+  userId String
+
+  // Período
+  month Int // 1-12
+  year  Int // 2025, 2026...
+
+  // Métricas calculadas
+  activeDirects   Int     @default(0) // Diretos ativos no mês
+  totalVolume     Decimal @default(0) @db.Decimal(20, 2) // Volume da rede (N1+N2+N3)
+  metRequirements Boolean @default(false) // Se cumpriu os requisitos
+
+  // Snapshot
+  rankAtStart MLMRank // Rank no início do mês
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, year, month])
+  @@index([userId])
+  @@index([year, month])
+  @@map("monthly_stats")
 }

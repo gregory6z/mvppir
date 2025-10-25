@@ -2,11 +2,13 @@ import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { env } from './config/env'
 import authPlugin from './plugins/auth.plugin'
+import { bullBoardPlugin } from './plugins/bull-board.plugin'
 import { userRoutes } from './modules/user/routes'
 import { depositRoutes } from './modules/deposit/routes'
 import { webhookRoutes } from './modules/webhook/routes'
 import { userWithdrawalRoutes, adminWithdrawalRoutes } from './modules/withdrawal/routes'
 import { transferRoutes } from './modules/transfer/routes'
+import { mlmRoutes } from './modules/mlm/routes'
 
 export async function buildApp() {
   const app = Fastify({
@@ -74,6 +76,9 @@ export async function buildApp() {
   // Register authentication plugin
   await app.register(authPlugin)
 
+  // Register Bull Board (queue monitoring dashboard)
+  await app.register(bullBoardPlugin)
+
   // Root route - Hello World
   app.get('/', async () => {
     return {
@@ -103,6 +108,9 @@ export async function buildApp() {
 
   // Transfer routes (admin only)
   await app.register(transferRoutes, { prefix: '/admin/transfers' })
+
+  // MLM routes
+  await app.register(mlmRoutes, { prefix: '/mlm' })
 
   return app
 }
