@@ -1,46 +1,24 @@
 {
-  "name": "mvppir",
+  "name": "mvppir-monorepo",
   "version": "1.0.0",
-  "description": "API Fastify com Prisma e PostgreSQL",
-  "main": "dist/server.js",
+  "private": true,
+  "description": "Monorepo: Server API + Admin Dashboard + Mobile App",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsup src",
-    "start": "node dist/server.js",
-    "test:integration": "NODE_ENV=test node --import tsx --test src/tests/integration/**/*.test.ts",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:generate": "prisma generate",
-    "prisma:studio": "prisma studio"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@bull-board/api": "^6.14.0",
-    "@bull-board/fastify": "^6.14.0",
-    "@fastify/cors": "^11.1.0",
-    "@moralisweb3/common-evm-utils": "^2.27.2",
-    "@prisma/client": "^5.22.0",
-    "bcrypt": "^6.0.0",
-    "better-auth": "^1.3.28",
-    "bullmq": "^5.61.2",
-    "dotenv": "^16.4.5",
-    "ethers": "^6.15.0",
-    "fastify": "^5.1.0",
-    "fastify-plugin": "^5.0.1",
-    "ioredis": "^5.8.2",
-    "moralis": "^2.27.2",
-    "qrcode": "^1.5.4",
-    "zod": "^4.1.12"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "dev:server": "turbo run dev --filter=@mvppir/server",
+    "dev:web": "turbo run dev --filter=@mvppir/web"
   },
   "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/node": "^22.9.0",
-    "@types/qrcode": "^1.5.5",
-    "pino-pretty": "^11.2.2",
-    "prisma": "^5.22.0",
-    "tsup": "^8.3.5",
-    "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
-  }
+    "turbo": "^2.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
 }

@@ -35,25 +35,25 @@ services:
     networks:
       - mvppir-network
 
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: mvppir-api
-    restart: unless-stopped
-    ports:
-      - "4000:4000"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mvppir?schema=public
-      PORT: 4000
-      NODE_ENV: production
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - mvppir-network
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: mvppir-api
+  #   restart: unless-stopped
+  #   ports:
+  #     - "4000:4000"
+  #   environment:
+  #     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mvppir?schema=public
+  #     PORT: 4000
+  #     NODE_ENV: production
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - mvppir-network
 
 volumes:
   postgres_data:
