@@ -19,7 +19,24 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   secret: process.env.AUTH_SECRET!,
   baseURL: process.env.API_BASE_URL || "http://localhost:3333",
 
-  // Hook para adicionar role ao session
+  // Include role in user response
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "user",
+        input: false, // don't allow user to set role
+      },
+      status: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+    },
+  },
+
+  // Session configuration
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 dias
     updateAge: 60 * 60 * 24, // Atualiza a cada 24h

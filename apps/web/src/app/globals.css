@@ -1,3 +1,137 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Content Scanning Paths */
+@source "../../**/*.{js,ts,jsx,tsx}";
+
+@theme {
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+
+  /* Shadows for depth and glow effects (Launch UI inspired) */
+  --shadow-glow: 0 0 20px rgba(255, 255, 255, 0.3);
+  --shadow-glow-accent: 0 0 15px rgba(139, 92, 246, 0.5);
+}
+
+/* Custom Utilities */
+@utility text-gradient {
+  background: linear-gradient(to right, #ffffff, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* shadcn/ui CSS Variables - Light Mode */
+:root {
+  /* Base colors - Zinc neutral palette */
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+
+  /* Card */
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+
+  /* Popover */
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+
+  /* Primary - White */
+  --primary: 0 0% 100%;
+  --primary-foreground: 240 10% 3.9%;
+
+  /* Secondary - Zinc */
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+
+  /* Muted - Subtle backgrounds */
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+
+  /* Accent - Purple (#8b5cf6) inspired by Launch UI */
+  --accent: 262 83% 58%;
+  --accent-foreground: 0 0% 100%;
+
+  /* Destructive - Red */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+
+  /* Border and Input */
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+
+  /* Ring - Focus ring color (white) */
+  --ring: 0 0% 100%;
+
+  /* Chart colors */
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+
+  /* Radius */
+  --radius: 0.5rem;
+}
+
+/* shadcn/ui CSS Variables - Dark Mode */
+.dark {
+  /* Base colors - Dark zinc palette */
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+
+  /* Card */
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+
+  /* Popover */
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+
+  /* Primary - White for dark mode */
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 10% 3.9%;
+
+  /* Secondary - Dark zinc */
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+
+  /* Muted - Subtle dark backgrounds */
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+
+  /* Accent - Vibrant purple for dark mode */
+  --accent: 262 83% 58%;
+  --accent-foreground: 0 0% 98%;
+
+  /* Destructive - Bright red for dark mode */
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  /* Border and Input - Subtle dark borders */
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+
+  /* Ring - Focus ring (white) */
+  --ring: 0 0% 98%;
+
+  /* Chart colors - Dark mode adjusted */
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}
+
+/* Base layer styles */
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}

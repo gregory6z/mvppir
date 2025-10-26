@@ -1,11 +1,14 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { batchCollectToGlobal } from "@/modules/transfer/use-cases/batch-collect-to-global";
+import { batchCollectQueue } from "@/lib/queues";
 
 /**
  * POST /admin/transfers/batch-collect
  * Admin executa transferência em lote de todos os endereços para Global Wallet
  *
- * Processo em 3 fases:
+ * Cria um job no Bull Queue para processamento em background.
+ * Retorna jobId para tracking via GET /admin/batch-collect/status/:jobId
+ *
+ * Processo em 3 fases (executado pelo worker):
  * 1. Distribui MATIC (Global → Endereços usuários)
  * 2. Transfere tokens (Endereços → Global)
  * 3. Recupera MATIC restante (Endereços → Global)
@@ -17,34 +20,31 @@ export async function batchCollectController(
   try {
     const adminId = request.user!.id;
 
-    console.log(`🔐 Admin ${adminId} iniciou batch collect`);
+    console.log(`🔐 Admin ${adminId} criando job de batch collect`);
 
-    const result = await batchCollectToGlobal({ adminId });
+    // Cria job no Bull Queue
+    const job = await batchCollectQueue.add(
+      "batch-collect-manual",
+      { adminId },
+      {
+        removeOnComplete: false, // Manter job completo para histórico
+        removeOnFail: false, // Manter job falho para análise
+      }
+    );
 
-    return reply.status(200).send(result);
+    console.log(`✅ Job ${job.id} criado com sucesso`);
+
+    return reply.status(202).send({
+      success: true,
+      jobId: job.id,
+      message: "Batch collect job created. Use jobId to track progress.",
+    });
   } catch (error) {
-    request.log.error({ error }, "Error in batch collect");
-
-    if (error instanceof Error) {
-      // Erros conhecidos
-      if (error.message.startsWith("INSUFFICIENT_GLOBAL_MATIC")) {
-        return reply.status(400).send({
-          error: "INSUFFICIENT_GLOBAL_MATIC",
-          message: error.message,
-        });
-      }
-
-      if (error.message === "GLOBAL_WALLET_NOT_FOUND") {
-        return reply.status(500).send({
-          error: "GLOBAL_WALLET_NOT_FOUND",
-          message: "Global Wallet não encontrada. Execute o setup primeiro.",
-        });
-      }
-    }
+    request.log.error({ error }, "Error creating batch collect job");
 
     return reply.status(500).send({
       error: "INTERNAL_ERROR",
-      message: "Failed to execute batch collect",
+      message: "Failed to create batch collect job",
     });
   }
 }

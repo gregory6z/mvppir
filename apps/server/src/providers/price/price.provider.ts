@@ -132,6 +132,21 @@ export async function calculateTotalUSD(
 }
 
 /**
+ * Busca preços de múltiplos tokens de uma vez
+ */
+export async function getPrices(
+  tokenSymbols: string[]
+): Promise<Record<string, number>> {
+  const prices: Record<string, number> = {};
+
+  for (const symbol of tokenSymbols) {
+    prices[symbol] = await getTokenPriceUSD(symbol);
+  }
+
+  return prices;
+}
+
+/**
  * Limpa o cache de preços (útil para testes)
  */
 export function clearPriceCache() {

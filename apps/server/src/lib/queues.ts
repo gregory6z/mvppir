@@ -12,6 +12,7 @@ export const QUEUE_NAMES = {
   DAILY_COMMISSIONS: "mlm-daily-commissions",
   MONTHLY_MAINTENANCE: "mlm-monthly-maintenance",
   GRACE_PERIOD_RECOVERY: "mlm-grace-period-recovery",
+  BATCH_COLLECT: "admin-batch-collect",
 } as const;
 
 // Redis connection config for BullMQ
@@ -97,6 +98,25 @@ export const gracePeriodRecoveryQueue = new Queue(
 );
 
 /**
+ * Batch Collect Queue
+ *
+ * Processes batch collection of user deposits to Global Wallet.
+ * Jobs are created manually by admin via POST /admin/transfers/batch-collect.
+ * Long-running job with progress tracking.
+ */
+export const batchCollectQueue = new Queue(QUEUE_NAMES.BATCH_COLLECT, {
+  connection,
+  defaultJobOptions: {
+    attempts: 1, // Don't auto-retry blockchain operations (manual review needed)
+    removeOnComplete: {
+      age: 604800, // Keep completed for 7 days
+      count: 50, // Keep last 50 batch collects
+    },
+    removeOnFail: false, // Never remove failed jobs (admin needs to review)
+  },
+});
+
+/**
  * Initialize all repeatable jobs (cron schedules)
  */
 export async function initializeRepeatingJobs() {
@@ -153,5 +173,6 @@ export async function cleanupQueues() {
   await dailyCommissionsQueue.close();
   await monthlyMaintenanceQueue.close();
   await gracePeriodRecoveryQueue.close();
+  await batchCollectQueue.close();
   console.log("✅ All queues closed");
 }

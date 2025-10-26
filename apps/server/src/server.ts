@@ -4,6 +4,7 @@ import { initializeRepeatingJobs } from './lib/queues'
 import { startDailyCommissionsWorker } from './modules/mlm/workers/daily-commissions.worker'
 import { startMonthlyMaintenanceWorker } from './modules/mlm/workers/monthly-maintenance.worker'
 import { startGracePeriodRecoveryWorker } from './modules/mlm/workers/grace-period-recovery.worker'
+import { startBatchCollectWorker } from './modules/transfer/workers/batch-collect.worker'
 
 async function start() {
   const app = await buildApp()
@@ -21,6 +22,7 @@ async function start() {
     startDailyCommissionsWorker()
     startMonthlyMaintenanceWorker()
     startGracePeriodRecoveryWorker()
+    startBatchCollectWorker() // Manual execution (no cron)
 
     app.log.info('✅ All workers started successfully')
   } catch (err) {

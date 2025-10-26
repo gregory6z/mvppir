@@ -1,21 +1,19 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from "next"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "MVPPIR Admin Dashboard",
-  description: "Admin panel for managing users, deposits, withdrawals, and MLM system",
-};
+  title: "MVPPIR",
+  description: "Cryptocurrency platform with MLM system",
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.Node;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        {children}
-      </body>
+    <html lang="en" className="dark">
+      <body className="antialiased">{children}</body>
     </html>
-  );
+  )
 }

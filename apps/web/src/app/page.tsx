@@ -1,25 +1,23 @@
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="max-w-2xl mx-auto text-center p-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          MVPPIR Admin Dashboard
+    <div className="relative min-h-screen bg-zinc-950 flex items-center justify-center overflow-hidden">
+      {/* Background gradient effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black" />
+
+      {/* Glow effects */}
+      <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700" />
+
+      {/* Content */}
+      <div className="relative z-10 text-center px-4">
+        <h1 className="text-gradient text-8xl font-bold tracking-tight mb-6">
+          Welcome
         </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Monorepo successfully configured! 🎉
-        </p>
-        <div className="bg-white rounded-lg shadow-md p-6 text-left">
-          <h2 className="text-2xl font-semibold mb-4">Features to implement:</h2>
-          <ul className="space-y-2 text-gray-700">
-            <li>✅ User management</li>
-            <li>✅ Deposit monitoring</li>
-            <li>✅ Withdrawal approval system</li>
-            <li>✅ MLM network visualization</li>
-            <li>✅ Commission management</li>
-            <li>✅ Analytics dashboard</li>
-          </ul>
-        </div>
+        <div className="h-1 w-32 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" />
       </div>
+
+      {/* Bottom gradient line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
     </div>
-  );
+  )
 }

@@ -9,6 +9,7 @@ import { webhookRoutes } from './modules/webhook/routes'
 import { userWithdrawalRoutes, adminWithdrawalRoutes } from './modules/withdrawal/routes'
 import { transferRoutes } from './modules/transfer/routes'
 import { mlmRoutes } from './modules/mlm/routes'
+import { adminRoutes } from './modules/admin/routes'
 
 export async function buildApp() {
   const app = Fastify({
@@ -108,6 +109,9 @@ export async function buildApp() {
 
   // Transfer routes (admin only)
   await app.register(transferRoutes, { prefix: '/admin/transfers' })
+
+  // Admin routes (global wallet, batch collect, matic)
+  await app.register(adminRoutes, { prefix: '/admin' })
 
   // MLM routes
   await app.register(mlmRoutes, { prefix: '/mlm' })
