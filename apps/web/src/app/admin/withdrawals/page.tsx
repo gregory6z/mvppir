@@ -135,7 +135,7 @@ export default function WithdrawalsPage() {
         {isHistoryLoading ? (
           <Skeleton className="h-48 w-full" />
         ) : (
-          <Card className="border-zinc-800 bg-gradient-to-br from-purple-900/20 to-zinc-900/50 backdrop-blur">
+          <Card className="border-zinc-800 bg-gradient-to-br from-red-900/20 to-zinc-900/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
@@ -161,7 +161,7 @@ export default function WithdrawalsPage() {
                 </div>
                 <div className="w-full h-3 bg-zinc-800 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-purple-400 transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-300"
                     style={{ width: `${withdrawnPercentage}%` }}
                   />
                 </div>
