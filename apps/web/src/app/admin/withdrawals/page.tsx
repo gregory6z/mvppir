@@ -125,7 +125,7 @@ export default function WithdrawalsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Withdrawn Percentage Card */}
         {isHistoryLoading ? (
           <Skeleton className="h-48 w-full" />
@@ -179,6 +179,36 @@ export default function WithdrawalsPage() {
               })}
             </p>
             <p className="text-sm text-zinc-500 mt-2">MATIC</p>
+          </CardContent>
+        </Card>
+
+        {/* Total Balance Card */}
+        <Card className="border-zinc-800 bg-gradient-to-br from-blue-900/20 to-zinc-900/50 backdrop-blur">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Saldo Total
+            </CardTitle>
+            <CardDescription>
+              Carteira Global
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {globalWalletData?.balances.map((balance) => (
+                <div key={balance.tokenSymbol} className="flex justify-between items-center">
+                  <span className="text-sm text-zinc-400">{balance.tokenSymbol}</span>
+                  <span className="text-lg font-semibold text-white">
+                    {Number(balance.balance).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 4,
+                    })}
+                  </span>
+                </div>
+              )) || (
+                <p className="text-sm text-zinc-500">Nenhum saldo disponível</p>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
