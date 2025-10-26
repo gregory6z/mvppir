@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable } from "react-native";
+import { BlurView } from "expo-blur";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUp } from "@/lib/auth-client";
@@ -149,13 +150,16 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
           <Text style={{ fontSize: 16, color: "#a1a1aa" }}>Crie sua conta</Text>
         </View>
 
-        {/* Signup Card - Modern style with shadow */}
-        <View
+        {/* Signup Card - Modern style with blur and shadow */}
+        <BlurView
+          intensity={80}
+          tint="dark"
           style={{
-            backgroundColor: "#18181b",
             borderRadius: 20,
             borderWidth: 1,
             borderColor: "#27272a",
+            overflow: "hidden",
+            backgroundColor: "rgba(24, 24, 27, 0.6)",
             // Shadow para profundidade
             ...Platform.select({
               ios: {
@@ -393,7 +397,7 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
               </View>
             </View>
           </View>
-        </View>
+        </BlurView>
       </ScrollView>
     </KeyboardAvoidingView>
   );

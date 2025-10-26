@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { BlurView } from "expo-blur";
 
 interface BackgroundGlowProps {
   color: string;
@@ -10,8 +11,8 @@ interface BackgroundGlowProps {
 }
 
 /**
- * Creates a blurred glow effect in the background
- * Uses multiple layered circles with different opacities to simulate blur
+ * Creates a blurred glow effect in the background using expo-blur
+ * Simulates the blur effect from web with native blur
  */
 export function BackgroundGlow({ color, top, bottom, left, right, size = 300 }: BackgroundGlowProps) {
   const position = {
@@ -33,53 +34,29 @@ export function BackgroundGlow({ color, top, bottom, left, right, size = 300 }: 
       }}
       pointerEvents="none"
     >
-      {/* Outer glow - most blurred (largest, lowest opacity) */}
-      <View
+      {/* Colored circle with blur effect */}
+      <BlurView
+        intensity={80}
+        tint="dark"
         style={{
-          position: "absolute",
-          width: size * 1.2,
-          height: size * 1.2,
-          borderRadius: (size * 1.2) / 2,
-          backgroundColor: color,
-          opacity: 0.03,
-        }}
-      />
-
-      {/* Middle glow */}
-      <View
-        style={{
-          position: "absolute",
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: color,
-          opacity: 0.06,
+          overflow: "hidden",
+          alignItems: "center",
+          justifyContent: "center",
         }}
-      />
-
-      {/* Inner glow */}
-      <View
-        style={{
-          position: "absolute",
-          width: size * 0.8,
-          height: size * 0.8,
-          borderRadius: (size * 0.8) / 2,
-          backgroundColor: color,
-          opacity: 0.08,
-        }}
-      />
-
-      {/* Core */}
-      <View
-        style={{
-          position: "absolute",
-          width: size * 0.6,
-          height: size * 0.6,
-          borderRadius: (size * 0.6) / 2,
-          backgroundColor: color,
-          opacity: 0.12,
-        }}
-      />
+      >
+        <View
+          style={{
+            width: size * 0.8,
+            height: size * 0.8,
+            borderRadius: (size * 0.8) / 2,
+            backgroundColor: color,
+            opacity: 0.3,
+          }}
+        />
+      </BlurView>
     </View>
   );
 }
