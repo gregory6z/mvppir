@@ -23,6 +23,11 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 }
 
 // Admin Global Wallet Services
-export async function getGlobalWalletBalance(): Promise<GlobalWalletBalance> {
-  return request<GlobalWalletBalance>("/admin/global-wallet/balance")
+export async function getGlobalWalletBalance(
+  page = 1,
+  limit = 10
+): Promise<GlobalWalletBalance> {
+  return request<GlobalWalletBalance>(
+    `/admin/global-wallet/balance?page=${page}&limit=${limit}`
+  )
 }

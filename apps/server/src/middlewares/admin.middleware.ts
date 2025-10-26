@@ -42,7 +42,7 @@ export async function requireAdmin(
     }
 
     // Verifica se é admin
-    if (user.role !== "admin") {
+    if (user.role !== "ADMIN") {
       return reply.status(403).send({
         error: "FORBIDDEN",
         message: "Admin access required",
