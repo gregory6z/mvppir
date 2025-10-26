@@ -101,3 +101,64 @@ export async function getBatchCollectHistory(
     `/admin/batch-collect/history?limit=${limit}`
   )
 }
+
+// Admin Withdrawals Services
+export interface Withdrawal {
+  id: string
+  userId: string
+  tokenSymbol: string
+  tokenAddress: string | null
+  amount: string
+  destinationAddress: string
+  fee: string
+  status: "PENDING_APPROVAL" | "APPROVED" | "PROCESSING" | "COMPLETED" | "REJECTED" | "FAILED"
+  txHash: string | null
+  approvedBy: string | null
+  approvedAt: string | null
+  rejectedReason: string | null
+  processedAt: string | null
+  createdAt: string
+  updatedAt: string
+  user: {
+    id: string
+    email: string
+    name: string
+  }
+}
+
+export interface WithdrawalsResponse {
+  withdrawals: Withdrawal[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }
+}
+
+export async function getWithdrawals(
+  status?: string,
+  page = 1,
+  limit = 20
+): Promise<WithdrawalsResponse> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  })
+  if (status) params.append("status", status)
+
+  return request<WithdrawalsResponse>(`/admin/withdrawals?${params}`)
+}
+
+export async function approveWithdrawal(id: string): Promise<{ success: boolean; withdrawal: Withdrawal }> {
+  return request<{ success: boolean; withdrawal: Withdrawal }>(`/admin/withdrawals/${id}/approve`, {
+    method: "POST",
+  })
+}
+
+export async function rejectWithdrawal(id: string, reason: string): Promise<{ success: boolean; withdrawal: Withdrawal }> {
+  return request<{ success: boolean; withdrawal: Withdrawal }>(`/admin/withdrawals/${id}/reject`, {
+    method: "POST",
+    body: JSON.stringify({ reason }),
+  })
+}
