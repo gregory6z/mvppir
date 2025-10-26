@@ -87,8 +87,21 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-zinc-950"
     >
-      {/* Background gradient effect */}
-      <View className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black" />
+      {/* Purple line at bottom with blur */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          backgroundColor: "#8b5cf6",
+          shadowColor: "#8b5cf6",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.8,
+          shadowRadius: 20,
+        }}
+      />
 
       <ScrollView
         contentContainerStyle={{
