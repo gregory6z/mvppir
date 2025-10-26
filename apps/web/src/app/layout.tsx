@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased">
+    <html lang="en" className="dark h-full">
+      <body className="antialiased h-full overflow-hidden">
         <Providers>{children}</Providers>
       </body>
     </html>
