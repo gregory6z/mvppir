@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuthStore } from "@/stores/auth.store";
 import { spacing, screenPadding, formSpacing } from "@/lib/design-system";
-import { BackgroundGlow } from "@/components/BackgroundGlow";
 
 interface LoginScreenProps {
   onNavigateToSignup: () => void;
@@ -83,10 +82,6 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
     >
       {/* Background gradient effect */}
       <View className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black" />
-
-      {/* Glow effects */}
-      <BackgroundGlow color="#3b82f6" top="20%" left="-20%" size={350} />
-      <BackgroundGlow color="#8b5cf6" bottom="25%" right="-15%" size={300} />
 
       <ScrollView
         contentContainerStyle={{
