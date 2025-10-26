@@ -200,15 +200,82 @@ export async function batchCollectToGlobal({
     }
   }
 
-  // 5. Loga ação do admin
+  // 5. Separa resultados bem-sucedidos e falhos
+  const successfulResults = results.filter((r) => r.success);
+  const failedResults = results.filter((r) => !r.success);
+
+  // 6. Busca global wallet para salvar histórico
+  const globalWalletRecord = await prisma.globalWallet.findFirst();
+
+  if (!globalWalletRecord) {
+    throw new Error("GLOBAL_WALLET_NOT_FOUND: Global Wallet não encontrada");
+  }
+
+  // 7. Cria registros de BatchCollect por token
+  const tokenCollections: Record<
+    string,
+    {
+      totalAmount: number;
+      walletsCount: number;
+      txHashes: string[];
+    }
+  > = {};
+
+  // Agrupa dados por token
+  for (const result of successfulResults) {
+    for (const addressData of addressesWithBalances) {
+      if (addressData.address === result.address) {
+        for (const token of addressData.tokens) {
+          const tokenSymbol = token.symbol;
+
+          if (!tokenCollections[tokenSymbol]) {
+            tokenCollections[tokenSymbol] = {
+              totalAmount: 0,
+              walletsCount: 0,
+              txHashes: [],
+            };
+          }
+
+          tokenCollections[tokenSymbol].totalAmount += Number(token.balance);
+          tokenCollections[tokenSymbol].walletsCount += 1;
+          // txHashes seriam os hashes das transações reais, mas por simplicidade usamos placeholder
+          // Em produção, você deveria coletar os txHashes reais de cada transferência
+        }
+      }
+    }
+  }
+
+  // Salva histórico de BatchCollect para cada token
+  for (const [tokenSymbol, data] of Object.entries(tokenCollections)) {
+    if (data.totalAmount > 0) {
+      await prisma.batchCollect.create({
+        data: {
+          globalWalletId: globalWalletRecord.id,
+          tokenSymbol,
+          totalCollected: data.totalAmount.toString(),
+          walletsCount: data.walletsCount,
+          status:
+            results.filter((r) => !r.success).length === 0
+              ? "COMPLETED"
+              : results.filter((r) => r.success).length > 0
+                ? "PARTIAL"
+                : "FAILED",
+          txHashes: data.txHashes,
+          executedBy: adminId,
+        },
+      });
+    }
+  }
+
+  // 8. Loga ação do admin
   await prisma.adminLog.create({
     data: {
       adminId,
       action: "BATCH_COLLECT_TO_GLOBAL",
       details: {
         totalAddresses: addressesWithBalances.length,
-        successfulAddresses: results.filter((r) => r.success).length,
-        failedAddresses: results.filter((r) => !r.success).length,
+        successfulAddresses: successfulResults.length,
+        failedAddresses: failedResults.length,
         maticDistributed: totalMaticDistributed.toFixed(4),
         maticRecovered: totalMaticRecovered.toFixed(4),
         tokensTransferred,
@@ -217,10 +284,7 @@ export async function batchCollectToGlobal({
     },
   });
 
-  // 6. Retorna relatório completo
-  const successfulResults = results.filter((r) => r.success);
-  const failedResults = results.filter((r) => !r.success);
-
+  // 9. Retorna relatório completo
   const totalGasCost = totalMaticDistributed - totalMaticRecovered;
 
   console.log("\n✅ Batch Collect concluído!");

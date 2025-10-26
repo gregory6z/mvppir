@@ -8,11 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   LayoutDashboard,
   Wallet,
-  Users,
   ArrowLeftRight,
-  Settings,
   LogOut,
-  Fuel,
   TrendingUp
 } from "lucide-react"
 import { signOut } from "@/hooks/use-auth"
@@ -34,24 +31,9 @@ const menuItems = [
     icon: ArrowLeftRight,
   },
   {
-    title: "Status MATIC",
-    href: "/admin/matic",
-    icon: Fuel,
-  },
-  {
     title: "Saques",
     href: "/admin/withdrawals",
     icon: TrendingUp,
-  },
-  {
-    title: "Usuários",
-    href: "/admin/users",
-    icon: Users,
-  },
-  {
-    title: "Configurações",
-    href: "/admin/settings",
-    icon: Settings,
   },
 ]
 

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getTokenPriceUSD } from "@/providers/price/price.provider";
 
 interface BatchCollectPreview {
   tokens: Array<{
@@ -6,10 +7,13 @@ interface BatchCollectPreview {
     walletsCount: number;
     totalAmount: string;
     gasEstimate: string;
+    priceUsd: number;
+    valueUsd: number;
   }>;
   totalGasEstimate: string;
   maticBalance: string;
   canExecute: boolean;
+  totalValueUsd: number;
 }
 
 /**
@@ -41,7 +45,7 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
 
   // 3. Estimar gas (0.05 MATIC por transferência - valor aproximado)
   const GAS_PER_TRANSFER = 0.05;
-  const tokens = Object.entries(tokenGroups).map(([tokenSymbol, data]) => {
+  const tokensWithoutPrices = Object.entries(tokenGroups).map(([tokenSymbol, data]) => {
     const walletsCount = data.wallets.size;
     const gasEstimate = walletsCount * GAS_PER_TRANSFER;
 
@@ -53,12 +57,29 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
     };
   });
 
+  // 4. Buscar preços dos tokens em USD
+  const tokens = await Promise.all(
+    tokensWithoutPrices.map(async (token) => {
+      const priceUsd = await getTokenPriceUSD(token.tokenSymbol);
+      const valueUsd = Number(token.totalAmount) * priceUsd;
+
+      return {
+        ...token,
+        priceUsd,
+        valueUsd,
+      };
+    })
+  );
+
   const totalGasEstimate = tokens.reduce(
     (sum, t) => sum + Number(t.gasEstimate),
     0
   );
 
-  // 4. Buscar saldo de MATIC na Global Wallet
+  // 5. Calcular valor total em USD
+  const totalValueUsd = tokens.reduce((sum, t) => sum + t.valueUsd, 0);
+
+  // 6. Buscar saldo de MATIC na Global Wallet
   const globalWallet = await prisma.globalWallet.findFirst({
     include: {
       balances: {
@@ -75,5 +96,6 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
     totalGasEstimate: totalGasEstimate.toFixed(8),
     maticBalance: maticBalance.toString(),
     canExecute,
+    totalValueUsd,
   };
 }

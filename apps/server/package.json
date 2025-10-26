@@ -15,7 +15,12 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "tsx prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts",
+    "seed:preview": "tsx seed-batch-collect-preview.ts",
+    "seed:matic": "tsx seed-matic-balance.ts",
+    "seed:history": "tsx seed-batch-collect-history.ts",
+    "seed:all": "npm run seed:preview && npm run seed:matic && npm run seed:history",
+    "clean:mocks": "tsx clean-all-mocks.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

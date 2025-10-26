@@ -77,6 +77,12 @@ enum CommissionStatus {
   CANCELLED // Comissão cancelada (ex: usuário bloqueado)
 }
 
+enum BatchCollectStatus {
+  COMPLETED // Coleta concluída com sucesso
+  PARTIAL   // Coleta parcialmente concluída (alguns endereços falharam)
+  FAILED    // Coleta falhou completamente
+}
+
 model User {
   id            String     @id @default(uuid())
   email         String     @unique
@@ -248,7 +254,8 @@ model GlobalWallet {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  balances GlobalWalletBalance[]
+  balances      GlobalWalletBalance[]
+  batchCollects BatchCollect[]
 
   @@map("global_wallets")
 }
@@ -317,6 +324,26 @@ model AdminLog {
   createdAt DateTime @default(now())
 
   @@map("admin_logs")
+}
+
+model BatchCollect {
+  id             String             @id @default(uuid())
+  globalWalletId String
+  tokenSymbol    String // Token coletado (ex: "USDC", "MATIC")
+  totalCollected Decimal            @db.Decimal(20, 8) // Quantidade total coletada
+  walletsCount   Int // Número de wallets processadas
+  status         BatchCollectStatus @default(COMPLETED)
+  txHashes       String[] // Array de transaction hashes
+  executedBy     String // Admin userId que executou
+  executedAt     DateTime           @default(now())
+  createdAt      DateTime           @default(now())
+
+  globalWallet GlobalWallet @relation(fields: [globalWalletId], references: [id], onDelete: Cascade)
+
+  @@index([globalWalletId])
+  @@index([executedBy])
+  @@index([createdAt])
+  @@map("batch_collects")
 }
 
 model WithdrawalNotification {

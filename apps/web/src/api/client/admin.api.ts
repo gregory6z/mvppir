@@ -31,3 +31,73 @@ export async function getGlobalWalletBalance(
     `/admin/global-wallet/balance?page=${page}&limit=${limit}`
   )
 }
+
+// Admin Batch Collect Services
+export interface BatchCollectPreview {
+  tokens: Array<{
+    tokenSymbol: string
+    walletsCount: number
+    totalAmount: string
+    gasEstimate: string
+    priceUsd: number
+    valueUsd: number
+  }>
+  totalGasEstimate: string
+  maticBalance: string
+  canExecute: boolean
+  totalValueUsd: number
+}
+
+export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
+  return request<BatchCollectPreview>("/admin/batch-collect/preview")
+}
+
+export async function executeBatchCollect(): Promise<{ jobId: string; status: string }> {
+  return request<{ jobId: string; status: string }>("/transfer/batch-collect", {
+    method: "POST",
+  })
+}
+
+export interface BatchCollectJobStatus {
+  jobId: string
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "FAILED"
+  progress: {
+    total: number
+    completed: number
+    failed: number
+  }
+  results?: Array<{
+    userId: string
+    tokenSymbol: string
+    amount: string
+    txHash?: string
+    error?: string
+  }>
+}
+
+export async function getBatchCollectStatus(jobId: string): Promise<BatchCollectJobStatus> {
+  return request<BatchCollectJobStatus>(`/admin/batch-collect/status/${jobId}`)
+}
+
+export interface BatchCollectHistoryItem {
+  id: string
+  createdAt: string
+  tokenSymbol: string
+  totalCollected: string
+  walletsCount: number
+  status: "COMPLETED" | "FAILED" | "PARTIAL"
+  txHashes: string[]
+  executedBy?: {
+    id: string
+    name: string
+    email: string
+  }
+}
+
+export async function getBatchCollectHistory(
+  limit = 20
+): Promise<{ history: BatchCollectHistoryItem[] }> {
+  return request<{ history: BatchCollectHistoryItem[] }>(
+    `/admin/batch-collect/history?limit=${limit}`
+  )
+}

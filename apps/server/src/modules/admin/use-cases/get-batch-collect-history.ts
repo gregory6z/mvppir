@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { BatchCollect } from "@prisma/client";
 
 interface BatchCollectHistory {
   history: Array<{
@@ -9,61 +10,69 @@ interface BatchCollectHistory {
     walletsCount: number;
     status: "COMPLETED" | "FAILED" | "PARTIAL";
     txHashes: string[];
+    executedBy?: {
+      id: string;
+      name: string;
+      email: string;
+    };
   }>;
 }
 
 /**
  * Retorna histórico de batch collects executados
  *
- * NOTA: Usa WalletTransactions com status SENT_TO_GLOBAL como aproximação
- * TODO: Quando criar tabela batch_collect_logs, usar ela como fonte
+ * Agora utiliza a tabela batch_collects com informações do admin executor
  */
 export async function getBatchCollectHistory(
   limit: number = 20
 ): Promise<BatchCollectHistory> {
-  // Buscar transações que foram transferidas para global
-  const sentToGlobalTxs = await prisma.walletTransaction.findMany({
-    where: {
-      status: "SENT_TO_GLOBAL",
-    },
+  // Buscar registros de batch collects
+  const batchCollects = await prisma.batchCollect.findMany({
     orderBy: { createdAt: "desc" },
-    take: limit * 10, // Pegar mais para agrupar
+    take: limit,
   });
 
-  // Agrupar por data + token (aproximação de batch collects)
-  const grouped = sentToGlobalTxs.reduce((acc, tx) => {
-    const dateKey = tx.createdAt.toISOString().split("T")[0]; // YYYY-MM-DD
-    const key = `${dateKey}-${tx.tokenSymbol}`;
+  // Buscar informações dos admins que executaram (em paralelo)
+  const adminIds = [...new Set(batchCollects.map((bc) => bc.executedBy))].filter(
+    (id): id is string => typeof id === "string"
+  );
+  const admins = await prisma.user.findMany({
+    where: {
+      id: {
+        in: adminIds,
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  });
 
-    if (!acc[key]) {
-      acc[key] = {
-        id: key,
-        createdAt: tx.createdAt.toISOString(),
-        tokenSymbol: tx.tokenSymbol,
-        totalCollected: 0,
-        walletsCount: new Set<string>(),
-        status: "COMPLETED" as const,
-        txHashes: [] as string[],
-      };
-    }
+  // Criar mapa de admins para lookup rápido
+  const adminMap = new Map(admins.map((admin) => [admin.id, admin]));
 
-    acc[key].totalCollected += Number(tx.amount);
-    acc[key].walletsCount.add(tx.userId);
-    if (tx.transferTxHash) {
-      acc[key].txHashes.push(tx.transferTxHash);
-    }
+  // Mapear para formato de resposta
+  const history = batchCollects.map((bc: BatchCollect) => {
+    const admin = adminMap.get(bc.executedBy);
 
-    return acc;
-  }, {} as Record<string, any>);
-
-  // Converter para array e pegar apenas o limit solicitado
-  const history = Object.values(grouped)
-    .map((entry) => ({
-      ...entry,
-      walletsCount: entry.walletsCount.size,
-      totalCollected: entry.totalCollected.toFixed(8),
-    }))
-    .slice(0, limit);
+    return {
+      id: bc.id,
+      createdAt: bc.createdAt.toISOString(),
+      tokenSymbol: bc.tokenSymbol,
+      totalCollected: bc.totalCollected.toString(),
+      walletsCount: bc.walletsCount,
+      status: bc.status,
+      txHashes: bc.txHashes,
+      executedBy: admin
+        ? {
+            id: admin.id,
+            name: admin.name,
+            email: admin.email,
+          }
+        : undefined,
+    };
+  });
 
   return { history };
 }

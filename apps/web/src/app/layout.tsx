@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark h-full">
-      <body className="antialiased h-full overflow-hidden">
+      <body className="antialiased h-full overflow-hidden" suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
