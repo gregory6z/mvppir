@@ -124,6 +124,11 @@ export interface Withdrawal {
     email: string
     name: string
   }
+  admin?: {
+    id: string
+    email: string
+    name: string
+  }
 }
 
 export interface WithdrawalsResponse {

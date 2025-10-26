@@ -4,9 +4,10 @@ import { prisma } from "./src/lib/prisma.js";
  * Script para remover TODOS os dados de mock/teste do banco de dados
  *
  * Remove:
- * - Usuários de teste (test.batch*)
+ * - Usuários de teste (test.batch*, user.withdrawal*)
  * - Admin de teste (admin@mvppir.com)
  * - Histórico de batch collects
+ * - Withdrawals de teste
  * - Saldo de MATIC da Global Wallet (opcional)
  * - Transações de teste
  * - Deposit addresses de teste
@@ -32,14 +33,23 @@ async function cleanAllMocks() {
         },
       });
       console.log(`   ✅ ${deletedBatchCollects.count} registros de batch collect removidos`);
+
+      // 1.2. Remover withdrawals aprovados/rejeitados pelo admin
+      const deletedWithdrawals = await prisma.withdrawal.deleteMany({
+        where: {
+          approvedBy: adminUser.id,
+        },
+      });
+      console.log(`   ✅ ${deletedWithdrawals.count} withdrawals (aprovados/rejeitados) removidos`);
     }
 
-    // 2. Remover usuários de teste (test.batch*)
+    // 2. Remover usuários de teste (test.batch* e user.withdrawal*)
     const testUsers = await prisma.user.findMany({
       where: {
-        email: {
-          startsWith: "test.batch",
-        },
+        OR: [
+          { email: { startsWith: "test.batch" } },
+          { email: { startsWith: "user.withdrawal" } },
+        ],
       },
       select: {
         id: true,
@@ -51,25 +61,31 @@ async function cleanAllMocks() {
       console.log(`\n📋 ${testUsers.length} usuários de teste encontrados`);
 
       for (const user of testUsers) {
-        // 2.1. Remover transações
+        // 2.1. Remover withdrawals
+        const deletedWithdrawals = await prisma.withdrawal.deleteMany({
+          where: { userId: user.id },
+        });
+        console.log(`   ✅ ${user.email}: ${deletedWithdrawals.count} withdrawals removidos`);
+
+        // 2.2. Remover transações
         const deletedTxs = await prisma.walletTransaction.deleteMany({
           where: { userId: user.id },
         });
         console.log(`   ✅ ${user.email}: ${deletedTxs.count} transações removidas`);
 
-        // 2.2. Remover balances
+        // 2.3. Remover balances
         const deletedBalances = await prisma.balance.deleteMany({
           where: { userId: user.id },
         });
         console.log(`   ✅ ${user.email}: ${deletedBalances.count} balances removidos`);
 
-        // 2.3. Remover deposit addresses
+        // 2.4. Remover deposit addresses
         const deletedAddresses = await prisma.depositAddress.deleteMany({
           where: { userId: user.id },
         });
         console.log(`   ✅ ${user.email}: ${deletedAddresses.count} endereços removidos`);
 
-        // 2.4. Remover usuário
+        // 2.5. Remover usuário
         await prisma.user.delete({
           where: { id: user.id },
         });

@@ -5,10 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
-import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import {
   Dialog,
   DialogContent,
@@ -23,9 +29,8 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  User,
-  ArrowRight,
   AlertTriangle,
+  Wallet,
 } from "lucide-react"
 import { useWithdrawals, useApproveWithdrawal, useRejectWithdrawal } from "@/api/queries/admin/use-withdrawals-query"
 import { useGlobalWalletBalance } from "@/api/queries/admin/use-global-wallet-query"
@@ -145,16 +150,21 @@ export default function WithdrawalsPage() {
                 <div>
                   <p className="text-4xl font-bold text-white">{withdrawnPercentage.toFixed(1)}%</p>
                   <p className="text-sm text-zinc-400 mt-2">
-                    ${totalWithdrawn.toFixed(2)} de ${totalRequested.toFixed(2)}
+                    ${totalWithdrawn.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })} de ${totalRequested.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </p>
                 </div>
-                <Slider
-                  value={[withdrawnPercentage]}
-                  max={100}
-                  step={1}
-                  className="w-full"
-                  disabled
-                />
+                <div className="w-full h-3 bg-zinc-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-purple-500 to-purple-400 transition-all duration-300"
+                    style={{ width: `${withdrawnPercentage}%` }}
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -186,29 +196,23 @@ export default function WithdrawalsPage() {
         <Card className="border-zinc-800 bg-gradient-to-br from-blue-900/20 to-zinc-900/50 backdrop-blur">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
+              <Wallet className="h-5 w-5" />
               Saldo Total
             </CardTitle>
             <CardDescription>
-              Carteira Global
+              Carteira Global (USD)
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              {globalWalletData?.balances.map((balance) => (
-                <div key={balance.tokenSymbol} className="flex justify-between items-center">
-                  <span className="text-sm text-zinc-400">{balance.tokenSymbol}</span>
-                  <span className="text-lg font-semibold text-white">
-                    {Number(balance.balance).toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 4,
-                    })}
-                  </span>
-                </div>
-              )) || (
-                <p className="text-sm text-zinc-500">Nenhum saldo disponível</p>
-              )}
-            </div>
+            <p className="text-4xl font-bold text-blue-400">
+              ${globalWalletData?.totalValueUsd?.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }) || "0.00"}
+            </p>
+            <p className="text-sm text-zinc-500 mt-2">
+              {globalWalletData?.balances.length || 0} tokens diferentes
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -226,91 +230,74 @@ export default function WithdrawalsPage() {
         </CardHeader>
         <CardContent>
           {isPendingLoading ? (
-            <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className="h-32 w-full" />
-              ))}
-            </div>
+            <Skeleton className="h-64 w-full" />
           ) : pendingData?.withdrawals && pendingData.withdrawals.length > 0 ? (
-            <div className="space-y-4">
-              {pendingData.withdrawals.map((withdrawal) => (
-                <Card key={withdrawal.id} className="border-zinc-800 bg-zinc-950/50">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      {/* User Info */}
-                      <div className="flex-1 space-y-3">
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                            <User className="h-5 w-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-white">{withdrawal.user.name}</p>
-                            <p className="text-sm text-zinc-400">{withdrawal.user.email}</p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <p className="text-zinc-500">Token</p>
-                            <p className="font-semibold text-white">{withdrawal.tokenSymbol}</p>
-                          </div>
-                          <div>
-                            <p className="text-zinc-500">Valor</p>
-                            <p className="font-semibold text-white">
-                              {Number(withdrawal.amount).toLocaleString("en-US", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 8,
-                              })}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-zinc-500">Taxa</p>
-                            <p className="font-semibold text-white">
-                              {Number(withdrawal.fee).toFixed(4)}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-zinc-500">Solicitado em</p>
-                            <p className="font-semibold text-white" suppressHydrationWarning>
-                              {new Date(withdrawal.createdAt).toLocaleDateString("pt-BR")}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div>
-                          <p className="text-xs text-zinc-500">Endereço de destino</p>
-                          <p className="text-xs font-mono text-zinc-300 break-all">
-                            {withdrawal.destinationAddress}
-                          </p>
-                        </div>
+            <Table>
+              <TableHeader>
+                <TableRow className="border-zinc-800 hover:bg-zinc-800/50">
+                  <TableHead className="text-zinc-400">Usuário</TableHead>
+                  <TableHead className="text-zinc-400">Token</TableHead>
+                  <TableHead className="text-zinc-400">Valor</TableHead>
+                  <TableHead className="text-zinc-400">Taxa</TableHead>
+                  <TableHead className="text-zinc-400">Endereço de Destino</TableHead>
+                  <TableHead className="text-zinc-400">Solicitado em</TableHead>
+                  <TableHead className="text-zinc-400 text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {pendingData.withdrawals.map((withdrawal) => (
+                  <TableRow key={withdrawal.id} className="border-zinc-800 hover:bg-zinc-800/30">
+                    <TableCell>
+                      <div>
+                        <p className="font-medium text-white">{withdrawal.user.name}</p>
+                        <p className="text-xs text-zinc-500">{withdrawal.user.email}</p>
                       </div>
-
-                      {/* Actions */}
-                      <div className="flex flex-col gap-2">
+                    </TableCell>
+                    <TableCell className="font-medium text-white">{withdrawal.tokenSymbol}</TableCell>
+                    <TableCell className="text-zinc-300">
+                      {Number(withdrawal.amount).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 8,
+                      })}
+                    </TableCell>
+                    <TableCell className="text-zinc-300">
+                      {Number(withdrawal.fee).toFixed(4)}
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-zinc-400">
+                      {withdrawal.destinationAddress.slice(0, 10)}...{withdrawal.destinationAddress.slice(-8)}
+                    </TableCell>
+                    <TableCell className="text-zinc-300" suppressHydrationWarning>
+                      {new Date(withdrawal.createdAt).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex gap-2 justify-end">
                         <Button
                           onClick={() => handleApprove(withdrawal)}
                           variant="default"
                           size="sm"
                           className="bg-green-600 hover:bg-green-700 cursor-pointer"
                         >
-                          <CheckCircle2 className="h-4 w-4 mr-2" />
-                          Aprovar
+                          <CheckCircle2 className="h-4 w-4" />
                         </Button>
                         <Button
                           onClick={() => handleReject(withdrawal)}
                           variant="destructive"
                           size="sm"
-                          className="cursor-pointer"
+                          className="bg-red-600 hover:bg-red-700 cursor-pointer"
                         >
-                          <XCircle className="h-4 w-4 mr-2" />
-                          Rejeitar
+                          <XCircle className="h-4 w-4" />
                         </Button>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           ) : (
             <div className="text-center text-zinc-500 py-12">
               <Clock className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -334,65 +321,78 @@ export default function WithdrawalsPage() {
         </CardHeader>
         <CardContent>
           {isHistoryLoading ? (
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full" />
-              ))}
-            </div>
-          ) : historyData?.withdrawals && historyData.withdrawals.length > 0 ? (
-            <div className="space-y-3">
-              {historyData.withdrawals
-                .filter((w) => w.status !== "PENDING_APPROVAL")
-                .map((withdrawal) => (
-                  <Card key={withdrawal.id} className="border-zinc-800 bg-zinc-950/30">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4 flex-1">
-                          <div className="h-10 w-10 rounded-full bg-zinc-800 flex items-center justify-center">
-                            <ArrowRight className="h-5 w-5 text-zinc-400" />
-                          </div>
-
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-semibold text-white">{withdrawal.user.name}</p>
-                              {getStatusBadge(withdrawal.status)}
-                            </div>
-                            <p className="text-sm text-zinc-400">{withdrawal.user.email}</p>
-                          </div>
-
-                          <div className="text-right">
-                            <p className="font-semibold text-white">
-                              {Number(withdrawal.amount).toLocaleString("en-US", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 8,
-                              })} {withdrawal.tokenSymbol}
-                            </p>
-                            <p className="text-sm text-zinc-500" suppressHydrationWarning>
-                              {new Date(withdrawal.createdAt).toLocaleDateString("pt-BR")}
-                            </p>
-                          </div>
+            <Skeleton className="h-64 w-full" />
+          ) : historyData?.withdrawals && historyData.withdrawals.filter((w) => w.status !== "PENDING_APPROVAL").length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-zinc-800 hover:bg-zinc-800/50">
+                  <TableHead className="text-zinc-400">Usuário</TableHead>
+                  <TableHead className="text-zinc-400">Token</TableHead>
+                  <TableHead className="text-zinc-400">Valor</TableHead>
+                  <TableHead className="text-zinc-400">Status</TableHead>
+                  <TableHead className="text-zinc-400">Autorizado por</TableHead>
+                  <TableHead className="text-zinc-400">Data</TableHead>
+                  <TableHead className="text-zinc-400">Detalhes</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {historyData.withdrawals
+                  .filter((w) => w.status !== "PENDING_APPROVAL")
+                  .map((withdrawal) => (
+                    <TableRow key={withdrawal.id} className="border-zinc-800 hover:bg-zinc-800/30">
+                      <TableCell>
+                        <div>
+                          <p className="font-medium text-white">{withdrawal.user.name}</p>
+                          <p className="text-xs text-zinc-500">{withdrawal.user.email}</p>
                         </div>
-                      </div>
-
-                      {withdrawal.status === "REJECTED" && withdrawal.rejectedReason && (
-                        <div className="mt-3 p-3 bg-red-950/30 border border-red-900/50 rounded">
-                          <p className="text-xs text-red-400">
-                            <strong>Motivo da rejeição:</strong> {withdrawal.rejectedReason}
+                      </TableCell>
+                      <TableCell className="font-medium text-white">{withdrawal.tokenSymbol}</TableCell>
+                      <TableCell className="text-zinc-300">
+                        {Number(withdrawal.amount).toLocaleString("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 8,
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        {getStatusBadge(withdrawal.status)}
+                      </TableCell>
+                      <TableCell>
+                        {withdrawal.admin ? (
+                          <div>
+                            <p className="font-medium text-white text-sm">{withdrawal.admin.name}</p>
+                            <p className="text-xs text-zinc-500">{withdrawal.admin.email}</p>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-zinc-600 italic">Sistema</p>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-zinc-300" suppressHydrationWarning>
+                        {new Date(withdrawal.createdAt).toLocaleDateString("pt-BR", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        {withdrawal.status === "REJECTED" && withdrawal.rejectedReason && (
+                          <p className="text-xs text-red-400 max-w-xs truncate" title={withdrawal.rejectedReason}>
+                            {withdrawal.rejectedReason}
                           </p>
-                        </div>
-                      )}
-
-                      {withdrawal.status === "COMPLETED" && withdrawal.txHash && (
-                        <div className="mt-3 p-3 bg-green-950/30 border border-green-900/50 rounded">
-                          <p className="text-xs text-green-400 font-mono break-all">
-                            <strong>TxHash:</strong> {withdrawal.txHash}
+                        )}
+                        {withdrawal.status === "COMPLETED" && withdrawal.txHash && (
+                          <p className="text-xs text-green-400 font-mono max-w-xs truncate" title={withdrawal.txHash}>
+                            {withdrawal.txHash.slice(0, 10)}...{withdrawal.txHash.slice(-8)}
                           </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-            </div>
+                        )}
+                        {withdrawal.status === "FAILED" && (
+                          <p className="text-xs text-red-400">Falha no processamento</p>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
           ) : (
             <div className="text-center text-zinc-500 py-12">
               <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />

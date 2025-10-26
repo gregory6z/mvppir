@@ -19,7 +19,8 @@
     "seed:preview": "tsx seed-batch-collect-preview.ts",
     "seed:matic": "tsx seed-matic-balance.ts",
     "seed:history": "tsx seed-batch-collect-history.ts",
-    "seed:all": "npm run seed:preview && npm run seed:matic && npm run seed:history",
+    "seed:withdrawals": "tsx seed-withdrawals.ts",
+    "seed:all": "npm run seed:preview && npm run seed:matic && npm run seed:history && npm run seed:withdrawals",
     "clean:mocks": "tsx clean-all-mocks.ts"
   },
   "prisma": {
