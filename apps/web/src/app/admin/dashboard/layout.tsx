@@ -18,7 +18,7 @@ export default function AdminDashboardLayout({
     if (!isLoading) {
       if (!isAuthenticated) {
         // Not authenticated, redirect to login
-        router.push("/admin/e001153a-ea55-4aaf-939a-feac4a3aea86")
+        router.push("/e001153a-ea55-4aaf-939a-feac4a3aea86")
       } else if (!isAdmin) {
         // Authenticated but not admin, redirect to home
         router.push("/")
