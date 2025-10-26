@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { apiClient } from "./client"
+import { apiClient } from "@/api/client"
 
 /**
  * Types

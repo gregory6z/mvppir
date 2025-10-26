@@ -181,17 +181,27 @@ src/components/
     └── features.tsx
 ```
 
-### Lib Structure
+### API & Lib Structure
 
 ```
-src/lib/
-├── api/                  # API client (fetch wrapper + React Query)
+src/
+├── api/                  # Backend communication
 │   ├── client.ts         # Base fetch client
 │   ├── queries.ts        # React Query hooks
-│   └── mutations.ts      # React Query mutations
-├── utils.ts              # Utility functions (cn, etc)
-└── constants.ts          # App-wide constants
+│   ├── mutations.ts      # React Query mutations (futuro)
+│   └── schemas/          # Zod validation schemas
+│       └── admin-login.ts
+├── lib/                  # External libraries and utilities
+│   ├── utils.ts          # Utility functions (cn, etc)
+│   ├── auth-client.ts    # Better Auth client
+│   └── constants.ts      # App-wide constants
+└── hooks/                # Custom React hooks
+    └── use-auth.ts       # Auth session hook
 ```
+
+**Important distinction:**
+- `api/` = Backend communication (fetch, queries, mutations, schemas)
+- `lib/` = External libraries, utilities, general helpers
 
 ## Key Patterns
 
