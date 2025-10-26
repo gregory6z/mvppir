@@ -7,9 +7,9 @@ import { signupSchema, type SignupInput } from "@/api/schemas/auth.schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuthStore } from "@/stores/auth.store";
+import { spacing, screenPadding, formSpacing } from "@/lib/design-system";
 
 interface SignupScreenProps {
   onNavigateToLogin: () => void;
@@ -87,30 +87,134 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-zinc-950"
     >
+      {/* Background gradient effect */}
+      <View className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black" />
+
+      {/* Glow effects */}
+      <View
+        style={{
+          position: "absolute",
+          top: "15%",
+          right: "-20%",
+          width: 300,
+          height: 300,
+          backgroundColor: "#8b5cf6",
+          opacity: 0.1,
+          borderRadius: 150,
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          bottom: "25%",
+          left: "-15%",
+          width: 250,
+          height: 250,
+          backgroundColor: "#3b82f6",
+          opacity: 0.1,
+          borderRadius: 125,
+        }}
+      />
+
       <ScrollView
-        contentContainerClassName="flex-1 justify-center px-6 py-12"
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: "center",
+          paddingHorizontal: screenPadding.horizontal,
+          paddingVertical: screenPadding.vertical * 2,
+        }}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        {/* Logo Placeholder */}
-        <View className="items-center mb-8">
-          <View className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent items-center justify-center mb-4">
-            <Text className="text-4xl font-bold text-white">M</Text>
+        {/* Logo Section */}
+        <View style={{ alignItems: "center", marginBottom: spacing.xl }}>
+          <View
+            style={{
+              width: 88,
+              height: 88,
+              borderRadius: 44,
+              backgroundColor: "#8b5cf6",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: spacing.md,
+              // Shadow para iOS e Android
+              ...Platform.select({
+                ios: {
+                  shadowColor: "#8b5cf6",
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.4,
+                  shadowRadius: 16,
+                },
+                android: {
+                  elevation: 12,
+                },
+              }),
+            }}
+            accessible={true}
+            accessibilityLabel="Logo MVPPIR"
+            accessibilityRole="image"
+          >
+            <Text style={{ fontSize: 44, fontWeight: "bold", color: "white" }}>M</Text>
           </View>
-          <Text className="text-3xl font-bold text-white">MVPPIR</Text>
-          <Text className="text-zinc-400 text-sm mt-1">Crie sua conta</Text>
+          <Text
+            style={{
+              fontSize: 32,
+              fontWeight: "bold",
+              color: "white",
+              marginBottom: spacing.xs,
+              letterSpacing: -0.5,
+            }}
+          >
+            MVPPIR
+          </Text>
+          <Text style={{ fontSize: 16, color: "#a1a1aa" }}>Crie sua conta</Text>
         </View>
 
-        <Card className="border-zinc-800 bg-zinc-900/50">
-          <CardHeader className="pb-4">
-            <CardTitle>Criar nova conta</CardTitle>
-            <CardDescription>
+        {/* Signup Card - Modern style with shadow */}
+        <View
+          style={{
+            backgroundColor: "#18181b",
+            borderRadius: 20,
+            borderWidth: 1,
+            borderColor: "#27272a",
+            // Shadow para profundidade
+            ...Platform.select({
+              ios: {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 12 },
+                shadowOpacity: 0.5,
+                shadowRadius: 24,
+              },
+              android: {
+                elevation: 16,
+              },
+            }),
+          }}
+        >
+          <View style={{ padding: spacing.lg }}>
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: "700",
+                color: "white",
+                marginBottom: spacing.xs,
+              }}
+            >
+              Criar nova conta
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#a1a1aa",
+                marginBottom: spacing.lg,
+              }}
+            >
               Preencha os dados abaixo para começar
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <View className="space-y-6">
-              {/* Name */}
-              <View className="space-y-2">
+            </Text>
+
+            <View style={{ gap: formSpacing.fieldGap }}>
+              {/* Name Field */}
+              <View style={{ gap: formSpacing.labelToInput }}>
                 <Label>Nome completo</Label>
                 <Controller
                   control={control}
@@ -120,23 +224,34 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
                       placeholder="Seu nome"
                       autoCapitalize="words"
                       autoComplete="name"
+                      textContentType="name"
+                      returnKeyType="next"
                       editable={!isLoading}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      className="bg-zinc-950 border-zinc-800 text-white"
+                      className="h-12 bg-zinc-950 border-zinc-800 text-white text-base"
+                      accessibilityLabel="Campo de nome completo"
+                      accessibilityHint="Digite seu nome completo"
                     />
                   )}
                 />
                 {errors.name && (
-                  <Text className="text-sm text-danger">
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: "#ef4444",
+                      marginTop: formSpacing.inputToError,
+                    }}
+                    accessibilityRole="alert"
+                  >
                     {errors.name.message}
                   </Text>
                 )}
               </View>
 
-              {/* Email */}
-              <View className="space-y-2">
+              {/* Email Field */}
+              <View style={{ gap: formSpacing.labelToInput }}>
                 <Label>Email</Label>
                 <Controller
                   control={control}
@@ -147,23 +262,34 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
                       keyboardType="email-address"
                       autoCapitalize="none"
                       autoComplete="email"
+                      textContentType="emailAddress"
+                      returnKeyType="next"
                       editable={!isLoading}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      className="bg-zinc-950 border-zinc-800 text-white"
+                      className="h-12 bg-zinc-950 border-zinc-800 text-white text-base"
+                      accessibilityLabel="Campo de email"
+                      accessibilityHint="Digite seu endereço de email"
                     />
                   )}
                 />
                 {errors.email && (
-                  <Text className="text-sm text-danger">
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: "#ef4444",
+                      marginTop: formSpacing.inputToError,
+                    }}
+                    accessibilityRole="alert"
+                  >
                     {errors.email.message}
                   </Text>
                 )}
               </View>
 
-              {/* Password */}
-              <View className="space-y-2">
+              {/* Password Field */}
+              <View style={{ gap: formSpacing.labelToInput }}>
                 <Label>Senha</Label>
                 <Controller
                   control={control}
@@ -174,24 +300,38 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
                       secureTextEntry
                       autoCapitalize="none"
                       autoComplete="password"
+                      textContentType="password"
+                      returnKeyType="next"
                       editable={!isLoading}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      className="bg-zinc-950 border-zinc-800 text-white"
+                      className="h-12 bg-zinc-950 border-zinc-800 text-white text-base"
+                      accessibilityLabel="Campo de senha"
+                      accessibilityHint="Digite sua senha, mínimo 8 caracteres"
                     />
                   )}
                 />
                 {errors.password && (
-                  <Text className="text-sm text-danger">
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: "#ef4444",
+                      marginTop: formSpacing.inputToError,
+                    }}
+                    accessibilityRole="alert"
+                  >
                     {errors.password.message}
                   </Text>
                 )}
               </View>
 
-              {/* Referral Code */}
-              <View className="space-y-2">
-                <Label>Código de indicação (opcional)</Label>
+              {/* Referral Code Field */}
+              <View style={{ gap: formSpacing.labelToInput }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.xs }}>
+                  <Label>Código de indicação</Label>
+                  <Text style={{ fontSize: 12, color: "#71717a" }}>(opcional)</Text>
+                </View>
                 <Controller
                   control={control}
                   name="referralCode"
@@ -199,16 +339,26 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
                     <Input
                       placeholder="Digite o código"
                       autoCapitalize="characters"
+                      returnKeyType="done"
                       editable={!isLoading}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      className="bg-zinc-950 border-zinc-800 text-white"
+                      className="h-12 bg-zinc-950 border-zinc-800 text-white text-base"
+                      accessibilityLabel="Campo de código de indicação"
+                      accessibilityHint="Digite o código de indicação, se tiver"
                     />
                   )}
                 />
                 {errors.referralCode && (
-                  <Text className="text-sm text-danger">
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: "#ef4444",
+                      marginTop: formSpacing.inputToError,
+                    }}
+                    accessibilityRole="alert"
+                  >
                     {errors.referralCode.message}
                   </Text>
                 )}
@@ -226,23 +376,45 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
                 label={isLoading ? "Criando conta..." : "Criar conta"}
                 onPress={handleSubmit(onSubmit)}
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-primary to-accent"
+                className="w-full h-12 bg-accent mt-2"
+                accessibilityLabel={isLoading ? "Carregando, aguarde" : "Criar sua conta"}
+                accessibilityHint="Toca duas vezes para criar conta"
+                accessibilityRole="button"
+                accessibilityState={{ disabled: isLoading, busy: isLoading }}
               />
 
               {/* Login Link */}
-              <View className="flex-row justify-center items-center gap-2 mt-4">
-                <Text className="text-zinc-400 text-sm">
-                  Já tem uma conta?
-                </Text>
-                <Pressable onPress={onNavigateToLogin} disabled={isLoading}>
-                  <Text className="text-primary text-sm font-semibold">
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: spacing.md,
+                  gap: spacing.sm,
+                }}
+              >
+                <Text style={{ fontSize: 14, color: "#a1a1aa" }}>Já tem uma conta?</Text>
+                <Pressable
+                  onPress={onNavigateToLogin}
+                  disabled={isLoading}
+                  style={{
+                    minHeight: 44,
+                    minWidth: 44,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  accessibilityLabel="Fazer login"
+                  accessibilityHint="Toca duas vezes para ir para a tela de login"
+                  accessibilityRole="button"
+                >
+                  <Text style={{ fontSize: 14, color: "#8b5cf6", fontWeight: "600" }}>
                     Entrar
                   </Text>
                 </Pressable>
               </View>
             </View>
-          </CardContent>
-        </Card>
+          </View>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
