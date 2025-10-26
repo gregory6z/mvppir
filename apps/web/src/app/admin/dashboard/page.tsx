@@ -121,10 +121,10 @@ export default function DashboardPage() {
         {isLoadingWallet || isLoadingWithdrawals ? (
           <Skeleton className="h-32 w-full" />
         ) : (
-          <Card className="border-zinc-800 bg-gradient-to-br from-emerald-900/20 to-zinc-900/50 backdrop-blur">
+          <Card className="border-zinc-800 bg-gradient-to-br from-red-900/20 to-zinc-900/50 backdrop-blur">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-zinc-200">Disponível para Saque</CardTitle>
-              <TrendingUp className="h-4 w-4 text-emerald-400" />
+              <TrendingUp className="h-4 w-4 text-red-400" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-white">
