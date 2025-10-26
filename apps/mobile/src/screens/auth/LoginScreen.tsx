@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuthStore } from "@/stores/auth.store";
 import { spacing, screenPadding, formSpacing } from "@/lib/design-system";
+import { BackgroundGlow } from "@/components/BackgroundGlow";
 
 interface LoginScreenProps {
   onNavigateToSignup: () => void;
@@ -84,30 +85,8 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
       <View className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black" />
 
       {/* Glow effects */}
-      <View
-        style={{
-          position: "absolute",
-          top: "20%",
-          left: "-20%",
-          width: 300,
-          height: 300,
-          backgroundColor: "#3b82f6",
-          opacity: 0.1,
-          borderRadius: 150,
-        }}
-      />
-      <View
-        style={{
-          position: "absolute",
-          bottom: "30%",
-          right: "-15%",
-          width: 250,
-          height: 250,
-          backgroundColor: "#8b5cf6",
-          opacity: 0.1,
-          borderRadius: 125,
-        }}
-      />
+      <BackgroundGlow color="#3b82f6" top="20%" left="-20%" size={350} />
+      <BackgroundGlow color="#8b5cf6" bottom="25%" right="-15%" size={300} />
 
       <ScrollView
         contentContainerStyle={{
