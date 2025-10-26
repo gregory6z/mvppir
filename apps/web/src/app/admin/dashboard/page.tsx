@@ -53,13 +53,13 @@ export default function DashboardPage() {
 
       {/* Main Stats Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {/* Global Wallet Balance */}
+        {/* 1. Global Wallet Balance - Total disponível */}
         {isLoadingWallet ? (
           <Skeleton className="h-32 w-full" />
         ) : (
           <Card className="border-zinc-800 bg-gradient-to-br from-blue-900/20 to-zinc-900/50 backdrop-blur">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-zinc-200">Carteira Global</CardTitle>
+              <CardTitle className="text-sm font-medium text-zinc-200">Saldo Total</CardTitle>
               <Wallet className="h-4 w-4 text-blue-400" />
             </CardHeader>
             <CardContent>
@@ -69,62 +69,19 @@ export default function DashboardPage() {
                   maximumFractionDigits: 2,
                 })}
               </div>
-              <p className="text-xs text-zinc-400 mt-1">
-                {globalWalletData?.balances.length || 0} tokens diferentes
-              </p>
+              <p className="text-xs text-zinc-400 mt-1">Carteira Global</p>
             </CardContent>
           </Card>
         )}
 
-        {/* Pending Withdrawals */}
-        {isLoadingWithdrawals ? (
-          <Skeleton className="h-32 w-full" />
-        ) : (
-          <Link href="/admin/withdrawals">
-            <Card className="border-zinc-800 bg-gradient-to-br from-yellow-900/20 to-zinc-900/50 backdrop-blur hover:border-yellow-500/50 transition-all duration-200 cursor-pointer">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-200">Saques Pendentes</CardTitle>
-                <Clock className="h-4 w-4 text-yellow-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-white">{pendingWithdrawalsCount}</div>
-                <p className="text-xs text-yellow-400 mt-1">
-                  {pendingWithdrawalsCount > 0 ? "Requer atenção" : "Nenhum pendente"}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-        )}
-
-        {/* MATIC Balance */}
-        {isLoadingWallet ? (
-          <Skeleton className="h-32 w-full" />
-        ) : (
-          <Card className="border-zinc-800 bg-gradient-to-br from-green-900/20 to-zinc-900/50 backdrop-blur">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-zinc-200">MATIC Disponível</CardTitle>
-              <Fuel className="h-4 w-4 text-green-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-white">
-                {Number(maticBalance).toLocaleString("en-US", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </div>
-              <p className="text-xs text-zinc-400 mt-1">Para gas fees</p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Available for Withdrawal */}
+        {/* 2. Available for Withdrawal - O que pode sacar */}
         {isLoadingWallet || isLoadingWithdrawals ? (
           <Skeleton className="h-32 w-full" />
         ) : (
-          <Card className="border-zinc-800 bg-gradient-to-br from-red-900/20 to-zinc-900/50 backdrop-blur">
+          <Card className="border-zinc-800 bg-gradient-to-br from-emerald-900/20 to-zinc-900/50 backdrop-blur">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-zinc-200">Disponível para Saque</CardTitle>
-              <TrendingUp className="h-4 w-4 text-red-400" />
+              <CardTitle className="text-sm font-medium text-zinc-200">Disponível</CardTitle>
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-white">
@@ -133,23 +90,44 @@ export default function DashboardPage() {
                   maximumFractionDigits: 2,
                 })}
               </div>
-              <p className="text-xs text-zinc-400 mt-1">
-                {pendingWithdrawalsCount > 0
-                  ? `${pendingWithdrawalsCount} ${pendingWithdrawalsCount === 1 ? "saque bloqueado" : "saques bloqueados"}`
-                  : "Sem restrições"}
-              </p>
+              <p className="text-xs text-emerald-400 mt-1">Para saque</p>
             </CardContent>
           </Card>
         )}
 
-        {/* Tokens to Collect */}
+        {/* 3. Pending Withdrawals - O que está bloqueado */}
+        {isLoadingWithdrawals ? (
+          <Skeleton className="h-32 w-full" />
+        ) : (
+          <Link href="/admin/withdrawals">
+            <Card className="border-zinc-800 bg-gradient-to-br from-red-900/20 to-zinc-900/50 backdrop-blur hover:border-red-500/50 transition-all duration-200 cursor-pointer">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-zinc-200">Bloqueado</CardTitle>
+                <Clock className="h-4 w-4 text-red-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-white">
+                  ${pendingWithdrawalsValue.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </div>
+                <p className="text-xs text-red-400 mt-1">
+                  {pendingWithdrawalsCount} {pendingWithdrawalsCount === 1 ? "saque pendente" : "saques pendentes"}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
+
+        {/* 4. Tokens to Collect - O que ainda está com usuários */}
         {isLoadingBatchCollect ? (
           <Skeleton className="h-32 w-full" />
         ) : (
           <Link href="/admin/batch-collect">
             <Card className="border-zinc-800 bg-gradient-to-br from-purple-900/20 to-zinc-900/50 backdrop-blur hover:border-purple-500/50 transition-all duration-200 cursor-pointer">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-200">Disponível para Coletar</CardTitle>
+                <CardTitle className="text-sm font-medium text-zinc-200">A Coletar</CardTitle>
                 <ArrowLeftRight className="h-4 w-4 text-purple-400" />
               </CardHeader>
               <CardContent>
@@ -159,12 +137,33 @@ export default function DashboardPage() {
                     maximumFractionDigits: 2,
                   })}
                 </div>
-                <p className="text-xs text-zinc-400 mt-1">
+                <p className="text-xs text-purple-400 mt-1">
                   {tokensToCollectCount} {tokensToCollectCount === 1 ? "token" : "tokens"}
                 </p>
               </CardContent>
             </Card>
           </Link>
+        )}
+
+        {/* 5. MATIC Balance - Para gas fees */}
+        {isLoadingWallet ? (
+          <Skeleton className="h-32 w-full" />
+        ) : (
+          <Card className="border-zinc-800 bg-gradient-to-br from-green-900/20 to-zinc-900/50 backdrop-blur">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-zinc-200">MATIC</CardTitle>
+              <Fuel className="h-4 w-4 text-green-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-white">
+                {Number(maticBalance).toLocaleString("en-US", {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })}
+              </div>
+              <p className="text-xs text-green-400 mt-1">Gas disponível</p>
+            </CardContent>
+          </Card>
         )}
       </div>
 
