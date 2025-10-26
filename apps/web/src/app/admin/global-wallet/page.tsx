@@ -1,6 +1,6 @@
 "use client"
 
-import { useGlobalWallet } from "@/hooks/use-global-wallet"
+import { useGlobalWalletBalance } from "@/lib/api/queries"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -9,7 +9,7 @@ import { Copy, RefreshCw, Wallet, TrendingUp } from "lucide-react"
 import { useState } from "react"
 
 export default function GlobalWalletPage() {
-  const { data, isLoading, error, refetch, isFetching } = useGlobalWallet()
+  const { data, isLoading, error, refetch, isFetching } = useGlobalWalletBalance()
   const [copied, setCopied] = useState(false)
 
   const handleCopyAddress = async () => {
