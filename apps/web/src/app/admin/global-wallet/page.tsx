@@ -1,6 +1,6 @@
 "use client"
 
-import { useGlobalWalletBalance } from "@/api/queries"
+import { useGlobalWalletBalance } from "@/api/queries/admin/use-global-wallet-query"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"

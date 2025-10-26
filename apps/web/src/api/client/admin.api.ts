@@ -1,14 +1,8 @@
-/**
- * API Client
- * Base fetch wrapper para comunicação com o backend
- */
+import type { GlobalWalletBalance } from "@/api/queries/admin/use-global-wallet-query"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333"
 
-export async function apiClient<T>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<T> {
+async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}/api${endpoint}`, {
     ...options,
     credentials: "include",
@@ -26,4 +20,9 @@ export async function apiClient<T>(
   }
 
   return response.json()
+}
+
+// Admin Global Wallet Services
+export async function getGlobalWalletBalance(): Promise<GlobalWalletBalance> {
+  return request<GlobalWalletBalance>("/admin/global-wallet/balance")
 }

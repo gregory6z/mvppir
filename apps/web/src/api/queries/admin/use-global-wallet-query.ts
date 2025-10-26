@@ -1,11 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { apiClient } from "@/api/client"
-
-/**
- * Types
- */
+import { getGlobalWalletBalance } from "@/api/client/admin.api"
 
 export interface GlobalWalletBalance {
   address: string
@@ -19,14 +15,10 @@ export interface GlobalWalletBalance {
   totalUsd: string
 }
 
-/**
- * React Query Hooks
- */
-
 export function useGlobalWalletBalance() {
   return useQuery<GlobalWalletBalance>({
     queryKey: ["admin", "global-wallet", "balance"],
-    queryFn: () => apiClient<GlobalWalletBalance>("/admin/global-wallet/balance"),
+    queryFn: getGlobalWalletBalance,
     refetchInterval: 60000, // Atualiza a cada 1 minuto
     staleTime: 30000, // Considera dados obsoletos após 30s
   })

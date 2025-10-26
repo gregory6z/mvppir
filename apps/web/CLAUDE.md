@@ -185,23 +185,30 @@ src/components/
 
 ```
 src/
-├── api/                  # Backend communication
-│   ├── client.ts         # Base fetch client
-│   ├── queries.ts        # React Query hooks
-│   ├── mutations.ts      # React Query mutations (futuro)
-│   └── schemas/          # Zod validation schemas
-│       └── admin-login.ts
-├── lib/                  # External libraries and utilities
-│   ├── utils.ts          # Utility functions (cn, etc)
-│   ├── auth-client.ts    # Better Auth client
-│   └── constants.ts      # App-wide constants
-└── hooks/                # Custom React hooks
-    └── use-auth.ts       # Auth session hook
+├── api/                           # Backend communication layer
+│   ├── client/                    # Service functions (pure fetch)
+│   │   └── admin.api.ts          # Admin API calls
+│   ├── queries/                   # TanStack Query hooks
+│   │   └── admin/                # Admin queries organized by entity
+│   │       └── use-global-wallet-query.ts
+│   └── schemas/                   # Zod validation schemas
+│       └── admin-login.schema.ts # Schema files end with .schema.ts
+├── lib/                           # External libraries and utilities
+│   ├── utils.ts                  # Utility functions (cn, etc)
+│   ├── auth-client.ts            # Better Auth client
+│   └── constants.ts              # App-wide constants
+├── hooks/                         # Custom React hooks
+│   └── use-auth.ts               # Auth session hook
+└── components/
+    └── providers.tsx             # React Query Provider setup
 ```
 
 **Important distinction:**
-- `api/` = Backend communication (fetch, queries, mutations, schemas)
+- `api/client/` = Service functions (pure async functions that call backend)
+- `api/queries/` = React Query hooks (useQuery, useMutation)
+- `api/schemas/` = Zod validation schemas (always end with `.schema.ts`)
 - `lib/` = External libraries, utilities, general helpers
+- `hooks/` = Custom React hooks (not queries/mutations)
 
 ## Key Patterns
 
