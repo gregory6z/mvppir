@@ -1,6 +1,7 @@
 import "./global.css";
 import { StatusBar } from "expo-status-bar";
 import { View, Text, SafeAreaView } from "react-native";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { queryClient, asyncStoragePersister } from "@/lib/react-query";
 import { useReactQueryConfig } from "@/lib/react-query-config";
