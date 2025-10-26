@@ -3,7 +3,7 @@ import type { GlobalWalletBalance } from "@/api/queries/admin/use-global-wallet-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333"
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}/api${endpoint}`, {
+  const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     credentials: "include",
     headers: {
