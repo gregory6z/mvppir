@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable } from "react-native";
-import { BlurView } from "expo-blur";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "@/lib/auth-client";
@@ -143,16 +142,13 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
           <Text style={{ fontSize: 16, color: "#a1a1aa" }}>Bem-vindo de volta</Text>
         </View>
 
-        {/* Login Card - Modern style with shadow and blur */}
-        <BlurView
-          intensity={80}
-          tint="dark"
+        {/* Login Card - Modern minimalist style */}
+        <View
           style={{
             borderRadius: 20,
             borderWidth: 1,
             borderColor: "#27272a",
-            overflow: "hidden",
-            backgroundColor: "rgba(24, 24, 27, 0.6)",
+            backgroundColor: "#18181b",
             // Shadow para profundidade
             ...Platform.select({
               ios: {
@@ -315,7 +311,7 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
               </View>
             </View>
           </View>
-        </BlurView>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
