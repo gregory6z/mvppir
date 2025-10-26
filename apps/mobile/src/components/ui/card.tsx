@@ -1,4 +1,5 @@
 import { View, Text, type ViewProps } from "react-native";
+import { BlurView } from "expo-blur";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends Omit<ViewProps, "className"> {
@@ -7,9 +8,11 @@ interface CardProps extends Omit<ViewProps, "className"> {
 
 function Card({ className, ...props }: CardProps) {
   return (
-    <View
+    <BlurView
+      intensity={20}
+      tint="dark"
       className={cn(
-        "rounded-lg border border-zinc-800 bg-zinc-900/50 backdrop-blur",
+        "rounded-lg border border-zinc-800 bg-zinc-900/50 overflow-hidden",
         className
       )}
       {...props}
