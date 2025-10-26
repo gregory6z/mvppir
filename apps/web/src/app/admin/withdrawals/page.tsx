@@ -205,10 +205,10 @@ export default function WithdrawalsPage() {
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold text-blue-400">
-              ${globalWalletData?.totalValueUsd?.toLocaleString("en-US", {
+              ${Number(globalWalletData?.totalUsd || 0).toLocaleString("en-US", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
-              }) || "0.00"}
+              })}
             </p>
             <p className="text-sm text-zinc-500 mt-2">
               {globalWalletData?.balances.length || 0} tokens diferentes
