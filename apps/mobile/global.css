@@ -1,25 +1,3 @@
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/preflight.css" layer(base);
-@import "tailwindcss/utilities.css";
-@import "nativewind/theme";
-
-/* Custom utilities for React Native */
-@utility leading-* {
-  line-height: calc(var(--spacing) / 1rem * --value(integer));
-}
-
-/* Custom elevation utility for Android/iOS */
-@utility elevation-* {
-  -rn-elevation: --value(integer);
-}
-
-/* Ripple effect utilities for Android */
-@utility ripple-* {
-  -rn-ripple-color: --value(--color-*);
-}
-
-/* Platform variants */
-@custom-variant ios (@media ios);
-@custom-variant android (@media android);
-@custom-variant native (@media native);
-@custom-variant web (@supports selector(div > div));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
