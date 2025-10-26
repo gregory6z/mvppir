@@ -36,6 +36,9 @@ Thumbs.db
 # Testing
 coverage/
 
+# TypeScript
+*.tsbuildinfo
+
 # Prisma
 prisma/migrations/**
 !prisma/migrations/.gitkeep
