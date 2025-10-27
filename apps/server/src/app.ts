@@ -58,11 +58,13 @@ export async function buildApp() {
     // Trust proxy headers in production (adjust based on your proxy setup)
     trustProxy: env.isProduction,
 
-    // Ignore trailing slashes in routes
-    ignoreTrailingSlash: true,
-
-    // Case sensitive routing
-    caseSensitive: false,
+    // Router options
+    routerOptions: {
+      // Ignore trailing slashes in routes
+      ignoreTrailingSlash: true,
+      // Case sensitive routing
+      caseSensitive: false,
+    },
 
     // Disable x-powered-by header for security
     disableRequestLogging: env.isProduction,
