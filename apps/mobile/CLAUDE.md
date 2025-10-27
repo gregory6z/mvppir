@@ -287,10 +287,10 @@ if (Platform.OS === "ios") {
 
 ### 4. Safe Area Handling
 
-Always use `SafeAreaView` for screens:
+Always use `SafeAreaView` from `react-native-safe-area-context` for screens:
 
 ```tsx
-import { SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export function Screen() {
   return (
@@ -300,6 +300,11 @@ export function Screen() {
   );
 }
 ```
+
+**Important:**
+- DO NOT use `SafeAreaView` from `react-native` (deprecated)
+- Use `SafeAreaProvider` wrapper in App.tsx
+- Import from `react-native-safe-area-context` only
 
 ## NativeWind v4 Configuration
 
@@ -397,7 +402,7 @@ export function UserCard(props: { user: User }) { // function declaration
 5. **TanStack Query persistence** - Data persists across app restarts with `PersistQueryClientProvider`
 6. **Zustand persistence** - Data persists with `persist` middleware + AsyncStorage
 7. **Environment variables** - Must use `EXPO_PUBLIC_` prefix for client-side access
-8. **SafeAreaView behavior** - Different on iOS vs Android (use `react-native-safe-area-context` if needed)
+8. **SafeAreaView** - ALWAYS use `react-native-safe-area-context`, never `react-native` (deprecated)
 9. **Keyboard overlapping inputs** - Use `KeyboardAvoidingView` with correct `behavior` prop
 10. **Network detection** - NetInfo returns `null` initially, handle gracefully
 
