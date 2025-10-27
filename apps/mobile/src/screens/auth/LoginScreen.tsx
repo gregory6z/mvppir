@@ -39,6 +39,11 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onBlur",
   });
 
   const onSubmit = async (data: LoginInput) => {

@@ -41,8 +41,12 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
   } = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
+      email: "",
+      password: "",
       referralCode: referralCode || "",
     },
+    mode: "onBlur",
   });
 
   const onSubmit = async (data: SignupInput) => {
