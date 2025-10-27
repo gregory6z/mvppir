@@ -2,36 +2,26 @@ import { useState } from "react";
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "@/lib/auth-client";
+import { useTranslation } from "react-i18next";
 import { loginSchema, type LoginInput } from "@/api/schemas/auth.schema";
+import { useLoginMutation, type LoginError } from "@/api/mutations/use-login-mutation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useAuthStore } from "@/stores/auth.store";
 import { spacing, screenPadding, formSpacing } from "@/lib/design-system";
+import { Logo } from "@/components/Logo";
 
 interface LoginScreenProps {
   onNavigateToSignup: () => void;
 }
 
-type LoginError =
-  | "INVALID_CREDENTIALS"
-  | "ACCOUNT_BLOCKED"
-  | "NETWORK_ERROR"
-  | "UNKNOWN_ERROR";
-
-const errorMessages: Record<LoginError, string> = {
-  INVALID_CREDENTIALS: "Email ou senha incorretos",
-  ACCOUNT_BLOCKED: "Sua conta foi bloqueada. Entre em contato com o suporte.",
-  NETWORK_ERROR: "Erro de conexão. Tente novamente.",
-  UNKNOWN_ERROR: "Erro desconhecido. Tente novamente.",
-};
-
 export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation("auth.login");
+  const { t: tGlobal } = useTranslation(); // Para traduzir chaves absolutas (errors)
   const [error, setError] = useState<LoginError | null>(null);
-  const { setAuth } = useAuthStore();
+
+  const loginMutation = useLoginMutation();
 
   const {
     control,
@@ -46,38 +36,14 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
     mode: "onBlur",
   });
 
-  const onSubmit = async (data: LoginInput) => {
-    setIsLoading(true);
+  const onSubmit = (data: LoginInput) => {
     setError(null);
-
-    try {
-      const result = await signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-
-      if (result.error) {
-        if (result.error.message?.includes("Invalid credentials")) {
-          setError("INVALID_CREDENTIALS");
-        } else if (result.error.message?.includes("blocked")) {
-          setError("ACCOUNT_BLOCKED");
-        } else {
-          setError("UNKNOWN_ERROR");
-        }
-        setIsLoading(false);
-        return;
-      }
-
-      // Login bem-sucedido
-      if (result.data?.token && result.data?.user) {
-        setAuth(result.data.token, result.data.user.id);
-        // Navigation will be handled by auth state change
-      }
-    } catch (err) {
-      console.error("❌ Erro no login:", err);
-      setError("NETWORK_ERROR");
-      setIsLoading(false);
-    }
+    loginMutation.mutate(data, {
+      onError: (err) => {
+        const errorType = err.message as LoginError;
+        setError(errorType);
+      },
+    });
   };
 
   return (
@@ -122,6 +88,7 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
               alignItems: "center",
               justifyContent: "center",
               marginBottom: spacing.md,
+              overflow: "hidden",
               // Shadow para iOS e Android
               ...Platform.select({
                 ios: {
@@ -136,10 +103,10 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
               }),
             }}
             accessible={true}
-            accessibilityLabel="Logo MVPPIR"
+            accessibilityLabel={t("accessibility.logo")}
             accessibilityRole="image"
           >
-            <Text style={{ fontSize: 44, fontWeight: "bold", color: "white" }}>M</Text>
+            <Logo width={64} height={64} color="white" />
           </View>
           <Text
             style={{
@@ -150,9 +117,9 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
               letterSpacing: -0.5,
             }}
           >
-            MVPPIR
+            Stakly
           </Text>
-          <Text style={{ fontSize: 16, color: "#a1a1aa" }}>Bem-vindo de volta</Text>
+          <Text style={{ fontSize: 16, color: "#a1a1aa" }}>{t("welcome")}</Text>
         </View>
 
         {/* Login Card - Modern minimalist style */}
@@ -162,6 +129,7 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
             borderWidth: 1,
             borderColor: "#27272a",
             backgroundColor: "#18181b",
+            overflow: "hidden", // Garante que os cantos arredondados funcionem
             // Shadow para profundidade
             ...Platform.select({
               ios: {
@@ -185,7 +153,7 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
                 marginBottom: spacing.xs,
               }}
             >
-              Entrar na sua conta
+              {t("title")}
             </Text>
             <Text
               style={{
@@ -194,31 +162,32 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
                 marginBottom: spacing.lg,
               }}
             >
-              Digite suas credenciais para acessar
+              {t("description")}
             </Text>
 
             <View style={{ gap: formSpacing.fieldGap }}>
               {/* Email Field */}
               <View style={{ gap: formSpacing.labelToInput }}>
-                <Label>Email</Label>
+                <Label>{t("fields.email")}</Label>
                 <Controller
                   control={control}
                   name="email"
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
-                      placeholder="seu@email.com"
+                      placeholder={t("placeholders.email")}
                       keyboardType="email-address"
                       autoCapitalize="none"
                       autoComplete="email"
                       textContentType="emailAddress"
                       returnKeyType="next"
-                      editable={!isLoading}
+                      editable={!loginMutation.isPending}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      className="h-12 bg-zinc-950 border-zinc-800 text-white text-base"
-                      accessibilityLabel="Campo de email"
-                      accessibilityHint="Digite seu endereço de email"
+                      error={!!errors.email}
+                      className="h-12 bg-zinc-950 text-white text-base"
+                      accessibilityLabel={t("accessibility.emailField")}
+                      accessibilityHint={t("accessibility.emailHint")}
                     />
                   )}
                 />
@@ -238,25 +207,26 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
 
               {/* Password Field */}
               <View style={{ gap: formSpacing.labelToInput }}>
-                <Label>Senha</Label>
+                <Label>{t("fields.password")}</Label>
                 <Controller
                   control={control}
                   name="password"
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
-                      placeholder="Mínimo 8 caracteres"
+                      placeholder={t("placeholders.password")}
                       secureTextEntry
                       autoCapitalize="none"
                       autoComplete="password"
                       textContentType="password"
                       returnKeyType="done"
-                      editable={!isLoading}
+                      editable={!loginMutation.isPending}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      className="h-12 bg-zinc-950 border-zinc-800 text-white text-base"
-                      accessibilityLabel="Campo de senha"
-                      accessibilityHint="Digite sua senha"
+                      error={!!errors.password}
+                      className="h-12 bg-zinc-950 text-white text-base"
+                      accessibilityLabel={t("accessibility.passwordField")}
+                      accessibilityHint={t("accessibility.passwordHint")}
                     />
                   )}
                 />
@@ -277,20 +247,20 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
               {/* Error Alert */}
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{errorMessages[error]}</AlertDescription>
+                  <AlertDescription>{tGlobal(error)}</AlertDescription>
                 </Alert>
               )}
 
               {/* Submit Button */}
               <Button
-                label={isLoading ? "Entrando..." : "Entrar"}
+                label={loginMutation.isPending ? t("buttons.loading") : t("buttons.submit")}
                 onPress={handleSubmit(onSubmit)}
-                disabled={isLoading}
+                disabled={loginMutation.isPending}
                 className="w-full h-12 bg-primary mt-2"
-                accessibilityLabel={isLoading ? "Carregando, aguarde" : "Entrar na sua conta"}
-                accessibilityHint="Toca duas vezes para fazer login"
+                accessibilityLabel={loginMutation.isPending ? t("accessibility.submitButtonLoading") : t("accessibility.submitButton")}
+                accessibilityHint={t("accessibility.submitButtonHint")}
                 accessibilityRole="button"
-                accessibilityState={{ disabled: isLoading, busy: isLoading }}
+                accessibilityState={{ disabled: loginMutation.isPending, busy: loginMutation.isPending }}
               />
 
               {/* Signup Link */}
@@ -303,22 +273,22 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
                   gap: spacing.sm,
                 }}
               >
-                <Text style={{ fontSize: 14, color: "#a1a1aa" }}>Não tem uma conta?</Text>
+                <Text style={{ fontSize: 14, color: "#a1a1aa" }}>{t("links.noAccount")}</Text>
                 <Pressable
                   onPress={onNavigateToSignup}
-                  disabled={isLoading}
+                  disabled={loginMutation.isPending}
                   style={{
                     minHeight: 44,
                     minWidth: 44,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  accessibilityLabel="Criar nova conta"
-                  accessibilityHint="Toca duas vezes para ir para a tela de cadastro"
+                  accessibilityLabel={t("accessibility.createAccountButton")}
+                  accessibilityHint={t("accessibility.createAccountHint")}
                   accessibilityRole="button"
                 >
                   <Text style={{ fontSize: 14, color: "#3b82f6", fontWeight: "600" }}>
-                    Criar conta
+                    {t("links.createAccount")}
                   </Text>
                 </Pressable>
               </View>

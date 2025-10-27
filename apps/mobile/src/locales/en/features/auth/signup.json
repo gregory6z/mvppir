@@ -1,0 +1,52 @@
+{
+  "title": "Create new account",
+  "subtitle": "Create your account",
+  "description": "Fill in the details below to get started",
+  "fields": {
+    "name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "passwordConfirm": "Confirm password",
+    "referralCode": "Referral code"
+  },
+  "placeholders": {
+    "name": "Your name",
+    "email": "your@email.com",
+    "password": "Your password",
+    "passwordConfirm": "Confirm your password",
+    "referralCode": "Enter the code"
+  },
+  "optional": "(optional)",
+  "buttons": {
+    "submit": "Create account",
+    "loading": "Creating account..."
+  },
+  "links": {
+    "hasAccount": "Already have an account?",
+    "login": "Sign in"
+  },
+  "errors": {
+    "emailExists": "This email is already registered",
+    "invalidReferral": "Invalid referral code",
+    "networkError": "Connection error. Please try again.",
+    "unknownError": "Unknown error. Please try again."
+  },
+  "accessibility": {
+    "logo": "Stakly Logo",
+    "nameField": "Full name field",
+    "nameHint": "Enter your full name",
+    "emailField": "Email field",
+    "emailHint": "Enter your email address",
+    "passwordField": "Password field",
+    "passwordHint": "Enter your password, minimum 8 characters",
+    "passwordConfirmField": "Password confirmation field",
+    "passwordConfirmHint": "Re-enter your password to confirm",
+    "referralField": "Referral code field",
+    "referralHint": "Enter referral code if you have one",
+    "submitButton": "Create your account",
+    "submitButtonLoading": "Loading, please wait",
+    "submitButtonHint": "Double tap to create account",
+    "loginButton": "Sign in",
+    "loginHint": "Double tap to go to login screen"
+  }
+}

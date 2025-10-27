@@ -1,0 +1,52 @@
+{
+  "title": "Crear nueva cuenta",
+  "subtitle": "Crea tu cuenta",
+  "description": "Completa los datos a continuación para comenzar",
+  "fields": {
+    "name": "Nombre completo",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "passwordConfirm": "Confirmar contraseña",
+    "referralCode": "Código de referencia"
+  },
+  "placeholders": {
+    "name": "Tu nombre",
+    "email": "tu@email.com",
+    "password": "Tu contraseña",
+    "passwordConfirm": "Confirma tu contraseña",
+    "referralCode": "Ingresa el código"
+  },
+  "optional": "(opcional)",
+  "buttons": {
+    "submit": "Crear cuenta",
+    "loading": "Creando cuenta..."
+  },
+  "links": {
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "login": "Iniciar sesión"
+  },
+  "errors": {
+    "emailExists": "Este correo ya está registrado",
+    "invalidReferral": "Código de referencia inválido",
+    "networkError": "Error de conexión. Inténtalo de nuevo.",
+    "unknownError": "Error desconocido. Inténtalo de nuevo."
+  },
+  "accessibility": {
+    "logo": "Logo Stakly",
+    "nameField": "Campo de nombre completo",
+    "nameHint": "Ingresa tu nombre completo",
+    "emailField": "Campo de correo electrónico",
+    "emailHint": "Ingresa tu dirección de correo",
+    "passwordField": "Campo de contraseña",
+    "passwordHint": "Ingresa tu contraseña, mínimo 8 caracteres",
+    "passwordConfirmField": "Campo de confirmación de contraseña",
+    "passwordConfirmHint": "Vuelve a ingresar tu contraseña para confirmar",
+    "referralField": "Campo de código de referencia",
+    "referralHint": "Ingresa el código de referencia si tienes uno",
+    "submitButton": "Crear tu cuenta",
+    "submitButtonLoading": "Cargando, por favor espera",
+    "submitButtonHint": "Toca dos veces para crear cuenta",
+    "loginButton": "Iniciar sesión",
+    "loginHint": "Toca dos veces para ir a la pantalla de inicio de sesión"
+  }
+}

@@ -1,4 +1,5 @@
 import "./global.css";
+import "@/locales"; // Initialize i18n
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { View, Text } from "react-native";

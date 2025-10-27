@@ -1,0 +1,39 @@
+{
+  "welcome": "Welcome back",
+  "title": "Sign in to your account",
+  "description": "Enter your credentials to access",
+  "fields": {
+    "email": "Email",
+    "password": "Password"
+  },
+  "placeholders": {
+    "email": "your@email.com",
+    "password": "Your password"
+  },
+  "buttons": {
+    "submit": "Sign in",
+    "loading": "Signing in..."
+  },
+  "links": {
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create account"
+  },
+  "errors": {
+    "invalidCredentials": "Invalid email or password",
+    "accountBlocked": "Your account has been blocked. Please contact support.",
+    "networkError": "Connection error. Please try again.",
+    "unknownError": "Unknown error. Please try again."
+  },
+  "accessibility": {
+    "logo": "Stakly Logo",
+    "emailField": "Email field",
+    "emailHint": "Enter your email address",
+    "passwordField": "Password field",
+    "passwordHint": "Enter your password",
+    "submitButton": "Sign in to your account",
+    "submitButtonLoading": "Loading, please wait",
+    "submitButtonHint": "Double tap to sign in",
+    "createAccountButton": "Create new account",
+    "createAccountHint": "Double tap to go to signup screen"
+  }
+}
