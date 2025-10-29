@@ -354,9 +354,9 @@ export function SignupScreen({ onNavigateToLogin, referrerId, referralCode }: Si
 
               {/* Submit Button */}
               <Button
-                label={signupMutation.isPending ? t("buttons.loading") : t("buttons.submit")}
+                label={t("buttons.submit")}
                 onPress={handleSubmit(onSubmit)}
-                disabled={signupMutation.isPending}
+                loading={signupMutation.isPending}
                 className="w-full h-12 bg-accent mt-2"
                 accessibilityLabel={signupMutation.isPending ? t("accessibility.submitButtonLoading") : t("accessibility.submitButton")}
                 accessibilityHint={t("accessibility.submitButtonHint")}

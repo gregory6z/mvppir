@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, ActivityIndicator } from "react-native";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
@@ -58,6 +58,7 @@ interface ButtonProps
     VariantProps<typeof buttonVariants> {
   label: string;
   textClassName?: string;
+  loading?: boolean;
 }
 
 export function Button({
@@ -66,18 +67,25 @@ export function Button({
   size,
   className,
   textClassName,
+  loading = false,
+  disabled,
   ...props
 }: ButtonProps) {
   return (
     <Pressable
       className={cn(buttonVariants({ variant, size, className }))}
+      disabled={disabled || loading}
       {...props}
     >
-      <Text
-        className={cn(buttonTextVariants({ variant, size }), textClassName)}
-      >
-        {label}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color="#ffffff" />
+      ) : (
+        <Text
+          className={cn(buttonTextVariants({ variant, size }), textClassName)}
+        >
+          {label}
+        </Text>
+      )}
     </Pressable>
   );
 }

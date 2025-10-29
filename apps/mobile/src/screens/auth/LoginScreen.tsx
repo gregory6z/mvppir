@@ -253,9 +253,9 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
 
               {/* Submit Button */}
               <Button
-                label={loginMutation.isPending ? t("buttons.loading") : t("buttons.submit")}
+                label={t("buttons.submit")}
                 onPress={handleSubmit(onSubmit)}
-                disabled={loginMutation.isPending}
+                loading={loginMutation.isPending}
                 className="w-full h-12 bg-primary mt-2"
                 accessibilityLabel={loginMutation.isPending ? t("accessibility.submitButtonLoading") : t("accessibility.submitButton")}
                 accessibilityHint={t("accessibility.submitButtonHint")}
