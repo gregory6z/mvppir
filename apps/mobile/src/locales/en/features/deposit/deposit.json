@@ -1,0 +1,33 @@
+{
+  "title": "Deposit",
+  "subtitle": "Send cryptocurrencies to this address",
+  "network": "Polygon Network",
+  "networkWarning": "Only send tokens on Polygon network",
+  "address": "Wallet Address",
+  "copyAddress": "Copy Address",
+  "addressCopied": "Address copied!",
+  "qrCode": "QR Code",
+  "scanQR": "Scan this QR code with your wallet",
+  "supportedTokens": {
+    "title": "Supported Tokens",
+    "usdt": "USDT (Tether)",
+    "usdc": "USDC (USD Coin)",
+    "matic": "MATIC (Polygon)"
+  },
+  "instructions": {
+    "title": "Instructions",
+    "step1": "Copy the address or scan the QR code",
+    "step2": "Send tokens via Polygon network",
+    "step3": "Wait for confirmation (1-2 minutes)",
+    "step4": "Your balance will be updated automatically"
+  },
+  "warnings": {
+    "title": "Warning",
+    "wrongNetwork": "Sending tokens on another network will result in permanent loss",
+    "minDeposit": "Minimum deposit: $10 USD",
+    "activation": "Deposits of $100+ activate your account"
+  },
+  "errors": {
+    "loadFailed": "Failed to load deposit address"
+  }
+}

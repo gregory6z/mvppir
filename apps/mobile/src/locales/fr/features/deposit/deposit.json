@@ -1,0 +1,33 @@
+{
+  "title": "Déposer",
+  "subtitle": "Envoyez des cryptomonnaies à cette adresse",
+  "network": "Réseau Polygon",
+  "networkWarning": "Envoyez uniquement des tokens sur le réseau Polygon",
+  "address": "Adresse du Portefeuille",
+  "copyAddress": "Copier l'Adresse",
+  "addressCopied": "Adresse copiée!",
+  "qrCode": "Code QR",
+  "scanQR": "Scannez ce code QR avec votre portefeuille",
+  "supportedTokens": {
+    "title": "Tokens Supportés",
+    "usdt": "USDT (Tether)",
+    "usdc": "USDC (USD Coin)",
+    "matic": "MATIC (Polygon)"
+  },
+  "instructions": {
+    "title": "Instructions",
+    "step1": "Copiez l'adresse ou scannez le code QR",
+    "step2": "Envoyez des tokens via le réseau Polygon",
+    "step3": "Attendez la confirmation (1-2 minutes)",
+    "step4": "Votre solde sera mis à jour automatiquement"
+  },
+  "warnings": {
+    "title": "Avertissement",
+    "wrongNetwork": "Envoyer des tokens sur un autre réseau entraînera une perte permanente",
+    "minDeposit": "Dépôt minimum: $10 USD",
+    "activation": "Les dépôts de $100+ activent votre compte"
+  },
+  "errors": {
+    "loadFailed": "Échec du chargement de l'adresse de dépôt"
+  }
+}

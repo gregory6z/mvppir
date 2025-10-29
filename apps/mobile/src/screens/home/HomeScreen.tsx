@@ -9,6 +9,7 @@ import { RecentActivity } from "@/components/home/RecentActivity";
 import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { WalletScreen } from "@/screens/wallet/WalletScreen";
+import { DepositScreen } from "@/screens/deposit/DepositScreen";
 import { useAuthStore } from "@/stores/auth.store";
 import { useUIStore } from "@/stores/ui.store";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
@@ -26,6 +27,7 @@ export function HomeScreen() {
   const [activeTab, setActiveTab] = useState<
     "home" | "wallet" | "referrals" | "profile"
   >("home");
+  const [showDepositScreen, setShowDepositScreen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const totalBalance = balanceData?.totalUSD || 0;
@@ -66,7 +68,7 @@ export function HomeScreen() {
   };
 
   const handleDepositPress = () => {
-    console.log("Deposit pressed - navigate to Deposit screen");
+    setShowDepositScreen(true);
   };
 
   const handleWithdrawPress = () => {
@@ -197,6 +199,11 @@ export function HomeScreen() {
         return null;
     }
   };
+
+  // Show deposit screen if active
+  if (showDepositScreen) {
+    return <DepositScreen onBack={() => setShowDepositScreen(false)} />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-950" edges={["left", "right"]}>

@@ -1,0 +1,33 @@
+{
+  "title": "Depositar",
+  "subtitle": "Envie criptomoedas para este endereço",
+  "network": "Rede Polygon",
+  "networkWarning": "Envie apenas tokens na rede Polygon",
+  "address": "Endereço da Carteira",
+  "copyAddress": "Copiar Endereço",
+  "addressCopied": "Endereço copiado!",
+  "qrCode": "QR Code",
+  "scanQR": "Escaneie este QR code com sua carteira",
+  "supportedTokens": {
+    "title": "Tokens Suportados",
+    "usdt": "USDT (Tether)",
+    "usdc": "USDC (USD Coin)",
+    "matic": "MATIC (Polygon)"
+  },
+  "instructions": {
+    "title": "Instruções",
+    "step1": "Copie o endereço ou escaneie o QR code",
+    "step2": "Envie tokens via rede Polygon",
+    "step3": "Aguarde a confirmação (1-2 minutos)",
+    "step4": "Seu saldo será atualizado automaticamente"
+  },
+  "warnings": {
+    "title": "Atenção",
+    "wrongNetwork": "Enviar tokens em outra rede resultará em perda permanente",
+    "minDeposit": "Depósito mínimo: $10 USD",
+    "activation": "Depósitos de $100+ ativam sua conta"
+  },
+  "errors": {
+    "loadFailed": "Falha ao carregar endereço de depósito"
+  }
+}
