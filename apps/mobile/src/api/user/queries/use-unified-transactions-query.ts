@@ -10,7 +10,7 @@ export interface UnifiedTransaction {
   usdValue: number;
   txHash: string | null;
   transferTxHash: string | null;
-  status: "PENDING" | "CONFIRMED" | "SENT_TO_GLOBAL";
+  status: "PENDING" | "CONFIRMED" | "SENT_TO_GLOBAL" | "PAID" | "CANCELLED";
   createdAt: string;
   // Commission specific fields
   commissionLevel?: number; // 0 = self (daily yield), 1-3 = network levels

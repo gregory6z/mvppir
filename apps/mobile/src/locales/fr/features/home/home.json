@@ -28,10 +28,11 @@
     "status": {
       "pending": "En attente",
       "confirmed": "Confirmé",
-      "completed": "Terminé"
+      "completed": "Terminé",
+      "cancelled": "Annulé"
     },
     "commissionFrom": "de",
-    "selfCommission": "Votre solde bloqué",
+    "selfCommission": "Rendement Quotidien",
     "rankLabels": {
       "recruit": "Recrue",
       "bronze": "Bronze",

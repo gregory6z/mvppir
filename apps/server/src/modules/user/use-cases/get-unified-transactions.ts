@@ -97,7 +97,7 @@ export async function getUnifiedTransactions({
 
   // Convert commissions to unified format
   const unifiedCommissions: UnifiedTransaction[] = commissions.map((comm) => {
-    const isSelfCommission = comm.fromUserId === userId;
+    const isSelfCommission = comm.level === 0;
 
     return {
       id: comm.id,
@@ -115,7 +115,7 @@ export async function getUnifiedTransactions({
       // 1 = Direct referral (filho - N1)
       // 2 = Second level (neto - N2)
       // 3 = Third level (bisneto - N3)
-      commissionLevel: isSelfCommission ? 0 : comm.level,
+      commissionLevel: comm.level,
       fromUserName: isSelfCommission ? undefined : fromUserMap.get(comm.fromUserId),
       userRank: undefined, // TODO: Add rank tracking
     };

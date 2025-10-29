@@ -13,7 +13,7 @@ interface Transaction {
   amount: string; // Decimal as string
   txHash: string | null;
   transferTxHash: string | null;
-  status: "PENDING" | "CONFIRMED" | "SENT_TO_GLOBAL";
+  status: "PENDING" | "CONFIRMED" | "SENT_TO_GLOBAL" | "PAID" | "CANCELLED";
   createdAt: string; // ISO 8601 date string
   // Commission-specific fields
   commissionLevel?: number; // 1, 2, 3 (N1, N2, N3), or 0 for self commission
@@ -47,6 +47,10 @@ export function RecentActivity({
         return "text-green-500";
       case "SENT_TO_GLOBAL":
         return "text-violet-500";
+      case "PAID":
+        return "text-green-500";
+      case "CANCELLED":
+        return "text-red-500";
       default:
         return "text-zinc-400";
     }
@@ -60,6 +64,10 @@ export function RecentActivity({
         return t("recentActivity.status.confirmed");
       case "SENT_TO_GLOBAL":
         return t("recentActivity.status.completed");
+      case "PAID":
+        return t("recentActivity.status.confirmed");
+      case "CANCELLED":
+        return t("recentActivity.status.cancelled");
       default:
         return status;
     }
@@ -115,7 +123,7 @@ export function RecentActivity({
     }
 
     const getRankLabel = (rank?: MLMRank) => {
-      if (!rank) return t("recentActivity.types.commission");
+      if (!rank) return "";
       const labels = {
         RECRUIT: t("recentActivity.rankLabels.recruit"),
         BRONZE: t("recentActivity.rankLabels.bronze"),
@@ -130,7 +138,9 @@ export function RecentActivity({
       : isWithdrawal
         ? t("recentActivity.types.withdrawal")
         : isSelfCommission
-          ? `${getRankLabel(item.userRank)} ${t("recentActivity.types.commission")}`
+          ? item.userRank
+            ? `${getRankLabel(item.userRank)} ${t("recentActivity.types.commission")}`
+            : t("recentActivity.types.commission")
           : t("recentActivity.types.commission");
 
     return (

@@ -8,6 +8,7 @@ import { QuickActions } from "@/components/home/QuickActions";
 import { RecentActivity } from "@/components/home/RecentActivity";
 import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
+import { WalletScreen } from "@/screens/wallet/WalletScreen";
 import { useAuthStore } from "@/stores/auth.store";
 import { useUIStore } from "@/stores/ui.store";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
@@ -174,20 +175,7 @@ export function HomeScreen() {
         return <ReferralsScreen />;
 
       case "wallet":
-        return (
-          <View className="flex-1 items-center justify-center">
-            <Header
-              userName={userAccount.name}
-              avatarUrl={undefined}
-              notificationCount={notificationCount}
-              onAvatarPress={handleAvatarPress}
-              onNotificationPress={handleNotificationPress}
-            />
-            <View className="flex-1 items-center justify-center">
-              {/* TODO: Implement WalletScreen */}
-            </View>
-          </View>
-        );
+        return <WalletScreen />;
 
       case "profile":
         return (

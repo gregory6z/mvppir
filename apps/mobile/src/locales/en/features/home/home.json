@@ -28,10 +28,11 @@
     "status": {
       "pending": "Pending",
       "confirmed": "Confirmed",
-      "completed": "Completed"
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     },
     "commissionFrom": "from",
-    "selfCommission": "Your blocked balance",
+    "selfCommission": "Daily Yield",
     "rankLabels": {
       "recruit": "Recruit",
       "bronze": "Bronze",
