@@ -85,11 +85,12 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
       <View className="flex-row items-center px-4 py-4 border-b border-zinc-800">
         <TouchableOpacity
           onPress={onBack}
-          className="mr-3 w-10 h-10 items-center justify-center rounded-xl bg-zinc-900"
+          className="mr-3 w-11 h-11 items-center justify-center rounded-xl bg-zinc-900 active:bg-zinc-800"
           accessibilityLabel="Go back"
           accessibilityRole="button"
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <ArrowLeft size={20} color="#ffffff" weight="bold" />
+          <ArrowLeft size={24} color="#ffffff" weight="bold" />
         </TouchableOpacity>
         <View className="flex-1">
           <Text className="text-white text-2xl font-bold">{t("title")}</Text>
