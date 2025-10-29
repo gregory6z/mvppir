@@ -4,7 +4,9 @@ import { ArrowLeft, Copy, CheckCircle } from "phosphor-react-native";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Clipboard from "expo-clipboard";
+import { Header } from "@/components/home/Header";
 import { useDepositAddress } from "@/api/user/queries/use-deposit-address-query";
+import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 
 interface DepositScreenProps {
   onBack: () => void;
@@ -12,6 +14,7 @@ interface DepositScreenProps {
 
 export function DepositScreen({ onBack }: DepositScreenProps) {
   const { t } = useTranslation("deposit.deposit");
+  const { data: userAccount } = useUserAccount();
   const { data: depositAddress, isLoading, error } = useDepositAddress();
   const [copied, setCopied] = useState(false);
 
@@ -30,6 +33,15 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950" edges={["left", "right"]}>
+        <Header
+          userName={userAccount?.name || ""}
+          avatarUrl={undefined}
+          notificationCount={0}
+          onAvatarPress={onBack}
+          onNotificationPress={() => {}}
+          showBackButton
+          onBackPress={onBack}
+        />
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#8b5cf6" />
         </View>
@@ -40,6 +52,15 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
   if (error || !depositAddress) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950" edges={["left", "right"]}>
+        <Header
+          userName={userAccount?.name || ""}
+          avatarUrl={undefined}
+          notificationCount={0}
+          onAvatarPress={onBack}
+          onNotificationPress={() => {}}
+          showBackButton
+          onBackPress={onBack}
+        />
         <View className="flex-1 items-center justify-center px-4">
           <Text className="text-white text-base text-center">{t("errors.loadFailed")}</Text>
           <TouchableOpacity
@@ -55,20 +76,21 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
 
   return (
     <SafeAreaView className="flex-1 bg-zinc-950" edges={["left", "right"]}>
-      {/* Header with Back Button */}
-      <View className="flex-row items-center px-4 py-4 border-b border-zinc-800">
-        <TouchableOpacity
-          onPress={onBack}
-          className="mr-4 w-10 h-10 items-center justify-center rounded-xl bg-zinc-900"
-          accessibilityLabel="Go back"
-          accessibilityRole="button"
-        >
-          <ArrowLeft size={20} color="#ffffff" weight="bold" />
-        </TouchableOpacity>
-        <View className="flex-1">
-          <Text className="text-white text-xl font-bold">{t("title")}</Text>
-          <Text className="text-zinc-400 text-sm">{t("subtitle")}</Text>
-        </View>
+      {/* Header */}
+      <Header
+        userName={userAccount?.name || ""}
+        avatarUrl={undefined}
+        notificationCount={0}
+        onAvatarPress={onBack}
+        onNotificationPress={() => {}}
+        showBackButton
+        onBackPress={onBack}
+      />
+
+      {/* Title Section */}
+      <View className="px-4 py-4 border-b border-zinc-800">
+        <Text className="text-white text-2xl font-bold">{t("title")}</Text>
+        <Text className="text-zinc-400 text-sm mt-1">{t("subtitle")}</Text>
       </View>
 
       {/* Scrollable Content */}
