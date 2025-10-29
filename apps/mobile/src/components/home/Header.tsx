@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { Bell, UserCircle, ArrowLeft } from "phosphor-react-native";
+import { Bell, UserCircle } from "phosphor-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
@@ -9,8 +9,6 @@ interface HeaderProps {
   notificationCount?: number;
   onAvatarPress: () => void;
   onNotificationPress: () => void;
-  showBackButton?: boolean;
-  onBackPress?: () => void;
 }
 
 export function Header({
@@ -18,8 +16,6 @@ export function Header({
   notificationCount = 0,
   onAvatarPress,
   onNotificationPress,
-  showBackButton = false,
-  onBackPress,
 }: HeaderProps) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("common.greetings");
@@ -47,51 +43,30 @@ export function Header({
       className="bg-zinc-950 px-4 pb-2"
     >
       <View className="flex-row items-center justify-between">
-        {/* Back Button or Avatar + Greeting */}
-        {showBackButton ? (
-          <View className="flex-row items-center gap-3 flex-1">
-            <TouchableOpacity
-              onPress={onBackPress}
-              className="w-10 h-10 items-center justify-center rounded-xl bg-zinc-900"
-              accessibilityLabel="Go back"
-              accessibilityRole="button"
-            >
-              <ArrowLeft size={20} color="#ffffff" weight="bold" />
-            </TouchableOpacity>
-            <View>
-              <Text className="text-zinc-400 text-xs font-medium">
-                {getGreeting()}
-              </Text>
-              <Text className="text-white text-base font-semibold">
-                {userName}
-              </Text>
-            </View>
+        {/* Avatar + Greeting */}
+        <TouchableOpacity
+          onPress={onAvatarPress}
+          className="flex-row items-center gap-3"
+          accessibilityLabel="Profile"
+          accessibilityHint="Tap to open profile settings"
+        >
+          {/* Avatar Circle with Initials */}
+          <View className="w-12 h-12 rounded-full bg-violet-500 items-center justify-center">
+            <Text className="text-white text-base font-semibold">
+              {getInitials(userName)}
+            </Text>
           </View>
-        ) : (
-          <TouchableOpacity
-            onPress={onAvatarPress}
-            className="flex-row items-center gap-3"
-            accessibilityLabel="Profile"
-            accessibilityHint="Tap to open profile settings"
-          >
-            {/* Avatar Circle with Initials */}
-            <View className="w-12 h-12 rounded-full bg-violet-500 items-center justify-center">
-              <Text className="text-white text-base font-semibold">
-                {getInitials(userName)}
-              </Text>
-            </View>
 
-            {/* Greeting Text */}
-            <View>
-              <Text className="text-zinc-400 text-xs font-medium">
-                {getGreeting()}
-              </Text>
-              <Text className="text-white text-base font-semibold">
-                {userName}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
+          {/* Greeting Text */}
+          <View>
+            <Text className="text-zinc-400 text-xs font-medium">
+              {getGreeting()}
+            </Text>
+            <Text className="text-white text-base font-semibold">
+              {userName}
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         {/* Notification Bell */}
         <TouchableOpacity

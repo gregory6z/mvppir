@@ -37,10 +37,8 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
           userName={userAccount?.name || ""}
           avatarUrl={undefined}
           notificationCount={0}
-          onAvatarPress={onBack}
+          onAvatarPress={() => {}}
           onNotificationPress={() => {}}
-          showBackButton
-          onBackPress={onBack}
         />
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#8b5cf6" />
@@ -56,10 +54,8 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
           userName={userAccount?.name || ""}
           avatarUrl={undefined}
           notificationCount={0}
-          onAvatarPress={onBack}
+          onAvatarPress={() => {}}
           onNotificationPress={() => {}}
-          showBackButton
-          onBackPress={onBack}
         />
         <View className="flex-1 items-center justify-center px-4">
           <Text className="text-white text-base text-center">{t("errors.loadFailed")}</Text>
@@ -81,16 +77,24 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
         userName={userAccount?.name || ""}
         avatarUrl={undefined}
         notificationCount={0}
-        onAvatarPress={onBack}
+        onAvatarPress={() => {}}
         onNotificationPress={() => {}}
-        showBackButton
-        onBackPress={onBack}
       />
 
-      {/* Title Section */}
-      <View className="px-4 py-4 border-b border-zinc-800">
-        <Text className="text-white text-2xl font-bold">{t("title")}</Text>
-        <Text className="text-zinc-400 text-sm mt-1">{t("subtitle")}</Text>
+      {/* Title Section with Back Button */}
+      <View className="flex-row items-center px-4 py-4 border-b border-zinc-800">
+        <TouchableOpacity
+          onPress={onBack}
+          className="mr-3 w-10 h-10 items-center justify-center rounded-xl bg-zinc-900"
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
+        >
+          <ArrowLeft size={20} color="#ffffff" weight="bold" />
+        </TouchableOpacity>
+        <View className="flex-1">
+          <Text className="text-white text-2xl font-bold">{t("title")}</Text>
+          <Text className="text-zinc-400 text-sm mt-1">{t("subtitle")}</Text>
+        </View>
       </View>
 
       {/* Scrollable Content */}
