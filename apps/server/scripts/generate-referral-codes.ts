@@ -1,18 +1,24 @@
 import { prisma } from "../src/lib/prisma";
 
 function generateReferralCode(name: string): string {
-  // Remove espaços e acentos, deixa apenas letras
+  // Remove espaços e acentos, deixa apenas letras (2 caracteres)
   const cleanName = name
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-zA-Z]/g, "")
     .toUpperCase()
-    .slice(0, 8);
+    .slice(0, 2);
 
-  // Gera 3 números aleatórios
-  const randomNum = Math.floor(100 + Math.random() * 900); // 100-999
+  // Gera 4 caracteres alfanuméricos aleatórios
+  const alphanumeric = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let randomSuffix = "";
+  for (let i = 0; i < 4; i++) {
+    randomSuffix += alphanumeric.charAt(
+      Math.floor(Math.random() * alphanumeric.length)
+    );
+  }
 
-  return `${cleanName}${randomNum}`;
+  return `${cleanName}${randomSuffix}`; // Total: 6 chars
 }
 
 async function generateReferralCodes() {
