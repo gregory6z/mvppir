@@ -10,100 +10,14 @@ import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { useAuthStore } from "@/stores/auth.store";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 import { useUserBalance } from "@/api/user/queries/use-user-balance-query";
-
-const MOCK_TRANSACTIONS = [
-  {
-    id: "1",
-    type: "COMMISSION" as const,
-    tokenSymbol: "USD",
-    tokenAddress: null,
-    amount: "5.25",
-    txHash: null,
-    transferTxHash: null,
-    status: "CONFIRMED" as const,
-    createdAt: new Date().toISOString(),
-    commissionLevel: 0, // Self commission (daily yield)
-    fromUserName: undefined,
-    userRank: "BRONZE" as const, // User's current rank
-  },
-  {
-    id: "2",
-    type: "COMMISSION" as const,
-    tokenSymbol: "USD",
-    tokenAddress: null,
-    amount: "3.15",
-    txHash: null,
-    transferTxHash: null,
-    status: "CONFIRMED" as const,
-    createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
-    commissionLevel: 1,
-    fromUserName: "João Silva",
-  },
-  {
-    id: "3",
-    type: "DEPOSIT" as const,
-    tokenSymbol: "USDC",
-    tokenAddress: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-    amount: "500.00",
-    txHash: "0x123...",
-    transferTxHash: null,
-    status: "CONFIRMED" as const,
-    createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
-  },
-  {
-    id: "4",
-    type: "COMMISSION" as const,
-    tokenSymbol: "USD",
-    tokenAddress: null,
-    amount: "1.50",
-    txHash: null,
-    transferTxHash: null,
-    status: "CONFIRMED" as const,
-    createdAt: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-    commissionLevel: 2,
-    fromUserName: "Pedro Costa",
-  },
-  {
-    id: "5",
-    type: "WITHDRAWAL" as const,
-    tokenSymbol: "USDT",
-    tokenAddress: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-    amount: "150.00",
-    txHash: null,
-    transferTxHash: null,
-    status: "PENDING" as const,
-    createdAt: new Date(Date.now() - 129600000).toISOString(), // 1.5 days ago
-  },
-  {
-    id: "6",
-    type: "COMMISSION" as const,
-    tokenSymbol: "USD",
-    tokenAddress: null,
-    amount: "0.20",
-    txHash: null,
-    transferTxHash: null,
-    status: "CONFIRMED" as const,
-    createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-    commissionLevel: 3,
-    fromUserName: "Carlos Pereira",
-  },
-  {
-    id: "7",
-    type: "DEPOSIT" as const,
-    tokenSymbol: "MATIC",
-    tokenAddress: null,
-    amount: "75.50",
-    txHash: "0x456...",
-    transferTxHash: null,
-    status: "CONFIRMED" as const,
-    createdAt: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
-  },
-];
+import { useUnifiedTransactions } from "@/api/user/queries/use-unified-transactions-query";
 
 export function HomeScreen() {
   const { clearAuth } = useAuthStore();
   const { data: userAccount, isLoading: isLoadingAccount, refetch: refetchAccount } = useUserAccount();
   const { data: balanceData, isLoading: isLoadingBalance, refetch: refetchBalance } = useUserBalance();
+  const { data: transactionsData, isLoading: isLoadingTransactions, refetch: refetchTransactions } = useUnifiedTransactions({ limit: 4 });
+
   const [activeTab, setActiveTab] = useState<
     "home" | "wallet" | "referrals" | "profile"
   >("home");
@@ -113,10 +27,11 @@ export function HomeScreen() {
   const totalBalance = balanceData?.totalUSD || 0;
   const percentChange = 0; // TODO: calculate from historical data
   const notificationCount = 0; // TODO: implement notifications
+  const recentTransactions = transactionsData?.transactions || [];
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([refetchAccount(), refetchBalance()]);
+    await Promise.all([refetchAccount(), refetchBalance(), refetchTransactions()]);
     setRefreshing(false);
   };
 
@@ -178,7 +93,7 @@ export function HomeScreen() {
   };
 
   // Loading state
-  if (isLoadingAccount || isLoadingBalance) {
+  if (isLoadingAccount || isLoadingBalance || isLoadingTransactions) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center" edges={["left", "right"]}>
         <ActivityIndicator size="large" color="#8b5cf6" />
@@ -187,7 +102,7 @@ export function HomeScreen() {
   }
 
   // Error state
-  if (!userAccount || !balanceData) {
+  if (!userAccount || !balanceData || !transactionsData) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center" edges={["left", "right"]}>
         <Text className="text-white text-base">Failed to load data</Text>
@@ -246,8 +161,8 @@ export function HomeScreen() {
 
               {/* Recent Activity */}
               <RecentActivity
-                transactions={MOCK_TRANSACTIONS}
-                maxItems={6}
+                transactions={recentTransactions}
+                maxItems={4}
                 onViewAll={handleViewAllTransactions}
                 onTransactionPress={handleTransactionPress}
               />
