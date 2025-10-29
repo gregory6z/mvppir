@@ -77,26 +77,25 @@ export function BalanceCard({
         )}
       </View>
 
-      {/* Percent Change Indicator - More Subtle */}
-      {percentChange !== 0 && (
-        <View className="flex-row items-center gap-1.5 bg-zinc-800/50 self-start px-3 py-1.5 rounded-full">
-          {isPositive && <TrendUp size={14} color="#10b981" weight="bold" />}
-          {isNegative && <TrendDown size={14} color="#ef4444" weight="bold" />}
-          <Text
-            className={`text-xs font-semibold ${
-              isPositive
-                ? "text-green-500"
-                : isNegative
-                  ? "text-red-500"
-                  : "text-zinc-400"
-            }`}
-          >
-            {isPositive ? "+" : ""}
-            {percentChange.toFixed(1)}%
-          </Text>
-          <Text className="text-zinc-500 text-xs">{getPeriodLabel()}</Text>
-        </View>
-      )}
+      {/* Percent Change Indicator - Always visible */}
+      <View className="flex-row items-center gap-1.5 bg-zinc-800/50 self-start px-3 py-1.5 rounded-full">
+        {isPositive && <TrendUp size={14} color="#10b981" weight="bold" />}
+        {isNegative && <TrendDown size={14} color="#ef4444" weight="bold" />}
+        {!isPositive && !isNegative && <TrendUp size={14} color="#71717a" weight="bold" />}
+        <Text
+          className={`text-xs font-semibold ${
+            isPositive
+              ? "text-green-500"
+              : isNegative
+                ? "text-red-500"
+                : "text-zinc-400"
+          }`}
+        >
+          {isPositive ? "+" : ""}
+          {percentChange.toFixed(1)}%
+        </Text>
+        <Text className="text-zinc-500 text-xs">{getPeriodLabel()}</Text>
+      </View>
     </View>
   );
 }
