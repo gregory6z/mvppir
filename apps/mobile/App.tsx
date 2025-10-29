@@ -2,14 +2,14 @@ import "./global.css";
 import "@/locales"; // Initialize i18n
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { View, Text } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { queryClient, asyncStoragePersister } from "@/lib/react-query";
 import { useReactQueryConfig } from "@/lib/react-query-config";
 import { useAuthStore } from "@/stores/auth.store";
 import { LoginScreen } from "@/screens/auth/LoginScreen";
 import { SignupScreen } from "@/screens/auth/SignupScreen";
+import { HomeScreen } from "@/screens/home/HomeScreen";
 
 type AuthScreen = "login" | "signup";
 
@@ -36,21 +36,10 @@ function AppContent() {
 
   // Authenticated - show main app
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950">
-      <View className="flex-1 justify-center items-center">
-        <Text className="text-4xl font-bold text-white mb-2">MVPPIR</Text>
-        <Text className="text-zinc-400 text-base">Mobile App</Text>
-        <View className="mt-8 p-6 bg-zinc-900 rounded-lg border border-zinc-800">
-          <Text className="text-zinc-200 text-center mb-2">
-            ✅ Autenticado com sucesso!
-          </Text>
-          <Text className="text-zinc-400 text-center text-sm">
-            Dashboard em breve...
-          </Text>
-        </View>
-      </View>
+    <>
+      <HomeScreen />
       <StatusBar style="light" />
-    </SafeAreaView>
+    </>
   );
 }
 
