@@ -10,6 +10,28 @@ type SignupError =
   | "auth.signup.errors.networkError"
   | "auth.signup.errors.unknownError";
 
+// Função helper para transformar erros em chaves de tradução
+function transformSignupError(error: any): SignupError {
+  // Trata erros de rede (servidor offline, timeout, etc)
+  if (error instanceof TypeError && error.message?.includes("fetch")) {
+    return "auth.signup.errors.networkError";
+  }
+
+  // Trata erros do Better Auth
+  const errorCode = error?.code;
+
+  if (errorCode === "USER_ALREADY_EXISTS") {
+    return "auth.signup.errors.emailExists";
+  }
+
+  if (errorCode === "INVALID_EMAIL" || errorCode === "FAILED_TO_CREATE_USER") {
+    return "auth.signup.errors.unknownError";
+  }
+
+  // Erro desconhecido
+  return "auth.signup.errors.unknownError";
+}
+
 export function useSignupMutation() {
   const { setAuth } = useAuthStore();
 
@@ -26,31 +48,13 @@ export function useSignupMutation() {
         referralCode: signupData.referralCode?.toUpperCase(),
       });
 
-      // Tratamento de erros baseado nos códigos oficiais do Better Auth
+      // Se houver erro, lança o erro bruto para ser tratado no onError
       if (result.error) {
-        const errorCode = (result.error as any).code;
-
-        // Log para debug (pode ser removido em produção)
-        console.log("🔍 Better Auth Error Code:", errorCode);
-        console.log("🔍 Error Message:", result.error.message);
-
-        // Mapeia códigos do Better Auth para chaves de tradução
-        if (errorCode === "USER_ALREADY_EXISTS") {
-          throw new Error("auth.signup.errors.emailExists");
-        } else if (
-          errorCode === "INVALID_EMAIL" ||
-          errorCode === "FAILED_TO_CREATE_USER"
-        ) {
-          // Códigos que podem indicar problema com referral
-          throw new Error("auth.signup.errors.unknownError");
-        } else {
-          // Qualquer outro erro
-          throw new Error("auth.signup.errors.unknownError");
-        }
+        throw result.error;
       }
 
       if (!result.data?.token || !result.data?.user) {
-        throw new Error("auth.signup.errors.unknownError");
+        throw new Error("MISSING_DATA");
       }
 
       return result.data;
@@ -59,10 +63,8 @@ export function useSignupMutation() {
       // Atualiza o estado de autenticação
       setAuth(data.token, data.user.id);
     },
-    onError: (error) => {
-      console.error("❌ Erro no cadastro:", error);
-    },
   });
 }
 
+export { transformSignupError };
 export type { SignupError };

@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { loginSchema, type LoginInput } from "@/api/schemas/auth.schema";
-import { useLoginMutation, type LoginError } from "@/api/mutations/use-login-mutation";
+import { useLoginMutation, transformLoginError, type LoginError } from "@/api/mutations/use-login-mutation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,7 +40,7 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
     setError(null);
     loginMutation.mutate(data, {
       onError: (err) => {
-        const errorType = err.message as LoginError;
+        const errorType = transformLoginError(err);
         setError(errorType);
       },
     });

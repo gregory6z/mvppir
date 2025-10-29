@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { signupSchema, type SignupInput } from "@/api/schemas/auth.schema";
-import { useSignupMutation, type SignupError } from "@/api/mutations/use-signup-mutation";
+import { useSignupMutation, transformSignupError, type SignupError } from "@/api/mutations/use-signup-mutation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,7 +45,7 @@ export function SignupScreen({ onNavigateToLogin, referrerId, referralCode }: Si
     setError(null);
     signupMutation.mutate(data, {
       onError: (err) => {
-        const errorType = err.message as SignupError;
+        const errorType = transformSignupError(err);
         setError(errorType);
       },
     });

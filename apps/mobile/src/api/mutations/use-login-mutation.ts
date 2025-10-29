@@ -10,71 +10,59 @@ type LoginError =
   | "auth.login.errors.networkError"
   | "auth.login.errors.unknownError";
 
+// Função helper para transformar erros em chaves de tradução
+function transformLoginError(error: any): LoginError {
+  // Trata erros de rede (servidor offline, timeout, etc)
+  if (error instanceof TypeError && error.message?.includes("fetch")) {
+    return "auth.login.errors.networkError";
+  }
+
+  // Trata erros do Better Auth
+  const errorCode = error?.code;
+
+  if (
+    errorCode === "INVALID_EMAIL_OR_PASSWORD" ||
+    errorCode === "INVALID_PASSWORD" ||
+    errorCode === "USER_NOT_FOUND"
+  ) {
+    return "auth.login.errors.invalidCredentials";
+  }
+
+  if (errorCode === "ACCOUNT_BLOCKED") {
+    return "auth.login.errors.accountBlocked";
+  }
+
+  // Erro desconhecido
+  return "auth.login.errors.unknownError";
+}
+
 export function useLoginMutation() {
   const { setAuth } = useAuthStore();
 
   return useMutation({
     mutationFn: async (data: LoginInput) => {
-      try {
-        const result = await signIn.email({
-          email: data.email,
-          password: data.password,
-        });
+      const result = await signIn.email({
+        email: data.email,
+        password: data.password,
+      });
 
-        // Tratamento de erros baseado nos códigos oficiais do Better Auth
-        if (result.error) {
-          const errorCode = (result.error as any).code;
-
-          // Log para debug (pode ser removido em produção)
-          console.log("🔍 Better Auth Error Code:", errorCode);
-          console.log("🔍 Error Message:", result.error.message);
-
-          // Mapeia códigos do Better Auth para chaves de tradução
-          if (
-            errorCode === "INVALID_EMAIL_OR_PASSWORD" ||
-            errorCode === "INVALID_PASSWORD" ||
-            errorCode === "USER_NOT_FOUND"
-          ) {
-            throw new Error("auth.login.errors.invalidCredentials");
-          } else if (errorCode === "ACCOUNT_BLOCKED") {
-            // Código customizado do servidor (se implementado)
-            throw new Error("auth.login.errors.accountBlocked");
-          } else {
-            // Qualquer outro erro
-            throw new Error("auth.login.errors.unknownError");
-          }
-        }
-
-        if (!result.data?.token || !result.data?.user) {
-          throw new Error("auth.login.errors.unknownError");
-        }
-
-        return result.data;
-      } catch (error) {
-        // Captura erros de rede (servidor offline, timeout, etc)
-        if (error instanceof TypeError && error.message.includes("fetch")) {
-          console.error("❌ Network error:", error);
-          throw new Error("auth.login.errors.networkError");
-        }
-
-        // Se já for um erro do Better Auth, repassa
-        if (error instanceof Error && error.message.startsWith("auth.login.errors.")) {
-          throw error;
-        }
-
-        // Qualquer outro erro desconhecido
-        console.error("❌ Unknown error:", error);
-        throw new Error("auth.login.errors.unknownError");
+      // Se houver erro, lança o erro bruto para ser tratado no onError
+      if (result.error) {
+        throw result.error;
       }
+
+      if (!result.data?.token || !result.data?.user) {
+        throw new Error("MISSING_DATA");
+      }
+
+      return result.data;
     },
     onSuccess: (data) => {
       // Atualiza o estado de autenticação
       setAuth(data.token, data.user.id);
     },
-    onError: (error) => {
-      console.error("❌ Erro no login:", error);
-    },
   });
 }
 
+export { transformLoginError };
 export type { LoginError };
