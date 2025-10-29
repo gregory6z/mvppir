@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { Bell, UserCircle } from "phosphor-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 interface HeaderProps {
   userName: string;
@@ -17,13 +18,14 @@ export function Header({
   onNotificationPress,
 }: HeaderProps) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("common.greetings");
 
   // Get time-based greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
+    if (hour < 12) return t("morning");
+    if (hour < 18) return t("afternoon");
+    return t("evening");
   };
 
   // Get initials from name
