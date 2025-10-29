@@ -1,0 +1,51 @@
+{
+  "balanceCard": {
+    "title": "Total Balance",
+    "period": {
+      "day": "day",
+      "week": "week",
+      "month": "month"
+    }
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "refer": "Refer"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "viewAll": "View All",
+    "empty": {
+      "title": "No transactions yet",
+      "subtitle": "Your transactions will appear here"
+    },
+    "types": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal",
+      "commission": "Commission"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "completed": "Completed"
+    },
+    "commissionFrom": "from",
+    "selfCommission": "Your blocked balance",
+    "rankLabels": {
+      "recruit": "Recruit",
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold"
+    }
+  },
+  "errors": {
+    "loadFailed": "Failed to load data"
+  },
+  "logout": {
+    "title": "Logout",
+    "message": "Do you want to logout from your account?",
+    "cancel": "Cancel",
+    "confirm": "Logout"
+  }
+}

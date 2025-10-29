@@ -8,6 +8,7 @@ import ptSignup from "./pt/features/auth/signup.json";
 import ptValidation from "./pt/features/auth/validation.json";
 import ptReferral from "./pt/features/auth/referral.json";
 import ptGreetings from "./pt/common/greetings.json";
+import ptHome from "./pt/features/home/home.json";
 
 // English translations
 import enLogin from "./en/features/auth/login.json";
@@ -15,6 +16,7 @@ import enSignup from "./en/features/auth/signup.json";
 import enValidation from "./en/features/auth/validation.json";
 import enReferral from "./en/features/auth/referral.json";
 import enGreetings from "./en/common/greetings.json";
+import enHome from "./en/features/home/home.json";
 
 // Spanish translations
 import esLogin from "./es/features/auth/login.json";
@@ -22,6 +24,7 @@ import esSignup from "./es/features/auth/signup.json";
 import esValidation from "./es/features/auth/validation.json";
 import esReferral from "./es/features/auth/referral.json";
 import esGreetings from "./es/common/greetings.json";
+import esHome from "./es/features/home/home.json";
 
 // French translations
 import frLogin from "./fr/features/auth/login.json";
@@ -29,6 +32,7 @@ import frSignup from "./fr/features/auth/signup.json";
 import frValidation from "./fr/features/auth/validation.json";
 import frReferral from "./fr/features/auth/referral.json";
 import frGreetings from "./fr/common/greetings.json";
+import frHome from "./fr/features/home/home.json";
 
 const resources = {
   pt: {
@@ -37,6 +41,7 @@ const resources = {
     "auth.validation": ptValidation,
     "auth.referral": ptReferral,
     "common.greetings": ptGreetings,
+    "home.home": ptHome,
   },
   en: {
     "auth.login": enLogin,
@@ -44,6 +49,7 @@ const resources = {
     "auth.validation": enValidation,
     "auth.referral": enReferral,
     "common.greetings": enGreetings,
+    "home.home": enHome,
   },
   es: {
     "auth.login": esLogin,
@@ -51,6 +57,7 @@ const resources = {
     "auth.validation": esValidation,
     "auth.referral": esReferral,
     "common.greetings": esGreetings,
+    "home.home": esHome,
   },
   fr: {
     "auth.login": frLogin,
@@ -58,6 +65,7 @@ const resources = {
     "auth.validation": frValidation,
     "auth.referral": frReferral,
     "common.greetings": frGreetings,
+    "home.home": frHome,
   },
 };
 

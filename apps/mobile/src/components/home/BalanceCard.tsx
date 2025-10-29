@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Eye, EyeSlash, TrendUp, TrendDown } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 
 interface BalanceCardProps {
   totalBalance: number; // USD
@@ -17,6 +18,8 @@ export function BalanceCard({
   isBalanceVisible,
   onToggleVisibility,
 }: BalanceCardProps) {
+  const { t } = useTranslation("home.home");
+
   const formatBalance = (value: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -27,16 +30,7 @@ export function BalanceCard({
   };
 
   const getPeriodLabel = () => {
-    switch (period) {
-      case "day":
-        return "today";
-      case "week":
-        return "this week";
-      case "month":
-        return "this month";
-      default:
-        return "this month";
-    }
+    return t(`balanceCard.period.${period}` as const);
   };
 
   const isPositive = percentChange > 0;
@@ -52,7 +46,7 @@ export function BalanceCard({
       {/* Header with Title and Eye Icon */}
       <View className="flex-row items-center justify-between mb-4">
         <Text className="text-zinc-400 text-xs uppercase tracking-wider font-semibold">
-          Total Balance
+          {t("balanceCard.title")}
         </Text>
         <TouchableOpacity
           onPress={handleToggleVisibility}

@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { ArrowDown, ArrowUp, Star, ArrowRight } from "phosphor-react-native";
 import { formatDistanceToNow } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
 
@@ -25,6 +26,7 @@ interface RecentActivityProps {
   maxItems?: number; // Default: 3, Max: 5
   onViewAll: () => void;
   onTransactionPress?: (id: string) => void;
+  isBalanceVisible?: boolean; // Controls whether amounts are visible
 }
 
 export function RecentActivity({
@@ -32,7 +34,9 @@ export function RecentActivity({
   maxItems = 3,
   onViewAll,
   onTransactionPress,
+  isBalanceVisible = true,
 }: RecentActivityProps) {
+  const { t } = useTranslation("home.home");
   const limitedTransactions = transactions.slice(0, maxItems);
 
   const getStatusColor = (status: Transaction["status"]) => {
@@ -51,11 +55,11 @@ export function RecentActivity({
   const getStatusLabel = (status: Transaction["status"]) => {
     switch (status) {
       case "PENDING":
-        return "Pending";
+        return t("recentActivity.status.pending");
       case "CONFIRMED":
-        return "Confirmed";
+        return t("recentActivity.status.confirmed");
       case "SENT_TO_GLOBAL":
-        return "Completed";
+        return t("recentActivity.status.completed");
       default:
         return status;
     }
@@ -111,23 +115,23 @@ export function RecentActivity({
     }
 
     const getRankLabel = (rank?: MLMRank) => {
-      if (!rank) return "Commission";
+      if (!rank) return t("recentActivity.types.commission");
       const labels = {
-        RECRUIT: "Recruit",
-        BRONZE: "Bronze",
-        SILVER: "Silver",
-        GOLD: "Gold",
+        RECRUIT: t("recentActivity.rankLabels.recruit"),
+        BRONZE: t("recentActivity.rankLabels.bronze"),
+        SILVER: t("recentActivity.rankLabels.silver"),
+        GOLD: t("recentActivity.rankLabels.gold"),
       };
       return labels[rank];
     };
 
     const transactionLabel = isDeposit
-      ? "Deposit"
+      ? t("recentActivity.types.deposit")
       : isWithdrawal
-        ? "Withdrawal"
+        ? t("recentActivity.types.withdrawal")
         : isSelfCommission
-          ? `${getRankLabel(item.userRank)} Commission`
-          : "Commission";
+          ? `${getRankLabel(item.userRank)} ${t("recentActivity.types.commission")}`
+          : t("recentActivity.types.commission");
 
     return (
       <TouchableOpacity
@@ -168,15 +172,15 @@ export function RecentActivity({
                 )}
               </View>
               <Text className={`font-bold text-[15px] ${amountColor}`}>
-                {formatAmount(item.amount, item.type)}
+                {isBalanceVisible ? formatAmount(item.amount, item.type) : "••••"}
               </Text>
             </View>
             <View className="flex-row items-center justify-between">
               <Text className="text-zinc-400 text-sm" numberOfLines={1}>
                 {isCommission && item.fromUserName
-                  ? `from ${item.fromUserName}`
+                  ? `${t("recentActivity.commissionFrom")} ${item.fromUserName}`
                   : isSelfCommission
-                    ? "Your blocked balance"
+                    ? t("recentActivity.selfCommission")
                     : formatRelativeTime(item.createdAt)}
               </Text>
               <View
@@ -205,15 +209,15 @@ export function RecentActivity({
     return (
       <View className="mx-4 mt-6">
         <Text className="text-white text-lg font-semibold mb-4">
-          Recent Activity
+          {t("recentActivity.title")}
         </Text>
         <View className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 items-center">
           <Star size={48} color="#52525b" weight="duotone" />
           <Text className="text-zinc-400 text-center mt-4">
-            No transactions yet
+            {t("recentActivity.empty.title")}
           </Text>
           <Text className="text-zinc-500 text-sm text-center mt-1">
-            Your transactions will appear here
+            {t("recentActivity.empty.subtitle")}
           </Text>
         </View>
       </View>
@@ -225,7 +229,7 @@ export function RecentActivity({
       {/* Header */}
       <View className="flex-row items-center justify-between mb-3">
         <Text className="text-white text-base font-semibold">
-          Recent Activity
+          {t("recentActivity.title")}
         </Text>
         <TouchableOpacity
           onPress={onViewAll}
@@ -234,7 +238,7 @@ export function RecentActivity({
           accessibilityRole="button"
         >
           <Text className="text-violet-500 text-sm font-medium">
-            View All
+            {t("recentActivity.viewAll")}
           </Text>
           <ArrowRight size={16} color="#8b5cf6" weight="bold" />
         </TouchableOpacity>

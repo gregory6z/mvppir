@@ -1,6 +1,7 @@
 import { ScrollView, View, RefreshControl, Alert, ActivityIndicator, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Header } from "@/components/home/Header";
 import { BalanceCard } from "@/components/home/BalanceCard";
 import { QuickActions } from "@/components/home/QuickActions";
@@ -8,12 +9,15 @@ import { RecentActivity } from "@/components/home/RecentActivity";
 import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { useAuthStore } from "@/stores/auth.store";
+import { useUIStore } from "@/stores/ui.store";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 import { useUserBalance } from "@/api/user/queries/use-user-balance-query";
 import { useUnifiedTransactions } from "@/api/user/queries/use-unified-transactions-query";
 
 export function HomeScreen() {
+  const { t } = useTranslation("home.home");
   const { clearAuth } = useAuthStore();
+  const { isBalanceVisible, toggleBalanceVisibility } = useUIStore();
   const { data: userAccount, isLoading: isLoadingAccount, refetch: refetchAccount } = useUserAccount();
   const { data: balanceData, isLoading: isLoadingBalance, refetch: refetchBalance } = useUserBalance();
   const { data: transactionsData, isLoading: isLoadingTransactions, refetch: refetchTransactions } = useUnifiedTransactions({ limit: 4 });
@@ -21,7 +25,6 @@ export function HomeScreen() {
   const [activeTab, setActiveTab] = useState<
     "home" | "wallet" | "referrals" | "profile"
   >("home");
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const totalBalance = balanceData?.totalUSD || 0;
@@ -37,15 +40,15 @@ export function HomeScreen() {
 
   const handleAvatarPress = () => {
     Alert.alert(
-      "Logout",
-      "Do you want to logout from your account?",
+      t("logout.title"),
+      t("logout.message"),
       [
         {
-          text: "Cancel",
+          text: t("logout.cancel"),
           style: "cancel",
         },
         {
-          text: "Logout",
+          text: t("logout.confirm"),
           style: "destructive",
           onPress: () => {
             clearAuth();
@@ -88,10 +91,6 @@ export function HomeScreen() {
     setActiveTab(tab);
   };
 
-  const toggleBalanceVisibility = () => {
-    setIsBalanceVisible((prev) => !prev);
-  };
-
   // Loading state
   if (isLoadingAccount || isLoadingBalance || isLoadingTransactions) {
     return (
@@ -105,7 +104,7 @@ export function HomeScreen() {
   if (!userAccount || !balanceData || !transactionsData) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center" edges={["left", "right"]}>
-        <Text className="text-white text-base">Failed to load data</Text>
+        <Text className="text-white text-base">{t("errors.loadFailed")}</Text>
       </SafeAreaView>
     );
   }
@@ -165,6 +164,7 @@ export function HomeScreen() {
                 maxItems={4}
                 onViewAll={handleViewAllTransactions}
                 onTransactionPress={handleTransactionPress}
+                isBalanceVisible={isBalanceVisible}
               />
             </ScrollView>
           </>

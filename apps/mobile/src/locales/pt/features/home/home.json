@@ -1,0 +1,51 @@
+{
+  "balanceCard": {
+    "title": "Saldo Total",
+    "period": {
+      "day": "dia",
+      "week": "semana",
+      "month": "mês"
+    }
+  },
+  "quickActions": {
+    "title": "Ações Rápidas",
+    "deposit": "Depositar",
+    "withdraw": "Sacar",
+    "refer": "Convidar Amigos"
+  },
+  "recentActivity": {
+    "title": "Atividade Recente",
+    "viewAll": "Ver Tudo",
+    "empty": {
+      "title": "Nenhuma transação ainda",
+      "subtitle": "Suas transações aparecerão aqui"
+    },
+    "types": {
+      "deposit": "Depósito",
+      "withdrawal": "Saque",
+      "commission": "Comissão"
+    },
+    "status": {
+      "pending": "Pendente",
+      "confirmed": "Confirmado",
+      "completed": "Concluído"
+    },
+    "commissionFrom": "de",
+    "selfCommission": "Seu saldo bloqueado",
+    "rankLabels": {
+      "recruit": "Recruit",
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold"
+    }
+  },
+  "errors": {
+    "loadFailed": "Falha ao carregar dados"
+  },
+  "logout": {
+    "title": "Sair",
+    "message": "Deseja sair da sua conta?",
+    "cancel": "Cancelar",
+    "confirm": "Sair"
+  }
+}

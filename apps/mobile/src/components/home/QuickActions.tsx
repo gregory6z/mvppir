@@ -6,6 +6,7 @@ import {
   ArrowUp,
   UserPlus,
 } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 
 interface Action {
   id: "deposit" | "withdraw" | "refer";
@@ -25,6 +26,8 @@ export function QuickActions({
   onWithdrawPress,
   onReferPress,
 }: QuickActionsProps) {
+  const { t } = useTranslation("home.home");
+
   const handleActionPress = (action: Action) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     action.onPress();
@@ -33,19 +36,19 @@ export function QuickActions({
   const actions: Action[] = [
     {
       id: "deposit",
-      label: "Deposit",
+      label: t("quickActions.deposit"),
       icon: ArrowDown,
       onPress: onDepositPress,
     },
     {
       id: "withdraw",
-      label: "Withdraw",
+      label: t("quickActions.withdraw"),
       icon: ArrowUp,
       onPress: onWithdrawPress,
     },
     {
       id: "refer",
-      label: "Refer Friends",
+      label: t("quickActions.refer"),
       icon: UserPlus,
       onPress: onReferPress,
     },
@@ -55,7 +58,7 @@ export function QuickActions({
     <View className="mx-4 mt-6">
       {/* Title */}
       <Text className="text-white text-base font-semibold mb-3">
-        Quick Actions
+        {t("quickActions.title")}
       </Text>
 
       {/* Actions Grid */}
