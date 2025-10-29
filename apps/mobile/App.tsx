@@ -14,6 +14,7 @@ import { LoginScreen } from "@/screens/auth/LoginScreen";
 import { SignupScreen } from "@/screens/auth/SignupScreen";
 import { ReferralInputScreen } from "@/screens/auth/ReferralInputScreen";
 import { InactiveAccountScreen } from "@/screens/home/InactiveAccountScreen";
+import { DepositScreen } from "@/screens/deposit/DepositScreen";
 import { HomeScreen } from "@/screens/home/HomeScreen";
 
 type AuthScreen = "login" | "referral" | "signup";
@@ -28,6 +29,7 @@ function AppContent() {
     referrerId: string;
     referralCode: string;
   } | null>(null);
+  const [showDepositScreen, setShowDepositScreen] = useState(false);
 
   const handleValidReferralCode = (referrerId: string, referralCode: string) => {
     setReferralData({ referrerId, referralCode });
@@ -85,13 +87,20 @@ function AppContent() {
 
   // Inactive accounts - show activation screen (FULLSCREEN, no navigation)
   if (userStatus?.status === "INACTIVE") {
+    // Show deposit screen if requested
+    if (showDepositScreen) {
+      return (
+        <>
+          <DepositScreen onBack={() => setShowDepositScreen(false)} />
+          <StatusBar style="light" />
+        </>
+      );
+    }
+
     return (
       <>
         <InactiveAccountScreen
-          onNavigateToDeposit={() => {
-            // TODO: Navigate to DepositScreen when implemented
-            console.log("Navigate to deposit screen");
-          }}
+          onNavigateToDeposit={() => setShowDepositScreen(true)}
         />
         <StatusBar style="light" />
       </>

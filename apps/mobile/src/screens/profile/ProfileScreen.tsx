@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SignOut, PencilSimple, Globe, Check } from "phosphor-react-native";
+import { SignOut, Globe, Check } from "phosphor-react-native";
 import { useTranslation } from "react-i18next";
 import { Header } from "@/components/home/Header";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
@@ -42,12 +42,6 @@ export function ProfileScreen() {
     );
   };
 
-  const handleEditProfile = () => {
-    // TODO: Navigate to edit profile screen
-    console.log("Edit profile pressed");
-    Alert.alert(t("editProfile.comingSoon"), t("editProfile.comingSoonMessage"));
-  };
-
   const handleChangeLanguage = (languageCode: string) => {
     i18n.changeLanguage(languageCode);
     console.log(`Language changed to: ${languageCode}`);
@@ -78,7 +72,7 @@ export function ProfileScreen() {
       >
         {/* User Info Card */}
         <View className="mx-4 mt-4 bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
-          <View className="flex-row items-center mb-4">
+          <View className="flex-row items-center">
             <View className="w-16 h-16 rounded-full bg-violet-500 items-center justify-center mr-4">
               <Text className="text-white text-xl font-bold">
                 {userAccount?.name
@@ -94,16 +88,6 @@ export function ProfileScreen() {
               <Text className="text-zinc-400 text-sm mt-1">{userAccount?.email}</Text>
             </View>
           </View>
-
-          <TouchableOpacity
-            onPress={handleEditProfile}
-            className="flex-row items-center justify-center py-3 rounded-xl bg-violet-500 active:bg-violet-600"
-            accessibilityLabel="Edit profile"
-            accessibilityRole="button"
-          >
-            <PencilSimple size={20} color="#ffffff" weight="bold" />
-            <Text className="text-white font-semibold ml-2">{t("editProfile.button")}</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Account Information */}
