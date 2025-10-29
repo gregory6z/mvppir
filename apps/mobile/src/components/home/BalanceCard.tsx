@@ -72,7 +72,7 @@ export function BalanceCard({
           </Text>
         ) : (
           <Text className="text-white text-4xl font-bold tracking-tight">
-            ••••••
+            $ ••••••
           </Text>
         )}
       </View>

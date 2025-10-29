@@ -172,7 +172,7 @@ export function RecentActivity({
                 )}
               </View>
               <Text className={`font-bold text-[15px] ${amountColor}`}>
-                {isBalanceVisible ? formatAmount(item.amount, item.type) : "••••"}
+                {isBalanceVisible ? formatAmount(item.amount, item.type) : "$ ••••"}
               </Text>
             </View>
             <View className="flex-row items-center justify-between">
