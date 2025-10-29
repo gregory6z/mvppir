@@ -10,12 +10,12 @@ export interface UnifiedTransaction {
   usdValue: number;
   txHash: string | null;
   transferTxHash: string | null;
-  status: string;
+  status: "PENDING" | "CONFIRMED" | "SENT_TO_GLOBAL";
   createdAt: string;
   // Commission specific fields
   commissionLevel?: number; // 0 = self (daily yield), 1-3 = network levels
   fromUserName?: string;
-  userRank?: string;
+  userRank?: "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
 }
 
 export interface UnifiedTransactionsResponse {
