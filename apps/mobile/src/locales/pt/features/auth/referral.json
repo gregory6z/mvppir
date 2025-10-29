@@ -1,0 +1,33 @@
+{
+  "welcome": "Bem-vindo ao Stakly",
+  "title": "Digite seu código de indicação para começar",
+  "fields": {
+    "referralCode": "Código de Indicação *"
+  },
+  "placeholders": {
+    "referralCode": "DIGITE O CÓDIGO"
+  },
+  "buttons": {
+    "validate": "Validar Código",
+    "validating": "Validando...",
+    "continue": "Continuar para Cadastro"
+  },
+  "errors": {
+    "emptyCode": "Por favor, digite um código de indicação",
+    "invalidCode": "Código de indicação inválido",
+    "failedValidation": "Falha ao validar código"
+  },
+  "success": {
+    "validCode": "Código de indicação válido!",
+    "invitedBy": "Convidado por",
+    "network": "Rede",
+    "directs": "{{count}} diretos"
+  },
+  "info": {
+    "requirement": "Um código de indicação válido é necessário para criar uma conta. Peça para um amigo que já usa o Stakly!"
+  },
+  "links": {
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "backToLogin": "Voltar para Login"
+  }
+}

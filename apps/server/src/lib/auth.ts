@@ -14,9 +14,15 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   socialProviders: {
     // Configuração dos provedores OAuth será adicionada conforme necessário
   },
-  trustedOrigins: [
-    process.env.FRONTEND_URL || "http://localhost:3000",
-  ],
+  trustedOrigins: process.env.NODE_ENV === "development"
+    ? [
+        process.env.FRONTEND_URL || "http://localhost:3000",
+        "http://localhost:3333",
+        "http://127.0.0.1:3333",
+        "http://192.168.1.4:3333", // Mobile app (local network IP)
+        "http://0.0.0.0:3333",
+      ]
+    : [process.env.FRONTEND_URL || "http://localhost:3000"],
   secret: process.env.AUTH_SECRET!,
   baseURL: process.env.API_BASE_URL || "http://localhost:3333",
 

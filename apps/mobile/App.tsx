@@ -2,14 +2,17 @@ import "./global.css";
 import "@/locales"; // Initialize i18n
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { queryClient, asyncStoragePersister } from "@/lib/react-query";
 import { useReactQueryConfig } from "@/lib/react-query-config";
 import { useAuthStore } from "@/stores/auth.store";
+import { useUserStatus } from "@/api/user/queries/use-user-status-query";
 import { LoginScreen } from "@/screens/auth/LoginScreen";
 import { SignupScreen } from "@/screens/auth/SignupScreen";
 import { ReferralInputScreen } from "@/screens/auth/ReferralInputScreen";
+import { InactiveAccountScreen } from "@/screens/home/InactiveAccountScreen";
 import { HomeScreen } from "@/screens/home/HomeScreen";
 
 type AuthScreen = "login" | "referral" | "signup";
@@ -58,7 +61,43 @@ function AppContent() {
     );
   }
 
-  // Authenticated - show main app
+  // Authenticated - check account status
+  const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus();
+
+  // Loading user status
+  if (isLoadingStatus) {
+    return (
+      <>
+        <View className="flex-1 bg-zinc-950 items-center justify-center">
+          <ActivityIndicator size="large" color="#8b5cf6" />
+        </View>
+        <StatusBar style="light" />
+      </>
+    );
+  }
+
+  // Blocked accounts - logout immediately
+  if (userStatus?.status === "BLOCKED") {
+    useAuthStore.getState().clearAuth();
+    return null;
+  }
+
+  // Inactive accounts - show activation screen (FULLSCREEN, no navigation)
+  if (userStatus?.status === "INACTIVE") {
+    return (
+      <>
+        <InactiveAccountScreen
+          onNavigateToDeposit={() => {
+            // TODO: Navigate to DepositScreen when implemented
+            console.log("Navigate to deposit screen");
+          }}
+        />
+        <StatusBar style="light" />
+      </>
+    );
+  }
+
+  // Active accounts - show full app
   return (
     <>
       <HomeScreen />

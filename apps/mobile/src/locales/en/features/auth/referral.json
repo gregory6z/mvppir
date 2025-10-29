@@ -1,0 +1,33 @@
+{
+  "welcome": "Welcome to Stakly",
+  "title": "Enter your referral code to get started",
+  "fields": {
+    "referralCode": "Referral Code *"
+  },
+  "placeholders": {
+    "referralCode": "ENTER CODE"
+  },
+  "buttons": {
+    "validate": "Validate Code",
+    "validating": "Validating...",
+    "continue": "Continue to Sign Up"
+  },
+  "errors": {
+    "emptyCode": "Please enter a referral code",
+    "invalidCode": "Invalid referral code",
+    "failedValidation": "Failed to validate code"
+  },
+  "success": {
+    "validCode": "Valid referral code!",
+    "invitedBy": "Invited by",
+    "network": "Network",
+    "directs": "{{count}} directs"
+  },
+  "info": {
+    "requirement": "A valid referral code is required to create an account. Ask a friend who's already using Stakly!"
+  },
+  "links": {
+    "alreadyHaveAccount": "Already have an account?",
+    "backToLogin": "Back to Login"
+  }
+}

@@ -18,6 +18,22 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
           if (value) headers.append(key, value.toString());
         });
 
+        // React Native doesn't send Origin header automatically
+        // Add it manually in development if missing (for mobile app support)
+        if (process.env.NODE_ENV === "development" && !headers.get("origin")) {
+          const host = request.headers.host || "localhost:3333";
+          headers.set("origin", `http://${host}`);
+          fastify.log.info({ origin: `http://${host}` }, "Auto-added Origin header for mobile");
+        }
+
+        // Log request details
+        fastify.log.info({
+          url: url.toString(),
+          method: request.method,
+          origin: request.headers.origin,
+          host: request.headers.host,
+        }, "Better Auth Request");
+
         // Create Fetch API-compatible request
         const req = new Request(url.toString(), {
           method: request.method,
@@ -27,6 +43,20 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
 
         // Process authentication request
         const response = await auth.handler(req);
+
+        // Log response
+        fastify.log.info({
+          status: response.status,
+          statusText: response.statusText,
+        }, "Better Auth Response");
+
+        // If 403, log response body for debugging
+        if (response.status === 403) {
+          const responseText = await response.text();
+          fastify.log.error({ responseText }, "Better Auth 403 Response");
+          reply.status(403).send(responseText);
+          return;
+        }
 
         // Forward response to client
         reply.status(response.status);

@@ -3,8 +3,8 @@ import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable } fro
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { loginSchema, type LoginInput } from "@/api/schemas/auth.schema";
-import { useLoginMutation, transformLoginError, type LoginError } from "@/api/mutations/use-login-mutation";
+import { loginSchema, type LoginInput } from "@/api/auth/schemas/auth.schema";
+import { useLoginMutation, transformLoginError, type LoginError } from "@/api/auth/mutations/use-login-mutation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +18,6 @@ interface LoginScreenProps {
 
 export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
   const { t } = useTranslation("auth.login");
-  const { t: tGlobal } = useTranslation(); // Para traduzir chaves absolutas (errors)
   const [error, setError] = useState<LoginError | null>(null);
 
   const loginMutation = useLoginMutation();
@@ -247,7 +246,7 @@ export function LoginScreen({ onNavigateToSignup }: LoginScreenProps) {
               {/* Error Alert */}
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{tGlobal(error)}</AlertDescription>
+                  <AlertDescription>{t(error)}</AlertDescription>
                 </Alert>
               )}
 

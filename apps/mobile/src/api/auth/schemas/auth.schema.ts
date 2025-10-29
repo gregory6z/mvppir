@@ -45,4 +45,4 @@ export const signupSchema = signupBaseSchema.refine(
 );
 
 export type LoginInput = z.infer<typeof loginSchema>;
-export type SignupInput = z.infer<typeof signupBaseSchema>;
+export type SignupInput = z.infer<typeof signupSchema>;

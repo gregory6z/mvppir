@@ -6,42 +6,50 @@ import { getLocales } from "expo-localization";
 import ptLogin from "./pt/features/auth/login.json";
 import ptSignup from "./pt/features/auth/signup.json";
 import ptValidation from "./pt/features/auth/validation.json";
+import ptReferral from "./pt/features/auth/referral.json";
 
 // English translations
 import enLogin from "./en/features/auth/login.json";
 import enSignup from "./en/features/auth/signup.json";
 import enValidation from "./en/features/auth/validation.json";
+import enReferral from "./en/features/auth/referral.json";
 
 // Spanish translations
 import esLogin from "./es/features/auth/login.json";
 import esSignup from "./es/features/auth/signup.json";
 import esValidation from "./es/features/auth/validation.json";
+import esReferral from "./es/features/auth/referral.json";
 
 // French translations
 import frLogin from "./fr/features/auth/login.json";
 import frSignup from "./fr/features/auth/signup.json";
 import frValidation from "./fr/features/auth/validation.json";
+import frReferral from "./fr/features/auth/referral.json";
 
 const resources = {
   pt: {
     "auth.login": ptLogin,
     "auth.signup": ptSignup,
     "auth.validation": ptValidation,
+    "auth.referral": ptReferral,
   },
   en: {
     "auth.login": enLogin,
     "auth.signup": enSignup,
     "auth.validation": enValidation,
+    "auth.referral": enReferral,
   },
   es: {
     "auth.login": esLogin,
     "auth.signup": esSignup,
     "auth.validation": esValidation,
+    "auth.referral": esReferral,
   },
   fr: {
     "auth.login": frLogin,
     "auth.signup": frSignup,
     "auth.validation": frValidation,
+    "auth.referral": frReferral,
   },
 };
 

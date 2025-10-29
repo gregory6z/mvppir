@@ -4,6 +4,13 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3333";
 
 export const authClient = createAuthClient({
   baseURL: API_URL,
+  fetchOptions: {
+    headers: {
+      // React Native doesn't send Origin header automatically like browsers do
+      // Better Auth requires this header for CORS validation
+      Origin: API_URL,
+    },
+  },
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;

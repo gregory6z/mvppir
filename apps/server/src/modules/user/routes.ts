@@ -5,6 +5,7 @@ import { getBalanceController } from "./controllers/get-balance-controller";
 import { getTransactionsController } from "./controllers/get-transactions-controller";
 import { getActivationStatusController } from "./controllers/get-activation-status-controller";
 import { getReferralLinkController } from "./controllers/get-referral-link.controller";
+import { getUserStatusController } from "./controllers/get-user-status-controller";
 
 export async function userRoutes(fastify: FastifyInstance) {
   // Todas as rotas de user são protegidas
@@ -21,6 +22,9 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   // GET /user/activation - Check account activation status
   fastify.get("/activation", getActivationStatusController);
+
+  // GET /user/status - Get user account status (INACTIVE/ACTIVE/BLOCKED) + activation progress
+  fastify.get("/status", getUserStatusController);
 
   // GET /user/referral - Get referral link for inviting new users
   fastify.get("/referral", getReferralLinkController);

@@ -5,7 +5,6 @@ import { Header } from "@/components/home/Header";
 import { BalanceCard } from "@/components/home/BalanceCard";
 import { QuickActions } from "@/components/home/QuickActions";
 import { RecentActivity } from "@/components/home/RecentActivity";
-import { ActivationBanner } from "@/components/home/ActivationBanner";
 import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { useAuthStore } from "@/stores/auth.store";
@@ -114,9 +113,7 @@ export function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   // Mock balance data
-  // Change these values to simulate different account states
-  const isAccountActive = false; // Set to false to see activation banner
-  const totalBalance = isAccountActive ? 1234.56 : 45.0; // $45 deposited (needs $100 to activate)
+  const totalBalance = 1234.56;
   const percentChange = 12.5;
   const notificationCount = 3;
 
@@ -224,11 +221,6 @@ export function HomeScreen() {
                   onToggleVisibility={toggleBalanceVisibility}
                 />
               </View>
-
-              {/* Activation Banner - Show only for inactive accounts */}
-              {!isAccountActive && (
-                <ActivationBanner currentBalance={totalBalance} requiredAmount={100} />
-              )}
 
               {/* Quick Actions - More spacing */}
               <View className="mb-2">

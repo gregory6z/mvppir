@@ -3,8 +3,8 @@ import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Pressable } fro
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { signupSchema, type SignupInput } from "@/api/schemas/auth.schema";
-import { useSignupMutation, transformSignupError, type SignupError } from "@/api/mutations/use-signup-mutation";
+import { signupSchema, type SignupInput } from "@/api/auth/schemas/auth.schema";
+import { useSignupMutation, transformSignupError, type SignupError } from "@/api/auth/mutations/use-signup-mutation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +20,6 @@ interface SignupScreenProps {
 
 export function SignupScreen({ onNavigateToLogin, referrerId, referralCode }: SignupScreenProps) {
   const { t } = useTranslation("auth.signup");
-  const { t: tGlobal } = useTranslation(); // Para traduzir chaves absolutas (errors)
   const [error, setError] = useState<SignupError | null>(null);
 
   const signupMutation = useSignupMutation();
@@ -348,7 +347,7 @@ export function SignupScreen({ onNavigateToLogin, referrerId, referralCode }: Si
               {/* Error Alert */}
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{tGlobal(error)}</AlertDescription>
+                  <AlertDescription>{t(error)}</AlertDescription>
                 </Alert>
               )}
 

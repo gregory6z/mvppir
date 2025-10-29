@@ -13,7 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { Users, ArrowRight, CheckCircle, XCircle, ArrowLeft } from "phosphor-react-native";
 import * as Haptics from "expo-haptics";
-import { validateReferralCode, type ReferralValidationResponse } from "@/api/client/referral.api";
+import { useTranslation } from "react-i18next";
+import { validateReferralCode, type ReferralValidationResponse } from "@/api/referral/client/referral.api";
 
 const RANK_EMOJIS = {
   RECRUIT: "🎖️",
@@ -28,6 +29,7 @@ interface ReferralInputScreenProps {
 }
 
 export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: ReferralInputScreenProps) {
+  const { t } = useTranslation("auth.referral");
   const [code, setCode] = useState("");
   const [isValidating, setIsValidating] = useState(false);
   const [validationResult, setValidationResult] = useState<ReferralValidationResponse | null>(null);
@@ -35,7 +37,7 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
 
   const handleValidateCode = async () => {
     if (!code.trim()) {
-      setError("Please enter a referral code");
+      setError(t("errors.emptyCode"));
       return;
     }
 
@@ -52,11 +54,11 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-        setError(result.message || "Invalid referral code");
+        setError(result.message || t("errors.invalidCode"));
       }
     } catch (err) {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      setError(err instanceof Error ? err.message : "Failed to validate code");
+      setError(err instanceof Error ? err.message : t("errors.failedValidation"));
     } finally {
       setIsValidating(false);
     }
@@ -86,17 +88,17 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
                 <Users size={48} color="#8b5cf6" weight="duotone" />
               </View>
               <Text className="text-white text-3xl font-bold text-center mb-2">
-                Welcome to Stakly
+                {t("welcome")}
               </Text>
               <Text className="text-zinc-400 text-base text-center">
-                Enter your referral code to get started
+                {t("title")}
               </Text>
             </View>
 
             {/* Referral Code Input */}
             <View className="mb-6">
               <Text className="text-zinc-300 text-sm font-medium mb-2">
-                Referral Code *
+                {t("fields.referralCode")}
               </Text>
               <View
                 className={`flex-row items-center bg-zinc-900 border rounded-2xl px-4 ${
@@ -109,7 +111,7 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
               >
                 <TextInput
                   className="flex-1 text-white text-lg py-4 font-semibold"
-                  placeholder="ENTER CODE"
+                  placeholder={t("placeholders.referralCode")}
                   placeholderTextColor="#71717a"
                   value={code}
                   onChangeText={(text) => {
@@ -140,29 +142,21 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
                   <View className="flex-row items-center gap-3 mb-2">
                     <CheckCircle size={20} color="#10b981" weight="fill" />
                     <Text className="text-green-500 font-semibold">
-                      Valid referral code!
+                      {t("success.validCode")}
                     </Text>
                   </View>
                   <View className="flex-row items-center justify-between">
                     <View>
                       <Text className="text-zinc-400 text-xs mb-1">
-                        Invited by
+                        {t("success.invitedBy")}
                       </Text>
                       <Text className="text-white font-semibold text-base">
                         {validationResult.referrer.name}
                       </Text>
                     </View>
-                    <View className="flex-row items-center gap-2">
-                      <Text className="text-2xl">
-                        {RANK_EMOJIS[validationResult.referrer.currentRank as keyof typeof RANK_EMOJIS] || "🎖️"}
-                      </Text>
-                      <View>
-                        <Text className="text-zinc-400 text-xs">Network</Text>
-                        <Text className="text-white font-semibold">
-                          {validationResult.referrer.totalDirects} directs
-                        </Text>
-                      </View>
-                    </View>
+                    <Text className="text-2xl">
+                      {RANK_EMOJIS[validationResult.referrer.currentRank as keyof typeof RANK_EMOJIS] || "🎖️"}
+                    </Text>
                   </View>
                 </View>
               )}
@@ -183,7 +177,7 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
                   <ActivityIndicator color="#ffffff" />
                 ) : (
                   <Text className="text-white text-center font-semibold text-base">
-                    Validate Code
+                    {t("buttons.validate")}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -193,10 +187,10 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
             {validationResult?.valid && (
               <TouchableOpacity
                 onPress={handleContinue}
-                className="bg-green-500 py-4 rounded-2xl flex-row items-center justify-center gap-2 active:bg-green-600"
+                className="bg-violet-500 py-4 rounded-2xl flex-row items-center justify-center gap-2 active:bg-violet-600"
               >
                 <Text className="text-white text-center font-semibold text-base">
-                  Continue to Sign Up
+                  {t("buttons.continue")}
                 </Text>
                 <ArrowRight size={20} color="#ffffff" weight="bold" />
               </TouchableOpacity>
@@ -206,15 +200,14 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
             <View className="mt-auto mb-4">
               <View className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4">
                 <Text className="text-blue-400 text-sm text-center">
-                  A valid referral code is required to create an account. Ask a
-                  friend who's already using Stakly!
+                  {t("info.requirement")}
                 </Text>
               </View>
             </View>
 
             {/* Back to Login */}
             <View className="flex-row items-center justify-center mb-6">
-              <Text className="text-zinc-400 text-sm">Already have an account?</Text>
+              <Text className="text-zinc-400 text-sm">{t("links.alreadyHaveAccount")}</Text>
               <Pressable
                 onPress={onNavigateToLogin}
                 className="flex-row items-center ml-2 py-2 px-3"
@@ -224,7 +217,7 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
               >
                 <ArrowLeft size={16} color="#8b5cf6" weight="bold" />
                 <Text className="text-violet-500 text-sm font-semibold ml-1">
-                  Back to Login
+                  {t("links.backToLogin")}
                 </Text>
               </Pressable>
             </View>

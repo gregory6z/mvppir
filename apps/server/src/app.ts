@@ -73,7 +73,9 @@ export async function buildApp() {
 
   // Register CORS plugin
   await app.register(cors, {
-    origin: env.FRONTEND_URL || 'http://localhost:3000',
+    // Allow all origins in development (for mobile app testing)
+    // In production, only allow the frontend URL
+    origin: env.isDevelopment ? true : (env.FRONTEND_URL || 'http://localhost:3000'),
     credentials: true,
   })
 

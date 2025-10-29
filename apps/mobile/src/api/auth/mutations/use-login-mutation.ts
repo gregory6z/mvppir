@@ -1,20 +1,20 @@
 import { useMutation } from "@tanstack/react-query";
 import { signIn } from "@/lib/auth-client";
 import { useAuthStore } from "@/stores/auth.store";
-import type { LoginInput } from "@/api/schemas/auth.schema";
+import type { LoginInput } from "@/api/auth/schemas/auth.schema";
 
-// Chaves de tradução para erros (i18n)
+// Chaves de tradução para erros (i18n) - caminhos relativos ao namespace "auth.login"
 type LoginError =
-  | "auth.login.errors.invalidCredentials"
-  | "auth.login.errors.accountBlocked"
-  | "auth.login.errors.networkError"
-  | "auth.login.errors.unknownError";
+  | "errors.invalidCredentials"
+  | "errors.accountBlocked"
+  | "errors.networkError"
+  | "errors.unknownError";
 
 // Função helper para transformar erros em chaves de tradução
 function transformLoginError(error: any): LoginError {
   // Trata erros de rede (servidor offline, timeout, etc)
   if (error instanceof TypeError && error.message?.includes("fetch")) {
-    return "auth.login.errors.networkError";
+    return "errors.networkError";
   }
 
   // Trata erros do Better Auth
@@ -25,15 +25,15 @@ function transformLoginError(error: any): LoginError {
     errorCode === "INVALID_PASSWORD" ||
     errorCode === "USER_NOT_FOUND"
   ) {
-    return "auth.login.errors.invalidCredentials";
+    return "errors.invalidCredentials";
   }
 
   if (errorCode === "ACCOUNT_BLOCKED") {
-    return "auth.login.errors.accountBlocked";
+    return "errors.accountBlocked";
   }
 
   // Erro desconhecido
-  return "auth.login.errors.unknownError";
+  return "errors.unknownError";
 }
 
 export function useLoginMutation() {

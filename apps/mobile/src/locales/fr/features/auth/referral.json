@@ -1,0 +1,33 @@
+{
+  "welcome": "Bienvenue sur Stakly",
+  "title": "Entrez votre code de parrainage pour commencer",
+  "fields": {
+    "referralCode": "Code de Parrainage *"
+  },
+  "placeholders": {
+    "referralCode": "ENTREZ LE CODE"
+  },
+  "buttons": {
+    "validate": "Valider le Code",
+    "validating": "Validation...",
+    "continue": "Continuer vers l'Inscription"
+  },
+  "errors": {
+    "emptyCode": "Veuillez entrer un code de parrainage",
+    "invalidCode": "Code de parrainage invalide",
+    "failedValidation": "Échec de la validation du code"
+  },
+  "success": {
+    "validCode": "Code de parrainage valide !",
+    "invitedBy": "Invité par",
+    "network": "Réseau",
+    "directs": "{{count}} directs"
+  },
+  "info": {
+    "requirement": "Un code de parrainage valide est requis pour créer un compte. Demandez-en un à un ami qui utilise déjà Stakly !"
+  },
+  "links": {
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "backToLogin": "Retour à la Connexion"
+  }
+}

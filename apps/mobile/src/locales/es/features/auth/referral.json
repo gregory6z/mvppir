@@ -1,0 +1,33 @@
+{
+  "welcome": "Bienvenido a Stakly",
+  "title": "Ingresa tu código de referido para comenzar",
+  "fields": {
+    "referralCode": "Código de Referido *"
+  },
+  "placeholders": {
+    "referralCode": "INGRESA CÓDIGO"
+  },
+  "buttons": {
+    "validate": "Validar Código",
+    "validating": "Validando...",
+    "continue": "Continuar al Registro"
+  },
+  "errors": {
+    "emptyCode": "Por favor, ingresa un código de referido",
+    "invalidCode": "Código de referido inválido",
+    "failedValidation": "Error al validar código"
+  },
+  "success": {
+    "validCode": "¡Código de referido válido!",
+    "invitedBy": "Invitado por",
+    "network": "Red",
+    "directs": "{{count}} directos"
+  },
+  "info": {
+    "requirement": "Se requiere un código de referido válido para crear una cuenta. ¡Pide uno a un amigo que ya usa Stakly!"
+  },
+  "links": {
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "backToLogin": "Volver al Login"
+  }
+}
