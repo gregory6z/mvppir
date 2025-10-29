@@ -91,7 +91,9 @@ export function WalletScreen() {
       <View className="px-4 py-4">
         <Text className="text-white text-2xl font-bold">{t("title")}</Text>
         <Text className="text-zinc-400 text-sm mt-1">
-          {t("subtitle", { count: transactionsData?.transactions.length || 0 })}
+          {transactionsData?.transactions.length === 1
+            ? t("subtitle", { count: 1 })
+            : t("subtitle_plural", { count: transactionsData?.transactions.length || 0 })}
         </Text>
       </View>
 
