@@ -1,0 +1,29 @@
+{
+  "title": "Perfil",
+  "subtitle": "Administra tu cuenta y preferencias",
+  "editProfile": {
+    "button": "Editar Perfil",
+    "comingSoon": "Próximamente",
+    "comingSoonMessage": "¡La edición de perfil estará disponible pronto!"
+  },
+  "accountInfo": {
+    "title": "Información de la Cuenta",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "status": "Estado de la Cuenta",
+    "statusActive": "Activa",
+    "statusInactive": "Inactiva",
+    "referralCode": "Código de Referido"
+  },
+  "language": {
+    "title": "Idioma"
+  },
+  "logout": {
+    "button": "Cerrar Sesión",
+    "title": "Cerrar Sesión",
+    "message": "¿Estás seguro de que quieres cerrar sesión?",
+    "cancel": "Cancelar",
+    "confirm": "Cerrar Sesión"
+  },
+  "version": "Versión {{version}}"
+}

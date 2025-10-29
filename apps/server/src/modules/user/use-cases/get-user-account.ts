@@ -11,6 +11,7 @@ interface GetUserAccountResponse {
   status: string;
   activatedAt: Date | null;
   createdAt: Date;
+  referralCode: string;
 }
 
 export async function getUserAccount({
@@ -25,6 +26,7 @@ export async function getUserAccount({
       status: true,
       activatedAt: true,
       createdAt: true,
+      referralCode: true,
     },
   });
 

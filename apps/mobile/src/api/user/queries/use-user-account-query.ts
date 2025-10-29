@@ -8,6 +8,7 @@ export interface UserAccount {
   status: "INACTIVE" | "ACTIVE" | "BLOCKED";
   activatedAt: string | null;
   createdAt: string;
+  referralCode: string;
 }
 
 async function getUserAccount(): Promise<UserAccount> {

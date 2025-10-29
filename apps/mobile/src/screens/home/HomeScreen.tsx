@@ -1,4 +1,4 @@
-import { ScrollView, View, RefreshControl, Alert, ActivityIndicator, Text } from "react-native";
+import { ScrollView, View, RefreshControl, ActivityIndicator, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { WalletScreen } from "@/screens/wallet/WalletScreen";
 import { DepositScreen } from "@/screens/deposit/DepositScreen";
-import { useAuthStore } from "@/stores/auth.store";
+import { ProfileScreen } from "@/screens/profile/ProfileScreen";
 import { useUIStore } from "@/stores/ui.store";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 import { useUserBalance } from "@/api/user/queries/use-user-balance-query";
@@ -18,7 +18,6 @@ import { useUnifiedTransactions } from "@/api/user/queries/use-unified-transacti
 
 export function HomeScreen() {
   const { t } = useTranslation("home.home");
-  const { clearAuth } = useAuthStore();
   const { isBalanceVisible, toggleBalanceVisibility } = useUIStore();
   const { data: userAccount, isLoading: isLoadingAccount, refetch: refetchAccount } = useUserAccount();
   const { data: balanceData, isLoading: isLoadingBalance, refetch: refetchBalance } = useUserBalance();
@@ -42,25 +41,8 @@ export function HomeScreen() {
   };
 
   const handleAvatarPress = () => {
-    Alert.alert(
-      t("logout.title"),
-      t("logout.message"),
-      [
-        {
-          text: t("logout.cancel"),
-          style: "cancel",
-        },
-        {
-          text: t("logout.confirm"),
-          style: "destructive",
-          onPress: () => {
-            clearAuth();
-            console.log("User logged out");
-          },
-        },
-      ],
-      { cancelable: true }
-    );
+    console.log("Avatar pressed - navigate to Profile");
+    setActiveTab("profile");
   };
 
   const handleNotificationPress = () => {
@@ -180,20 +162,7 @@ export function HomeScreen() {
         return <WalletScreen />;
 
       case "profile":
-        return (
-          <View className="flex-1 items-center justify-center">
-            <Header
-              userName={userAccount.name}
-              avatarUrl={undefined}
-              notificationCount={notificationCount}
-              onAvatarPress={handleAvatarPress}
-              onNotificationPress={handleNotificationPress}
-            />
-            <View className="flex-1 items-center justify-center">
-              {/* TODO: Implement ProfileScreen */}
-            </View>
-          </View>
-        );
+        return <ProfileScreen />;
 
       default:
         return null;

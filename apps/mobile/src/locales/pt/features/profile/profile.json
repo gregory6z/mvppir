@@ -1,0 +1,29 @@
+{
+  "title": "Perfil",
+  "subtitle": "Gerencie sua conta e preferências",
+  "editProfile": {
+    "button": "Editar Perfil",
+    "comingSoon": "Em Breve",
+    "comingSoonMessage": "A edição de perfil estará disponível em breve!"
+  },
+  "accountInfo": {
+    "title": "Informações da Conta",
+    "name": "Nome",
+    "email": "E-mail",
+    "status": "Status da Conta",
+    "statusActive": "Ativa",
+    "statusInactive": "Inativa",
+    "referralCode": "Código de Indicação"
+  },
+  "language": {
+    "title": "Idioma"
+  },
+  "logout": {
+    "button": "Sair da Conta",
+    "title": "Sair",
+    "message": "Tem certeza que deseja sair da sua conta?",
+    "cancel": "Cancelar",
+    "confirm": "Sair"
+  },
+  "version": "Versão {{version}}"
+}
