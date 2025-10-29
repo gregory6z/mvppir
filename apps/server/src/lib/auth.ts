@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
+import { generateUniqueReferralCode } from "./generate-referral-code";
 
 export const auth: ReturnType<typeof betterAuth> = betterAuth({
   database: prismaAdapter(prisma, {
@@ -46,21 +47,38 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
     },
   },
 
-  // Database hooks para processar referral code
+  // Database hooks para processar referral code e gerar código próprio
   databaseHooks: {
     user: {
       create: {
         after: async (user, context) => {
-          // Check if context is available
+          console.log(`🆕 New user created: ${user.id} (${user.email})`);
+
+          // 1. Generate unique referral code for new user
+          try {
+            const newReferralCode = await generateUniqueReferralCode(user.name);
+
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { referralCode: newReferralCode },
+            });
+
+            console.log(`✅ Generated referral code for ${user.name}: ${newReferralCode}`);
+          } catch (error) {
+            console.error(`❌ Failed to generate referral code for user ${user.id}:`, error);
+            // Don't block user creation if code generation fails
+          }
+
+          // 2. Process referral code (link to referrer) if provided
           if (!context) {
             return;
           }
 
-          // Extract referral code from request context
           const body = context.body as any;
           const referralCode = body?.referralCode;
 
           if (!referralCode) {
+            console.log(`ℹ️  No referral code provided for user ${user.id}`);
             return; // No referral code provided
           }
 
@@ -86,9 +104,16 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
             data: { referrerId: referrer.id },
           });
 
+          // Increment referrer's totalDirects count
+          await prisma.user.update({
+            where: { id: referrer.id },
+            data: { totalDirects: { increment: 1 } },
+          });
+
           console.log(
             `✅ User ${user.id} (${user.email}) linked to referrer ${referrer.id} via code ${referralCode}`
           );
+          console.log(`✅ Referrer ${referrer.id} totalDirects incremented`);
         },
       },
     },
