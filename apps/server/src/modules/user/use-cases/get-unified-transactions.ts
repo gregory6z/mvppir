@@ -31,49 +31,73 @@ export async function getUnifiedTransactions({
   limit = 50,
   offset = 0,
 }: GetUnifiedTransactionsRequest) {
-  // Get wallet transactions (deposits/withdrawals)
-  const walletTransactions = await prisma.walletTransaction.findMany({
-    where: { userId },
-    select: {
-      id: true,
-      type: true,
-      tokenSymbol: true,
-      tokenAddress: true,
-      amount: true,
-      txHash: true,
-      transferTxHash: true,
-      status: true,
-      createdAt: true,
-    },
-  });
+  // Get total count first (optimized - no data fetching)
+  const [walletCount, commissionCount] = await Promise.all([
+    prisma.walletTransaction.count({ where: { userId } }),
+    prisma.commission.count({ where: { userId } }),
+  ]);
 
-  // Get commissions (all levels including self - level 0)
-  const commissions = await prisma.commission.findMany({
-    where: { userId },
-    select: {
-      id: true,
-      finalAmount: true,
-      level: true,
-      fromUserId: true,
-      status: true,
-      createdAt: true,
-      referenceDate: true,
-    },
-  });
+  const totalCount = walletCount + commissionCount;
 
-  // Get names for fromUserIds
-  const fromUserIds = commissions
-    .filter((c) => c.fromUserId !== userId) // Exclude self-commissions
-    .map((c) => c.fromUserId);
+  // Fetch both wallet transactions and commissions with orderBy
+  // We fetch more than needed to properly merge and paginate
+  const fetchLimit = Math.min(limit * 3, 200); // Fetch extra for merging, but cap at 200
 
-  const fromUsers = await prisma.user.findMany({
-    where: { id: { in: fromUserIds } },
-    select: { id: true, name: true },
-  });
+  const [walletTransactions, commissions] = await Promise.all([
+    prisma.walletTransaction.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        type: true,
+        tokenSymbol: true,
+        tokenAddress: true,
+        amount: true,
+        txHash: true,
+        transferTxHash: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+      take: fetchLimit,
+    }),
+    prisma.commission.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        finalAmount: true,
+        level: true,
+        fromUserId: true,
+        status: true,
+        createdAt: true,
+        referenceDate: true,
+      },
+      orderBy: { createdAt: "desc" },
+      take: fetchLimit,
+    }),
+  ]);
+
+  // Get unique fromUserIds only from fetched commissions
+  const fromUserIds = [
+    ...new Set(
+      commissions
+        .filter((c) => c.fromUserId !== userId) // Exclude self-commissions
+        .map((c) => c.fromUserId)
+    ),
+  ];
+
+  // Fetch user names only for the commissions we actually fetched
+  const fromUsers =
+    fromUserIds.length > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: fromUserIds } },
+          select: { id: true, name: true },
+        })
+      : [];
 
   const fromUserMap = new Map(fromUsers.map((u) => [u.id, u.name]));
 
   // Convert wallet transactions to unified format
+  // Only calculate USD for the transactions we'll actually return
   const unifiedWalletTxs: UnifiedTransaction[] = await Promise.all(
     walletTransactions.map(async (tx) => {
       const usdValue = await calculateTotalUSD({
@@ -95,7 +119,7 @@ export async function getUnifiedTransactions({
     })
   );
 
-  // Convert commissions to unified format
+  // Convert commissions to unified format (no async needed)
   const unifiedCommissions: UnifiedTransaction[] = commissions.map((comm) => {
     const isSelfCommission = comm.level === 0;
 
@@ -126,16 +150,16 @@ export async function getUnifiedTransactions({
     (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
   );
 
-  // Apply pagination
+  // Apply pagination after merge
   const paginatedTransactions = allTransactions.slice(offset, offset + limit);
 
   return {
     transactions: paginatedTransactions,
     pagination: {
-      total: allTransactions.length,
+      total: totalCount,
       limit,
       offset,
-      hasMore: offset + limit < allTransactions.length,
+      hasMore: offset + limit < totalCount,
     },
   };
 }
