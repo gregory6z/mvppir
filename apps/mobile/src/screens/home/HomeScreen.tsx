@@ -1,4 +1,4 @@
-import { ScrollView, View, RefreshControl } from "react-native";
+import { ScrollView, View, RefreshControl, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { Header } from "@/components/home/Header";
@@ -8,6 +8,7 @@ import { RecentActivity } from "@/components/home/RecentActivity";
 import { ActivationBanner } from "@/components/home/ActivationBanner";
 import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
+import { useAuthStore } from "@/stores/auth.store";
 
 // Mock data for visualization
 const MOCK_USER = {
@@ -105,6 +106,7 @@ const MOCK_TRANSACTIONS = [
 ];
 
 export function HomeScreen() {
+  const { clearAuth } = useAuthStore();
   const [activeTab, setActiveTab] = useState<
     "home" | "wallet" | "referrals" | "profile"
   >("home");
@@ -127,8 +129,25 @@ export function HomeScreen() {
   };
 
   const handleAvatarPress = () => {
-    console.log("Avatar pressed - navigate to Profile");
-    setActiveTab("profile");
+    Alert.alert(
+      "Logout",
+      "Do you want to logout from your account?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: () => {
+            clearAuth();
+            console.log("User logged out");
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const handleNotificationPress = () => {

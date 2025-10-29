@@ -14,10 +14,11 @@ import { Logo } from "@/components/Logo";
 
 interface SignupScreenProps {
   onNavigateToLogin: () => void;
-  referralCode?: string;
+  referrerId: string;
+  referralCode: string;
 }
 
-export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenProps) {
+export function SignupScreen({ onNavigateToLogin, referrerId, referralCode }: SignupScreenProps) {
   const { t } = useTranslation("auth.signup");
   const { t: tGlobal } = useTranslation(); // Para traduzir chaves absolutas (errors)
   const [error, setError] = useState<SignupError | null>(null);
@@ -35,7 +36,7 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
       email: "",
       password: "",
       passwordConfirm: "",
-      referralCode: referralCode || "",
+      referralCode: referralCode, // Always set from props
     },
     mode: "onBlur",
   });
@@ -168,6 +169,25 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
             >
               {t("description")}
             </Text>
+
+            {/* Referral Info Banner */}
+            <View
+              style={{
+                backgroundColor: "#8b5cf6",
+                borderRadius: 12,
+                padding: spacing.md,
+                marginBottom: spacing.md,
+                borderWidth: 1,
+                borderColor: "#a78bfa",
+              }}
+            >
+              <Text style={{ fontSize: 12, color: "#e9d5ff", marginBottom: spacing.xs }}>
+                Invited by
+              </Text>
+              <Text style={{ fontSize: 16, color: "white", fontWeight: "600" }}>
+                {referralCode}
+              </Text>
+            </View>
 
             <View style={{ gap: formSpacing.fieldGap }}>
               {/* Name Field */}
@@ -321,45 +341,6 @@ export function SignupScreen({ onNavigateToLogin, referralCode }: SignupScreenPr
                     accessibilityRole="alert"
                   >
                     {errors.passwordConfirm.message}
-                  </Text>
-                )}
-              </View>
-
-              {/* Referral Code Field */}
-              <View style={{ gap: formSpacing.labelToInput }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.xs }}>
-                  <Label>{t("fields.referralCode")}</Label>
-                  <Text style={{ fontSize: 12, color: "#71717a" }}>{t("optional")}</Text>
-                </View>
-                <Controller
-                  control={control}
-                  name="referralCode"
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <Input
-                      placeholder={t("placeholders.referralCode")}
-                      autoCapitalize="characters"
-                      returnKeyType="done"
-                      editable={!signupMutation.isPending}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      error={!!errors.referralCode}
-                      className="h-12 bg-zinc-950 text-white text-base"
-                      accessibilityLabel={t("accessibility.referralField")}
-                      accessibilityHint={t("accessibility.referralHint")}
-                    />
-                  )}
-                />
-                {errors.referralCode && (
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: "#ef4444",
-                      marginTop: formSpacing.inputToError,
-                    }}
-                    accessibilityRole="alert"
-                  >
-                    {errors.referralCode.message}
                   </Text>
                 )}
               </View>
