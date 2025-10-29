@@ -9,9 +9,10 @@ import { useReactQueryConfig } from "@/lib/react-query-config";
 import { useAuthStore } from "@/stores/auth.store";
 import { LoginScreen } from "@/screens/auth/LoginScreen";
 import { SignupScreen } from "@/screens/auth/SignupScreen";
+import { ReferralInputScreen } from "@/screens/auth/ReferralInputScreen";
 import { HomeScreen } from "@/screens/home/HomeScreen";
 
-type AuthScreen = "login" | "signup";
+type AuthScreen = "login" | "referral" | "signup";
 
 function AppContent() {
   // Configure React Query for React Native
@@ -19,15 +20,38 @@ function AppContent() {
 
   const { isAuthenticated } = useAuthStore();
   const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
+  const [referralData, setReferralData] = useState<{
+    referrerId: string;
+    referralCode: string;
+  } | null>(null);
+
+  const handleValidReferralCode = (referrerId: string, referralCode: string) => {
+    setReferralData({ referrerId, referralCode });
+    setAuthScreen("signup");
+  };
 
   // If not authenticated, show auth screens
   if (!isAuthenticated) {
     return (
       <>
-        {authScreen === "login" ? (
-          <LoginScreen onNavigateToSignup={() => setAuthScreen("signup")} />
-        ) : (
-          <SignupScreen onNavigateToLogin={() => setAuthScreen("login")} />
+        {authScreen === "login" && (
+          <LoginScreen onNavigateToSignup={() => setAuthScreen("referral")} />
+        )}
+        {authScreen === "referral" && (
+          <ReferralInputScreen
+            onValidCode={handleValidReferralCode}
+            onNavigateToLogin={() => setAuthScreen("login")}
+          />
+        )}
+        {authScreen === "signup" && referralData && (
+          <SignupScreen
+            referrerId={referralData.referrerId}
+            referralCode={referralData.referralCode}
+            onNavigateToLogin={() => {
+              setAuthScreen("login");
+              setReferralData(null);
+            }}
+          />
         )}
         <StatusBar style="light" />
       </>
