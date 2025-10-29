@@ -3,6 +3,7 @@ import { authMiddleware } from "@/middlewares/auth.middleware";
 import { getAccountController } from "./controllers/get-account-controller";
 import { getBalanceController } from "./controllers/get-balance-controller";
 import { getTransactionsController } from "./controllers/get-transactions-controller";
+import { getUnifiedTransactionsController } from "./controllers/get-unified-transactions-controller";
 import { getActivationStatusController } from "./controllers/get-activation-status-controller";
 import { getReferralLinkController } from "./controllers/get-referral-link.controller";
 import { getUserStatusController } from "./controllers/get-user-status-controller";
@@ -17,8 +18,11 @@ export async function userRoutes(fastify: FastifyInstance) {
   // GET /user/balance - Get user balance por token
   fastify.get("/balance", getBalanceController);
 
-  // GET /user/transactions - Get user transaction history
+  // GET /user/transactions - Get user transaction history (wallet only - deprecated)
   fastify.get("/transactions", getTransactionsController);
+
+  // GET /user/transactions/all - Get unified transactions (wallet + commissions with USD values)
+  fastify.get("/transactions/all", getUnifiedTransactionsController);
 
   // GET /user/activation - Check account activation status
   fastify.get("/activation", getActivationStatusController);
