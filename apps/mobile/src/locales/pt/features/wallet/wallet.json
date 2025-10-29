@@ -1,7 +1,7 @@
 {
   "title": "Transações",
-  "subtitle": "{{count}} transação",
-  "subtitle_plural": "{{count}} transações",
+  "subtitle_one": "{{count}} transação",
+  "subtitle_other": "{{count}} transações",
   "dateLabels": {
     "today": "Hoje",
     "yesterday": "Ontem"
