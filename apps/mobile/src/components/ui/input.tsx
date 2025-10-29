@@ -17,6 +17,7 @@ export function Input({ className, placeholderTextColor, error, ...props }: Inpu
         className
       )}
       placeholderTextColor={placeholderTextColor || "#71717a"}
+      textAlignVertical="center"
       {...props}
     />
   );

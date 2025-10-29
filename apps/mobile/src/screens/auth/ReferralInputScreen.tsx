@@ -121,6 +121,7 @@ export function ReferralInputScreen({ onValidCode, onNavigateToLogin }: Referral
                   autoCorrect={false}
                   maxLength={20}
                   editable={!isValidating}
+                  textAlignVertical="center"
                 />
                 {validationResult?.valid && (
                   <CheckCircle size={24} color="#10b981" weight="fill" />
