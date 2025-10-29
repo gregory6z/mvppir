@@ -9,6 +9,7 @@ import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { useAuthStore } from "@/stores/auth.store";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
+import { useUserBalance } from "@/api/user/queries/use-user-balance-query";
 
 const MOCK_TRANSACTIONS = [
   {
@@ -102,20 +103,20 @@ const MOCK_TRANSACTIONS = [
 export function HomeScreen() {
   const { clearAuth } = useAuthStore();
   const { data: userAccount, isLoading: isLoadingAccount, refetch: refetchAccount } = useUserAccount();
+  const { data: balanceData, isLoading: isLoadingBalance, refetch: refetchBalance } = useUserBalance();
   const [activeTab, setActiveTab] = useState<
     "home" | "wallet" | "referrals" | "profile"
   >("home");
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Mock balance data (TODO: replace with real data)
-  const totalBalance = 1234.56;
-  const percentChange = 12.5;
+  const totalBalance = balanceData?.totalUSD || 0;
+  const percentChange = 0; // TODO: calculate from historical data
   const notificationCount = 0; // TODO: implement notifications
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await refetchAccount();
+    await Promise.all([refetchAccount(), refetchBalance()]);
     setRefreshing(false);
   };
 
@@ -177,7 +178,7 @@ export function HomeScreen() {
   };
 
   // Loading state
-  if (isLoadingAccount) {
+  if (isLoadingAccount || isLoadingBalance) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center" edges={["left", "right"]}>
         <ActivityIndicator size="large" color="#8b5cf6" />
@@ -186,10 +187,10 @@ export function HomeScreen() {
   }
 
   // Error state
-  if (!userAccount) {
+  if (!userAccount || !balanceData) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center" edges={["left", "right"]}>
-        <Text className="text-white text-base">Failed to load user data</Text>
+        <Text className="text-white text-base">Failed to load data</Text>
       </SafeAreaView>
     );
   }

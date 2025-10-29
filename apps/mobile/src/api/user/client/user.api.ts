@@ -1,16 +1,21 @@
 import { apiClient } from "@/lib/api-client";
 
 // User API Services
-export interface UserBalance {
+export interface TokenBalance {
   tokenSymbol: string;
   tokenAddress: string | null;
-  balance: string;
-  usdValue: string;
-  lastUpdated: string;
+  available: string;
+  locked: string;
+  total: string;
 }
 
-export async function getUserBalance(): Promise<{ balances: UserBalance[] }> {
-  return apiClient.get("user/balance").json<{ balances: UserBalance[] }>();
+export interface UserBalanceResponse {
+  balances: TokenBalance[];
+  totalUSD: number;
+}
+
+export async function getUserBalance(): Promise<UserBalanceResponse> {
+  return apiClient.get("user/balance").json<UserBalanceResponse>();
 }
 
 export interface Transaction {

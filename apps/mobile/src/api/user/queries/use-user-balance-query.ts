@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserBalance, type UserBalance } from "@/api/user/client/user.api";
+import { getUserBalance, type UserBalanceResponse } from "@/api/user/client/user.api";
 
 export function useUserBalance() {
-  return useQuery<{ balances: UserBalance[] }>({
+  return useQuery<UserBalanceResponse>({
     queryKey: ["user", "balance"],
     queryFn: getUserBalance,
     staleTime: 1000 * 30, // 30 seconds
