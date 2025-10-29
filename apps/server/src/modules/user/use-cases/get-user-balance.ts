@@ -17,6 +17,7 @@ interface TokenBalance {
 interface GetUserBalanceResponse {
   balances: TokenBalance[];
   totalUSD: number;
+  monthlyYieldPercentage: number; // Rendimento mensal em % (comissões do mês / depósitos totais)
 }
 
 export async function getUserBalance({
@@ -50,5 +51,48 @@ export async function getUserBalance({
 
   const totalUSD = await calculateTotalUSD(balancesByToken);
 
-  return { balances, totalUSD };
+  // Calcular rendimento mensal (comissões do mês atual / depósitos totais)
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  // Soma comissões do mês atual
+  const currentMonthCommissions = await prisma.commission.aggregate({
+    where: {
+      userId,
+      status: "PAID",
+      createdAt: {
+        gte: new Date(currentYear, currentMonth, 1), // Primeiro dia do mês
+        lt: new Date(currentYear, currentMonth + 1, 1), // Primeiro dia do próximo mês
+      },
+    },
+    _sum: {
+      finalAmount: true,
+    },
+  });
+
+  // Soma depósitos confirmados (tipo CREDIT com status CONFIRMED)
+  const totalDeposits = await prisma.walletTransaction.aggregate({
+    where: {
+      userId,
+      type: "CREDIT",
+      status: "CONFIRMED",
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  const commissionsSum = currentMonthCommissions._sum.finalAmount?.toNumber() || 0;
+  const depositsSum = totalDeposits._sum.amount?.toNumber() || 0;
+
+  // Calcula percentual: (comissões / depósitos) * 100
+  const monthlyYieldPercentage = depositsSum > 0 ? (commissionsSum / depositsSum) * 100 : 0;
+
+  console.log(`📊 Monthly yield calculation for user ${userId}:`);
+  console.log(`   Current month commissions: $${commissionsSum.toFixed(2)}`);
+  console.log(`   Total deposits: $${depositsSum.toFixed(2)}`);
+  console.log(`   Monthly yield: ${monthlyYieldPercentage.toFixed(2)}%`);
+
+  return { balances, totalUSD, monthlyYieldPercentage };
 }

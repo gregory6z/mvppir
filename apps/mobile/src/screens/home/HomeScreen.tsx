@@ -23,8 +23,6 @@ export function HomeScreen() {
   const { data: balanceData, isLoading: isLoadingBalance, refetch: refetchBalance } = useUserBalance();
   // Fetch recent transactions for display (4 items)
   const { data: transactionsData, isLoading: isLoadingTransactions, refetch: refetchTransactions } = useUnifiedTransactions({ limit: 4 });
-  // Fetch all transactions for monthly yield calculation (up to 200)
-  const { data: allTransactionsData } = useUnifiedTransactions({ limit: 200 });
 
   const [activeTab, setActiveTab] = useState<
     "home" | "wallet" | "referrals" | "profile"
@@ -33,55 +31,9 @@ export function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const totalBalance = balanceData?.totalUSD || 0;
+  const monthlyYieldPercentage = balanceData?.monthlyYieldPercentage || 0;
   const notificationCount = 0; // TODO: implement notifications
   const recentTransactions = transactionsData?.transactions || [];
-
-  // Calculate percent change based on commissions comparison (current month vs previous month)
-  const calculateMonthlyChange = (): number => {
-    if (!allTransactionsData?.transactions) return 0;
-
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    // Calculate previous month/year
-    const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-    const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-
-    // Sum commissions from current month
-    const currentMonthCommissions = allTransactionsData.transactions
-      .filter((tx) => {
-        if (tx.type !== "COMMISSION") return false;
-        const txDate = new Date(tx.createdAt);
-        return (
-          txDate.getMonth() === currentMonth &&
-          txDate.getFullYear() === currentYear
-        );
-      })
-      .reduce((sum, tx) => sum + tx.usdValue, 0);
-
-    // Sum commissions from previous month
-    const previousMonthCommissions = allTransactionsData.transactions
-      .filter((tx) => {
-        if (tx.type !== "COMMISSION") return false;
-        const txDate = new Date(tx.createdAt);
-        return (
-          txDate.getMonth() === previousMonth &&
-          txDate.getFullYear() === previousYear
-        );
-      })
-      .reduce((sum, tx) => sum + tx.usdValue, 0);
-
-    // If no commissions in previous month, show current month as 100% if there are any
-    if (previousMonthCommissions === 0) {
-      return currentMonthCommissions > 0 ? 100 : 0;
-    }
-
-    // Calculate percentage change: ((current - previous) / previous) * 100
-    return ((currentMonthCommissions - previousMonthCommissions) / previousMonthCommissions) * 100;
-  };
-
-  const percentChange = calculateMonthlyChange();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -176,7 +128,7 @@ export function HomeScreen() {
               <View className="mb-2">
                 <BalanceCard
                   totalBalance={totalBalance}
-                  percentChange={percentChange}
+                  percentChange={monthlyYieldPercentage}
                   period="month"
                   isBalanceVisible={isBalanceVisible}
                   onToggleVisibility={toggleBalanceVisibility}

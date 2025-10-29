@@ -12,6 +12,7 @@ export interface TokenBalance {
 export interface UserBalanceResponse {
   balances: TokenBalance[];
   totalUSD: number;
+  monthlyYieldPercentage: number;
 }
 
 export async function getUserBalance(): Promise<UserBalanceResponse> {

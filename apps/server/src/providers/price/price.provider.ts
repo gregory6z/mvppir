@@ -33,8 +33,8 @@ const TOKEN_IDS: Record<string, string> = {
 export async function getTokenPriceUSD(tokenSymbol: string): Promise<number> {
   const normalizedSymbol = tokenSymbol.toUpperCase();
 
-  // Stablecoins sempre valem $1
-  if (["USDC", "USDT", "DAI", "BUSD", "TUSD"].includes(normalizedSymbol)) {
+  // Stablecoins e USD sempre valem $1
+  if (["USDC", "USDT", "DAI", "BUSD", "TUSD", "USD"].includes(normalizedSymbol)) {
     return 1.0;
   }
 

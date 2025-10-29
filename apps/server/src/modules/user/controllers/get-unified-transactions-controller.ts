@@ -3,7 +3,7 @@ import { getUnifiedTransactions } from "../use-cases/get-unified-transactions";
 import { z } from "zod";
 
 const querySchema = z.object({
-  limit: z.coerce.number().min(1).max(100).default(50),
+  limit: z.coerce.number().min(1).max(500).default(50),
   offset: z.coerce.number().min(0).default(0),
 });
 
