@@ -1,4 +1,4 @@
-import { ScrollView, View, RefreshControl, Alert } from "react-native";
+import { ScrollView, View, RefreshControl, Alert, ActivityIndicator, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { Header } from "@/components/home/Header";
@@ -8,12 +8,7 @@ import { RecentActivity } from "@/components/home/RecentActivity";
 import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { useAuthStore } from "@/stores/auth.store";
-
-// Mock data for visualization
-const MOCK_USER = {
-  name: "João Silva",
-  avatarUrl: undefined,
-};
+import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 
 const MOCK_TRANSACTIONS = [
   {
@@ -106,23 +101,22 @@ const MOCK_TRANSACTIONS = [
 
 export function HomeScreen() {
   const { clearAuth } = useAuthStore();
+  const { data: userAccount, isLoading: isLoadingAccount, refetch: refetchAccount } = useUserAccount();
   const [activeTab, setActiveTab] = useState<
     "home" | "wallet" | "referrals" | "profile"
   >("home");
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Mock balance data
+  // Mock balance data (TODO: replace with real data)
   const totalBalance = 1234.56;
   const percentChange = 12.5;
-  const notificationCount = 3;
+  const notificationCount = 0; // TODO: implement notifications
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await refetchAccount();
     setRefreshing(false);
-    console.log("Data refreshed!");
   };
 
   const handleAvatarPress = () => {
@@ -182,6 +176,24 @@ export function HomeScreen() {
     setIsBalanceVisible((prev) => !prev);
   };
 
+  // Loading state
+  if (isLoadingAccount) {
+    return (
+      <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center" edges={["left", "right"]}>
+        <ActivityIndicator size="large" color="#8b5cf6" />
+      </SafeAreaView>
+    );
+  }
+
+  // Error state
+  if (!userAccount) {
+    return (
+      <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center" edges={["left", "right"]}>
+        <Text className="text-white text-base">Failed to load user data</Text>
+      </SafeAreaView>
+    );
+  }
+
   // Render content based on active tab
   const renderTabContent = () => {
     switch (activeTab) {
@@ -190,8 +202,8 @@ export function HomeScreen() {
           <>
             {/* Header */}
             <Header
-              userName={MOCK_USER.name}
-              avatarUrl={MOCK_USER.avatarUrl}
+              userName={userAccount.name}
+              avatarUrl={undefined}
               notificationCount={notificationCount}
               onAvatarPress={handleAvatarPress}
               onNotificationPress={handleNotificationPress}
@@ -249,8 +261,8 @@ export function HomeScreen() {
         return (
           <View className="flex-1 items-center justify-center">
             <Header
-              userName={MOCK_USER.name}
-              avatarUrl={MOCK_USER.avatarUrl}
+              userName={userAccount.name}
+              avatarUrl={undefined}
               notificationCount={notificationCount}
               onAvatarPress={handleAvatarPress}
               onNotificationPress={handleNotificationPress}
@@ -265,8 +277,8 @@ export function HomeScreen() {
         return (
           <View className="flex-1 items-center justify-center">
             <Header
-              userName={MOCK_USER.name}
-              avatarUrl={MOCK_USER.avatarUrl}
+              userName={userAccount.name}
+              avatarUrl={undefined}
               notificationCount={notificationCount}
               onAvatarPress={handleAvatarPress}
               onNotificationPress={handleNotificationPress}
@@ -283,7 +295,7 @@ export function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-zinc-950" edges={["bottom", "left", "right"]}>
+    <SafeAreaView className="flex-1 bg-zinc-950" edges={["left", "right"]}>
       {/* Tab Content */}
       {renderTabContent()}
 

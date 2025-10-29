@@ -36,45 +36,43 @@ export function TabBar({ activeTab, onTabPress }: TabBarProps) {
 
   return (
     <View
-      style={{ paddingBottom: insets.bottom || 4 }}
-      className="bg-zinc-950 px-4 pt-2"
+      style={{ paddingBottom: insets.bottom }}
+      className="bg-zinc-900"
     >
-      {/* Rounded Tab Container */}
-      <View className="bg-zinc-900 rounded-3xl px-2 py-3 shadow-lg">
-        <View className="flex-row items-center justify-around">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+      {/* Tab Container */}
+      <View className="flex-row items-center justify-around px-4 py-3">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
 
-            return (
-              <TouchableOpacity
-                key={tab.id}
-                onPress={() => handleTabPress(tab.id)}
-                className={`flex-1 items-center py-2.5 rounded-2xl ${
-                  isActive ? "bg-violet-500/10" : ""
+          return (
+            <TouchableOpacity
+              key={tab.id}
+              onPress={() => handleTabPress(tab.id)}
+              className={`flex-1 items-center py-2.5 rounded-2xl ${
+                isActive ? "bg-violet-500/10" : ""
+              }`}
+              accessibilityLabel={tab.label}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isActive }}
+            >
+              <Icon
+                size={26}
+                color={isActive ? "#8b5cf6" : "#71717a"}
+                weight={isActive ? "fill" : "regular"}
+              />
+              <Text
+                className={`text-[10px] mt-1 ${
+                  isActive
+                    ? "text-violet-500 font-bold"
+                    : "text-zinc-500 font-medium"
                 }`}
-                accessibilityLabel={tab.label}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: isActive }}
               >
-                <Icon
-                  size={26}
-                  color={isActive ? "#8b5cf6" : "#71717a"}
-                  weight={isActive ? "fill" : "regular"}
-                />
-                <Text
-                  className={`text-[10px] mt-1 ${
-                    isActive
-                      ? "text-violet-500 font-bold"
-                      : "text-zinc-500 font-medium"
-                  }`}
-                >
-                  {tab.label}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );

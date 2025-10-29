@@ -2,6 +2,7 @@ import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Alert } fr
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Lock, Wallet, TrendUp, Users, ArrowRight } from "phosphor-react-native";
 import { useUserStatus } from "@/api/user/queries/use-user-status-query";
+import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 import { Header } from "@/components/home/Header";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -10,7 +11,8 @@ interface InactiveAccountScreenProps {
 }
 
 export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountScreenProps) {
-  const { data: status, isLoading } = useUserStatus();
+  const { data: status, isLoading: isLoadingStatus } = useUserStatus();
+  const { data: userAccount, isLoading: isLoadingAccount } = useUserAccount();
   const { clearAuth } = useAuthStore();
 
   const totalDeposits = parseFloat(status?.totalDepositsUsd || "0");
@@ -44,7 +46,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
     console.log("Notification pressed - open notifications");
   };
 
-  if (isLoading) {
+  if (isLoadingStatus || isLoadingAccount) {
     return (
       <SafeAreaView className="flex-1 bg-zinc-950 items-center justify-center">
         <ActivityIndicator size="large" color="#8b5cf6" />
@@ -56,7 +58,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
     <SafeAreaView className="flex-1 bg-zinc-950" edges={["bottom", "left", "right"]}>
       {/* Header */}
       <Header
-        userName="User" // TODO: Get real user name
+        userName={userAccount?.name || "User"}
         avatarUrl={undefined}
         notificationCount={0}
         onAvatarPress={handleAvatarPress}
