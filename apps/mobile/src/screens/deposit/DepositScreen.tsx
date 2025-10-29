@@ -205,10 +205,6 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
               <View className="w-2 h-2 rounded-full bg-blue-500 mr-3" />
               <Text className="text-zinc-300 text-sm">{t("supportedTokens.usdc")}</Text>
             </View>
-            <View className="flex-row items-center py-2">
-              <View className="w-2 h-2 rounded-full bg-violet-500 mr-3" />
-              <Text className="text-zinc-300 text-sm">{t("supportedTokens.matic")}</Text>
-            </View>
           </View>
         </View>
 
