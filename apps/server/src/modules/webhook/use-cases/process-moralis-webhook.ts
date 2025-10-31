@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { Decimal } from "@prisma/client/runtime/library";
 import { checkAccountActivation } from "@/modules/user/use-cases/check-account-activation";
 import { autoCheckAndPromote } from "@/modules/mlm/use-cases/check-rank-progression";
+import { autoBlockBalance } from "@/modules/mlm/use-cases/auto-block-balance";
 import { identifyToken, KNOWN_TOKENS } from "@/lib/tokens";
 
 interface MoralisWebhookPayload {
@@ -115,6 +116,25 @@ export async function processMoralisWebhook({
       }
     } catch (error) {
       console.error("⚠️  Erro ao verificar progressão de rank:", error);
+    }
+
+    // Auto-bloqueia saldo para upgrade de rank (USDC ou USDT)
+    if (existingTx.tokenSymbol === "USDC" || existingTx.tokenSymbol === "USDT") {
+      try {
+        const blockResult = await autoBlockBalance({ userId: existingTx.userId });
+
+        if (blockResult.blocked) {
+          console.log(`🔒 Saldo bloqueado automaticamente:`, {
+            amountBlocked: blockResult.amountBlocked,
+            previousRank: blockResult.previousRank,
+            newRank: blockResult.newRank,
+            blockedBalance: blockResult.blockedBalance,
+            availableBalance: blockResult.availableBalance,
+          });
+        }
+      } catch (error) {
+        console.error("⚠️  Erro ao bloquear saldo automaticamente:", error);
+      }
     }
 
     return {
@@ -278,6 +298,25 @@ export async function processMoralisWebhook({
       }
     } catch (error) {
       console.error("⚠️  Erro ao verificar progressão de rank:", error);
+    }
+
+    // Auto-bloqueia saldo para upgrade de rank (USDC ou USDT)
+    if (token.symbol === "USDC" || token.symbol === "USDT") {
+      try {
+        const blockResult = await autoBlockBalance({ userId: depositAddress.userId });
+
+        if (blockResult.blocked) {
+          console.log(`🔒 Saldo bloqueado automaticamente:`, {
+            amountBlocked: blockResult.amountBlocked,
+            previousRank: blockResult.previousRank,
+            newRank: blockResult.newRank,
+            blockedBalance: blockResult.blockedBalance,
+            availableBalance: blockResult.availableBalance,
+          });
+        }
+      } catch (error) {
+        console.error("⚠️  Erro ao bloquear saldo automaticamente:", error);
+      }
     }
   }
 

@@ -11,6 +11,7 @@ interface TokenBalance {
   tokenAddress: string | null;
   available: Decimal;
   locked: Decimal;
+  blocked: Decimal; // Blocked for rank (only for USDC)
   total: Decimal;
 }
 
@@ -34,14 +35,30 @@ export async function getUserBalance({
     },
   });
 
+  // Busca blockedBalance do usuário (apenas para USDC)
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      blockedBalance: true,
+    },
+  });
+
+  const blockedBalance = user?.blockedBalance || new Decimal(0);
+
   // Converte para formato de resposta
-  const balances: TokenBalance[] = userBalances.map((b) => ({
-    tokenSymbol: b.tokenSymbol,
-    tokenAddress: b.tokenAddress,
-    available: b.availableBalance,
-    locked: b.lockedBalance,
-    total: b.availableBalance.add(b.lockedBalance),
-  }));
+  const balances: TokenBalance[] = userBalances.map((b) => {
+    // Apenas USDC tem blockedBalance
+    const blocked = b.tokenSymbol === "USDC" ? blockedBalance : new Decimal(0);
+
+    return {
+      tokenSymbol: b.tokenSymbol,
+      tokenAddress: b.tokenAddress,
+      available: b.availableBalance,
+      locked: b.lockedBalance,
+      blocked,
+      total: b.availableBalance.add(b.lockedBalance).add(blocked),
+    };
+  });
 
   // Calcula total em USD (usa o total = available + locked)
   const balancesByToken: Record<string, number> = {};

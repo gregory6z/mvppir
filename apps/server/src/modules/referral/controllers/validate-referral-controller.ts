@@ -23,7 +23,7 @@ export async function validateReferralController(
     if (error instanceof z.ZodError) {
       return reply.status(400).send({
         valid: false,
-        message: error.errors[0].message,
+        message: error.issues[0].message,
       });
     }
 

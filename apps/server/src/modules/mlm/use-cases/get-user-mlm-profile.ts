@@ -70,6 +70,7 @@ export interface MLMProfileResponse {
   };
 
   commissionRates: {
+    N0: number;
     N1: number;
     N2: number;
     N3: number;
@@ -242,6 +243,7 @@ export async function getUserMLMProfile(
     nextRankPreview,
     warning,
     commissionRates: {
+      N0: rankConfig.commissions.N0,
       N1: rankConfig.commissions.N1,
       N2: rankConfig.commissions.N2,
       N3: rankConfig.commissions.N3,

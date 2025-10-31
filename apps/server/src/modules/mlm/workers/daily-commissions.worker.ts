@@ -53,10 +53,51 @@ async function processDailyCommissions(job: Job) {
       const config = getRankRequirements(user.currentRank);
       const maxDepth = getMaxCommissionDepth(user.currentRank);
 
+      let userTotalCommissions = new Decimal(0);
+
+      // ===== N0: Calculate commission on own balance (comissão principal) =====
+      if (config.commissions.N0 > 0) {
+        // Get user's own balance (availableBalance in USDC)
+        const userBalance = await prisma.balance.findUnique({
+          where: {
+            userId_tokenSymbol: {
+              userId: user.id,
+              tokenSymbol: "USDC",
+            },
+          },
+          select: {
+            availableBalance: true,
+          },
+        });
+
+        if (userBalance && userBalance.availableBalance.gt(0)) {
+          const baseAmount = userBalance.availableBalance;
+          const commissionAmount = baseAmount.mul(config.commissions.N0).div(100);
+
+          if (commissionAmount.gt(0)) {
+            // Create N0 commission record (fromUserId = próprio userId)
+            await prisma.commission.create({
+              data: {
+                userId: user.id,
+                fromUserId: user.id, // N0 = comissão sobre próprio saldo
+                level: 0, // N0
+                baseAmount,
+                percentage: new Decimal(config.commissions.N0),
+                finalAmount: commissionAmount,
+                referenceDate: new Date(Date.now() - 86400000), // Yesterday
+                status: "PENDING",
+              },
+            });
+
+            userTotalCommissions = userTotalCommissions.add(commissionAmount);
+            commissionRecordsCreated++;
+          }
+        }
+      }
+
+      // ===== N1/N2/N3: Calculate commissions on network balances =====
       // Get network (N1, N2, N3)
       const network = await getNetworkLevels(user.id);
-
-      let userTotalCommissions = new Decimal(0);
 
       // Calculate commissions for each level
       const levels = [

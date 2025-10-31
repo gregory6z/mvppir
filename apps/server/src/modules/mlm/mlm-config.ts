@@ -19,11 +19,12 @@ export interface RankRequirements {
   minActiveDirects: number;
   minMonthlyVolume: number; // USD
 
-  // Commissions
+  // Commissions (N0 = próprio saldo, N1 = diretos, N2/N3 = indiretos)
   commissions: {
-    N1: number; // %
-    N2: number; // %
-    N3: number; // %
+    N0: number; // % - Comissão sobre próprio saldo (maior)
+    N1: number; // % - Comissão sobre saldos dos diretos
+    N2: number; // % - Comissão sobre saldos dos indiretos N2
+    N3: number; // % - Comissão sobre saldos dos indiretos N3
   };
 
   // Withdrawal Fees
@@ -47,7 +48,8 @@ export const RANK_CONFIG: Record<MLMRank, RankRequirements> = {
 
     // Commissions
     commissions: {
-      N1: 0.35, // 0.35% ao dia
+      N0: 0.35, // 0.35% ao dia sobre próprio saldo (comissão principal)
+      N1: 0.10, // 0.10% sobre saldos dos diretos
       N2: 0,
       N3: 0,
     },
@@ -72,8 +74,9 @@ export const RANK_CONFIG: Record<MLMRank, RankRequirements> = {
 
     // Commissions
     commissions: {
-      N1: 1.05,
-      N2: 0.15,
+      N0: 1.05, // 1.05% ao dia sobre próprio saldo
+      N1: 0.30, // 0.30% sobre saldos dos diretos
+      N2: 0.05, // 0.05% sobre saldos dos indiretos N2
       N3: 0,
     },
 
@@ -97,9 +100,10 @@ export const RANK_CONFIG: Record<MLMRank, RankRequirements> = {
 
     // Commissions
     commissions: {
-      N1: 1.80,
-      N2: 0.25,
-      N3: 0.10,
+      N0: 1.80, // 1.80% ao dia sobre próprio saldo
+      N1: 0.50, // 0.50% sobre saldos dos diretos
+      N2: 0.08, // 0.08% sobre saldos dos indiretos N2
+      N3: 0.03, // 0.03% sobre saldos dos indiretos N3
     },
 
     // Withdrawal
@@ -122,9 +126,10 @@ export const RANK_CONFIG: Record<MLMRank, RankRequirements> = {
 
     // Commissions
     commissions: {
-      N1: 2.60,
-      N2: 0.40,
-      N3: 0.15,
+      N0: 2.60, // 2.60% ao dia sobre próprio saldo
+      N1: 0.70, // 0.70% sobre saldos dos diretos
+      N2: 0.12, // 0.12% sobre saldos dos indiretos N2
+      N3: 0.05, // 0.05% sobre saldos dos indiretos N3
     },
 
     // Withdrawal

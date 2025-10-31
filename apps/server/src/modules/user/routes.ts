@@ -7,6 +7,7 @@ import { getUnifiedTransactionsController } from "./controllers/get-unified-tran
 import { getActivationStatusController } from "./controllers/get-activation-status-controller";
 import { getReferralLinkController } from "./controllers/get-referral-link.controller";
 import { getUserStatusController } from "./controllers/get-user-status-controller";
+import { unblockBalanceController } from "./controllers/unblock-balance-controller";
 
 export async function userRoutes(fastify: FastifyInstance) {
   // Todas as rotas de user são protegidas
@@ -32,4 +33,7 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   // GET /user/referral - Get referral link for inviting new users
   fastify.get("/referral", getReferralLinkController);
+
+  // POST /user/balance/unblock - Manually unblock USDC balance (blockedBalance → availableBalance)
+  fastify.post("/balance/unblock", unblockBalanceController);
 }

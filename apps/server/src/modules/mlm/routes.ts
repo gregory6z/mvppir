@@ -3,6 +3,8 @@ import { authMiddleware } from "@/middlewares/auth.middleware";
 import { getMLMProfileController } from "./controllers/get-mlm-profile.controller";
 import { getNetworkController } from "./controllers/get-network.controller";
 import { getMonthlyHistoryController } from "./controllers/get-monthly-history.controller";
+import { getCommissionsSummaryController } from "./controllers/get-commissions-summary.controller";
+import { getRecentCommissionsController } from "./controllers/get-recent-commissions.controller";
 
 /**
  * MLM Routes
@@ -21,4 +23,10 @@ export async function mlmRoutes(fastify: FastifyInstance) {
 
   // GET /mlm/monthly-history - Get monthly statistics history
   fastify.get("/monthly-history", getMonthlyHistoryController);
+
+  // GET /mlm/commissions/summary - Get commission aggregations (today, thisMonth, total)
+  fastify.get("/commissions/summary", getCommissionsSummaryController);
+
+  // GET /mlm/commissions/recent?limit=10 - Get recent commissions with details
+  fastify.get("/commissions/recent", getRecentCommissionsController);
 }

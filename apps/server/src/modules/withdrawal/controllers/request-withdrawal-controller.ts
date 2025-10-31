@@ -8,6 +8,7 @@ const bodySchema = z.object({
   tokenSymbol: z.string().min(1),
   amount: z.string().min(1), // String para evitar perda de precisão
   destinationAddress: z.string().startsWith("0x").length(42),
+  force: z.boolean().optional(), // User confirmed rank loss
 });
 
 /**
@@ -21,7 +22,7 @@ export async function requestWithdrawalController(
   try {
     const userId = request.user!.id; // Middleware requireAuth garante que existe
 
-    const { tokenSymbol, amount, destinationAddress } = bodySchema.parse(
+    const { tokenSymbol, amount, destinationAddress, force } = bodySchema.parse(
       request.body
     );
 
@@ -46,8 +47,21 @@ export async function requestWithdrawalController(
       tokenAddress: balance.tokenAddress,
       amount: new Decimal(amount),
       destinationAddress,
+      force,
     });
 
+    // Check if requires confirmation (rank loss warning)
+    if ("requiresConfirmation" in result && result.requiresConfirmation) {
+      return reply.status(200).send({
+        requiresConfirmation: true,
+        message: result.message,
+        currentRank: result.currentRank,
+        newRank: result.newRank,
+        amountToUnblock: result.amountToUnblock,
+      });
+    }
+
+    // Normal withdrawal created successfully
     return reply.status(201).send({
       success: true,
       withdrawal: result.withdrawal,

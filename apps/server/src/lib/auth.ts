@@ -19,7 +19,8 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
         process.env.FRONTEND_URL || "http://localhost:3000",
         "http://localhost:3333",
         "http://127.0.0.1:3333",
-        "http://192.168.1.4:3333", // Mobile app (local network IP)
+        "http://192.168.1.4:3333", // Mobile app (local network IP - old)
+        "http://192.168.1.122:3333", // Mobile app (local network IP - current)
         "http://0.0.0.0:3333",
       ]
     : [process.env.FRONTEND_URL || "http://localhost:3000"],
