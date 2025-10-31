@@ -31,6 +31,10 @@ function AppContent() {
   } | null>(null);
   const [showDepositScreen, setShowDepositScreen] = useState(false);
 
+  // IMPORTANT: Call all hooks BEFORE any conditional returns (React Rules of Hooks)
+  // This hook is only active when authenticated, but must be called unconditionally
+  const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus();
+
   const handleValidReferralCode = (referrerId: string, referralCode: string) => {
     setReferralData({ referrerId, referralCode });
     setAuthScreen("signup");
@@ -65,7 +69,6 @@ function AppContent() {
   }
 
   // Authenticated - check account status
-  const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus();
 
   // Loading user status
   if (isLoadingStatus) {

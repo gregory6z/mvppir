@@ -6,6 +6,7 @@ export interface TokenBalance {
   tokenAddress: string | null;
   available: string;
   locked: string;
+  blocked: string; // Blocked for rank (only for USDC)
   total: string;
 }
 
@@ -31,4 +32,35 @@ export interface Transaction {
 
 export async function getUserTransactions(): Promise<{ transactions: Transaction[] }> {
   return apiClient.get("user/transactions").json<{ transactions: Transaction[] }>();
+}
+
+// Withdrawal API
+export interface RequestWithdrawalRequest {
+  amount: number;
+  destinationAddress: string;
+}
+
+export interface RequestWithdrawalResponse {
+  id: string;
+  amount: number;
+  netAmount: number;
+  fee: number;
+  destinationAddress: string;
+  status: "PENDING_APPROVAL";
+  requestedAt: string;
+}
+
+export async function requestWithdrawal(data: RequestWithdrawalRequest): Promise<RequestWithdrawalResponse> {
+  return apiClient.post("withdrawal/request", { json: data }).json<RequestWithdrawalResponse>();
+}
+
+// Referral API
+export interface ReferralLinkResponse {
+  referralCode: string;
+  referralLink: string;
+  message: string;
+}
+
+export async function getUserReferralLink(): Promise<ReferralLinkResponse> {
+  return apiClient.get("user/referral").json<ReferralLinkResponse>();
 }

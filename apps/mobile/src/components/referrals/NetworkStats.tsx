@@ -1,10 +1,9 @@
 import { View, Text } from "react-native";
-import { Users, UserCheck, TrendUp } from "phosphor-react-native";
+import { Users, UserCheck } from "phosphor-react-native";
 
 interface NetworkStatsProps {
   totalDirects: number; // Lifetime count
   activeDirects: number; // Active this month
-  lifetimeVolume: number; // USD
   levels: {
     N1: { count: number; totalBalance: number };
     N2: { count: number; totalBalance: number };
@@ -15,7 +14,6 @@ interface NetworkStatsProps {
 export function NetworkStats({
   totalDirects,
   activeDirects,
-  lifetimeVolume,
   levels,
 }: NetworkStatsProps) {
   const formatNumber = (num: number) => {
@@ -63,24 +61,6 @@ export function NetworkStats({
           <Text className="text-white text-2xl font-bold">{activeDirects}</Text>
           <Text className="text-zinc-500 text-xs mt-1">This month</Text>
         </View>
-      </View>
-
-      {/* Lifetime Volume */}
-      <View className="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 mb-3">
-        <View className="flex-row items-center gap-2 mb-2">
-          <View className="w-8 h-8 bg-violet-500/20 rounded-lg items-center justify-center">
-            <TrendUp size={18} color="#8b5cf6" weight="bold" />
-          </View>
-          <Text className="text-zinc-400 text-xs font-medium">
-            Lifetime Network Volume
-          </Text>
-        </View>
-        <Text className="text-white text-3xl font-bold">
-          ${lifetimeVolume.toLocaleString()}
-        </Text>
-        <Text className="text-zinc-500 text-xs mt-1">
-          Total deposits from your network
-        </Text>
       </View>
 
       {/* Network Levels Breakdown */}

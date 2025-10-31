@@ -1,138 +1,156 @@
-import { ScrollView, RefreshControl, View } from "react-native";
-import { useState } from "react";
-import { Header } from "@/components/home/Header";
-import { RankCard } from "@/components/referrals/RankCard";
-import { NetworkStats } from "@/components/referrals/NetworkStats";
-import { CommissionOverview } from "@/components/referrals/CommissionOverview";
-import { ReferralCode } from "@/components/referrals/ReferralCode";
-import { RecentCommissions } from "@/components/referrals/RecentCommissions";
-
-// Type definitions
-type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
-type RankStatus = "ACTIVE" | "WARNING" | "TEMPORARY_DOWNRANK" | "DOWNRANKED";
-
-// Mock data for visualization
-const MOCK_USER = {
-  name: "João Silva",
-  avatarUrl: undefined,
-  currentRank: "BRONZE" as MLMRank,
-  rankStatus: "ACTIVE" as RankStatus,
-  blockedBalance: 500, // $500 blocked (meets Bronze requirement)
-  referralCode: "GREGORY123",
-  referralLink: "https://stakly.com/ref/GREGORY123",
-};
-
-const MOCK_NETWORK_STATS = {
-  totalDirects: 8, // Lifetime
-  activeDirects: 6, // Active this month
-  lifetimeVolume: 12500, // $12,500 total
-  levels: {
-    N1: { count: 8, totalBalance: 4000 }, // 8 direct referrals with $4K total
-    N2: { count: 24, totalBalance: 8500 }, // 24 in level 2 with $8.5K total
-    N3: { count: 48, totalBalance: 12000 }, // 48 in level 3 with $12K total
-  },
-};
-
-// Progress to next rank (Silver)
-const MOCK_PROGRESS = {
-  directs: { current: 8, required: 5 }, // Already met (8 > 5)
-  volume: { current: 12500, required: 30000 }, // Need $17.5K more
-  blockedBalance: { current: 500, required: 2000 }, // Need $1.5K more
-};
-
-const MOCK_COMMISSIONS_SUMMARY = {
-  today: 15.75, // $15.75 today
-  thisMonth: 412.5, // $412.50 this month
-  total: 1847.25, // $1,847.25 lifetime
-};
-
-const MOCK_COMMISSIONS = [
-  {
-    id: "1",
-    fromUser: { name: "João Silva", rank: "BRONZE" as MLMRank },
-    level: 1,
-    baseAmount: 500,
-    percentage: 1.05,
-    finalAmount: 5.25,
-    referenceDate: new Date().toISOString(),
-    status: "PAID" as const,
-  },
-  {
-    id: "2",
-    fromUser: { name: "Maria Santos", rank: "RECRUIT" as MLMRank },
-    level: 1,
-    baseAmount: 300,
-    percentage: 1.05,
-    finalAmount: 3.15,
-    referenceDate: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-    status: "PAID" as const,
-  },
-  {
-    id: "3",
-    fromUser: { name: "Pedro Costa", rank: "SILVER" as MLMRank },
-    level: 2,
-    baseAmount: 1000,
-    percentage: 0.15,
-    finalAmount: 1.5,
-    referenceDate: new Date(Date.now() - 86400000).toISOString(),
-    status: "PAID" as const,
-  },
-  {
-    id: "4",
-    fromUser: { name: "Ana Oliveira", rank: "BRONZE" as MLMRank },
-    level: 1,
-    baseAmount: 450,
-    percentage: 1.05,
-    finalAmount: 4.73,
-    referenceDate: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-    status: "PENDING" as const,
-  },
-  {
-    id: "5",
-    fromUser: { name: "Carlos Pereira", rank: "RECRUIT" as MLMRank },
-    level: 3,
-    baseAmount: 200,
-    percentage: 0.1,
-    finalAmount: 0.2,
-    referenceDate: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
-    status: "PAID" as const,
-  },
-];
+import { ScrollView, RefreshControl, View, Text, ActivityIndicator } from "react-native"
+import { Header } from "@/components/home/Header"
+import { RankCard } from "@/components/referrals/RankCard"
+import { NetworkStats } from "@/components/referrals/NetworkStats"
+import { CommissionOverview } from "@/components/referrals/CommissionOverview"
+import { ReferralCode } from "@/components/referrals/ReferralCode"
+import { RecentCommissions } from "@/components/referrals/RecentCommissions"
+import { useMLMProfile } from "@/api/mlm/queries/use-mlm-profile-query"
+import { useCommissionsSummary } from "@/api/mlm/queries/use-commissions-summary-query"
+import { useRecentCommissions } from "@/api/mlm/queries/use-recent-commissions-query"
+import { useUserReferralLink } from "@/api/user/queries/use-user-referral-link-query"
+import type { MLMRank } from "@/api/mlm/client/mlm.api"
 
 export function ReferralsScreen() {
-  const [refreshing, setRefreshing] = useState(false);
-  const notificationCount = 3;
+  const notificationCount = 3
 
+  // Fetch data from API
+  const mlmProfile = useMLMProfile()
+  const commissionsSummary = useCommissionsSummary()
+  const recentCommissions = useRecentCommissions(5)
+  const referralLink = useUserReferralLink()
+
+  // Combined loading state
+  const isLoading =
+    mlmProfile.isLoading ||
+    commissionsSummary.isLoading ||
+    recentCommissions.isLoading ||
+    referralLink.isLoading
+
+  // Combined error state
+  const hasError =
+    mlmProfile.isError ||
+    commissionsSummary.isError ||
+    recentCommissions.isError ||
+    referralLink.isError
+
+  // Refetch all data
   const onRefresh = async () => {
-    setRefreshing(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setRefreshing(false);
-    console.log("Referrals data refreshed!");
-  };
+    await Promise.all([
+      mlmProfile.refetch(),
+      commissionsSummary.refetch(),
+      recentCommissions.refetch(),
+      referralLink.refetch(),
+    ])
+  }
 
   const handleAvatarPress = () => {
-    console.log("Avatar pressed - navigate to Profile");
-  };
+    console.log("Avatar pressed - navigate to Profile")
+  }
 
   const handleNotificationPress = () => {
-    console.log("Notification pressed - open notifications");
-  };
+    console.log("Notification pressed - open notifications")
+  }
 
   const handleViewAllCommissions = () => {
-    console.log("View all commissions - navigate to full list");
-  };
+    console.log("View all commissions - navigate to full list")
+  }
 
   const handleCommissionPress = (id: string) => {
-    console.log(`Commission ${id} pressed - show details`);
-  };
+    console.log(`Commission ${id} pressed - show details`)
+  }
+
+  // Loading state
+  if (isLoading && !mlmProfile.data) {
+    return (
+      <>
+        <Header
+          userName="Carregando..."
+          avatarUrl={undefined}
+          notificationCount={0}
+          onAvatarPress={handleAvatarPress}
+          onNotificationPress={handleNotificationPress}
+        />
+        <View className="flex-1 justify-center items-center bg-zinc-950">
+          <ActivityIndicator size="large" color="#8b5cf6" />
+          <Text className="text-zinc-400 mt-4">Carregando dados...</Text>
+        </View>
+      </>
+    )
+  }
+
+  // Error state
+  if (hasError) {
+    return (
+      <>
+        <Header
+          userName="Erro"
+          avatarUrl={undefined}
+          notificationCount={0}
+          onAvatarPress={handleAvatarPress}
+          onNotificationPress={handleNotificationPress}
+        />
+        <View className="flex-1 justify-center items-center bg-zinc-950 px-6">
+          <Text className="text-red-500 text-lg font-bold mb-2">Erro ao carregar dados</Text>
+          <Text className="text-zinc-400 text-center">
+            {mlmProfile.error?.message ||
+             commissionsSummary.error?.message ||
+             recentCommissions.error?.message ||
+             referralLink.error?.message ||
+             "Ocorreu um erro desconhecido"}
+          </Text>
+          <Text
+            className="text-purple-500 mt-4 font-semibold"
+            onPress={() => onRefresh()}
+          >
+            Tentar novamente
+          </Text>
+        </View>
+      </>
+    )
+  }
+
+  // Get data with fallbacks
+  const userData = mlmProfile.data?.user
+  const networkData = mlmProfile.data?.network
+  const nextRankData = mlmProfile.data?.nextRankPreview
+  const commissionsData = commissionsSummary.data
+  const recentCommissionsData = recentCommissions.data?.commissions || []
+  const referralData = referralLink.data
+
+  // Map commission level to fromUser data (from recent commissions)
+  const mappedCommissions = recentCommissionsData.map((commission) => ({
+    id: commission.id,
+    fromUser: {
+      name: commission.fromUserName,
+      rank: "RECRUIT" as MLMRank, // We don't have rank in response, using default
+    },
+    level: commission.level,
+    baseAmount: commission.baseAmount,
+    percentage: commission.percentage,
+    finalAmount: commission.finalAmount,
+    referenceDate: commission.referenceDate,
+    status: commission.status,
+  }))
+
+  // Calculate progress to next rank
+  const progressToNext = nextRankData ? {
+    directs: {
+      current: nextRankData.requirements.directs.actual,
+      required: nextRankData.requirements.directs.required,
+    },
+    blockedBalance: {
+      current: nextRankData.requirements.blockedBalance.actual,
+      required: nextRankData.requirements.blockedBalance.required,
+    },
+  } : undefined
 
   return (
     <>
       {/* Header */}
       <Header
-        userName={MOCK_USER.name}
-        avatarUrl={MOCK_USER.avatarUrl}
+        userName={userData?.name || "Usuário"}
+        avatarUrl={undefined}
         notificationCount={notificationCount}
         onAvatarPress={handleAvatarPress}
         onNotificationPress={handleNotificationPress}
@@ -145,7 +163,7 @@ export function ReferralsScreen() {
         contentContainerStyle={{ paddingBottom: 32 }}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={mlmProfile.isFetching}
             onRefresh={onRefresh}
             tintColor="#8b5cf6"
             colors={["#8b5cf6"]}
@@ -153,43 +171,50 @@ export function ReferralsScreen() {
         }
       >
         {/* Rank Card */}
-        <RankCard
-          currentRank={MOCK_USER.currentRank}
-          rankStatus={MOCK_USER.rankStatus}
-          blockedBalance={MOCK_USER.blockedBalance}
-          nextRank="SILVER"
-          progressToNext={MOCK_PROGRESS}
-        />
+        {userData && (
+          <RankCard
+            currentRank={userData.currentRank}
+            rankStatus={userData.rankStatus}
+            blockedBalance={userData.blockedBalance}
+            nextRank={nextRankData?.rank}
+            progressToNext={progressToNext}
+          />
+        )}
 
         {/* Referral Code */}
-        <ReferralCode
-          referralCode={MOCK_USER.referralCode}
-          referralLink={MOCK_USER.referralLink}
-        />
+        {referralData && (
+          <ReferralCode
+            referralCode={referralData.referralCode}
+            referralLink={referralData.referralLink}
+          />
+        )}
 
         {/* Network Stats */}
-        <NetworkStats
-          totalDirects={MOCK_NETWORK_STATS.totalDirects}
-          activeDirects={MOCK_NETWORK_STATS.activeDirects}
-          lifetimeVolume={MOCK_NETWORK_STATS.lifetimeVolume}
-          levels={MOCK_NETWORK_STATS.levels}
-        />
+        {networkData && (
+          <NetworkStats
+            totalDirects={networkData.totalDirects}
+            activeDirects={networkData.activeDirects}
+            levels={networkData.levels}
+          />
+        )}
 
         {/* Commission Overview */}
-        <CommissionOverview
-          today={MOCK_COMMISSIONS_SUMMARY.today}
-          thisMonth={MOCK_COMMISSIONS_SUMMARY.thisMonth}
-          total={MOCK_COMMISSIONS_SUMMARY.total}
-        />
+        {commissionsData && (
+          <CommissionOverview
+            today={commissionsData.today}
+            thisMonth={commissionsData.thisMonth}
+            total={commissionsData.total}
+          />
+        )}
 
         {/* Recent Commissions */}
         <RecentCommissions
-          commissions={MOCK_COMMISSIONS}
+          commissions={mappedCommissions}
           maxItems={5}
           onViewAll={handleViewAllCommissions}
           onCommissionPress={handleCommissionPress}
         />
       </ScrollView>
     </>
-  );
+  )
 }

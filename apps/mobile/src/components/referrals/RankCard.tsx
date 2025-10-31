@@ -11,7 +11,6 @@ interface RankCardProps {
   nextRank?: MLMRank | null; // null if already at max rank
   progressToNext?: {
     directs: { current: number; required: number };
-    volume: { current: number; required: number };
     blockedBalance: { current: number; required: number };
   } | null;
 }
@@ -161,28 +160,6 @@ export function RankCard({
                   width: `${calculateProgress(
                     progressToNext.directs.current,
                     progressToNext.directs.required
-                  )}%`,
-                }}
-              />
-            </View>
-          </View>
-
-          {/* Lifetime Volume Progress */}
-          <View className="mb-3">
-            <View className="flex-row items-center justify-between mb-1.5">
-              <Text className="text-zinc-400 text-xs">Lifetime Volume</Text>
-              <Text className="text-violet-400 text-xs font-semibold">
-                ${progressToNext.volume.current.toLocaleString()} / $
-                {progressToNext.volume.required.toLocaleString()}
-              </Text>
-            </View>
-            <View className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-              <View
-                className="h-full bg-violet-500 rounded-full"
-                style={{
-                  width: `${calculateProgress(
-                    progressToNext.volume.current,
-                    progressToNext.volume.required
                   )}%`,
                 }}
               />

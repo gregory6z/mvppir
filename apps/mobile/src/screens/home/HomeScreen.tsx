@@ -10,6 +10,7 @@ import { TabBar } from "@/components/navigation/TabBar";
 import { ReferralsScreen } from "@/screens/referrals/ReferralsScreen";
 import { WalletScreen } from "@/screens/wallet/WalletScreen";
 import { DepositScreen } from "@/screens/deposit/DepositScreen";
+import { WithdrawScreen } from "@/screens/withdraw/WithdrawScreen";
 import { ProfileScreen } from "@/screens/profile/ProfileScreen";
 import { useUIStore } from "@/stores/ui.store";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
@@ -28,6 +29,7 @@ export function HomeScreen() {
     "home" | "wallet" | "referrals" | "profile"
   >("home");
   const [showDepositScreen, setShowDepositScreen] = useState(false);
+  const [showWithdrawScreen, setShowWithdrawScreen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const totalBalance = balanceData?.totalUSD || 0;
@@ -56,6 +58,7 @@ export function HomeScreen() {
 
   const handleWithdrawPress = () => {
     console.log("Withdraw pressed - navigate to Withdraw screen");
+    setShowWithdrawScreen(true);
   };
 
   const handleReferPress = () => {
@@ -173,6 +176,11 @@ export function HomeScreen() {
   // Show deposit screen if active
   if (showDepositScreen) {
     return <DepositScreen onBack={() => setShowDepositScreen(false)} />;
+  }
+
+  // Show withdraw screen if active
+  if (showWithdrawScreen) {
+    return <WithdrawScreen onBack={() => setShowWithdrawScreen(false)} />;
   }
 
   return (

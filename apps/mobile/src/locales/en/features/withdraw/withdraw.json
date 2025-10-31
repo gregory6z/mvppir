@@ -1,0 +1,50 @@
+{
+  "title": "Withdraw",
+  "subtitle": "Request a withdrawal to your wallet",
+  "availableBalance": "Available Balance",
+  "dailyLimit": {
+    "title": "Daily Withdrawal Limit",
+    "description": "Maximum withdrawal per day: ${{limit}}"
+  },
+  "amount": {
+    "label": "Withdrawal Amount",
+    "minimum": "Minimum withdrawal: ${{amount}}",
+    "belowMinimum": "Amount below minimum",
+    "exceedsBalance": "Insufficient balance"
+  },
+  "address": {
+    "label": "Destination Address (Polygon)",
+    "description": "Enter your Polygon wallet address",
+    "invalid": "Invalid address format"
+  },
+  "feeBreakdown": {
+    "title": "Fee Breakdown",
+    "withdrawalAmount": "Withdrawal Amount",
+    "baseFee": "Base Fee",
+    "youReceive": "You Receive"
+  },
+  "warnings": {
+    "downrankTitle": "⚠️ Rank Downgrade Warning",
+    "downrankDescription": "After this withdrawal, your balance will be ${{newBalance}}, which is below the minimum required (${{minimum}}) for your current rank. This may cause a rank downgrade.",
+    "downrankMessage": "Your balance after withdrawal (${{balance}}) will be below the minimum (${{minimum}}) for your rank."
+  },
+  "processing": {
+    "title": "Processing Time",
+    "description": "Withdrawals are processed within 72 hours. You'll receive your funds at the specified address."
+  },
+  "submitButton": "Request Withdrawal",
+  "success": {
+    "title": "Request Submitted",
+    "message": "Your withdrawal request has been submitted successfully. Your funds will be sent within 72 hours."
+  },
+  "errors": {
+    "title": "Error",
+    "message": "Failed to submit withdrawal request. Please try again."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "ok": "OK",
+    "loading": "Loading..."
+  }
+}

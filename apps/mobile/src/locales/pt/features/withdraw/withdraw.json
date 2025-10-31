@@ -1,0 +1,50 @@
+{
+  "title": "Sacar",
+  "subtitle": "Solicite um saque para sua carteira",
+  "availableBalance": "Saldo Disponível",
+  "dailyLimit": {
+    "title": "Limite Diário de Saque",
+    "description": "Saque máximo por dia: ${{limit}}"
+  },
+  "amount": {
+    "label": "Valor do Saque",
+    "minimum": "Saque mínimo: ${{amount}}",
+    "belowMinimum": "Valor abaixo do mínimo",
+    "exceedsBalance": "Saldo insuficiente"
+  },
+  "address": {
+    "label": "Endereço de Destino (Polygon)",
+    "description": "Digite o endereço da sua carteira Polygon",
+    "invalid": "Formato de endereço inválido"
+  },
+  "feeBreakdown": {
+    "title": "Resumo de Taxas",
+    "withdrawalAmount": "Valor do Saque",
+    "baseFee": "Taxa Base",
+    "youReceive": "Você Recebe"
+  },
+  "warnings": {
+    "downrankTitle": "⚠️ Aviso de Rebaixamento de Rank",
+    "downrankDescription": "Após este saque, seu saldo será ${{newBalance}}, que está abaixo do mínimo necessário (${{minimum}}) para seu rank atual. Isso pode causar um rebaixamento de rank.",
+    "downrankMessage": "Seu saldo após o saque (${{balance}}) ficará abaixo do mínimo (${{minimum}}) para seu rank."
+  },
+  "processing": {
+    "title": "Tempo de Processamento",
+    "description": "Saques são processados em até 72 horas. Você receberá seus fundos no endereço especificado."
+  },
+  "submitButton": "Solicitar Saque",
+  "success": {
+    "title": "Solicitação Enviada",
+    "message": "Sua solicitação de saque foi enviada com sucesso. Seus fundos serão enviados em até 72 horas."
+  },
+  "errors": {
+    "title": "Erro",
+    "message": "Falha ao enviar solicitação de saque. Por favor, tente novamente."
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "ok": "OK",
+    "loading": "Carregando..."
+  }
+}
