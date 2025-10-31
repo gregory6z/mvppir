@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { getCommissionsSummary, type CommissionsSummary } from "@/api/mlm/client/mlm.api"
+import { getCommissionsSummary } from "@/api/mlm/client/mlm.api"
+import type { CommissionsSummary } from "@/api/mlm/schemas/mlm.schema"
 
 export function useCommissionsSummary() {
   return useQuery<CommissionsSummary>({

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { getMLMProfile, type MLMProfile } from "@/api/mlm/client/mlm.api"
+import { getMLMProfile } from "@/api/mlm/client/mlm.api"
+import type { MLMProfile } from "@/api/mlm/schemas/mlm.schema"
 
 export function useMLMProfile() {
   return useQuery<MLMProfile>({

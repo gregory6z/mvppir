@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { getUserReferralLink, type ReferralLinkResponse } from "@/api/user/client/user.api"
+import { getUserReferralLink } from "@/api/user/client/user.api"
+import type { ReferralLinkResponse } from "@/api/user/schemas/user.schema"
 
 export function useUserReferralLink() {
   return useQuery<ReferralLinkResponse>({

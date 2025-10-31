@@ -119,7 +119,7 @@ export function ReferralsScreen() {
   const referralData = referralLink.data
 
   // Map commission level to fromUser data (from recent commissions)
-  const mappedCommissions = recentCommissionsData.map((commission) => ({
+  const mappedCommissions = recentCommissionsData.map((commission: any) => ({
     id: commission.id,
     fromUser: {
       name: commission.fromUserName,

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { getRecentCommissions, type RecentCommissionsResponse } from "@/api/mlm/client/mlm.api"
+import { getRecentCommissions } from "@/api/mlm/client/mlm.api"
+import type { RecentCommissionsResponse } from "@/api/mlm/schemas/mlm.schema"
 
 export function useRecentCommissions(limit: number = 10) {
   return useQuery<RecentCommissionsResponse>({

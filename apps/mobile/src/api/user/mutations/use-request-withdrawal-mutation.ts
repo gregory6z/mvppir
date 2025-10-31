@@ -1,15 +1,16 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { requestWithdrawal, type RequestWithdrawalRequest } from "../client/user.api";
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { requestWithdrawal } from "../client/user.api"
+import type { RequestWithdrawalInput } from "../schemas/user.schema"
 
 export function useRequestWithdrawal() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: RequestWithdrawalRequest) => requestWithdrawal(data),
+    mutationFn: (data: RequestWithdrawalInput) => requestWithdrawal(data),
     onSuccess: () => {
       // Invalidate balance and transactions to reflect the locked balance
-      queryClient.invalidateQueries({ queryKey: ["user", "balance"] });
-      queryClient.invalidateQueries({ queryKey: ["user", "transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "balance"] })
+      queryClient.invalidateQueries({ queryKey: ["user", "transactions"] })
     },
-  });
+  })
 }

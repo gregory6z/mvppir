@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserBalance, type UserBalanceResponse } from "@/api/user/client/user.api";
+import { getUserBalance } from "@/api/user/client/user.api"
+import type { UserBalanceResponse } from "@/api/user/schemas/user.schema"
 
 export function useUserBalance() {
   return useQuery<UserBalanceResponse>({

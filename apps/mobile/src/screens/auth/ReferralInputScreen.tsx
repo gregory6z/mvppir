@@ -14,7 +14,8 @@ import { useState } from "react";
 import { Users, ArrowRight, CheckCircle, XCircle, ArrowLeft } from "phosphor-react-native";
 import * as Haptics from "expo-haptics";
 import { useTranslation } from "react-i18next";
-import { validateReferralCode, type ReferralValidationResponse } from "@/api/referral/client/referral.api";
+import { validateReferralCode } from "@/api/referral/client/referral.api"
+import type { ReferralValidationResponse } from "@/api/referral/schemas/referral.schema"
 
 const RANK_EMOJIS = {
   RECRUIT: "🎖️",
