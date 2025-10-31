@@ -9,7 +9,7 @@ import { useMLMProfile } from "@/api/mlm/queries/use-mlm-profile-query"
 import { useCommissionsSummary } from "@/api/mlm/queries/use-commissions-summary-query"
 import { useRecentCommissions } from "@/api/mlm/queries/use-recent-commissions-query"
 import { useUserReferralLink } from "@/api/user/queries/use-user-referral-link-query"
-import type { MLMRank } from "@/api/mlm/client/mlm.api"
+import type { MLMRank } from "@/api/mlm/schemas/mlm.schema"
 
 export function ReferralsScreen() {
   const notificationCount = 3

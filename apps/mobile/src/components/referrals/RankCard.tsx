@@ -1,8 +1,6 @@
-import { View, Text } from "react-native";
-import { Crown, TrendUp, LockKey } from "phosphor-react-native";
-
-type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
-type RankStatus = "ACTIVE" | "WARNING" | "TEMPORARY_DOWNRANK" | "DOWNRANKED";
+import { View, Text } from "react-native"
+import { Crown, LockKey } from "phosphor-react-native"
+import type { MLMRank, RankStatus } from "@/api/mlm/schemas/mlm.schema"
 
 interface RankCardProps {
   currentRank: MLMRank;
