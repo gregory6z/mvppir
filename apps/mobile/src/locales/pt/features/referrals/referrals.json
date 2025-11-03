@@ -1,0 +1,162 @@
+{
+  "screen": {
+    "loading": "Carregando...",
+    "loadingData": "Carregando dados...",
+    "error": "Erro",
+    "errorLoading": "Erro ao carregar dados",
+    "unknownError": "Ocorreu um erro desconhecido",
+    "tryAgain": "Tentar novamente",
+    "user": "Usuário"
+  },
+  "rankCard": {
+    "dailyCommission": "Comissão Diária",
+    "blockedBalance": "Saldo Investido",
+    "progressTo": "Progresso para",
+    "directReferrals": "Indicações Diretas",
+    "requiredBlocked": "Investimento Necessário",
+    "networkVolume": "Volume da Rede",
+    "maxRankTitle": "Graduação Máxima Atingida!",
+    "maxRankDescription": "Você alcançou a graduação mais alta do sistema",
+    "howItWorksButton": "Como Funciona",
+    "ranks": {
+      "recruit": "Recruta",
+      "bronze": "Bronze",
+      "silver": "Prata",
+      "gold": "Ouro"
+    },
+    "status": {
+      "active": "Ativo",
+      "warning": "Aviso",
+      "tempDownrank": "Rebaixamento Temp",
+      "downranked": "Rebaixado"
+    }
+  },
+  "referralCode": {
+    "title": "Seu Código de Indicação",
+    "shareCode": "Compartilhe este código com amigos",
+    "referralCodeLabel": "CÓDIGO DE INDICAÇÃO",
+    "copyCode": "Copiar Código",
+    "copied": "Copiado!",
+    "referralLink": "Link de Indicação",
+    "infoMessage": "Ganhe comissões quando seus indicados fizerem depósitos e construírem sua rede"
+  },
+  "networkStats": {
+    "title": "Visão Geral da Rede",
+    "totalDirects": "Total de Diretos",
+    "lifetime": "Histórico",
+    "activeNow": "Ativos Agora",
+    "thisMonth": "Neste mês",
+    "networkVolume": "Volume da Rede",
+    "networkLevels": "Níveis da Rede",
+    "ownBalance": "Seu Investimento",
+    "you": "Você",
+    "blockedBalance": "Investido",
+    "directReferrals": "Indicações Diretas",
+    "secondLevel": "2º Nível",
+    "thirdLevel": "3º Nível",
+    "people": "pessoas",
+    "totalBalance": "Saldo Total"
+  },
+  "commissionOverview": {
+    "title": "Ganhos com Comissões",
+    "today": "Hoje",
+    "thisMonth": "Este Mês",
+    "totalEarned": "Total Ganho",
+    "allTime": "Todo Período",
+    "dailyAverage": "Média Diária",
+    "monthlyEst": "Est. Mensal"
+    ,
+    "byLevel": "Ganhos por Nível",
+    "ownBalance": "Próprio Investimento",
+    "directReferrals": "Indicações Diretas",
+    "indirectN2": "Rede 2º Nível",
+    "indirectN3": "Rede 3º Nível"
+  },
+  "recentCommissions": {
+    "title": "Comissões Recentes",
+    "recent": "recentes",
+    "empty": {
+      "title": "Nenhuma comissão ainda",
+      "subtitle": "Comece a convidar amigos para ganhar comissões diárias"
+    },
+    "status": {
+      "pending": "Pendente",
+      "paid": "Pago",
+      "cancelled": "Cancelado"
+    },
+    "recently": "Recentemente"
+  },
+  "explainer": {
+    "title": "Como Funciona",
+    "hero": {
+      "title": "Ganhos com IA",
+      "description": "Seu investimento é gerenciado pelo nosso agente de IA avançado que gera retornos altos e consistentes através de estratégias inteligentes de mercado."
+    },
+    "howItWorks": {
+      "title": "Como Funciona",
+      "step1": {
+        "title": "1. Invista seu Saldo",
+        "description": "Mantenha fundos investidos para ganhar dividendos diários. Quanto mais você investir, maior sua graduação e ganhos diários."
+      },
+      "step2": {
+        "title": "2. Construa sua Rede",
+        "description": "Convide pessoas para participar. Cada indicado ativo ajuda você a subir de graduação e desbloquear taxas de comissão mais altas."
+      },
+      "step3": {
+        "title": "3. Ganhe Dividendos Diários",
+        "description": "Receba pagamentos automáticos diários baseados em sua graduação. Graduações mais altas = percentuais de retorno maiores sobre seu investimento."
+      }
+    },
+    "ranks": {
+      "title": "Benefícios por Graduação",
+      "recruit": "Nível inicial - Comece ganhando 0.35% ao dia com $100 investidos",
+      "bronze": "3 diretos + $500 investidos + $2.500 volume histórico da rede - Ganhe 1.05% ao dia",
+      "silver": "5 diretos + $2.000 investidos + $30.000 volume histórico da rede - Ganhe 1.80% ao dia",
+      "gold": "8 diretos + $5.000 investidos + $150.000 volume histórico da rede - Ganhe 2.60% ao dia"
+    },
+    "ai": {
+      "title": "Agente de IA para Trading",
+      "description": "Nossa IA proprietária analisa os mercados 24/7, executando operações de alta probabilidade para gerar retornos consistentes para todos os investidores. Quanto mais você investe e maior sua graduação, mais você ganha."
+    },
+    "keyPoints": {
+      "title": "Pontos-Chave",
+      "point1": "Dividendos diários são pagos automaticamente baseados em seu saldo investido e graduação",
+      "point2": "Para manter sua graduação, mantenha o valor de investimento necessário ativo",
+      "point3": "A IA trabalha para você 24/7 - graduações mais altas desbloqueiam ganhos diários exponencialmente maiores"
+    },
+    "maintenance": {
+      "title": "Manutenção Mensal",
+      "subtitle": "Para manter sua graduação, você precisa cumprir estes requisitos todo mês:",
+      "recruit": {
+        "title": "Sem Requisitos Mensais!",
+        "description": "Invista $100 uma vez e ganhe 0.35% ao dia para sempre. Não precisa fazer mais nada."
+      },
+      "bronze": {
+        "activeDirects": "3 indicados ativos",
+        "monthlyVolume": "$500 de volume da rede/mês"
+      },
+      "silver": {
+        "activeDirects": "5 indicados ativos",
+        "monthlyVolume": "$6.000 de volume da rede/mês"
+      },
+      "gold": {
+        "activeDirects": "8 indicados ativos",
+        "monthlyVolume": "$30.000 de volume da rede/mês"
+      },
+      "note": "Volume da rede = seus depósitos + depósitos dos seus indicados diretos e indiretos",
+      "warning": "Se não cumprir os requisitos por 3 meses seguidos, você pode ser rebaixado"
+    },
+    "closeButton": "Entendi!"
+  },
+  "monthlyMaintenance": {
+    "yourCurrentRank": "Sua Graduação Atual",
+    "requirementsTitle": "Requisitos Mensais",
+    "activeDirectsTitle": "Diretos Ativos",
+    "networkVolumeTitle": "Volume da Rede",
+    "volumeExplanation": "Este é o total de depósitos feitos por VOCÊ + toda sua rede (diretos + indiretos) durante o mês atual",
+    "importantInfo": "Informações Importantes",
+    "whatIsVolumeTitle": "O que é Volume da Rede?",
+    "downrankWarningTitle": "Aviso",
+    "allRanksTitle": "Requisitos de Todas as Graduações"
+  }
+}

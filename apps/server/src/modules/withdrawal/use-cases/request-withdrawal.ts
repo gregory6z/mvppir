@@ -14,7 +14,7 @@ interface RequestWithdrawalRequest {
   force?: boolean; // User confirmed rank loss
 }
 
-const WITHDRAWAL_MIN_USD = Number(process.env.WITHDRAWAL_MIN_USD) || 500;
+const MIN_BALANCE_TO_WITHDRAW = Number(process.env.MIN_BALANCE_TO_WITHDRAW) || 500;
 const WITHDRAWAL_FEE_USD = Number(process.env.WITHDRAWAL_FEE_USD) || 5;
 
 /**
@@ -151,13 +151,11 @@ export async function requestWithdrawal({
     }
   }
 
-  // 4. Valida valor mínimo em USD
-  const amountUSD = await calculateTotalUSD({
-    [tokenSymbol]: amount.toNumber(),
-  });
+  // 4. Valida saldo mínimo para poder sacar (precisa TER $500, mas pode sacar tudo)
+  const totalBalance = balance.availableBalance.add(balance.lockedBalance);
 
-  if (amountUSD < WITHDRAWAL_MIN_USD) {
-    throw new Error(`MINIMUM_WITHDRAWAL_${WITHDRAWAL_MIN_USD}_USD`);
+  if (totalBalance.lt(MIN_BALANCE_TO_WITHDRAW)) {
+    throw new Error(`MINIMUM_BALANCE_TO_WITHDRAW_${MIN_BALANCE_TO_WITHDRAW}_USD`);
   }
 
   // 5. Verifica se já tem saque pendente
@@ -172,11 +170,50 @@ export async function requestWithdrawal({
     throw new Error("WITHDRAWAL_ALREADY_PENDING");
   }
 
-  // 6. Calcula taxa (fixo em USD, convertido para o token)
+  // 6. Valida limite diário
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { currentRank: true },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const rankConfig = getRankRequirements(user.currentRank);
+  const dailyLimit = rankConfig.withdrawalFee.dailyLimit;
+
+  // Calcula total sacado hoje
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const withdrawalsToday = await prisma.withdrawal.findMany({
+    where: {
+      userId,
+      createdAt: { gte: startOfDay },
+      status: { notIn: ["REJECTED", "FAILED"] },
+    },
+    select: { amount: true },
+  });
+
+  const withdrawnToday = withdrawalsToday.reduce(
+    (sum, w) => sum + w.amount.toNumber(),
+    0
+  );
+
+  const remainingToday = dailyLimit - withdrawnToday;
+
+  if (amount.toNumber() > remainingToday) {
+    throw new Error(
+      `DAILY_LIMIT_EXCEEDED_${dailyLimit}_${remainingToday.toFixed(2)}`
+    );
+  }
+
+  // 7. Calcula taxa (fixo em USD, convertido para o token)
   const feeUSD = WITHDRAWAL_FEE_USD;
   const fee = new Decimal(feeUSD); // Simplificado: deveria converter USD → token
 
-  // 7. Atomicamente: move saldo + cria withdrawal
+  // 8. Atomicamente: move saldo + cria withdrawal
   const withdrawal = await prisma.$transaction(async (tx) => {
     // Move de availableBalance → lockedBalance
     // Nota: updateMany não suporta composite keys diretamente, então usamos AND

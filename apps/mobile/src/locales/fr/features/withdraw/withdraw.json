@@ -1,0 +1,91 @@
+{
+  "title": "Retirer",
+  "subtitle": "Demander un retrait vers votre portefeuille",
+  "availableBalance": "Solde Disponible",
+  "steps": {
+    "step": "Étape",
+    "of": "de",
+    "nextButton": "Étape Suivante",
+    "summary": "Résumé du Retrait"
+  },
+  "dailyLimit": {
+    "title": "Limite Quotidienne de Retrait",
+    "description": "Retrait maximum par jour : ${{limit}}"
+  },
+  "amount": {
+    "label": "Montant du Retrait",
+    "minimum": "Retrait minimum : ${{amount}}",
+    "belowMinimum": "Montant inférieur au minimum",
+    "exceedsBalance": "Solde insuffisant",
+    "canWithdrawUpTo": "Vous pouvez retirer jusqu'à ${{amount}} USDC",
+    "needMinimum": "Vous avez besoin d'au moins ${{amount}} pour effectuer un retrait",
+    "insufficientMinimum": "Solde insuffisant. Vous avez besoin d'au moins ${{amount}} pour retirer.",
+    "exceedsAvailable": "Le montant dépasse le solde disponible."
+  },
+  "address": {
+    "label": "Adresse de Destination (Polygon)",
+    "description": "Entrez l'adresse de votre portefeuille Polygon",
+    "invalid": "Format d'adresse invalide"
+  },
+  "feeBreakdown": {
+    "title": "Détail des Frais",
+    "withdrawalAmount": "Montant du Retrait",
+    "baseFee": "Frais de Base",
+    "youReceive": "Vous Recevez",
+    "calculatingFees": "Calcul des frais...",
+    "failedToCalculate": "Échec du calcul des frais",
+    "usingEstimated": "Utilisation de valeurs estimées"
+  },
+  "modal": {
+    "title": "Avertissement de Rétrogradation de Rang",
+    "rankChange": "Votre rang passera de {{from}} à {{to}}",
+    "inactive": "Inactive",
+    "balanceAfter": "Solde après le retrait",
+    "belowMinimum": "En dessous du minimum de ${{minimum}} requis",
+    "yieldLoss": "Impact sur le Rendement Quotidien",
+    "currentYield": "Rendement Quotidien Actuel",
+    "newYield": "Nouveau Rendement Quotidien",
+    "dailyAmount": "Montant quotidien",
+    "youWillLose": "Vous Perdrez",
+    "lossPerDay": "Perte par jour",
+    "longTermImpact": {
+      "title": "Impact à Long Terme",
+      "monthlyLoss": "Vous cesserez de gagner par mois",
+      "annualLoss": "Vous cesserez de gagner par an",
+      "perMonth": "en 30 jours",
+      "perYear": "en 1 an",
+      "warning": "C'est l'argent que vous CESSEREZ DE RECEVOIR si vous procédez à ce retrait !"
+    },
+    "inactivationWarning": {
+      "title": "Le Compte Peut Être Inactivé",
+      "description": "Votre solde tombera en dessous de $100, ce qui peut entraîner l'inactivation du compte. Vous perdrez tous les avantages du rendement quotidien."
+    },
+    "confirmMessage": "Êtes-vous sûr de vouloir procéder à ce retrait ? Cette action ne peut pas être annulée.",
+    "confirmButton": "Oui, Retirer Quand Même",
+    "cancelButton": "Annuler le Retrait"
+  },
+  "warnings": {
+    "downrankTitle": "⚠️ Avertissement de Rétrogradation de Rang",
+    "downrankDescription": "Après ce retrait, votre solde sera de ${{newBalance}}, ce qui est inférieur au minimum requis (${{minimum}}) pour votre rang actuel. Cela peut entraîner une rétrogradation de rang.",
+    "downrankMessage": "Votre solde après le retrait (${{balance}}) sera inférieur au minimum (${{minimum}}) pour votre rang."
+  },
+  "processing": {
+    "title": "Temps de Traitement",
+    "description": "Les retraits sont traités dans les 72 heures. Vous recevrez vos fonds à l'adresse spécifiée."
+  },
+  "submitButton": "Demander un Retrait",
+  "success": {
+    "title": "Demande Soumise",
+    "message": "Votre demande de retrait a été soumise avec succès. Vos fonds seront envoyés dans les 72 heures."
+  },
+  "errors": {
+    "title": "Erreur",
+    "message": "Échec de l'envoi de la demande de retrait. Veuillez réessayer."
+  },
+  "common": {
+    "cancel": "Annuler",
+    "continue": "Continuer",
+    "ok": "OK",
+    "loading": "Chargement..."
+  }
+}

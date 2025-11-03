@@ -63,6 +63,23 @@ export interface RequestWithdrawalResponse {
   requestedAt: string
 }
 
+export type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD"
+export type LoyaltyTier = "NORMAL" | "FAITHFUL" | "LOYAL" | "VETERAN"
+
+export interface CalculateWithdrawalFeeResponse {
+  amount: number
+  baseFee: number // % fee based on rank
+  progressiveFee: number // % fee based on withdrawal count
+  loyaltyDiscount: number // % discount based on loyalty
+  totalFeePercentage: number // Total % (baseFee + progressiveFee - loyaltyDiscount)
+  totalFeeAmount: number // Actual fee in USD
+  netAmount: number // Amount - totalFeeAmount
+  rank: MLMRank
+  withdrawalCount: number // Number of withdrawals this month
+  loyaltyTier: LoyaltyTier
+  daysSinceLastWithdrawal: number | null
+}
+
 // ===== Referral (API Response Types) =====
 
 export interface ReferralLinkResponse {

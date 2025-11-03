@@ -122,7 +122,7 @@ export default function WithdrawalsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Saques</h1>
+          <h1 className="text-3xl font-bold text-soft mb-2">Saques</h1>
           <p className="text-zinc-400">
             Gerenciar solicitações de saque e histórico
           </p>
@@ -137,7 +137,7 @@ export default function WithdrawalsPage() {
         ) : (
           <Card className="border-zinc-800 bg-gradient-to-br from-red-900/20 to-zinc-900/50 backdrop-blur">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-soft flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
                 Saques Realizados
               </CardTitle>
@@ -148,7 +148,7 @@ export default function WithdrawalsPage() {
             <CardContent>
               <div className="space-y-3">
                 <div>
-                  <p className="text-4xl font-bold text-white">{withdrawnPercentage.toFixed(1)}%</p>
+                  <p className="text-4xl font-bold text-soft">{withdrawnPercentage.toFixed(1)}%</p>
                   <p className="text-sm text-zinc-400 mt-2">
                     ${totalWithdrawn.toLocaleString("en-US", {
                       minimumFractionDigits: 2,
@@ -173,7 +173,7 @@ export default function WithdrawalsPage() {
         {/* MATIC Balance Card */}
         <Card className="border-zinc-800 bg-gradient-to-br from-green-900/20 to-zinc-900/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-soft flex items-center gap-2">
               <Fuel className="h-5 w-5" />
               MATIC Disponível
             </CardTitle>
@@ -195,7 +195,7 @@ export default function WithdrawalsPage() {
         {/* Total Balance Card */}
         <Card className="border-zinc-800 bg-gradient-to-br from-blue-900/20 to-zinc-900/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-soft flex items-center gap-2">
               <Wallet className="h-5 w-5" />
               Saldo Total
             </CardTitle>
@@ -220,7 +220,7 @@ export default function WithdrawalsPage() {
       {/* Pending Withdrawals */}
       <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-soft flex items-center gap-2">
             <Clock className="h-5 w-5" />
             Saques Pendentes de Aprovação
           </CardTitle>
@@ -249,11 +249,11 @@ export default function WithdrawalsPage() {
                   <TableRow key={withdrawal.id} className="border-zinc-800 hover:bg-zinc-800/30">
                     <TableCell>
                       <div>
-                        <p className="font-medium text-white">{withdrawal.user.name}</p>
+                        <p className="font-medium text-soft">{withdrawal.user.name}</p>
                         <p className="text-xs text-zinc-500">{withdrawal.user.email}</p>
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium text-white">{withdrawal.tokenSymbol}</TableCell>
+                    <TableCell className="font-medium text-soft">{withdrawal.tokenSymbol}</TableCell>
                     <TableCell className="text-zinc-300">
                       {Number(withdrawal.amount).toLocaleString("en-US", {
                         minimumFractionDigits: 2,
@@ -311,7 +311,7 @@ export default function WithdrawalsPage() {
       {/* Withdrawals History */}
       <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-soft flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
             Histórico de Saques
           </CardTitle>
@@ -342,11 +342,11 @@ export default function WithdrawalsPage() {
                     <TableRow key={withdrawal.id} className="border-zinc-800 hover:bg-zinc-800/30">
                       <TableCell>
                         <div>
-                          <p className="font-medium text-white">{withdrawal.user.name}</p>
+                          <p className="font-medium text-soft">{withdrawal.user.name}</p>
                           <p className="text-xs text-zinc-500">{withdrawal.user.email}</p>
                         </div>
                       </TableCell>
-                      <TableCell className="font-medium text-white">{withdrawal.tokenSymbol}</TableCell>
+                      <TableCell className="font-medium text-soft">{withdrawal.tokenSymbol}</TableCell>
                       <TableCell className="text-zinc-300">
                         {Number(withdrawal.amount).toLocaleString("en-US", {
                           minimumFractionDigits: 2,
@@ -359,7 +359,7 @@ export default function WithdrawalsPage() {
                       <TableCell>
                         {withdrawal.admin ? (
                           <div>
-                            <p className="font-medium text-white text-sm">{withdrawal.admin.name}</p>
+                            <p className="font-medium text-soft text-sm">{withdrawal.admin.name}</p>
                             <p className="text-xs text-zinc-500">{withdrawal.admin.email}</p>
                           </div>
                         ) : (
@@ -407,7 +407,7 @@ export default function WithdrawalsPage() {
       <Dialog open={showApproveDialog} onOpenChange={setShowApproveDialog}>
         <DialogContent className="border-zinc-800 bg-zinc-900">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-soft flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-green-400" />
               Aprovar Saque
             </DialogTitle>
@@ -421,21 +421,21 @@ export default function WithdrawalsPage() {
               <div className="p-4 bg-zinc-950 rounded-lg space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Usuário:</span>
-                  <span className="text-white font-medium">{selectedWithdrawal.user.name}</span>
+                  <span className="text-soft font-medium">{selectedWithdrawal.user.name}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Token:</span>
-                  <span className="text-white font-medium">{selectedWithdrawal.tokenSymbol}</span>
+                  <span className="text-soft font-medium">{selectedWithdrawal.tokenSymbol}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Valor:</span>
-                  <span className="text-white font-medium">
+                  <span className="text-soft font-medium">
                     {Number(selectedWithdrawal.amount).toFixed(4)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Taxa:</span>
-                  <span className="text-white font-medium">
+                  <span className="text-soft font-medium">
                     {Number(selectedWithdrawal.fee).toFixed(4)}
                   </span>
                 </div>
@@ -474,7 +474,7 @@ export default function WithdrawalsPage() {
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent className="border-zinc-800 bg-zinc-900">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-soft flex items-center gap-2">
               <XCircle className="h-5 w-5 text-red-400" />
               Rejeitar Saque
             </DialogTitle>
@@ -488,18 +488,18 @@ export default function WithdrawalsPage() {
               <div className="p-4 bg-zinc-950 rounded-lg space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Usuário:</span>
-                  <span className="text-white font-medium">{selectedWithdrawal.user.name}</span>
+                  <span className="text-soft font-medium">{selectedWithdrawal.user.name}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Valor:</span>
-                  <span className="text-white font-medium">
+                  <span className="text-soft font-medium">
                     {Number(selectedWithdrawal.amount).toFixed(4)} {selectedWithdrawal.tokenSymbol}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="reason" className="text-white">
+                <Label htmlFor="reason" className="text-soft">
                   Motivo da Rejeição *
                 </Label>
                 <Textarea
@@ -507,7 +507,7 @@ export default function WithdrawalsPage() {
                   placeholder="Ex: Saldo insuficiente, endereço inválido, etc."
                   value={rejectReason}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRejectReason(e.target.value)}
-                  className="bg-zinc-950 border-zinc-800 text-white"
+                  className="bg-zinc-950 border-zinc-800 text-soft"
                   rows={4}
                 />
               </div>

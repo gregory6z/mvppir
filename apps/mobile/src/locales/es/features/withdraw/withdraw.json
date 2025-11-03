@@ -1,0 +1,91 @@
+{
+  "title": "Retirar",
+  "subtitle": "Solicite un retiro a su billetera",
+  "availableBalance": "Saldo Disponible",
+  "steps": {
+    "step": "Paso",
+    "of": "de",
+    "nextButton": "Siguiente Paso",
+    "summary": "Resumen del Retiro"
+  },
+  "dailyLimit": {
+    "title": "Límite Diario de Retiro",
+    "description": "Retiro máximo por día: ${{limit}}"
+  },
+  "amount": {
+    "label": "Monto del Retiro",
+    "minimum": "Retiro mínimo: ${{amount}}",
+    "belowMinimum": "Monto por debajo del mínimo",
+    "exceedsBalance": "Saldo insuficiente",
+    "canWithdrawUpTo": "Puedes retirar hasta ${{amount}} USDC",
+    "needMinimum": "Necesitas al menos ${{amount}} para hacer un retiro",
+    "insufficientMinimum": "Saldo insuficiente. Necesitas al menos ${{amount}} para retirar.",
+    "exceedsAvailable": "El monto excede el saldo disponible."
+  },
+  "address": {
+    "label": "Dirección de Destino (Polygon)",
+    "description": "Ingrese la dirección de su billetera Polygon",
+    "invalid": "Formato de dirección inválido"
+  },
+  "feeBreakdown": {
+    "title": "Desglose de Tarifas",
+    "withdrawalAmount": "Monto del Retiro",
+    "baseFee": "Tarifa Base",
+    "youReceive": "Usted Recibe",
+    "calculatingFees": "Calculando tasas...",
+    "failedToCalculate": "Fallo al calcular tasas",
+    "usingEstimated": "Usando valores estimados"
+  },
+  "modal": {
+    "title": "Advertencia de Degradación de Rango",
+    "rankChange": "Su rango cambiará de {{from}} a {{to}}",
+    "inactive": "Inactiva",
+    "balanceAfter": "Saldo después del retiro",
+    "belowMinimum": "Por debajo del mínimo de ${{minimum}} requerido",
+    "yieldLoss": "Impacto en el Rendimiento Diario",
+    "currentYield": "Rendimiento Diario Actual",
+    "newYield": "Nuevo Rendimiento Diario",
+    "dailyAmount": "Monto diario",
+    "youWillLose": "Usted Perderá",
+    "lossPerDay": "Pérdida por día",
+    "longTermImpact": {
+      "title": "Impacto a Largo Plazo",
+      "monthlyLoss": "Dejará de ganar por mes",
+      "annualLoss": "Dejará de ganar por año",
+      "perMonth": "en 30 días",
+      "perYear": "en 1 año",
+      "warning": "¡Este es el dinero que DEJARÁ DE RECIBIR si procede con este retiro!"
+    },
+    "inactivationWarning": {
+      "title": "La Cuenta Puede Ser Inactivada",
+      "description": "Su saldo quedará por debajo de $100, lo que puede resultar en la inactivación de la cuenta. Perderá todos los beneficios de rendimiento diario."
+    },
+    "confirmMessage": "¿Está seguro de que desea proceder con este retiro? Esta acción no se puede deshacer.",
+    "confirmButton": "Sí, Retirar de Todos Modos",
+    "cancelButton": "Cancelar Retiro"
+  },
+  "warnings": {
+    "downrankTitle": "⚠️ Advertencia de Degradación de Rango",
+    "downrankDescription": "Después de este retiro, su saldo será ${{newBalance}}, que está por debajo del mínimo requerido (${{minimum}}) para su rango actual. Esto puede causar una degradación de rango.",
+    "downrankMessage": "Su saldo después del retiro (${{balance}}) estará por debajo del mínimo (${{minimum}}) para su rango."
+  },
+  "processing": {
+    "title": "Tiempo de Procesamiento",
+    "description": "Los retiros se procesan en un plazo de 72 horas. Recibirá sus fondos en la dirección especificada."
+  },
+  "submitButton": "Solicitar Retiro",
+  "success": {
+    "title": "Solicitud Enviada",
+    "message": "Su solicitud de retiro ha sido enviada con éxito. Sus fondos serán enviados en un plazo de 72 horas."
+  },
+  "errors": {
+    "title": "Error",
+    "message": "Error al enviar la solicitud de retiro. Por favor, inténtelo de nuevo."
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "ok": "OK",
+    "loading": "Cargando..."
+  }
+}

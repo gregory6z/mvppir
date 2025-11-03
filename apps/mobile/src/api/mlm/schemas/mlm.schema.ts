@@ -23,6 +23,8 @@ export interface MLMProfile {
   network: {
     totalDirects: number
     activeDirects: number
+    lifetimeVolume: number
+    monthlyVolume: number
     levels: {
       N1: { count: number; totalBalance: number }
       N2: { count: number; totalBalance: number }
@@ -42,6 +44,7 @@ export interface MLMProfile {
     canProgress: boolean
     requirements: {
       directs: { required: number; actual: number; met: boolean }
+      lifetimeVolume: { required: number; actual: number; met: boolean }
       blockedBalance: { required: number; actual: number; met: boolean }
     }
     missingRequirements: string[]
@@ -66,6 +69,12 @@ export interface CommissionsSummary {
   today: number
   thisMonth: number
   total: number
+  byLevel: {
+    N0: number // Comissões sobre próprio saldo
+    N1: number // Comissões sobre diretos
+    N2: number // Comissões sobre indiretos N2
+    N3: number // Comissões sobre indiretos N3
+  }
 }
 
 // ===== Recent Commissions =====

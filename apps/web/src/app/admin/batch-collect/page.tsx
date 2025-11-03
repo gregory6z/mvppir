@@ -65,7 +65,7 @@ export default function BatchCollectPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Coleta em Lote</h1>
+          <h1 className="text-3xl font-bold text-soft mb-2">Coleta em Lote</h1>
           <p className="text-zinc-400">
             Transferir fundos de carteiras de usuários para a Global Wallet
           </p>
@@ -89,7 +89,7 @@ export default function BatchCollectPage() {
       ) : (
         <Card className="border-zinc-800 bg-gradient-to-br from-blue-900/20 to-zinc-900/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-soft flex items-center gap-2">
               <ArrowLeftRight className="h-5 w-5" />
               Status da Coleta
             </CardTitle>
@@ -121,7 +121,7 @@ export default function BatchCollectPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-zinc-800">
                   <div className="space-y-1">
                     <p className="text-sm text-zinc-400">Valor Total das Coletas</p>
-                    <p className="text-2xl font-bold text-white">
+                    <p className="text-2xl font-bold text-soft">
                       ${data.totalValueUsd?.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
@@ -158,7 +158,7 @@ export default function BatchCollectPage() {
       ) : data?.tokens && data.tokens.length > 0 ? (
         <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-white">Tokens para Coletar</CardTitle>
+            <CardTitle className="text-soft">Tokens para Coletar</CardTitle>
             <CardDescription>
               Preview do que será transferido para a Global Wallet
             </CardDescription>
@@ -177,7 +177,7 @@ export default function BatchCollectPage() {
               <TableBody>
                 {data.tokens.map((token) => (
                   <TableRow key={token.tokenSymbol} className="border-zinc-800 hover:bg-zinc-800/30">
-                    <TableCell className="font-medium text-white">{token.tokenSymbol}</TableCell>
+                    <TableCell className="font-medium text-soft">{token.tokenSymbol}</TableCell>
                     <TableCell className="text-zinc-300">{token.walletsCount}</TableCell>
                     <TableCell className="text-zinc-300">
                       {Number(token.totalAmount).toLocaleString("en-US", {
@@ -207,7 +207,7 @@ export default function BatchCollectPage() {
             <div className="mt-6 space-y-3 border-t border-zinc-800 pt-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-zinc-400">Gas Total Estimado:</span>
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-soft">
                   {Number(data.totalGasEstimate).toLocaleString("en-US", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 8,
@@ -282,7 +282,7 @@ export default function BatchCollectPage() {
       {jobStatus && (jobStatus.status === "PENDING" || jobStatus.status === "IN_PROGRESS") && (
         <Card className="border-blue-800 bg-gradient-to-br from-blue-900/30 to-zinc-900/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-soft flex items-center gap-2">
               <Loader2 className="h-5 w-5 animate-spin" />
               Coleta em Andamento
             </CardTitle>
@@ -292,7 +292,7 @@ export default function BatchCollectPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-zinc-400">Progresso:</span>
-                <span className="text-white font-semibold">
+                <span className="text-soft font-semibold">
                   {jobStatus.progress.completed} de {jobStatus.progress.total} carteiras
                 </span>
               </div>
@@ -319,7 +319,7 @@ export default function BatchCollectPage() {
       {/* Batch Collect History */}
       <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-soft flex items-center gap-2">
             <Clock className="h-5 w-5" />
             Histórico de Coletas
           </CardTitle>
@@ -352,7 +352,7 @@ export default function BatchCollectPage() {
                         minute: "2-digit",
                       })}
                     </TableCell>
-                    <TableCell className="font-medium text-white">{item.tokenSymbol}</TableCell>
+                    <TableCell className="font-medium text-soft">{item.tokenSymbol}</TableCell>
                     <TableCell className="text-zinc-300">
                       {Number(item.totalCollected).toLocaleString("en-US", {
                         minimumFractionDigits: 2,
@@ -405,7 +405,7 @@ export default function BatchCollectPage() {
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent className="border-zinc-800 bg-zinc-900">
           <DialogHeader>
-            <DialogTitle className="text-white flex items-center gap-2">
+            <DialogTitle className="text-soft flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-yellow-400" />
               Confirmar Coleta em Lote
             </DialogTitle>
@@ -427,11 +427,11 @@ export default function BatchCollectPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-zinc-400">
                   <span>Tokens a coletar:</span>
-                  <span className="text-white font-semibold">{data.tokens.length}</span>
+                  <span className="text-soft font-semibold">{data.tokens.length}</span>
                 </div>
                 <div className="flex justify-between text-zinc-400">
                   <span>Gas estimado:</span>
-                  <span className="text-white font-semibold">
+                  <span className="text-soft font-semibold">
                     {Number(data.totalGasEstimate).toFixed(4)} MATIC
                   </span>
                 </div>

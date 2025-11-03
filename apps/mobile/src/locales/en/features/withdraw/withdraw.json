@@ -2,6 +2,12 @@
   "title": "Withdraw",
   "subtitle": "Request a withdrawal to your wallet",
   "availableBalance": "Available Balance",
+  "steps": {
+    "step": "Step",
+    "of": "of",
+    "nextButton": "Next Step",
+    "summary": "Withdrawal Summary"
+  },
   "dailyLimit": {
     "title": "Daily Withdrawal Limit",
     "description": "Maximum withdrawal per day: ${{limit}}"
@@ -10,7 +16,11 @@
     "label": "Withdrawal Amount",
     "minimum": "Minimum withdrawal: ${{amount}}",
     "belowMinimum": "Amount below minimum",
-    "exceedsBalance": "Insufficient balance"
+    "exceedsBalance": "Insufficient balance",
+    "canWithdrawUpTo": "You can withdraw up to ${{amount}} USDC",
+    "needMinimum": "You need at least ${{amount}} to make a withdrawal",
+    "insufficientMinimum": "Insufficient balance. You need at least ${{amount}} to withdraw.",
+    "exceedsAvailable": "Amount exceeds available balance."
   },
   "address": {
     "label": "Destination Address (Polygon)",
@@ -21,7 +31,38 @@
     "title": "Fee Breakdown",
     "withdrawalAmount": "Withdrawal Amount",
     "baseFee": "Base Fee",
-    "youReceive": "You Receive"
+    "youReceive": "You Receive",
+    "calculatingFees": "Calculating fees...",
+    "failedToCalculate": "Failed to calculate fees",
+    "usingEstimated": "Using estimated values"
+  },
+  "modal": {
+    "title": "Rank Downgrade Warning",
+    "rankChange": "Your rank will change from {{from}} to {{to}}",
+    "inactive": "Inactive",
+    "balanceAfter": "Balance after withdrawal",
+    "belowMinimum": "Below minimum of ${{minimum}} required",
+    "yieldLoss": "Daily Yield Impact",
+    "currentYield": "Current Daily Yield",
+    "newYield": "New Daily Yield",
+    "dailyAmount": "Daily amount",
+    "youWillLose": "You Will Lose",
+    "lossPerDay": "Loss per day",
+    "longTermImpact": {
+      "title": "Long-Term Impact",
+      "monthlyLoss": "You will stop earning per month",
+      "annualLoss": "You will stop earning per year",
+      "perMonth": "in 30 days",
+      "perYear": "in 1 year",
+      "warning": "This is the money you will STOP RECEIVING if you proceed with this withdrawal!"
+    },
+    "inactivationWarning": {
+      "title": "Account May Be Inactivated",
+      "description": "Your balance will fall below $100, which may result in account inactivation. You will lose all daily yield benefits."
+    },
+    "confirmMessage": "Are you sure you want to proceed with this withdrawal? This action cannot be undone.",
+    "confirmButton": "Yes, Withdraw Anyway",
+    "cancelButton": "Cancel Withdrawal"
   },
   "warnings": {
     "downrankTitle": "⚠️ Rank Downgrade Warning",

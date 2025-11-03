@@ -1,0 +1,156 @@
+{
+  "screen": {
+    "loading": "Chargement...",
+    "loadingData": "Chargement des données...",
+    "error": "Erreur",
+    "errorLoading": "Erreur lors du chargement des données",
+    "unknownError": "Une erreur inconnue s'est produite",
+    "tryAgain": "Réessayer",
+    "user": "Utilisateur"
+  },
+  "rankCard": {
+    "dailyCommission": "Commission Journalière",
+    "blockedBalance": "Solde Investi",
+    "progressTo": "Progression vers",
+    "directReferrals": "Parrainages Directs",
+    "requiredBlocked": "Investissement Requis",
+    "networkVolume": "Volume Réseau",
+    "maxRankTitle": "Rang Maximum Atteint !",
+    "maxRankDescription": "Vous avez atteint le rang le plus élevé du système",
+    "howItWorksButton": "Comment ça marche",
+    "ranks": {
+      "recruit": "Recrue",
+      "bronze": "Bronze",
+      "silver": "Argent",
+      "gold": "Or"
+    },
+    "status": {
+      "active": "Actif",
+      "warning": "Avertissement",
+      "tempDownrank": "Rétrogradation Temp",
+      "downranked": "Rétrogradé"
+    }
+  },
+  "referralCode": {
+    "title": "Votre Code de Parrainage",
+    "shareCode": "Partagez ce code avec des amis",
+    "referralCodeLabel": "CODE DE PARRAINAGE",
+    "copyCode": "Copier le Code",
+    "copied": "Copié !",
+    "referralLink": "Lien de Parrainage",
+    "infoMessage": "Gagnez des commissions lorsque vos filleuls effectuent des dépôts et construisent leur réseau"
+  },
+  "networkStats": {
+    "title": "Aperçu du Réseau",
+    "totalDirects": "Total de Directs",
+    "lifetime": "Historique",
+    "activeNow": "Actifs Maintenant",
+    "thisMonth": "Ce mois-ci",
+    "networkVolume": "Volume Réseau",
+    "networkLevels": "Niveaux du Réseau",
+    "ownBalance": "Votre Investissement",
+    "you": "Vous",
+    "blockedBalance": "Investi",
+    "directReferrals": "Parrainages Directs",
+    "secondLevel": "2ème Niveau",
+    "thirdLevel": "3ème Niveau",
+    "people": "personnes",
+    "totalBalance": "Solde Total"
+  },
+  "commissionOverview": {
+    "title": "Gains de Commissions",
+    "today": "Aujourd'hui",
+    "thisMonth": "Ce Mois",
+    "totalEarned": "Total Gagné",
+    "allTime": "Depuis Toujours",
+    "dailyAverage": "Moyenne Journalière",
+    "monthlyEst": "Est. Mensuelle"
+  },
+  "recentCommissions": {
+    "title": "Commissions Récentes",
+    "recent": "récentes",
+    "empty": {
+      "title": "Pas encore de commissions",
+      "subtitle": "Commencez à inviter des amis pour gagner des commissions quotidiennes"
+    },
+    "status": {
+      "pending": "En Attente",
+      "paid": "Payé",
+      "cancelled": "Annulé"
+    },
+    "recently": "Récemment"
+  },
+  "explainer": {
+    "title": "Comment ça marche",
+    "hero": {
+      "title": "Gains avec IA",
+      "description": "Votre investissement est géré par notre agent IA avancé qui génère des rendements élevés et constants grâce à des stratégies de marché intelligentes."
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "step1": {
+        "title": "1. Investissez votre solde",
+        "description": "Gardez des fonds investis pour gagner des dividendes quotidiens. Plus vous investissez, plus votre rang et vos gains quotidiens sont élevés."
+      },
+      "step2": {
+        "title": "2. Construisez votre réseau",
+        "description": "Invitez des personnes à rejoindre. Chaque filleul actif vous aide à monter de rang et à débloquer des taux de commission plus élevés."
+      },
+      "step3": {
+        "title": "3. Gagnez des dividendes quotidiens",
+        "description": "Recevez des paiements automatiques quotidiens basés sur votre rang. Rangs plus élevés = pourcentages de retour plus élevés sur votre investissement."
+      }
+    },
+    "ranks": {
+      "title": "Avantages par rang",
+      "recruit": "Niveau d'entrée - Commencez à gagner 0.35% par jour avec $100 investis",
+      "bronze": "3 directs + $500 investis + $2,500 volume historique réseau - Gagnez 1.05% par jour",
+      "silver": "5 directs + $2,000 investis + $30,000 volume historique réseau - Gagnez 1.80% par jour",
+      "gold": "8 directs + $5,000 investis + $150,000 volume historique réseau - Gagnez 2.60% par jour"
+    },
+    "ai": {
+      "title": "Agent IA de Trading",
+      "description": "Notre IA propriétaire analyse les marchés 24/7, exécutant des transactions à haute probabilité pour générer des rendements constants pour tous les investisseurs. Plus vous investissez et plus votre rang est élevé, plus vous gagnez."
+    },
+    "keyPoints": {
+      "title": "Points clés",
+      "point1": "Les dividendes quotidiens sont payés automatiquement en fonction de votre solde investi et de votre rang",
+      "point2": "Pour maintenir votre rang, gardez le montant d'investissement requis actif",
+      "point3": "L'IA travaille pour vous 24/7 - des rangs plus élevés débloquent des gains quotidiens exponentiellement plus élevés"
+    },
+    "maintenance": {
+      "title": "Maintenance Mensuelle",
+      "subtitle": "Pour garder votre rang, vous devez remplir ces conditions chaque mois :",
+      "recruit": {
+        "title": "Aucune Exigence Mensuelle !",
+        "description": "Investissez $100 une fois et gagnez 0.35% par jour pour toujours. Rien d'autre à faire."
+      },
+      "bronze": {
+        "activeDirects": "3 filleuls actifs",
+        "monthlyVolume": "$500 de volume réseau/mois"
+      },
+      "silver": {
+        "activeDirects": "5 filleuls actifs",
+        "monthlyVolume": "$6 000 de volume réseau/mois"
+      },
+      "gold": {
+        "activeDirects": "8 filleuls actifs",
+        "monthlyVolume": "$30 000 de volume réseau/mois"
+      },
+      "note": "Volume réseau = vos dépôts + dépôts de vos filleuls directs et indirects",
+      "warning": "Si vous ne remplissez pas les conditions pendant 3 mois consécutifs, vous pouvez être rétrogradé"
+    },
+    "closeButton": "Compris !"
+  },
+  "monthlyMaintenance": {
+    "yourCurrentRank": "Votre Rang Actuel",
+    "requirementsTitle": "Exigences Mensuelles",
+    "activeDirectsTitle": "Directs Actifs",
+    "networkVolumeTitle": "Volume Réseau",
+    "volumeExplanation": "C'est le total des dépôts effectués par VOUS + tout votre réseau (directs + indirects) pendant le mois actuel",
+    "importantInfo": "Informations Importantes",
+    "whatIsVolumeTitle": "Qu'est-ce que le Volume Réseau ?",
+    "downrankWarningTitle": "Avertissement",
+    "allRanksTitle": "Exigences de Tous les Rangs"
+  }
+}

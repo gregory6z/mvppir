@@ -79,10 +79,11 @@ export async function requestWithdrawalController(
         });
       }
 
-      if (error.message.startsWith("MINIMUM_WITHDRAWAL")) {
+      if (error.message.startsWith("MINIMUM_BALANCE_TO_WITHDRAW")) {
+        const minBalance = error.message.split("_").pop();
         return reply.status(400).send({
-          error: error.message,
-          message: `Minimum withdrawal is $${error.message.split("_").pop()} USD`,
+          error: "MINIMUM_BALANCE_TO_WITHDRAW",
+          message: `You need at least $${minBalance} USD in your account to make a withdrawal`,
         });
       }
 

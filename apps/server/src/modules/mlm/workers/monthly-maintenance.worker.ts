@@ -1,13 +1,12 @@
 /**
  * Monthly Maintenance Worker
  *
- * Checks if users met monthly requirements and handles the 3-month downrank flow.
+ * Checks if users met monthly requirements and handles immediate downrank/upgrade.
  *
  * Schedule: 1st of every month at 00:00 UTC
  * Flow:
- *   MÊS 1: Não cumpriu → WARNING (grace period 7 dias)
- *   MÊS 2: Ainda não cumpriu → TEMPORARY_DOWNRANK (-1 rank)
- *   MÊS 3: Ainda não cumpriu → DOWNRANKED (-2 ranks do original)
+ *   - Se NÃO cumpriu requisitos mensais → Downgrade imediato (-1 rank)
+ *   - Se cumpriu requisitos mensais → Mantém rank ou verifica upgrade
  */
 
 import { Worker, Job } from "bullmq";
@@ -58,10 +57,9 @@ async function processMonthlyMaintenance(job: Job) {
   job.log(`Found ${users.length} users to check`);
 
   let totalProcessed = 0;
-  let totalWarnings = 0;
-  let totalTemporaryDownranks = 0;
-  let totalPermanentDownranks = 0;
-  let totalRecoveries = 0;
+  let totalDownranks = 0;
+  let totalUpgrades = 0;
+  let totalMaintained = 0;
 
   // Process each user
   for (const user of users) {
@@ -78,32 +76,19 @@ async function processMonthlyMaintenance(job: Job) {
       );
 
       if (!stats.metRequirements) {
-        // User did NOT meet requirements
-        await handleMaintenanceFailure(user, job);
-
-        // Count stats
-        const newWarningCount = user.warningCount + 1;
-        if (newWarningCount === 1) totalWarnings++;
-        else if (newWarningCount === 2) totalTemporaryDownranks++;
-        else if (newWarningCount === 3) totalPermanentDownranks++;
+        // User did NOT meet requirements → Downgrade imediato
+        const downgraded = await handleMaintenanceFailure(user, job);
+        if (downgraded) {
+          totalDownranks++;
+        }
       } else {
-        // User MET requirements
-        if (user.warningCount > 0 || user.rankStatus !== "ACTIVE") {
-          // User was in warning/downrank but recovered!
-          await prisma.user.update({
-            where: { id: user.id },
-            data: {
-              warningCount: 0,
-              rankStatus: "ACTIVE",
-              gracePeriodEndsAt: null,
-              originalRank: null,
-            },
-          });
-
-          job.log(`✅ User ${user.email} recovered from ${user.rankStatus}!`);
-          totalRecoveries++;
+        // User MET requirements → Check for upgrade
+        const upgraded = await handleMaintenanceSuccess(user, job);
+        if (upgraded) {
+          totalUpgrades++;
         } else {
-          job.log(`✅ User ${user.email} met all requirements`);
+          totalMaintained++;
+          job.log(`✅ User ${user.email} met all requirements - rank maintained`);
         }
       }
 
@@ -125,10 +110,9 @@ async function processMonthlyMaintenance(job: Job) {
   const summary = {
     month: monthName,
     usersChecked: totalProcessed,
-    warnings: totalWarnings,
-    temporaryDownranks: totalTemporaryDownranks,
-    permanentDownranks: totalPermanentDownranks,
-    recoveries: totalRecoveries,
+    downranks: totalDownranks,
+    upgrades: totalUpgrades,
+    maintained: totalMaintained,
     durationSeconds: duration,
   };
 
@@ -139,7 +123,7 @@ async function processMonthlyMaintenance(job: Job) {
 
 /**
  * Handle user who did NOT meet monthly requirements
- * Implements the 3-month downrank flow
+ * Downgrade immediately by 1 rank
  */
 async function handleMaintenanceFailure(
   user: {
@@ -150,82 +134,64 @@ async function handleMaintenanceFailure(
     originalRank: MLMRank | null;
   },
   job: Job
-) {
-  const newWarningCount = user.warningCount + 1;
-
-  if (newWarningCount === DOWNRANK_CONFIG.warningThreshold) {
-    // MÊS 1: Aviso
-    const gracePeriodEnds = new Date();
-    gracePeriodEnds.setDate(
-      gracePeriodEnds.getDate() + DOWNRANK_CONFIG.gracePeriodDays
-    );
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        warningCount: newWarningCount,
-        rankStatus: "WARNING",
-        gracePeriodEndsAt: gracePeriodEnds,
-        originalRank: user.currentRank, // Save current rank
-      },
-    });
-
-    job.log(
-      `⚠️  ${user.email}: WARNING (grace period until ${gracePeriodEnds.toISOString()})`
-    );
-
-    // TODO: Send email notification
-    // await sendEmail(user.email, "warning-month-1", { gracePeriodEnds });
-  } else if (newWarningCount === DOWNRANK_CONFIG.temporaryDownrankThreshold) {
-    // MÊS 2: Downrank temporário -1
-    const newRank = downgradeRank(
-      user.currentRank,
-      DOWNRANK_CONFIG.temporaryDownrankPenalty
-    );
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        warningCount: newWarningCount,
-        rankStatus: "TEMPORARY_DOWNRANK",
-        currentRank: newRank,
-        // originalRank stays the same (keeps reference to original)
-      },
-    });
-
-    job.log(
-      `⚠️  ${user.email}: TEMPORARY_DOWNRANK (${user.currentRank} → ${newRank})`
-    );
-
-    // TODO: Send email notification
-    // await sendEmail(user.email, "downrank-temporary", { oldRank: user.currentRank, newRank });
-  } else if (newWarningCount >= DOWNRANK_CONFIG.permanentDownrankThreshold) {
-    // MÊS 3: Downrank permanente -2 do rank original
-    const originalRank = user.originalRank || user.currentRank;
-    const newRank = downgradeRank(
-      originalRank,
-      DOWNRANK_CONFIG.permanentDownrankPenalty
-    );
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        warningCount: 0, // Reset counter
-        rankStatus: "DOWNRANKED",
-        currentRank: newRank,
-        originalRank: null, // Clear original rank
-        gracePeriodEndsAt: null,
-        rankConqueredAt: new Date(), // New conquest date
-      },
-    });
-
-    job.log(
-      `❌ ${user.email}: DOWNRANKED PERMANENTLY (${originalRank} → ${newRank})`
-    );
-
-    // TODO: Send email notification
-    // await sendEmail(user.email, "downrank-permanent", { oldRank: originalRank, newRank });
+): Promise<boolean> {
+  // Check if user can be downgraded (already at RECRUIT = can't go lower)
+  if (user.currentRank === "RECRUIT") {
+    job.log(`⚠️  ${user.email}: Already at RECRUIT rank - cannot downgrade`);
+    return false;
   }
+
+  // Downgrade by 1 rank
+  const oldRank = user.currentRank;
+  const newRank = downgradeRank(user.currentRank, 1);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      currentRank: newRank,
+      rankStatus: "DOWNRANKED",
+      rankConqueredAt: new Date(), // New conquest date
+      warningCount: 0, // Reset warnings
+      originalRank: null,
+      gracePeriodEndsAt: null,
+    },
+  });
+
+  job.log(
+    `⬇️  ${user.email}: DOWNRANKED (${oldRank} → ${newRank}) - did not meet monthly requirements`
+  );
+
+  // TODO: Send email notification
+  // await sendEmail(user.email, "downrank-monthly", { oldRank, newRank });
+
+  return true;
+}
+
+/**
+ * Handle user who MET monthly requirements
+ * Check if they can be upgraded to next rank
+ */
+async function handleMaintenanceSuccess(
+  user: {
+    id: string;
+    email: string;
+    currentRank: MLMRank;
+  },
+  job: Job
+): Promise<boolean> {
+  // Import here to avoid circular dependency
+  const { autoCheckAndPromote } = await import(
+    "@/modules/mlm/use-cases/check-rank-progression"
+  );
+
+  // Try to upgrade user automatically
+  const promoted = await autoCheckAndPromote(user.id);
+
+  if (promoted) {
+    job.log(`⬆️  ${user.email}: Auto-promoted to next rank!`);
+  }
+
+  return promoted;
 }
 
 /**

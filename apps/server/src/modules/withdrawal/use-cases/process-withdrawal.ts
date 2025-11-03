@@ -5,6 +5,7 @@ import {
   categorizeWithdrawalError,
   FailureType,
 } from "@/modules/withdrawal/use-cases/categorize-withdrawal-error";
+import { checkRankAfterBalanceChange } from "@/modules/mlm/use-cases/check-rank-after-balance-change";
 
 interface ProcessWithdrawalRequest {
   withdrawalId: string;
@@ -185,6 +186,36 @@ export async function processWithdrawal({
     });
 
     console.log(`✅ Withdrawal ${withdrawalId} completed successfully`);
+
+    // Check if user's rank needs to be downgraded after withdrawal
+    // (only for USDC withdrawals that affect blockedBalance)
+    if (withdrawal.tokenSymbol === "USDC") {
+      const rankCheck = await checkRankAfterBalanceChange({
+        userId: withdrawal.userId,
+      });
+
+      if (rankCheck.rankChanged) {
+        console.log(
+          `⬇️  User rank changed after withdrawal: ${rankCheck.previousRank} → ${rankCheck.newRank}`
+        );
+
+        // Create additional notification about rank change
+        await prisma.withdrawalNotification.create({
+          data: {
+            userId: withdrawal.userId,
+            withdrawalId,
+            type: "WITHDRAWAL_COMPLETED",
+            title: "Atenção: Graduação Alterada",
+            message: `Devido ao saque, sua graduação foi alterada de ${rankCheck.previousRank} para ${rankCheck.newRank}. Mantenha seu saldo investido para recuperar sua graduação anterior.`,
+            data: {
+              previousRank: rankCheck.previousRank,
+              newRank: rankCheck.newRank,
+              reason: rankCheck.reason,
+            },
+          },
+        });
+      }
+    }
 
     return {
       success: true,

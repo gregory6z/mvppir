@@ -1,9 +1,10 @@
 import { ScrollView, RefreshControl, View, Text, ActivityIndicator } from "react-native"
+import { useTranslation } from "react-i18next"
 import { Header } from "@/components/home/Header"
 import { RankCard } from "@/components/referrals/RankCard"
+import { ReferralCode } from "@/components/referrals/ReferralCode"
 import { NetworkStats } from "@/components/referrals/NetworkStats"
 import { CommissionOverview } from "@/components/referrals/CommissionOverview"
-import { ReferralCode } from "@/components/referrals/ReferralCode"
 import { RecentCommissions } from "@/components/referrals/RecentCommissions"
 import { useMLMProfile } from "@/api/mlm/queries/use-mlm-profile-query"
 import { useCommissionsSummary } from "@/api/mlm/queries/use-commissions-summary-query"
@@ -12,12 +13,13 @@ import { useUserReferralLink } from "@/api/user/queries/use-user-referral-link-q
 import type { MLMRank } from "@/api/mlm/schemas/mlm.schema"
 
 export function ReferralsScreen() {
+  const { t } = useTranslation("referrals.referrals")
   const notificationCount = 3
 
   // Fetch data from API
   const mlmProfile = useMLMProfile()
   const commissionsSummary = useCommissionsSummary()
-  const recentCommissions = useRecentCommissions(5)
+  const recentCommissions = useRecentCommissions(10)
   const referralLink = useUserReferralLink()
 
   // Combined loading state
@@ -52,10 +54,6 @@ export function ReferralsScreen() {
     console.log("Notification pressed - open notifications")
   }
 
-  const handleViewAllCommissions = () => {
-    console.log("View all commissions - navigate to full list")
-  }
-
   const handleCommissionPress = (id: string) => {
     console.log(`Commission ${id} pressed - show details`)
   }
@@ -65,7 +63,7 @@ export function ReferralsScreen() {
     return (
       <>
         <Header
-          userName="Carregando..."
+          userName={t("screen.loading")}
           avatarUrl={undefined}
           notificationCount={0}
           onAvatarPress={handleAvatarPress}
@@ -73,7 +71,7 @@ export function ReferralsScreen() {
         />
         <View className="flex-1 justify-center items-center bg-zinc-950">
           <ActivityIndicator size="large" color="#8b5cf6" />
-          <Text className="text-zinc-400 mt-4">Carregando dados...</Text>
+          <Text className="text-zinc-400 mt-4">{t("screen.loadingData")}</Text>
         </View>
       </>
     )
@@ -84,26 +82,26 @@ export function ReferralsScreen() {
     return (
       <>
         <Header
-          userName="Erro"
+          userName={t("screen.error")}
           avatarUrl={undefined}
           notificationCount={0}
           onAvatarPress={handleAvatarPress}
           onNotificationPress={handleNotificationPress}
         />
         <View className="flex-1 justify-center items-center bg-zinc-950 px-6">
-          <Text className="text-red-500 text-lg font-bold mb-2">Erro ao carregar dados</Text>
+          <Text className="text-red-500 text-lg font-bold mb-2">{t("screen.errorLoading")}</Text>
           <Text className="text-zinc-400 text-center">
             {mlmProfile.error?.message ||
              commissionsSummary.error?.message ||
              recentCommissions.error?.message ||
              referralLink.error?.message ||
-             "Ocorreu um erro desconhecido"}
+             t("screen.unknownError")}
           </Text>
           <Text
             className="text-purple-500 mt-4 font-semibold"
             onPress={() => onRefresh()}
           >
-            Tentar novamente
+            {t("screen.tryAgain")}
           </Text>
         </View>
       </>
@@ -143,13 +141,17 @@ export function ReferralsScreen() {
       current: nextRankData.requirements.blockedBalance.actual,
       required: nextRankData.requirements.blockedBalance.required,
     },
+    lifetimeVolume: {
+      current: nextRankData.requirements.lifetimeVolume.actual,
+      required: nextRankData.requirements.lifetimeVolume.required,
+    },
   } : undefined
 
   return (
     <>
       {/* Header */}
       <Header
-        userName={userData?.name || "Usuário"}
+        userName={userData?.name || t("screen.user")}
         avatarUrl={undefined}
         notificationCount={notificationCount}
         onAvatarPress={handleAvatarPress}
@@ -171,11 +173,12 @@ export function ReferralsScreen() {
         }
       >
         {/* Rank Card */}
-        {userData && (
+        {userData && networkData && (
           <RankCard
             currentRank={userData.currentRank}
             rankStatus={userData.rankStatus}
             blockedBalance={userData.blockedBalance}
+            lifetimeVolume={networkData.lifetimeVolume}
             nextRank={nextRankData?.rank}
             progressToNext={progressToNext}
           />
@@ -190,11 +193,12 @@ export function ReferralsScreen() {
         )}
 
         {/* Network Stats */}
-        {networkData && (
+        {networkData && userData && (
           <NetworkStats
             totalDirects={networkData.totalDirects}
             activeDirects={networkData.activeDirects}
-            levels={networkData.levels}
+            monthlyVolume={networkData.monthlyVolume}
+            currentRank={userData.currentRank}
           />
         )}
 
@@ -204,14 +208,14 @@ export function ReferralsScreen() {
             today={commissionsData.today}
             thisMonth={commissionsData.thisMonth}
             total={commissionsData.total}
+            byLevel={commissionsData.byLevel}
           />
         )}
 
         {/* Recent Commissions */}
         <RecentCommissions
           commissions={mappedCommissions}
-          maxItems={5}
-          onViewAll={handleViewAllCommissions}
+          maxItems={10}
           onCommissionPress={handleCommissionPress}
         />
       </ScrollView>

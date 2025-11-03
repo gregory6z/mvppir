@@ -59,22 +59,22 @@ export function ProfileScreen() {
       />
 
       {/* Title Section */}
-      <View className="px-4 py-4 border-b border-zinc-800">
+      <View className="px-4 py-6 border-b border-zinc-800">
         <Text className="text-white text-2xl font-bold">{t("title")}</Text>
-        <Text className="text-zinc-400 text-sm mt-1">{t("subtitle")}</Text>
+        <Text className="text-zinc-400 text-sm mt-1.5">{t("subtitle")}</Text>
       </View>
 
       {/* Scrollable Content */}
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={{ paddingBottom: 40 }}
       >
         {/* User Info Card */}
-        <View className="mx-4 mt-4 bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
+        <View className="mx-4 mt-6 bg-gradient-to-br from-violet-500/20 to-blue-500/20 p-6 rounded-2xl border border-violet-500/30">
           <View className="flex-row items-center">
-            <View className="w-16 h-16 rounded-full bg-violet-500 items-center justify-center mr-4">
-              <Text className="text-white text-xl font-bold">
+            <View className="w-20 h-20 rounded-full bg-violet-500 items-center justify-center mr-4 shadow-lg">
+              <Text className="text-white text-2xl font-bold">
                 {userAccount?.name
                   .split(" ")
                   .map((n) => n[0])
@@ -85,29 +85,29 @@ export function ProfileScreen() {
             </View>
             <View className="flex-1">
               <Text className="text-white text-xl font-bold">{userAccount?.name}</Text>
-              <Text className="text-zinc-400 text-sm mt-1">{userAccount?.email}</Text>
+              <Text className="text-zinc-300 text-sm mt-1.5">{userAccount?.email}</Text>
             </View>
           </View>
         </View>
 
         {/* Account Information */}
-        <View className="mx-4 mt-4 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-          <Text className="text-white font-semibold text-sm mb-3">{t("accountInfo.title")}</Text>
+        <View className="mx-4 mt-6 bg-zinc-900 p-5 rounded-2xl border border-zinc-800">
+          <Text className="text-white font-semibold text-base mb-4">{t("accountInfo.title")}</Text>
 
           <View className="space-y-3">
-            <View className="py-2 border-b border-zinc-800">
-              <Text className="text-zinc-400 text-xs">{t("accountInfo.name")}</Text>
-              <Text className="text-white text-base mt-1">{userAccount?.name}</Text>
+            <View className="py-3 border-b border-zinc-800">
+              <Text className="text-zinc-400 text-xs mb-1.5">{t("accountInfo.name")}</Text>
+              <Text className="text-white text-base">{userAccount?.name}</Text>
             </View>
 
-            <View className="py-2 border-b border-zinc-800">
-              <Text className="text-zinc-400 text-xs">{t("accountInfo.email")}</Text>
-              <Text className="text-white text-base mt-1">{userAccount?.email}</Text>
+            <View className="py-3 border-b border-zinc-800">
+              <Text className="text-zinc-400 text-xs mb-1.5">{t("accountInfo.email")}</Text>
+              <Text className="text-white text-base">{userAccount?.email}</Text>
             </View>
 
-            <View className="py-2 border-b border-zinc-800">
-              <Text className="text-zinc-400 text-xs">{t("accountInfo.status")}</Text>
-              <View className="flex-row items-center mt-1">
+            <View className="py-3 border-b border-zinc-800">
+              <Text className="text-zinc-400 text-xs mb-1.5">{t("accountInfo.status")}</Text>
+              <View className="flex-row items-center">
                 <View
                   className={`w-2 h-2 rounded-full mr-2 ${
                     userAccount?.status === "ACTIVE" ? "bg-green-500" : "bg-orange-500"
@@ -121,9 +121,9 @@ export function ProfileScreen() {
               </View>
             </View>
 
-            <View className="py-2">
-              <Text className="text-zinc-400 text-xs">{t("accountInfo.referralCode")}</Text>
-              <Text className="text-white text-base mt-1 font-mono">
+            <View className="py-3">
+              <Text className="text-zinc-400 text-xs mb-1.5">{t("accountInfo.referralCode")}</Text>
+              <Text className="text-white text-base font-mono">
                 {userAccount?.referralCode}
               </Text>
             </View>
@@ -131,10 +131,10 @@ export function ProfileScreen() {
         </View>
 
         {/* Language Settings */}
-        <View className="mx-4 mt-4 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-          <View className="flex-row items-center mb-3">
-            <Globe size={20} color="#8b5cf6" weight="bold" />
-            <Text className="text-white font-semibold text-sm ml-2">{t("language.title")}</Text>
+        <View className="mx-4 mt-6 bg-zinc-900 p-5 rounded-2xl border border-zinc-800">
+          <View className="flex-row items-center mb-4">
+            <Globe size={22} color="#8b5cf6" weight="bold" />
+            <Text className="text-white font-semibold text-base ml-2">{t("language.title")}</Text>
           </View>
 
           <View>
@@ -142,9 +142,9 @@ export function ProfileScreen() {
               <TouchableOpacity
                 key={language.code}
                 onPress={() => handleChangeLanguage(language.code)}
-                className={`flex-row items-center justify-between py-3 px-4 rounded-xl ${
+                className={`flex-row items-center justify-between py-3.5 px-4 rounded-xl ${
                   currentLanguage === language.code ? "bg-violet-500/20 border border-violet-500/50" : "bg-zinc-800"
-                } ${index !== LANGUAGES.length - 1 ? "mb-2" : ""}`}
+                } ${index !== LANGUAGES.length - 1 ? "mb-3" : ""}`}
                 accessibilityLabel={`Select ${language.name}`}
                 accessibilityRole="button"
               >
@@ -167,7 +167,7 @@ export function ProfileScreen() {
         </View>
 
         {/* Logout Button */}
-        <View className="mx-4 mt-6">
+        <View className="mx-4 mt-8">
           <TouchableOpacity
             onPress={handleLogout}
             className="flex-row items-center justify-center py-4 rounded-xl bg-red-500/10 border border-red-500/30 active:bg-red-500/20"
@@ -180,7 +180,7 @@ export function ProfileScreen() {
         </View>
 
         {/* App Version */}
-        <View className="mx-4 mt-6">
+        <View className="mx-4 mt-8">
           <Text className="text-zinc-600 text-xs text-center">{t("version", { version: "1.0.0" })}</Text>
         </View>
       </ScrollView>

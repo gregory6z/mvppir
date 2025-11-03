@@ -35,6 +35,7 @@ export interface MLMProfileResponse {
     totalDirects: number;
     activeDirects: number;
     lifetimeVolume: number;
+    monthlyVolume: number;
     levels: {
       N1: { count: number; totalBalance: number };
       N2: { count: number; totalBalance: number };
@@ -224,6 +225,7 @@ export async function getUserMLMProfile(
       totalDirects: user.totalDirects,
       activeDirects: maintenanceCheck.activeDirects,
       lifetimeVolume: parseFloat(user.lifetimeVolume.toString()),
+      monthlyVolume: maintenanceCheck.monthlyVolume,
       levels: {
         N1: {
           count: networkStats.N1.count,

@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { Star, ArrowRight } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
+import { Star } from "phosphor-react-native";
 import { formatDistanceToNow } from "date-fns";
 
 type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
@@ -21,8 +22,7 @@ interface Commission {
 
 interface RecentCommissionsProps {
   commissions: Commission[];
-  maxItems?: number; // Default: 5
-  onViewAll: () => void;
+  maxItems?: number; // Default: 10
   onCommissionPress?: (id: string) => void;
 }
 
@@ -35,10 +35,10 @@ const RANK_EMOJIS: Record<MLMRank, string> = {
 
 export function RecentCommissions({
   commissions,
-  maxItems = 5,
-  onViewAll,
+  maxItems = 10,
   onCommissionPress,
 }: RecentCommissionsProps) {
+  const { t } = useTranslation("referrals.referrals");
   const limitedCommissions = commissions.slice(0, maxItems);
 
   const getStatusColor = (status: CommissionStatus) => {
@@ -55,23 +55,19 @@ export function RecentCommissions({
   };
 
   const getStatusLabel = (status: CommissionStatus) => {
-    switch (status) {
-      case "PENDING":
-        return "Pending";
-      case "PAID":
-        return "Paid";
-      case "CANCELLED":
-        return "Cancelled";
-      default:
-        return status;
+    const statusMap = {
+      PENDING: "pending",
+      PAID: "paid",
+      CANCELLED: "cancelled",
     }
+    return t(`recentCommissions.status.${statusMap[status]}`)
   };
 
   const formatRelativeTime = (dateString: string) => {
     try {
       return formatDistanceToNow(new Date(dateString), { addSuffix: true });
     } catch {
-      return "Recently";
+      return t("recentCommissions.recently");
     }
   };
 
@@ -96,8 +92,8 @@ export function RecentCommissions({
     return (
       <TouchableOpacity
         onPress={() => onCommissionPress?.(item.id)}
-        className="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 mb-3 active:bg-zinc-800 active:scale-[0.99]"
-        style={{ minHeight: 64 }}
+        className="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 mb-3 active:bg-zinc-800 active:scale-[0.99]"
+        style={{ minHeight: 68 }}
         accessibilityLabel={`Commission from ${item.fromUser.name}, ${item.finalAmount.toFixed(2)} USD`}
         accessibilityRole="button"
       >
@@ -165,15 +161,15 @@ export function RecentCommissions({
     return (
       <View className="mx-4 mt-6">
         <Text className="text-white text-base font-semibold mb-3">
-          Recent Commissions
+          {t("recentCommissions.title")}
         </Text>
         <View className="bg-zinc-900 p-8 rounded-2xl border border-zinc-800 items-center">
           <Star size={48} color="#52525b" weight="duotone" />
           <Text className="text-zinc-400 text-center mt-4">
-            No commissions yet
+            {t("recentCommissions.empty.title")}
           </Text>
           <Text className="text-zinc-500 text-sm text-center mt-1">
-            Start inviting friends to earn daily commissions
+            {t("recentCommissions.empty.subtitle")}
           </Text>
         </View>
       </View>
@@ -183,19 +179,13 @@ export function RecentCommissions({
   return (
     <View className="mx-4 mt-6">
       {/* Header */}
-      <View className="flex-row items-center justify-between mb-3">
+      <View className="flex-row items-center justify-between mb-4">
         <Text className="text-white text-base font-semibold">
-          Recent Commissions
+          {t("recentCommissions.title")}
         </Text>
-        <TouchableOpacity
-          onPress={onViewAll}
-          className="flex-row items-center gap-1"
-          accessibilityLabel="View all commissions"
-          accessibilityRole="button"
-        >
-          <Text className="text-violet-500 text-sm font-medium">View All</Text>
-          <ArrowRight size={16} color="#8b5cf6" weight="bold" />
-        </TouchableOpacity>
+        <Text className="text-zinc-500 text-sm">
+          {limitedCommissions.length} {t("recentCommissions.recent")}
+        </Text>
       </View>
 
       {/* Commission List */}

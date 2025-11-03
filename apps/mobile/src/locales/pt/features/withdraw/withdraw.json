@@ -2,6 +2,12 @@
   "title": "Sacar",
   "subtitle": "Solicite um saque para sua carteira",
   "availableBalance": "Saldo Disponível",
+  "steps": {
+    "step": "Etapa",
+    "of": "de",
+    "nextButton": "Próxima Etapa",
+    "summary": "Resumo do Saque"
+  },
   "dailyLimit": {
     "title": "Limite Diário de Saque",
     "description": "Saque máximo por dia: ${{limit}}"
@@ -10,7 +16,11 @@
     "label": "Valor do Saque",
     "minimum": "Saque mínimo: ${{amount}}",
     "belowMinimum": "Valor abaixo do mínimo",
-    "exceedsBalance": "Saldo insuficiente"
+    "exceedsBalance": "Saldo insuficiente",
+    "canWithdrawUpTo": "Você pode sacar até ${{amount}} USDC",
+    "needMinimum": "Você precisa de pelo menos ${{amount}} para fazer um saque",
+    "insufficientMinimum": "Saldo insuficiente. Você precisa de pelo menos ${{amount}} para sacar.",
+    "exceedsAvailable": "Valor excede o saldo disponível."
   },
   "address": {
     "label": "Endereço de Destino (Polygon)",
@@ -21,7 +31,38 @@
     "title": "Resumo de Taxas",
     "withdrawalAmount": "Valor do Saque",
     "baseFee": "Taxa Base",
-    "youReceive": "Você Recebe"
+    "youReceive": "Você Recebe",
+    "calculatingFees": "Calculando taxas...",
+    "failedToCalculate": "Falha ao calcular taxas",
+    "usingEstimated": "Usando valores estimados"
+  },
+  "modal": {
+    "title": "Aviso de Rebaixamento de Rank",
+    "rankChange": "Seu rank mudará de {{from}} para {{to}}",
+    "inactive": "Inativa",
+    "balanceAfter": "Saldo após o saque",
+    "belowMinimum": "Abaixo do mínimo de ${{minimum}} necessário",
+    "yieldLoss": "Impacto no Rendimento Diário",
+    "currentYield": "Rendimento Diário Atual",
+    "newYield": "Novo Rendimento Diário",
+    "dailyAmount": "Valor diário",
+    "youWillLose": "Você Perderá",
+    "lossPerDay": "Perda por dia",
+    "longTermImpact": {
+      "title": "Impacto de Longo Prazo",
+      "monthlyLoss": "Você deixará de ganhar por mês",
+      "annualLoss": "Você deixará de ganhar por ano",
+      "perMonth": "em 30 dias",
+      "perYear": "em 1 ano",
+      "warning": "Este é o dinheiro que você DEIXARÁ DE RECEBER se prosseguir com este saque!"
+    },
+    "inactivationWarning": {
+      "title": "Conta Pode Ser Inativada",
+      "description": "Seu saldo ficará abaixo de $100, o que pode resultar na inativação da conta. Você perderá todos os benefícios de rendimento diário."
+    },
+    "confirmMessage": "Tem certeza que deseja prosseguir com este saque? Esta ação não pode ser desfeita.",
+    "confirmButton": "Sim, Sacar Mesmo Assim",
+    "cancelButton": "Cancelar Saque"
   },
   "warnings": {
     "downrankTitle": "⚠️ Aviso de Rebaixamento de Rank",

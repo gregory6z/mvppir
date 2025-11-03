@@ -11,7 +11,9 @@ import ptGreetings from "./pt/common/greetings.json";
 import ptHome from "./pt/features/home/home.json";
 import ptWallet from "./pt/features/wallet/wallet.json";
 import ptDeposit from "./pt/features/deposit/deposit.json";
+import ptWithdraw from "./pt/features/withdraw/withdraw.json";
 import ptProfile from "./pt/features/profile/profile.json";
+import ptReferrals from "./pt/features/referrals/referrals.json";
 
 // English translations
 import enLogin from "./en/features/auth/login.json";
@@ -22,7 +24,9 @@ import enGreetings from "./en/common/greetings.json";
 import enHome from "./en/features/home/home.json";
 import enWallet from "./en/features/wallet/wallet.json";
 import enDeposit from "./en/features/deposit/deposit.json";
+import enWithdraw from "./en/features/withdraw/withdraw.json";
 import enProfile from "./en/features/profile/profile.json";
+import enReferrals from "./en/features/referrals/referrals.json";
 
 // Spanish translations
 import esLogin from "./es/features/auth/login.json";
@@ -33,7 +37,9 @@ import esGreetings from "./es/common/greetings.json";
 import esHome from "./es/features/home/home.json";
 import esWallet from "./es/features/wallet/wallet.json";
 import esDeposit from "./es/features/deposit/deposit.json";
+import esWithdraw from "./es/features/withdraw/withdraw.json";
 import esProfile from "./es/features/profile/profile.json";
+import esReferrals from "./es/features/referrals/referrals.json";
 
 // French translations
 import frLogin from "./fr/features/auth/login.json";
@@ -44,7 +50,9 @@ import frGreetings from "./fr/common/greetings.json";
 import frHome from "./fr/features/home/home.json";
 import frWallet from "./fr/features/wallet/wallet.json";
 import frDeposit from "./fr/features/deposit/deposit.json";
+import frWithdraw from "./fr/features/withdraw/withdraw.json";
 import frProfile from "./fr/features/profile/profile.json";
+import frReferrals from "./fr/features/referrals/referrals.json";
 
 const resources = {
   pt: {
@@ -56,7 +64,9 @@ const resources = {
     "home.home": ptHome,
     "wallet.wallet": ptWallet,
     "deposit.deposit": ptDeposit,
+    "withdraw.withdraw": ptWithdraw,
     "profile.profile": ptProfile,
+    "referrals.referrals": ptReferrals,
   },
   en: {
     "auth.login": enLogin,
@@ -67,7 +77,9 @@ const resources = {
     "home.home": enHome,
     "wallet.wallet": enWallet,
     "deposit.deposit": enDeposit,
+    "withdraw.withdraw": enWithdraw,
     "profile.profile": enProfile,
+    "referrals.referrals": enReferrals,
   },
   es: {
     "auth.login": esLogin,
@@ -78,7 +90,9 @@ const resources = {
     "home.home": esHome,
     "wallet.wallet": esWallet,
     "deposit.deposit": esDeposit,
+    "withdraw.withdraw": esWithdraw,
     "profile.profile": esProfile,
+    "referrals.referrals": esReferrals,
   },
   fr: {
     "auth.login": frLogin,
@@ -89,7 +103,9 @@ const resources = {
     "home.home": frHome,
     "wallet.wallet": frWallet,
     "deposit.deposit": frDeposit,
+    "withdraw.withdraw": frWithdraw,
     "profile.profile": frProfile,
+    "referrals.referrals": frReferrals,
   },
 };
 

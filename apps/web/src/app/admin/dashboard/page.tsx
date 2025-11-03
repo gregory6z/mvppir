@@ -43,7 +43,7 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-8 p-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-3xl font-bold text-soft mb-2">
           Admin Dashboard
         </h1>
         <p className="text-zinc-400">
@@ -63,7 +63,7 @@ export default function DashboardPage() {
               <Wallet className="h-4 w-4 text-blue-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-white">
+              <div className="text-3xl font-bold text-soft">
                 ${totalBalanceUSD.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
@@ -84,7 +84,7 @@ export default function DashboardPage() {
               <CheckCircle2 className="h-4 w-4 text-emerald-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-white">
+              <div className="text-3xl font-bold text-soft">
                 ${availableForWithdrawal.toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
@@ -106,7 +106,7 @@ export default function DashboardPage() {
                 <Clock className="h-4 w-4 text-red-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-white">
+                <div className="text-3xl font-bold text-soft">
                   ${pendingWithdrawalsValue.toLocaleString("en-US", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -131,7 +131,7 @@ export default function DashboardPage() {
                 <ArrowLeftRight className="h-4 w-4 text-purple-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-white">
+                <div className="text-3xl font-bold text-soft">
                   ${tokensToCollectValue.toLocaleString("en-US", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -155,7 +155,7 @@ export default function DashboardPage() {
               <Fuel className="h-4 w-4 text-green-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-white">
+              <div className="text-3xl font-bold text-soft">
                 {Number(maticBalance).toLocaleString("en-US", {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 0,
@@ -172,7 +172,7 @@ export default function DashboardPage() {
         {/* Global Wallet Breakdown */}
         <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-soft flex items-center gap-2">
               <Wallet className="h-5 w-5" />
               Composição da Carteira Global
             </CardTitle>
@@ -186,7 +186,7 @@ export default function DashboardPage() {
                 {globalWalletData.balances.map((balance) => (
                   <div key={balance.tokenSymbol} className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-white">{balance.tokenSymbol}</p>
+                      <p className="font-semibold text-soft">{balance.tokenSymbol}</p>
                       <p className="text-xs text-zinc-500">
                         {Number(balance.balance).toLocaleString("en-US", {
                           minimumFractionDigits: 2,
@@ -217,7 +217,7 @@ export default function DashboardPage() {
         {/* Batch Collect Preview */}
         <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-soft flex items-center gap-2">
               <ArrowLeftRight className="h-5 w-5" />
               Tokens Aguardando Coleta
             </CardTitle>
@@ -231,7 +231,7 @@ export default function DashboardPage() {
                 {batchCollectData.tokens.slice(0, 5).map((token) => (
                   <div key={token.tokenSymbol} className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-white">{token.tokenSymbol}</p>
+                      <p className="font-semibold text-soft">{token.tokenSymbol}</p>
                       <p className="text-xs text-zinc-500">
                         {token.walletsCount} {token.walletsCount === 1 ? "carteira" : "carteiras"}
                       </p>
@@ -270,7 +270,7 @@ export default function DashboardPage() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">Ações Rápidas</h2>
+        <h2 className="text-xl font-bold text-soft mb-4">Ações Rápidas</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Link href="/admin/withdrawals">
             <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur hover:border-yellow-500/50 transition-all duration-200 cursor-pointer group h-full">
@@ -323,7 +323,7 @@ export default function DashboardPage() {
       {/* System Status */}
       <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-soft flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5 text-green-400" />
             Status do Sistema
           </CardTitle>

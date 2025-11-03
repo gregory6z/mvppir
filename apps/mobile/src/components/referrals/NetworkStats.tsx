@@ -1,137 +1,120 @@
-import { View, Text } from "react-native";
-import { Users, UserCheck } from "phosphor-react-native";
+import { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useTranslation } from "react-i18next";
+import { Users, UserCheck, CalendarCheck, TrendUp } from "phosphor-react-native";
+import { MonthlyMaintenanceModal } from "./MonthlyMaintenanceModal";
+import type { MLMRank } from "@/api/mlm/schemas/mlm.schema";
 
 interface NetworkStatsProps {
   totalDirects: number; // Lifetime count
   activeDirects: number; // Active this month
-  levels: {
-    N1: { count: number; totalBalance: number };
-    N2: { count: number; totalBalance: number };
-    N3: { count: number; totalBalance: number };
-  };
+  monthlyVolume: number; // Monthly network volume (USD)
+  currentRank: MLMRank;
 }
 
 export function NetworkStats({
   totalDirects,
   activeDirects,
-  levels,
+  monthlyVolume,
+  currentRank,
 }: NetworkStatsProps) {
+  const { t } = useTranslation("referrals.referrals");
+  const [showMaintenanceModal, setShowMaintenanceModal] = useState(false);
+
   const formatNumber = (num: number) => {
-    if (num >= 1_000_000) {
-      return `$${(num / 1_000_000).toFixed(1)}M`;
+    const value = typeof num === 'number' && !isNaN(num) ? num : 0;
+    if (value >= 1_000_000) {
+      return `$${(value / 1_000_000).toFixed(1)}M`;
     }
-    if (num >= 1_000) {
-      return `$${(num / 1_000).toFixed(1)}K`;
+    if (value >= 1_000) {
+      return `$${(value / 1_000).toFixed(1)}K`;
     }
-    return `$${num.toFixed(0)}`;
+    return `$${value.toFixed(0)}`;
   };
 
   return (
-    <View className="mx-4 mt-4">
+    <View className="mx-4 mt-6">
+      {/* Title */}
       <Text className="text-white text-base font-semibold mb-3">
-        Network Overview
+        {t("networkStats.title")}
       </Text>
 
-      {/* Summary Cards */}
-      <View className="flex-row gap-3 mb-3">
-        {/* Total Directs */}
-        <View className="flex-1 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-          <View className="flex-row items-center gap-2 mb-2">
-            <View className="w-8 h-8 bg-violet-500/20 rounded-lg items-center justify-center">
-              <Users size={18} color="#8b5cf6" weight="bold" />
-            </View>
-            <Text className="text-zinc-400 text-xs font-medium">
-              Total Directs
-            </Text>
-          </View>
-          <Text className="text-white text-2xl font-bold">{totalDirects}</Text>
-          <Text className="text-zinc-500 text-xs mt-1">Lifetime</Text>
-        </View>
-
-        {/* Active Directs */}
-        <View className="flex-1 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-          <View className="flex-row items-center gap-2 mb-2">
-            <View className="w-8 h-8 bg-green-500/20 rounded-lg items-center justify-center">
-              <UserCheck size={18} color="#10b981" weight="bold" />
-            </View>
-            <Text className="text-zinc-400 text-xs font-medium">
-              Active Now
-            </Text>
-          </View>
-          <Text className="text-white text-2xl font-bold">{activeDirects}</Text>
-          <Text className="text-zinc-500 text-xs mt-1">This month</Text>
-        </View>
-      </View>
-
-      {/* Network Levels Breakdown */}
-      <View className="bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
-        <Text className="text-white text-sm font-semibold mb-3">
-          Network Levels
+      {/* Monthly Maintenance Info Button */}
+      <TouchableOpacity
+        onPress={() => setShowMaintenanceModal(true)}
+        className="flex-row items-center justify-center gap-2 bg-orange-500/20 px-4 py-2.5 rounded-xl border border-orange-500/30 active:bg-orange-500/30 mb-4"
+        accessibilityLabel="Monthly maintenance requirements"
+      >
+        <CalendarCheck size={18} color="#f59e0b" weight="duotone" />
+        <Text className="text-orange-400 text-sm font-semibold">
+          {t("explainer.maintenance.title")}
         </Text>
+      </TouchableOpacity>
 
-        {/* N1 */}
-        <View className="flex-row items-center justify-between mb-3 pb-3 border-b border-zinc-800">
-          <View>
-            <View className="flex-row items-center gap-2 mb-1">
-              <View className="w-6 h-6 bg-violet-500/20 rounded items-center justify-center">
-                <Text className="text-violet-400 text-xs font-bold">N1</Text>
+      {/* Summary Cards */}
+      <View className="gap-3 mb-4">
+        {/* Top Row - 2 Cards */}
+        <View className="flex-row gap-3">
+          {/* Total Directs */}
+          <View className="flex-1 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
+            <View className="flex-row items-center gap-2 mb-2">
+              <View className="w-8 h-8 bg-violet-500/20 rounded-lg items-center justify-center">
+                <Users size={18} color="#8b5cf6" weight="bold" />
               </View>
-              <Text className="text-zinc-400 text-xs">Direct Referrals</Text>
+              <Text className="text-zinc-400 text-xs font-medium">
+                {t("networkStats.totalDirects")}
+              </Text>
             </View>
-            <Text className="text-white text-base font-semibold">
-              {levels.N1.count} people
-            </Text>
+            <Text className="text-white text-2xl font-bold">{totalDirects}</Text>
+            <Text className="text-zinc-500 text-xs mt-1">{t("networkStats.lifetime")}</Text>
           </View>
-          <View className="items-end">
-            <Text className="text-zinc-400 text-xs mb-1">Total Balance</Text>
-            <Text className="text-white text-base font-semibold">
-              {formatNumber(levels.N1.totalBalance)}
-            </Text>
+
+          {/* Active Directs */}
+          <View className="flex-1 bg-zinc-900 p-4 rounded-2xl border border-zinc-800">
+            <View className="flex-row items-center gap-2 mb-2">
+              <View className="w-8 h-8 bg-green-500/20 rounded-lg items-center justify-center">
+                <UserCheck size={18} color="#10b981" weight="bold" />
+              </View>
+              <Text className="text-zinc-400 text-xs font-medium">
+                {t("networkStats.activeNow")}
+              </Text>
+            </View>
+            <Text className="text-white text-2xl font-bold">{activeDirects}</Text>
+            <Text className="text-zinc-500 text-xs mt-1">{t("networkStats.thisMonth")}</Text>
           </View>
         </View>
 
-        {/* N2 */}
-        <View className="flex-row items-center justify-between mb-3 pb-3 border-b border-zinc-800">
-          <View>
-            <View className="flex-row items-center gap-2 mb-1">
-              <View className="w-6 h-6 bg-blue-500/20 rounded items-center justify-center">
-                <Text className="text-blue-400 text-xs font-bold">N2</Text>
+        {/* Network Volume - Full Width Card */}
+        <View className="bg-gradient-to-r from-blue-500/10 to-violet-500/10 p-4 rounded-2xl border border-blue-500/30">
+          <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center gap-3">
+              <View className="w-10 h-10 bg-blue-500/20 rounded-xl items-center justify-center">
+                <TrendUp size={22} color="#3b82f6" weight="bold" />
               </View>
-              <Text className="text-zinc-400 text-xs">2nd Level</Text>
-            </View>
-            <Text className="text-white text-base font-semibold">
-              {levels.N2.count} people
-            </Text>
-          </View>
-          <View className="items-end">
-            <Text className="text-zinc-400 text-xs mb-1">Total Balance</Text>
-            <Text className="text-white text-base font-semibold">
-              {formatNumber(levels.N2.totalBalance)}
-            </Text>
-          </View>
-        </View>
-
-        {/* N3 */}
-        <View className="flex-row items-center justify-between">
-          <View>
-            <View className="flex-row items-center gap-2 mb-1">
-              <View className="w-6 h-6 bg-green-500/20 rounded items-center justify-center">
-                <Text className="text-green-400 text-xs font-bold">N3</Text>
+              <View>
+                <Text className="text-zinc-400 text-xs font-medium mb-1">
+                  {t("networkStats.networkVolume")}
+                </Text>
+                <Text className="text-white text-2xl font-bold">
+                  {formatNumber(monthlyVolume)}
+                </Text>
               </View>
-              <Text className="text-zinc-400 text-xs">3rd Level</Text>
             </View>
-            <Text className="text-white text-base font-semibold">
-              {levels.N3.count} people
-            </Text>
-          </View>
-          <View className="items-end">
-            <Text className="text-zinc-400 text-xs mb-1">Total Balance</Text>
-            <Text className="text-white text-base font-semibold">
-              {formatNumber(levels.N3.totalBalance)}
-            </Text>
+            <View className="bg-blue-500/10 px-3 py-1.5 rounded-full">
+              <Text className="text-blue-400 text-xs font-semibold">
+                {t("networkStats.thisMonth")}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
+
+      {/* Monthly Maintenance Modal */}
+      <MonthlyMaintenanceModal
+        visible={showMaintenanceModal}
+        onClose={() => setShowMaintenanceModal(false)}
+        currentRank={currentRank}
+      />
     </View>
   );
 }

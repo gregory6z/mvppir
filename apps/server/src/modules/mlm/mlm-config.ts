@@ -184,12 +184,8 @@ export const LOYALTY_DISCOUNT: Record<LoyaltyTier, LoyaltyDiscountConfig> = {
 // ===== Downrank System =====
 
 export const DOWNRANK_CONFIG = {
-  gracePeriodDays: 7, // 7 dias após warning
-  warningThreshold: 1, // 1º mês sem cumprir = WARNING
-  temporaryDownrankThreshold: 2, // 2º mês = TEMPORARY_DOWNRANK (-1)
-  permanentDownrankThreshold: 3, // 3º mês = DOWNRANKED (-2)
-  temporaryDownrankPenalty: 1, // Perde 1 rank
-  permanentDownrankPenalty: 2, // Perde 2 ranks do original
+  // Sistema mensal: se não cumprir requisitos = downgrade imediato -1 rank
+  downrankPenalty: 1, // Perde 1 rank por mês sem cumprir requisitos
 };
 
 // ===== Active User Definition =====

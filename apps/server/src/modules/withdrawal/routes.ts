@@ -3,6 +3,8 @@ import { requireAuth } from "@/middlewares/auth.middleware";
 import { requireAdmin } from "@/middlewares/admin.middleware";
 import { requestWithdrawalController } from "@/modules/withdrawal/controllers/request-withdrawal-controller";
 import { listWithdrawalsController } from "@/modules/withdrawal/controllers/list-withdrawals-controller";
+import { calculateWithdrawalFeeController } from "@/modules/withdrawal/controllers/calculate-withdrawal-fee-controller";
+import { getWithdrawalLimitsController } from "@/modules/withdrawal/controllers/get-withdrawal-limits-controller";
 import { approveWithdrawalController } from "@/modules/withdrawal/controllers/approve-withdrawal-controller";
 import { rejectWithdrawalController } from "@/modules/withdrawal/controllers/reject-withdrawal-controller";
 import { retryWithdrawalController } from "@/modules/withdrawal/controllers/retry-withdrawal-controller";
@@ -14,6 +16,12 @@ import { listAllWithdrawalsController } from "@/modules/withdrawal/controllers/l
 export async function userWithdrawalRoutes(app: FastifyInstance) {
   // Todas as rotas de usuário requerem autenticação
   app.addHook("onRequest", requireAuth);
+
+  // Obter limites de saque e validações
+  app.get("/limits", getWithdrawalLimitsController);
+
+  // Calcular taxa de saque
+  app.get("/calculate-fee", calculateWithdrawalFeeController);
 
   // Solicitar saque
   app.post("/request", requestWithdrawalController);

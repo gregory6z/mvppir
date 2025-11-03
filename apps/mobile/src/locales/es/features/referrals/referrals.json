@@ -1,0 +1,162 @@
+{
+  "screen": {
+    "loading": "Cargando...",
+    "loadingData": "Cargando datos...",
+    "error": "Error",
+    "errorLoading": "Error al cargar datos",
+    "unknownError": "Ocurrió un error desconocido",
+    "tryAgain": "Intentar de nuevo",
+    "user": "Usuario"
+  },
+  "rankCard": {
+    "dailyCommission": "Comisión Diaria",
+    "blockedBalance": "Saldo Invertido",
+    "progressTo": "Progreso a",
+    "directReferrals": "Referencias Directas",
+    "requiredBlocked": "Inversión Requerida",
+    "networkVolume": "Volumen de Red",
+    "maxRankTitle": "¡Rango Máximo Alcanzado!",
+    "maxRankDescription": "Has alcanzado el rango más alto del sistema",
+    "howItWorksButton": "Cómo Funciona",
+    "ranks": {
+      "recruit": "Recluta",
+      "bronze": "Bronce",
+      "silver": "Plata",
+      "gold": "Oro"
+    },
+    "status": {
+      "active": "Activo",
+      "warning": "Advertencia",
+      "tempDownrank": "Degradación Temp",
+      "downranked": "Degradado"
+    }
+  },
+  "referralCode": {
+    "title": "Tu Código de Referido",
+    "shareCode": "Comparte este código con amigos",
+    "referralCodeLabel": "CÓDIGO DE REFERIDO",
+    "copyCode": "Copiar Código",
+    "copied": "¡Copiado!",
+    "referralLink": "Enlace de Referido",
+    "infoMessage": "Gana comisiones cuando tus referidos realicen depósitos y construyan su red"
+  },
+  "networkStats": {
+    "title": "Resumen de Red",
+    "totalDirects": "Total de Directos",
+    "lifetime": "Histórico",
+    "activeNow": "Activos Ahora",
+    "thisMonth": "Este mes",
+    "networkVolume": "Volumen de Red",
+    "networkLevels": "Niveles de Red",
+    "ownBalance": "Tu Inversión",
+    "you": "Tú",
+    "blockedBalance": "Invertido",
+    "directReferrals": "Referencias Directas",
+    "secondLevel": "2º Nivel",
+    "thirdLevel": "3º Nivel",
+    "people": "personas",
+    "totalBalance": "Saldo Total"
+  },
+  "commissionOverview": {
+    "title": "Ganancias por Comisiones",
+    "today": "Hoy",
+    "thisMonth": "Este Mes",
+    "totalEarned": "Total Ganado",
+    "allTime": "Todo el Tiempo",
+    "dailyAverage": "Promedio Diario",
+    "monthlyEst": "Est. Mensual"
+    ,
+    "byLevel": "Ganancias por Nivel",
+    "ownBalance": "Propia Inversión",
+    "directReferrals": "Referidos Directos",
+    "indirectN2": "Red 2º Nivel",
+    "indirectN3": "Red 3º Nivel"
+  },
+  "recentCommissions": {
+    "title": "Comisiones Recientes",
+    "recent": "recientes",
+    "empty": {
+      "title": "Aún no hay comisiones",
+      "subtitle": "Comienza a invitar amigos para ganar comisiones diarias"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "paid": "Pagado",
+      "cancelled": "Cancelado"
+    },
+    "recently": "Recientemente"
+  },
+  "explainer": {
+    "title": "Cómo Funciona",
+    "hero": {
+      "title": "Ganancias con IA",
+      "description": "Tu inversión es administrada por nuestro agente de IA avanzado que genera retornos altos y consistentes a través de estrategias inteligentes de mercado."
+    },
+    "howItWorks": {
+      "title": "Cómo Funciona",
+      "step1": {
+        "title": "1. Invierte tu Saldo",
+        "description": "Mantén fondos invertidos para ganar dividendos diarios. Cuanto más inviertas, mayor será tu rango y ganancias diarias."
+      },
+      "step2": {
+        "title": "2. Construye tu Red",
+        "description": "Invita personas a unirse. Cada referido activo te ayuda a subir de rango y desbloquear tasas de comisión más altas."
+      },
+      "step3": {
+        "title": "3. Gana Dividendos Diarios",
+        "description": "Recibe pagos automáticos diarios basados en tu rango. Rangos más altos = porcentajes de retorno mayores sobre tu inversión."
+      }
+    },
+    "ranks": {
+      "title": "Beneficios por Rango",
+      "recruit": "Nivel inicial - Comienza ganando 0.35% diario con $100 invertidos",
+      "bronze": "3 directos + $500 invertidos + $2,500 volumen histórico de red - Gana 1.05% diario",
+      "silver": "5 directos + $2,000 invertidos + $30,000 volumen histórico de red - Gana 1.80% diario",
+      "gold": "8 directos + $5,000 invertidos + $150,000 volumen histórico de red - Gana 2.60% diario"
+    },
+    "ai": {
+      "title": "Agente de IA para Trading",
+      "description": "Nuestra IA propietaria analiza los mercados 24/7, ejecutando operaciones de alta probabilidad para generar retornos consistentes para todos los inversores. Cuanto más inviertes y mayor es tu rango, más ganas."
+    },
+    "keyPoints": {
+      "title": "Puntos Clave",
+      "point1": "Los dividendos diarios se pagan automáticamente basados en tu saldo invertido y rango",
+      "point2": "Para mantener tu rango, mantén el valor de inversión necesario activo",
+      "point3": "La IA trabaja para ti 24/7 - rangos más altos desbloquean ganancias diarias exponencialmente mayores"
+    },
+    "maintenance": {
+      "title": "Mantenimiento Mensual",
+      "subtitle": "Para mantener tu rango, necesitas cumplir estos requisitos cada mes:",
+      "recruit": {
+        "title": "¡Sin Requisitos Mensuales!",
+        "description": "Invierte $100 una vez y gana 0.35% diario para siempre. No necesitas hacer nada más."
+      },
+      "bronze": {
+        "activeDirects": "3 referidos activos",
+        "monthlyVolume": "$500 de volumen de red/mes"
+      },
+      "silver": {
+        "activeDirects": "5 referidos activos",
+        "monthlyVolume": "$6,000 de volumen de red/mes"
+      },
+      "gold": {
+        "activeDirects": "8 referidos activos",
+        "monthlyVolume": "$30,000 de volumen de red/mes"
+      },
+      "note": "Volumen de red = tus depósitos + depósitos de tus referidos directos e indirectos",
+      "warning": "Si no cumples los requisitos durante 3 meses consecutivos, puedes ser degradado"
+    },
+    "closeButton": "¡Entendido!"
+  },
+  "monthlyMaintenance": {
+    "yourCurrentRank": "Tu Rango Actual",
+    "requirementsTitle": "Requisitos Mensuales",
+    "activeDirectsTitle": "Directos Activos",
+    "networkVolumeTitle": "Volumen de Red",
+    "volumeExplanation": "Este es el total de depósitos realizados por TI + toda tu red (directos + indirectos) durante el mes actual",
+    "importantInfo": "Información Importante",
+    "whatIsVolumeTitle": "¿Qué es el Volumen de Red?",
+    "downrankWarningTitle": "Advertencia",
+    "allRanksTitle": "Requisitos de Todos los Rangos"
+  }
+}

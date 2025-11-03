@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
 import { AdminSidebar } from "@/components/layout/admin-sidebar"
+import { MaticAlert } from "@/components/layout/matic-alert"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function AdminDashboardLayout({
@@ -57,11 +58,14 @@ export default function AdminDashboardLayout({
 
   // Render admin layout
   return (
-    <div className="flex h-screen bg-zinc-950">
-      <AdminSidebar />
-      <main className="flex-1 overflow-y-auto">
-        {children}
-      </main>
+    <div className="flex flex-col h-screen bg-zinc-950">
+      <MaticAlert />
+      <div className="flex flex-1 overflow-hidden">
+        <AdminSidebar />
+        <main className="flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

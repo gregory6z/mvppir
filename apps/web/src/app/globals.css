@@ -24,6 +24,10 @@
   -webkit-text-fill-color: transparent;
 }
 
+@utility text-soft {
+  color: hsl(240 5% 84%);
+}
+
 /* shadcn/ui CSS Variables - Light Mode */
 :root {
   /* Base colors - Zinc neutral palette */
@@ -78,25 +82,25 @@
 
 /* shadcn/ui CSS Variables - Dark Mode */
 .dark {
-  /* Base colors - Dark zinc palette */
+  /* Base colors - Dark zinc palette with softer text */
   --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
+  --foreground: 240 5% 84%;
 
   /* Card */
   --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
+  --card-foreground: 240 5% 84%;
 
   /* Popover */
   --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
+  --popover-foreground: 240 5% 84%;
 
-  /* Primary - White for dark mode */
-  --primary: 0 0% 98%;
+  /* Primary - Softer white for dark mode */
+  --primary: 240 5% 90%;
   --primary-foreground: 240 10% 3.9%;
 
   /* Secondary - Dark zinc */
   --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
+  --secondary-foreground: 240 5% 84%;
 
   /* Muted - Subtle dark backgrounds */
   --muted: 240 3.7% 15.9%;
@@ -104,18 +108,18 @@
 
   /* Accent - Vibrant purple for dark mode */
   --accent: 262 83% 58%;
-  --accent-foreground: 0 0% 98%;
+  --accent-foreground: 0 0% 100%;
 
   /* Destructive - Bright red for dark mode */
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive-foreground: 240 5% 90%;
 
   /* Border and Input - Subtle dark borders */
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
 
-  /* Ring - Focus ring (white) */
-  --ring: 0 0% 98%;
+  /* Ring - Focus ring (softer) */
+  --ring: 240 5% 90%;
 
   /* Chart colors - Dark mode adjusted */
   --chart-1: 220 70% 50%;

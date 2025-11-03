@@ -47,7 +47,7 @@ export default function GlobalWalletPage() {
     return (
       <div className="flex flex-col gap-8 p-8">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Carteira Global</h1>
+          <h1 className="text-3xl font-bold text-soft mb-2">Carteira Global</h1>
           <p className="text-zinc-400">
             Visualize os saldos de todos os tokens na carteira global.
           </p>
@@ -72,7 +72,7 @@ export default function GlobalWalletPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Carteira Global</h1>
+          <h1 className="text-3xl font-bold text-soft mb-2">Carteira Global</h1>
           <p className="text-zinc-400">
             Visualize os saldos de todos os tokens na carteira global.
           </p>
@@ -122,14 +122,14 @@ export default function GlobalWalletPage() {
         ) : (
           <Card className="border-zinc-800 bg-gradient-to-br from-purple-900/20 to-zinc-900/50 backdrop-blur">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-soft flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
                 Valor Total
               </CardTitle>
               <CardDescription>Soma de todos os tokens em USD</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold text-white">
+              <div className="text-4xl font-bold text-soft">
                 ${Number(data?.totalUsd || 0).toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
@@ -145,7 +145,7 @@ export default function GlobalWalletPage() {
         ) : (
           <Card className="border-zinc-800 bg-gradient-to-br from-blue-900/20 to-zinc-900/50 backdrop-blur">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-soft flex items-center gap-2">
                 <Fuel className="h-5 w-5" />
                 Saldo MATIC
               </CardTitle>
@@ -156,7 +156,7 @@ export default function GlobalWalletPage() {
                 const maticBalance = data.balances.find(b => b.tokenSymbol === "MATIC")
                 return maticBalance ? (
                   <div className="space-y-1">
-                    <div className="text-4xl font-bold text-white">
+                    <div className="text-4xl font-bold text-soft">
                       {Number(maticBalance.balance).toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 4,
@@ -183,7 +183,7 @@ export default function GlobalWalletPage() {
       {/* Token Balances Table */}
       <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur">
         <CardHeader>
-          <CardTitle className="text-white">Saldos por Token</CardTitle>
+          <CardTitle className="text-soft">Saldos por Token</CardTitle>
           <CardDescription>Todos os tokens na carteira global</CardDescription>
         </CardHeader>
         <CardContent>
@@ -211,7 +211,7 @@ export default function GlobalWalletPage() {
                       key={balance.tokenSymbol}
                       className="border-zinc-800 hover:bg-zinc-900/50"
                     >
-                      <TableCell className="font-semibold text-white">
+                      <TableCell className="font-semibold text-soft">
                         {balance.tokenSymbol}
                       </TableCell>
                       <TableCell>
@@ -224,7 +224,7 @@ export default function GlobalWalletPage() {
                           <span className="text-xs text-zinc-600">Native</span>
                         )}
                       </TableCell>
-                      <TableCell className="text-right font-mono text-white">
+                      <TableCell className="text-right font-mono text-soft">
                         {Number(balance.balance).toLocaleString("en-US", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 6,

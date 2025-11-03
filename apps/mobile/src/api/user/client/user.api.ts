@@ -4,6 +4,7 @@ import type {
   TransactionsResponse,
   RequestWithdrawalInput,
   RequestWithdrawalResponse,
+  CalculateWithdrawalFeeResponse,
   ReferralLinkResponse,
 } from "../schemas/user.schema"
 
@@ -23,8 +24,12 @@ export async function getUserTransactions(): Promise<TransactionsResponse> {
 
 // ===== Withdrawal =====
 
+export async function calculateWithdrawalFee(amount: number): Promise<CalculateWithdrawalFeeResponse> {
+  return apiClient.get(`user/withdrawals/calculate-fee?amount=${amount}`).json<CalculateWithdrawalFeeResponse>()
+}
+
 export async function requestWithdrawal(data: RequestWithdrawalInput): Promise<RequestWithdrawalResponse> {
-  return apiClient.post("withdrawal/request", { json: data }).json<RequestWithdrawalResponse>()
+  return apiClient.post("user/withdrawals/request", { json: data }).json<RequestWithdrawalResponse>()
 }
 
 // ===== Referral =====

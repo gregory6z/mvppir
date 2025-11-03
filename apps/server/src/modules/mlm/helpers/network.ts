@@ -176,45 +176,34 @@ export async function getNetworkStats(userId: string): Promise<NetworkStats> {
  * Get active directs (for monthly maintenance check)
  *
  * Active direct = N1 user with:
- * - Login in last 30 days
- * - Balance >= $100
  * - Status = ACTIVE
+ * - Blocked balance >= $100 (invested amount)
  */
 export async function getActiveDirects(userId: string): Promise<number> {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
   const activeDirects = await prisma.user.findMany({
     where: {
       referrerId: userId,
       status: "ACTIVE",
-      updatedAt: { gte: thirtyDaysAgo },
     },
-    include: {
-      balances: {
-        select: {
-          availableBalance: true,
-        },
-      },
+    select: {
+      id: true,
+      blockedBalance: true,
     },
   });
 
-  // Filter by balance >= $100
+  // Filter by blockedBalance >= $100
   const activeWithBalance = activeDirects.filter((user) => {
-    const totalBalance = user.balances.reduce(
-      (sum, b) => sum.add(b.availableBalance),
-      new Decimal(0)
-    );
-    return totalBalance.gte(100);
+    return user.blockedBalance.gte(100);
   });
 
   return activeWithBalance.length;
 }
 
 /**
- * Calculate total network volume (all deposits from N1+N2+N3)
+ * Calculate total network volume (all deposits from user + N1+N2+N3)
  *
  * Used for lifetime volume (never decreases) and monthly volume (resets monthly).
+ * Includes the user's own deposits + network deposits.
  */
 export async function calculateNetworkVolume(
   userId: string,
@@ -223,16 +212,13 @@ export async function calculateNetworkVolume(
 ): Promise<Decimal> {
   const levels = await getNetworkLevels(userId);
 
-  // Get all user IDs in network
+  // Get all user IDs in network (including the user themselves)
   const allNetworkUserIds = [
+    userId, // Include the user's own deposits
     ...levels.N1.map((u) => u.id),
     ...levels.N2.map((u) => u.id),
     ...levels.N3.map((u) => u.id),
   ];
-
-  if (allNetworkUserIds.length === 0) {
-    return new Decimal(0);
-  }
 
   // Sum all confirmed deposits from network
   const whereClause: any = {
