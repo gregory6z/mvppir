@@ -37,13 +37,19 @@ export function AdminLoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AdminLoginInput>({
-    resolver: zodResolver(adminLoginSchema) as any,
-  })
+  } = useForm<AdminLoginInput>()
 
   const onSubmit = async (data: AdminLoginInput) => {
     setIsLoading(true)
     setError(null)
+
+    // Manual validation using Zod
+    const validationResult = adminLoginSchema.safeParse(data)
+    if (!validationResult.success) {
+      setIsLoading(false)
+      setError("INVALID_CREDENTIALS")
+      return
+    }
 
     try {
       const result = await signIn({
