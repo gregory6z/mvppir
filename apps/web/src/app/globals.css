@@ -294,6 +294,18 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
+/* Improved text readability in dark theme */
+.dark {
+  /* Upgrade zinc-300 to brighter white for better readability */
+  --tw-prose-body: rgb(255 255 255);
+  --tw-prose-headings: rgb(255 255 255);
+
+  /* Make sure all text has good contrast on dark background */
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Testimonials Scroll Animations */
 @keyframes scroll-left {
   0% {
