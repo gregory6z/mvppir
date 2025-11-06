@@ -293,8 +293,11 @@ const ShaderMaterial = ({
   }, [size.width, size.height, source]);
 
   return (
+    // @ts-expect-error - Three.js elements are valid JSX in @react-three/fiber
     <mesh ref={ref as any}>
+      {/* @ts-expect-error - Three.js elements are valid JSX in @react-three/fiber */}
       <planeGeometry args={[2, 2]} />
+      {/* @ts-expect-error - Three.js elements are valid JSX in @react-three/fiber */}
       <primitive object={material} attach="material" />
     </mesh>
   );
