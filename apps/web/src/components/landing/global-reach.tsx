@@ -190,11 +190,11 @@ export const GlobalReach = () => {
 
                 {/* Connection grid - simplified representation */}
                 <div className="relative z-10 space-y-8">
-                  {/* Brasil -> Global Hub */}
+                  {/* Estados Unidos -> Global Hub */}
                   <div className="flex items-center justify-between px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-magenta-400 animate-pulse" />
-                      <div className="text-sm font-semibold text-white">🇧🇷 Brasil</div>
+                      <div className="text-sm font-semibold text-white">🇺🇸 Estados Unidos</div>
                     </div>
                     <div className="flex-1 h-px bg-gradient-to-r from-purple-400/50 via-transparent to-transparent mx-4" />
                     <div className="w-2 h-2 rounded-full bg-purple-400/30" />
@@ -204,7 +204,7 @@ export const GlobalReach = () => {
                   <div className="flex items-center justify-between px-6">
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 animate-pulse" style={{ animationDelay: '0.3s' }} />
-                      <div className="text-sm font-semibold text-white">🇫🇷 Europa</div>
+                      <div className="text-sm font-semibold text-white">🇪🇺 Europa</div>
                     </div>
                     <div className="flex-1 h-px bg-gradient-to-r from-cyan-400/50 via-transparent to-transparent mx-4" />
                     <div className="w-2 h-2 rounded-full bg-cyan-400/30" />
@@ -220,12 +220,12 @@ export const GlobalReach = () => {
                     </div>
                   </div>
 
-                  {/* EUA -> Global Hub */}
+                  {/* Brasil -> Global Hub */}
                   <div className="flex items-center justify-between px-6">
                     <div className="w-2 h-2 rounded-full bg-magenta-400/30" />
                     <div className="flex-1 h-px bg-gradient-to-l from-magenta-400/50 via-transparent to-transparent mx-4" />
                     <div className="flex items-center gap-3">
-                      <div className="text-sm font-semibold text-white">🇺🇸 EUA</div>
+                      <div className="text-sm font-semibold text-white">🇧🇷 Brasil</div>
                       <div className="w-3 h-3 rounded-full bg-gradient-to-r from-magenta-400 to-pink-400 animate-pulse" style={{ animationDelay: '0.6s' }} />
                     </div>
                   </div>
