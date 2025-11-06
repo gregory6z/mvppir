@@ -4,6 +4,5 @@
   "devCommand": "pnpm turbo dev --filter=@mvppir/web",
   "installCommand": "pnpm install --filter @mvppir/web --filter @mvppir/shared-types --filter @mvppir/typescript-config",
   "framework": "nextjs",
-  "outputDirectory": "apps/web/.next",
-  "ignoreCommand": "bash apps/web/check-changes.sh"
+  "outputDirectory": "apps/web/.next"
 }
