@@ -30,7 +30,7 @@ export const Header = () => {
             className="flex items-center gap-3 group cursor-pointer"
           >
             {/* Logo SVG with gradient filter */}
-            <div className="relative w-8 h-8 sm:w-10 sm:h-10">
+            <div className="relative w-6 h-6 sm:w-7 sm:h-7">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-magenta-400 to-cyan-400 group-hover:from-purple-300 group-hover:via-magenta-300 group-hover:to-cyan-300 transition-all duration-300" style={{ maskImage: "url(/logo.svg)", maskSize: "contain", maskRepeat: "no-repeat", maskPosition: "center", WebkitMaskImage: "url(/logo.svg)", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center" }} />
             </div>
             {/* Text */}
