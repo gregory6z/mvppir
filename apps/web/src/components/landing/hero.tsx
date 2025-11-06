@@ -96,7 +96,7 @@ export const Hero = () => {
 
             {/* Subheadline - Mobile-first responsive */}
             <AnimationContainer delay={0.3}>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-zinc-100 max-w-xl mx-auto lg:mx-0 leading-relaxed px-4 sm:px-0">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-zinc-200 max-w-xl mx-auto lg:mx-0 leading-relaxed px-4 sm:px-0">
                 A plataforma de investimento inteligente que usa IA para fazer seu dinheiro crescer automaticamente - sem você precisar fazer nada
               </p>
             </AnimationContainer>
@@ -185,15 +185,15 @@ export const Hero = () => {
               <div className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8 pt-6 sm:pt-8 border-t border-zinc-800/50 max-w-lg mx-auto lg:mx-0">
                 <div className="text-center md:text-left">
                   <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">€500M+</div>
-                  <div className="text-[10px] sm:text-xs md:text-sm text-zinc-300 mt-1">Em ativos</div>
+                  <div className="text-[10px] sm:text-xs md:text-sm text-zinc-400 mt-1">Em ativos</div>
                 </div>
                 <div className="text-center md:text-left">
                   <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">85K+</div>
-                  <div className="text-[10px] sm:text-xs md:text-sm text-zinc-300 mt-1">Investidores</div>
+                  <div className="text-[10px] sm:text-xs md:text-sm text-zinc-400 mt-1">Investidores</div>
                 </div>
                 <div className="text-center md:text-left">
                   <div className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-400 via-magenta-400 to-cyan-400 bg-clip-text text-transparent">22%</div>
-                  <div className="text-[10px] sm:text-xs md:text-sm text-zinc-300 mt-1">ROI médio</div>
+                  <div className="text-[10px] sm:text-xs md:text-sm text-zinc-400 mt-1">ROI médio</div>
                 </div>
               </div>
             </AnimationContainer>
