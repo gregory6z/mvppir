@@ -20,11 +20,6 @@ export const metadata: Metadata = {
     description: "O futuro dos investimentos é agora",
     type: "website",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
 }
 
 export default function RootLayout({
