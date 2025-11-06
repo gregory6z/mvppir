@@ -5,6 +5,6 @@
   "installCommand": "pnpm install --filter @mvppir/web --filter @mvppir/shared-types --filter @mvppir/typescript-config",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./apps/web",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- apps/web/",
   "crons": []
 }
