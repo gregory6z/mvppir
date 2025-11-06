@@ -106,6 +106,18 @@ export const Hero = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:items-start gap-3 sm:gap-4">
                 {/* App Store Button */}
                 <button className="group relative px-6 sm:px-8 py-4 sm:py-5 bg-gradient-to-b from-white/[0.08] to-white/[0.03] hover:from-white/[0.12] hover:to-white/[0.06] backdrop-blur-xl rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl border border-white/10 hover:border-white/20 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
+                  {/* Sparkles effect - subtle and elegant */}
+                  <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                    <SparklesCore
+                      background="transparent"
+                      minSize={0.4}
+                      maxSize={1}
+                      particleDensity={30}
+                      className="w-full h-full"
+                      particleColor="#ffffff"
+                      speed={1.5}
+                    />
+                  </div>
                   {/* Subtle gradient overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
@@ -117,14 +129,26 @@ export const Hero = () => {
                       />
                     </svg>
                     <div className="text-left">
-                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium tracking-wide">Disponível na</div>
-                      <div className="text-base sm:text-lg font-semibold text-white -mt-0.5">App Store</div>
+                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium">Download</div>
+                      <div className="text-sm sm:text-lg font-bold text-white -mt-0.5">iOS</div>
                     </div>
                   </div>
                 </button>
 
                 {/* Google Play Button */}
                 <button className="group relative px-6 sm:px-8 py-4 sm:py-5 bg-gradient-to-b from-white/[0.08] to-white/[0.03] hover:from-white/[0.12] hover:to-white/[0.06] backdrop-blur-xl rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl border border-white/10 hover:border-white/20 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
+                  {/* Sparkles effect - subtle and elegant */}
+                  <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                    <SparklesCore
+                      background="transparent"
+                      minSize={0.4}
+                      maxSize={1}
+                      particleDensity={30}
+                      className="w-full h-full"
+                      particleColor="#ffffff"
+                      speed={1.5}
+                    />
+                  </div>
                   {/* Subtle gradient overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 via-cyan-400/5 to-cyan-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
@@ -154,8 +178,8 @@ export const Hero = () => {
                       </defs>
                     </svg>
                     <div className="text-left">
-                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium tracking-wide">Disponível no</div>
-                      <div className="text-base sm:text-lg font-semibold text-white -mt-0.5">Google Play</div>
+                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium">Download</div>
+                      <div className="text-sm sm:text-lg font-bold text-white -mt-0.5">Android</div>
                     </div>
                   </div>
                 </button>
