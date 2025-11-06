@@ -4,7 +4,20 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "target/release/**"]
+      "inputs": [
+        "src/**",
+        "public/**",
+        "package.json",
+        "next.config.*",
+        "tsconfig.json",
+        "tailwind.config.*",
+        "postcss.config.*"
+      ],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "target/release/**"],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*"
+      ]
     },
     "dev": {
       "cache": false,
@@ -12,11 +25,28 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**"],
+      "inputs": [
+        "src/**/*.test.*",
+        "src/**/*.spec.*",
+        "test/**"
+      ]
     },
-    "lint": {},
+    "lint": {
+      "inputs": [
+        "src/**",
+        "biome.json",
+        ".eslintrc.*"
+      ],
+      "outputs": []
+    },
     "type-check": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**",
+        "tsconfig.json"
+      ],
+      "outputs": ["tsconfig.tsbuildinfo"]
     },
     "clean": {
       "cache": false
