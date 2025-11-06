@@ -38,7 +38,7 @@ export function AdminLoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<AdminLoginInput>({
-    resolver: zodResolver(adminLoginSchema),
+    resolver: zodResolver(adminLoginSchema) as any,
   })
 
   const onSubmit = async (data: AdminLoginInput) => {
