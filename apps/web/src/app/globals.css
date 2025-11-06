@@ -285,7 +285,7 @@
 
 /* Base layer styles */
 html {
-  font-size: 14.4px; /* 10% menor que 16px (16 * 0.9 = 14.4) */
+  font-size: 16px;
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   text-size-adjust: 100%;
