@@ -53,7 +53,7 @@ export const Hero = () => {
       <div className="container relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 mx-auto h-full flex items-center">
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 xl:gap-20 items-center max-w-7xl mx-auto w-full">
           {/* Left side - Content */}
-          <div className="text-center md:text-center lg:text-left space-y-5 sm:space-y-6 lg:space-y-7">
+          <div className="text-center md:text-center lg:text-left space-y-5 sm:space-y-6 lg:space-y-7 scale-90 origin-center">
             {/* Badge */}
             <AnimationContainer delay={0.1}>
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/10 via-magenta-500/10 to-cyan-400/10 border border-purple-500/30 backdrop-blur-sm relative overflow-hidden">
