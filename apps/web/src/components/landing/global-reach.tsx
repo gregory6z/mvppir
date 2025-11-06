@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import dynamic from "next/dynamic"
 import { Globe as GlobeIcon } from "lucide-react"
 import AnimationContainer from "../global/animation-container"
@@ -15,6 +16,20 @@ const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World)
 })
 
 export const GlobalReach = () => {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    // Detect mobile devices
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   const globeConfig = {
     pointSize: 4,
     globeColor: "#1e1b4b",
@@ -167,9 +182,45 @@ export const GlobalReach = () => {
         {/* Globe */}
         <AnimationContainer delay={0.3}>
           <div className="relative mx-auto max-w-5xl">
-            <div className="aspect-[1/1] md:aspect-[16/9] w-full relative">
-              <World data={arcsData} globeConfig={globeConfig} />
-            </div>
+            {isMobile ? (
+              // Mobile fallback - Static visual representation
+              <div className="aspect-[1/1] w-full relative flex items-center justify-center">
+                <div className="relative w-full max-w-md mx-auto">
+                  {/* Gradient background sphere */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-magenta-500/20 to-cyan-400/20 rounded-full blur-3xl animate-pulse" />
+
+                  {/* Globe icon with rings */}
+                  <div className="relative z-10 flex items-center justify-center">
+                    <div className="relative">
+                      {/* Outer ring 1 */}
+                      <div className="absolute inset-0 -m-16 sm:-m-20 rounded-full border-2 border-purple-400/20 animate-ping" style={{ animationDuration: '3s' }} />
+                      {/* Outer ring 2 */}
+                      <div className="absolute inset-0 -m-8 sm:-m-12 rounded-full border-2 border-cyan-400/20 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
+                      {/* Main globe icon */}
+                      <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-gradient-to-br from-purple-900/50 to-indigo-900/50 border-4 border-purple-400/30 flex items-center justify-center backdrop-blur-sm">
+                        <GlobeIcon className="w-24 h-24 sm:w-32 sm:h-32 text-purple-300" strokeWidth={1} />
+                      </div>
+                      {/* Connection dots */}
+                      <div className="absolute -top-4 left-1/2 w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
+                      <div className="absolute top-1/4 -right-6 w-2 h-2 bg-magenta-400 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+                      <div className="absolute bottom-1/4 -left-6 w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }} />
+                      <div className="absolute -bottom-4 right-1/3 w-3 h-3 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.9s' }} />
+                    </div>
+                  </div>
+
+                  {/* Location labels */}
+                  <div className="absolute top-8 left-4 text-xs text-purple-300 font-medium">🇧🇷 Brasil</div>
+                  <div className="absolute top-12 right-8 text-xs text-cyan-300 font-medium">🇺🇸 EUA</div>
+                  <div className="absolute bottom-16 left-8 text-xs text-magenta-300 font-medium">🇫🇷 Europa</div>
+                  <div className="absolute bottom-20 right-4 text-xs text-purple-300 font-medium">🇯🇵 Ásia</div>
+                </div>
+              </div>
+            ) : (
+              // Desktop - Full 3D Globe
+              <div className="aspect-[1/1] md:aspect-[16/9] w-full relative">
+                <World data={arcsData} globeConfig={globeConfig} />
+              </div>
+            )}
           </div>
         </AnimationContainer>
       </div>
