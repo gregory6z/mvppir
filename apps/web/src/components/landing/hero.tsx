@@ -53,7 +53,7 @@ export const Hero = () => {
       <div className="container relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 mx-auto h-full flex items-center">
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 xl:gap-20 items-center max-w-7xl mx-auto w-full">
           {/* Left side - Content */}
-          <div className="text-center md:text-center lg:text-left space-y-5 sm:space-y-6 lg:space-y-7 scale-90 origin-center">
+          <div className="text-center md:text-center lg:text-left space-y-6 sm:space-y-7 lg:space-y-8 scale-90 origin-center px-2 sm:px-0">
             {/* Badge */}
             <AnimationContainer delay={0.1}>
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/10 via-magenta-500/10 to-cyan-400/10 border border-purple-500/30 backdrop-blur-sm relative overflow-hidden">
@@ -80,13 +80,13 @@ export const Hero = () => {
 
             {/* Headline - Mobile-first responsive */}
             <AnimationContainer delay={0.2}>
-              <div className="space-y-3">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-tight text-white">
+              <div className="space-y-2 sm:space-y-3">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] text-white">
                   Investimentos
                 </h1>
                 <ContainerTextFlip
                   words={words}
-                  className="!bg-transparent !shadow-none !border-none !p-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl xl:!text-7xl"
+                  className="!bg-transparent !shadow-none !border-none !p-0 !text-4xl sm:!text-5xl md:!text-6xl lg:!text-6xl xl:!text-7xl"
                   textClassName="!text-white"
                   animationDuration={500}
                   interval={3000}
@@ -96,7 +96,7 @@ export const Hero = () => {
 
             {/* Subheadline - Mobile-first responsive */}
             <AnimationContainer delay={0.3}>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-zinc-200 max-w-xl mx-auto lg:mx-0 leading-relaxed px-4 sm:px-0">
+              <p className="text-base sm:text-lg md:text-xl lg:text-xl text-zinc-200 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 A plataforma de investimento inteligente que usa IA para fazer seu dinheiro crescer automaticamente - sem você precisar fazer nada
               </p>
             </AnimationContainer>
@@ -105,48 +105,30 @@ export const Hero = () => {
             <AnimationContainer delay={0.4}>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:items-start gap-3 sm:gap-4">
                 {/* App Store Button */}
-                <button className="group relative px-5 sm:px-8 py-3 sm:py-4 bg-zinc-900/80 hover:bg-zinc-800/80 backdrop-blur-sm rounded-xl transition-all duration-200 shadow-2xl border-2 border-purple-500/40 hover:border-purple-400/60 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
-                  {/* Sparkles effect always active */}
-                  <div className="absolute inset-0 opacity-40 group-hover:opacity-50 transition-opacity duration-300">
-                    <SparklesCore
-                      background="transparent"
-                      minSize={0.5}
-                      maxSize={1.2}
-                      particleDensity={35}
-                      className="w-full h-full"
-                      particleColor="#ffffff"
-                      speed={2}
-                    />
-                  </div>
-                  <div className="flex items-center justify-center gap-2 sm:gap-3 relative z-10">
-                    <svg className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                <button className="group relative px-6 sm:px-8 py-4 sm:py-5 bg-gradient-to-b from-white/[0.08] to-white/[0.03] hover:from-white/[0.12] hover:to-white/[0.06] backdrop-blur-xl rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl border border-white/10 hover:border-white/20 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
+                  {/* Subtle gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  <div className="flex items-center justify-center gap-3 sm:gap-3.5 relative z-10">
+                    <svg className="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0 transition-transform group-hover:scale-105" viewBox="0 0 24 24" fill="none">
                       <path
                         d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
                         fill="white"
                       />
                     </svg>
                     <div className="text-left">
-                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium">Download</div>
-                      <div className="text-sm sm:text-lg font-bold text-white -mt-0.5">iOS</div>
+                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium tracking-wide">Disponível na</div>
+                      <div className="text-base sm:text-lg font-semibold text-white -mt-0.5">App Store</div>
                     </div>
                   </div>
                 </button>
 
                 {/* Google Play Button */}
-                <button className="group relative px-5 sm:px-8 py-3 sm:py-4 bg-zinc-900/80 hover:bg-zinc-800/80 backdrop-blur-sm rounded-xl transition-all duration-200 shadow-2xl border-2 border-cyan-400/40 hover:border-cyan-400/60 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
-                  {/* Sparkles effect always active */}
-                  <div className="absolute inset-0 opacity-40 group-hover:opacity-50 transition-opacity duration-300">
-                    <SparklesCore
-                      background="transparent"
-                      minSize={0.5}
-                      maxSize={1.2}
-                      particleDensity={35}
-                      className="w-full h-full"
-                      particleColor="#ffffff"
-                      speed={2}
-                    />
-                  </div>
-                  <div className="flex items-center justify-center gap-2 sm:gap-3 relative z-10">
+                <button className="group relative px-6 sm:px-8 py-4 sm:py-5 bg-gradient-to-b from-white/[0.08] to-white/[0.03] hover:from-white/[0.12] hover:to-white/[0.06] backdrop-blur-xl rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl border border-white/10 hover:border-white/20 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
+                  {/* Subtle gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 via-cyan-400/5 to-cyan-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  <div className="flex items-center justify-center gap-3 sm:gap-3.5 relative z-10">
                     <svg className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0" viewBox="0 0 24 24" fill="none">
                       <path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35z" fill="url(#playGradient1)" />
                       <path d="M16.81 15.12l-3.12-3.12-9.85 9.85c.24.12.5.19.79.19.34 0 .67-.09.97-.26l11.21-6.66z" fill="url(#playGradient2)" />
@@ -172,8 +154,8 @@ export const Hero = () => {
                       </defs>
                     </svg>
                     <div className="text-left">
-                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium">Download</div>
-                      <div className="text-sm sm:text-lg font-bold text-white -mt-0.5">Android</div>
+                      <div className="text-[10px] sm:text-xs text-zinc-400 font-medium tracking-wide">Disponível no</div>
+                      <div className="text-base sm:text-lg font-semibold text-white -mt-0.5">Google Play</div>
                     </div>
                   </div>
                 </button>
