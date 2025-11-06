@@ -1,0 +1,37 @@
+# Ignore server app (backend)
+apps/server
+
+# Ignore packages (will be installed via pnpm)
+node_modules
+**/node_modules
+
+# Ignore build artifacts
+**/.next
+**/.turbo
+**/dist
+**/build
+
+# Ignore development files
+**/.env.local
+**/.env*.local
+
+# Ignore test files
+**/__tests__
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Ignore documentation
+**/README.md
+**/CLAUDE.md
+docs/
+
+# Keep only web app essentials
+!apps/web
+!packages/shared-types
+!packages/typescript-config
+!pnpm-workspace.yaml
+!pnpm-lock.yaml
+!turbo.json
+!package.json
