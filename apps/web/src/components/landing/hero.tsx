@@ -204,7 +204,7 @@ export const Hero = () => {
             {/* Unified container */}
             <div className="relative flex items-center gap-6 lg:gap-8 xl:gap-10">
               {/* Phone Mockup */}
-              <div className="relative w-full max-w-[280px] lg:max-w-[320px] xl:max-w-[370px]">
+              <div className="relative w-full max-w-[280px] lg:max-w-[320px] xl:max-w-[370px] scale-90 origin-center">
                 {/* Subtle glow behind phone */}
                 <div className="absolute inset-0 -z-10">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[650px] xl:w-[500px] xl:h-[700px] bg-purple-500/5 blur-[80px] rounded-full" />
@@ -299,7 +299,7 @@ export const Hero = () => {
               </div>
 
               {/* Info Cards - Right Side - More colorful */}
-              <div className="hidden xl:flex flex-col gap-5">
+              <div className="hidden xl:flex flex-col gap-5 scale-90 origin-center">
               {/* Growth Chart Card - Purple/Magenta theme */}
               <CardContainer containerClassName="py-0">
                 <CardBody className="relative bg-gradient-to-br from-purple-900/40 via-magenta-900/30 to-purple-900/40 backdrop-blur-md rounded-2xl p-5 shadow-2xl border-2 border-purple-400/60 w-[260px] h-auto overflow-hidden">
