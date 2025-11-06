@@ -207,31 +207,6 @@ export const Testimonials = () => {
         <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-48 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-48 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
 
-        <style jsx>{`
-          @keyframes scroll-left {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-          @keyframes scroll-right {
-            0% {
-              transform: translateX(-50%);
-            }
-            100% {
-              transform: translateX(0);
-            }
-          }
-          .animate-scroll-left {
-            animation: scroll-left 90s linear infinite;
-          }
-          .animate-scroll-right {
-            animation: scroll-right 90s linear infinite;
-          }
-        `}</style>
-
         {/* Row 1 - Moving Left */}
         <div className="mb-4 sm:mb-5 md:mb-6 overflow-hidden">
           <div className="flex gap-3 sm:gap-4 md:gap-5 lg:gap-6 animate-scroll-left">
