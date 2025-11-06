@@ -14,7 +14,7 @@ export const Hero = () => {
 
   return (
     <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
-      {/* Mesh Gradient Background */}
+      {/* Mesh Gradient Background - Optimized for mobile */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Base gradient layer */}
         <div
@@ -24,11 +24,11 @@ export const Hero = () => {
           }}
         />
 
-        {/* Mesh blur layers */}
-        <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[120px] animate-[float_15s_ease-in-out_infinite]" />
-        <div className="absolute top-[15%] right-[15%] w-[400px] h-[400px] bg-magenta-500/15 rounded-full blur-[100px] animate-[float_18s_ease-in-out_infinite_2s]" />
-        <div className="absolute bottom-[20%] left-[10%] w-[450px] h-[450px] bg-cyan-400/12 rounded-full blur-[110px] animate-[float_20s_ease-in-out_infinite_4s]" />
-        <div className="absolute top-[40%] right-[25%] w-[350px] h-[350px] bg-purple-600/15 rounded-full blur-[100px] animate-[float_16s_ease-in-out_infinite_3s]" />
+        {/* Mesh blur layers - Reduced blur on mobile for performance */}
+        <div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] bg-purple-500/20 rounded-full blur-[60px] sm:blur-[120px] animate-[float_15s_ease-in-out_infinite]" />
+        <div className="absolute top-[15%] right-[15%] w-[250px] h-[250px] sm:w-[400px] sm:h-[400px] bg-magenta-500/15 rounded-full blur-[50px] sm:blur-[100px] animate-[float_18s_ease-in-out_infinite_2s]" />
+        <div className="absolute bottom-[20%] left-[10%] w-[280px] h-[280px] sm:w-[450px] sm:h-[450px] bg-cyan-400/12 rounded-full blur-[55px] sm:blur-[110px] animate-[float_20s_ease-in-out_infinite_4s]" />
+        <div className="absolute top-[40%] right-[25%] w-[220px] h-[220px] sm:w-[350px] sm:h-[350px] bg-purple-600/15 rounded-full blur-[50px] sm:blur-[100px] animate-[float_16s_ease-in-out_infinite_3s]" />
 
         {/* Gradient overlay for depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/60" />
@@ -51,9 +51,9 @@ export const Hero = () => {
       <div className="absolute top-1/2 right-[5%] w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-cyan-400/10 to-purple-500/10 blur-[40px] animate-[float_11s_ease-in-out_infinite_1.5s]" />
 
       <div className="container relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 mx-auto h-full flex items-center">
-        <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 xl:gap-20 items-center max-w-7xl mx-auto w-full">
+        <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-12 md:gap-12 lg:gap-16 xl:gap-20 items-center max-w-7xl mx-auto w-full py-8 sm:py-0">
           {/* Left side - Content */}
-          <div className="text-center md:text-center lg:text-left space-y-6 sm:space-y-7 lg:space-y-8 scale-90 origin-center px-2 sm:px-0">
+          <div className="text-center md:text-center lg:text-left space-y-7 sm:space-y-7 lg:space-y-8 scale-90 origin-center px-2 sm:px-0">
             {/* Badge */}
             <AnimationContainer delay={0.1}>
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/10 via-magenta-500/10 to-cyan-400/10 border border-purple-500/30 backdrop-blur-sm relative overflow-hidden">
@@ -397,24 +397,28 @@ export const Hero = () => {
                         <img
                           src="https://i.pravatar.cc/150?img=12"
                           alt="User"
+                          loading="lazy"
                           className="w-9 h-9 rounded-full border-2 border-zinc-900 object-cover ring-2 ring-purple-500/30"
                         />
                         {/* Avatar 2 - Real person */}
                         <img
                           src="https://i.pravatar.cc/150?img=47"
                           alt="User"
+                          loading="lazy"
                           className="w-9 h-9 rounded-full border-2 border-zinc-900 object-cover ring-2 ring-purple-500/30"
                         />
                         {/* Avatar 3 - Real person */}
                         <img
                           src="https://i.pravatar.cc/150?img=33"
                           alt="User"
+                          loading="lazy"
                           className="w-9 h-9 rounded-full border-2 border-zinc-900 object-cover ring-2 ring-purple-500/30"
                         />
                         {/* Avatar 4 - Real person */}
                         <img
                           src="https://i.pravatar.cc/150?img=68"
                           alt="User"
+                          loading="lazy"
                           className="w-9 h-9 rounded-full border-2 border-zinc-900 object-cover ring-2 ring-purple-500/30"
                         />
                         {/* +More indicator */}
