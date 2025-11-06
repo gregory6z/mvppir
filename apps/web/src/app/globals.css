@@ -284,6 +284,19 @@
 }
 
 /* Base layer styles */
+html {
+  font-size: 14px;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
 * {
   border-color: hsl(var(--border));
 }
