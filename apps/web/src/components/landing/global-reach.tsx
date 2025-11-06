@@ -183,36 +183,67 @@ export const GlobalReach = () => {
         <AnimationContainer delay={0.3}>
           <div className="relative mx-auto max-w-5xl">
             {isMobile ? (
-              // Mobile fallback - Static visual representation
-              <div className="aspect-[1/1] w-full relative flex items-center justify-center">
-                <div className="relative w-full max-w-md mx-auto">
-                  {/* Gradient background sphere */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-magenta-500/20 to-cyan-400/20 rounded-full blur-3xl animate-pulse" />
+              // Mobile fallback - Modern world map visual
+              <div className="relative w-full py-12">
+                {/* Gradient background */}
+                <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-transparent rounded-2xl" />
 
-                  {/* Globe icon with rings */}
-                  <div className="relative z-10 flex items-center justify-center">
+                {/* Connection grid - simplified representation */}
+                <div className="relative z-10 space-y-8">
+                  {/* Brasil -> Global Hub */}
+                  <div className="flex items-center justify-between px-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-magenta-400 animate-pulse" />
+                      <div className="text-sm font-semibold text-white">🇧🇷 Brasil</div>
+                    </div>
+                    <div className="flex-1 h-px bg-gradient-to-r from-purple-400/50 via-transparent to-transparent mx-4" />
+                    <div className="w-2 h-2 rounded-full bg-purple-400/30" />
+                  </div>
+
+                  {/* Europa -> Global Hub */}
+                  <div className="flex items-center justify-between px-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 animate-pulse" style={{ animationDelay: '0.3s' }} />
+                      <div className="text-sm font-semibold text-white">🇫🇷 Europa</div>
+                    </div>
+                    <div className="flex-1 h-px bg-gradient-to-r from-cyan-400/50 via-transparent to-transparent mx-4" />
+                    <div className="w-2 h-2 rounded-full bg-cyan-400/30" />
+                  </div>
+
+                  {/* Centro - Hub Global */}
+                  <div className="flex items-center justify-center py-4">
                     <div className="relative">
-                      {/* Outer ring 1 */}
-                      <div className="absolute inset-0 -m-16 sm:-m-20 rounded-full border-2 border-purple-400/20 animate-ping" style={{ animationDuration: '3s' }} />
-                      {/* Outer ring 2 */}
-                      <div className="absolute inset-0 -m-8 sm:-m-12 rounded-full border-2 border-cyan-400/20 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
-                      {/* Main globe icon */}
-                      <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-gradient-to-br from-purple-900/50 to-indigo-900/50 border-4 border-purple-400/30 flex items-center justify-center backdrop-blur-sm">
-                        <GlobeIcon className="w-24 h-24 sm:w-32 sm:h-32 text-purple-300" strokeWidth={1} />
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-magenta-500/20 to-cyan-400/20 blur-2xl rounded-full" />
+                      <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-zinc-900 to-zinc-800 border-2 border-purple-400/30 flex items-center justify-center">
+                        <GlobeIcon className="w-10 h-10 text-purple-300" strokeWidth={1.5} />
                       </div>
-                      {/* Connection dots */}
-                      <div className="absolute -top-4 left-1/2 w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
-                      <div className="absolute top-1/4 -right-6 w-2 h-2 bg-magenta-400 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
-                      <div className="absolute bottom-1/4 -left-6 w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: '0.6s' }} />
-                      <div className="absolute -bottom-4 right-1/3 w-3 h-3 bg-cyan-400 rounded-full animate-pulse" style={{ animationDelay: '0.9s' }} />
                     </div>
                   </div>
 
-                  {/* Location labels */}
-                  <div className="absolute top-8 left-4 text-xs text-purple-300 font-medium">🇧🇷 Brasil</div>
-                  <div className="absolute top-12 right-8 text-xs text-cyan-300 font-medium">🇺🇸 EUA</div>
-                  <div className="absolute bottom-16 left-8 text-xs text-magenta-300 font-medium">🇫🇷 Europa</div>
-                  <div className="absolute bottom-20 right-4 text-xs text-purple-300 font-medium">🇯🇵 Ásia</div>
+                  {/* EUA -> Global Hub */}
+                  <div className="flex items-center justify-between px-6">
+                    <div className="w-2 h-2 rounded-full bg-magenta-400/30" />
+                    <div className="flex-1 h-px bg-gradient-to-l from-magenta-400/50 via-transparent to-transparent mx-4" />
+                    <div className="flex items-center gap-3">
+                      <div className="text-sm font-semibold text-white">🇺🇸 EUA</div>
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-magenta-400 to-pink-400 animate-pulse" style={{ animationDelay: '0.6s' }} />
+                    </div>
+                  </div>
+
+                  {/* Ásia -> Global Hub */}
+                  <div className="flex items-center justify-between px-6">
+                    <div className="w-2 h-2 rounded-full bg-cyan-400/30" />
+                    <div className="flex-1 h-px bg-gradient-to-l from-cyan-400/50 via-transparent to-transparent mx-4" />
+                    <div className="flex items-center gap-3">
+                      <div className="text-sm font-semibold text-white">🇯🇵 Ásia</div>
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 animate-pulse" style={{ animationDelay: '0.9s' }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom info */}
+                <div className="mt-8 text-center">
+                  <p className="text-xs text-zinc-500">Rede global de investidores conectados</p>
                 </div>
               </div>
             ) : (
