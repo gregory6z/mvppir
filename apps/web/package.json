@@ -50,7 +50,7 @@
     "three": "^0.181.0",
     "three-globe": "^2.45.0",
     "topojson-client": "^3.1.0",
-    "zod": "^4.1.12"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
