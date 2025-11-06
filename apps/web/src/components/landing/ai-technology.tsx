@@ -36,7 +36,7 @@ export const AITechnology = () => {
   ]
 
   return (
-    <section className="py-24 md:py-32 bg-black relative overflow-hidden">
+    <section id="ai-technology" className="py-24 md:py-32 bg-black relative overflow-hidden">
       {/* Background effect */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full" />
