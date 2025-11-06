@@ -134,13 +134,16 @@ export const HowItWorks = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 pt-2 sm:pt-4">
                       {step.details.map((detail, idx) => (
                         <div key={idx} className="flex items-start gap-2.5">
-                          {/* Elegant check icon with gradient background */}
+                          {/* Filled check icon with glow */}
                           <div className="relative shrink-0 mt-0.5 group/check">
                             {/* Glow effect */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-green-400/30 to-emerald-500/30 blur-md rounded-full opacity-50 group-hover/check:opacity-75 transition-opacity" />
-                            {/* Icon container */}
-                            <div className="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/40 flex items-center justify-center backdrop-blur-sm">
-                              <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-400" strokeWidth={2.5} />
+                            <div className="absolute inset-0 bg-gradient-to-br from-green-400/40 to-emerald-500/40 blur-lg rounded-full opacity-60 group-hover/check:opacity-90 transition-opacity" />
+                            {/* Filled check icon */}
+                            <div className="relative w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/30">
+                              {/* White checkmark */}
+                              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
                             </div>
                           </div>
                           <span className="text-xs sm:text-sm text-zinc-300 leading-relaxed">{detail}</span>
