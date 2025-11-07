@@ -20,7 +20,7 @@ export const HowItWorks = () => {
     {
       number: "02",
       title: "Deposite seus fundos com segurança",
-      description: "Faça seu primeiro depósito usando PIX, transferência bancária ou criptomoedas. Seus fundos ficam em carteiras blockchain com múltiplas camadas de segurança e criptografia militar.",
+      description: "Faça seu primeiro depósito em criptomoedas. Todas as transferências são processadas exclusivamente via blockchain com múltiplas camadas de segurança e criptografia AES-256.",
       details: [
         "Depósito mínimo de apenas € 100",
         "Fundos disponíveis instantaneamente",
