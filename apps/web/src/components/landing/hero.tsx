@@ -311,7 +311,7 @@ export const Hero = () => {
                 <CardBody className="relative bg-gradient-to-br from-purple-900/40 via-magenta-900/30 to-purple-900/40 backdrop-blur-md rounded-2xl p-5 shadow-2xl border-2 border-purple-400/60 w-[260px] h-auto overflow-hidden">
                   <div className="space-y-3 relative z-10">
                     <CardItem translateZ="100" className="w-full flex items-center justify-between">
-                      <span className="text-sm text-purple-300 font-medium">ROI Anual</span>
+                      <span className="text-sm text-purple-300 font-medium">ROI Mensal</span>
                       <span className="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-300 font-semibold border border-green-400/30">+22%</span>
                     </CardItem>
                     {/* Simple line chart representation */}
