@@ -238,7 +238,7 @@ export const Hero = () => {
                           <div className="space-y-2 xl:space-y-3 relative z-10">
                             <div className="text-sm xl:text-base text-zinc-400">Saldo Total</div>
                             <div className="text-3xl xl:text-4xl font-bold text-white">€ 45.890</div>
-                            <div className="text-sm xl:text-base text-green-400 font-medium">+2.2% este mês</div>
+                            <div className="text-sm xl:text-base text-green-400 font-medium">+17% este mês</div>
                           </div>
                         </div>
 
