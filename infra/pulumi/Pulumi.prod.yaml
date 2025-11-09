@@ -1,0 +1,37 @@
+config:
+  mvppir-infra:environment: production
+  mvppir-infra:platform: njalla-vps
+  mvppir-infra:region: eu-central
+  mvppir-infra:nodeEnv: production
+
+  # VPS Configuration
+  mvppir-infra:vpsHost: <set-your-njalla-vps-ip>
+  mvppir-infra:vpsUser: deploy
+  mvppir-infra:sshKeyPath: ~/.ssh/id_rsa_njalla
+
+  # Database Configuration
+  mvppir-infra:postgresVersion: "16"
+  mvppir-infra:postgresPort: 5432
+  mvppir-infra:redisVersion: "7"
+  mvppir-infra:redisPort: 6379
+
+  # Application Configuration
+  mvppir-infra:appName: mvpserver
+  mvppir-infra:healthcheckPath: /health
+  mvppir-infra:port: 4000
+  mvppir-infra:domain: <set-your-domain>
+
+  # Docker Configuration
+  mvppir-infra:dockerfilePath: ../../apps/server/Dockerfile
+  mvppir-infra:dockerContext: ../../apps/server
+  mvppir-infra:dockerRegistry: <optional-private-registry>
+
+  # Secrets (use: pulumi config set --secret <key> <value>)
+  # mvppir-infra:authSecret: <set-via-cli>
+  # mvppir-infra:encryptionKey: <set-via-cli>
+  # mvppir-infra:moralisApiKey: <set-via-cli>
+  # mvppir-infra:moralisStreamSecret: <set-via-cli>
+  # mvppir-infra:polygonRpcUrl: <set-via-cli>
+  # mvppir-infra:globalWalletPrivateKey: <set-via-cli>
+  # mvppir-infra:databaseUrl: <set-via-cli>
+  # mvppir-infra:redisUrl: <set-via-cli>

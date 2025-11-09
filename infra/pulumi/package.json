@@ -1,0 +1,24 @@
+{
+  "name": "@mvppir/infra",
+  "version": "1.0.0",
+  "description": "Infrastructure as Code for MVPPIR using Pulumi",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf bin/",
+    "preview": "pulumi preview",
+    "up": "pulumi up",
+    "destroy": "pulumi destroy",
+    "stack:railway": "pulumi stack select railway || pulumi stack init railway",
+    "stack:prod": "pulumi stack select prod || pulumi stack init prod"
+  },
+  "dependencies": {
+    "@pulumi/pulumi": "^3.100.0",
+    "@pulumi/docker": "^4.5.0",
+    "@pulumi/command": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  }
+}

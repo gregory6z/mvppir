@@ -1,0 +1,6 @@
+name: mvppir-infra
+description: Infrastructure as Code for MVPPIR - Railway (dev/staging) and Njalla (production)
+runtime:
+  name: nodejs
+  options:
+    typescript: true
