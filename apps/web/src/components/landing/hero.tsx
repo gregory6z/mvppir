@@ -53,7 +53,7 @@ export const Hero = () => {
       <div className="container relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 mx-auto h-full flex items-center">
         <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-12 md:gap-12 lg:gap-16 xl:gap-20 items-center max-w-7xl mx-auto w-full py-8 sm:py-0">
           {/* Left side - Content */}
-          <div className="text-center md:text-center lg:text-left space-y-7 sm:space-y-7 lg:space-y-8 scale-90 origin-center px-2 sm:px-0">
+          <div className="text-center md:text-center lg:text-left space-y-7 sm:space-y-7 lg:space-y-8 scale-80 origin-center px-2 sm:px-0">
             {/* Badge */}
             <AnimationContainer delay={0.1}>
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/10 via-magenta-500/10 to-cyan-400/10 border border-purple-500/30 backdrop-blur-sm relative overflow-hidden">
@@ -210,7 +210,7 @@ export const Hero = () => {
             {/* Unified container */}
             <div className="relative flex items-center gap-6 lg:gap-8 xl:gap-10">
               {/* Phone Mockup */}
-              <div className="relative w-full max-w-[280px] lg:max-w-[320px] xl:max-w-[370px] scale-90 origin-center">
+              <div className="relative w-full max-w-[280px] lg:max-w-[320px] xl:max-w-[370px] scale-80 origin-center">
                 {/* Subtle glow behind phone */}
                 <div className="absolute inset-0 -z-10">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[650px] xl:w-[500px] xl:h-[700px] bg-purple-500/5 blur-[80px] rounded-full" />
@@ -305,7 +305,7 @@ export const Hero = () => {
               </div>
 
               {/* Info Cards - Right Side - More colorful */}
-              <div className="hidden xl:flex flex-col gap-5 scale-90 origin-center">
+              <div className="hidden xl:flex flex-col gap-5 scale-80 origin-center">
               {/* Growth Chart Card - Purple/Magenta theme */}
               <CardContainer containerClassName="py-0">
                 <CardBody className="relative bg-gradient-to-br from-purple-900/40 via-magenta-900/30 to-purple-900/40 backdrop-blur-md rounded-2xl p-5 shadow-2xl border-2 border-purple-400/60 w-[260px] h-auto overflow-hidden">
