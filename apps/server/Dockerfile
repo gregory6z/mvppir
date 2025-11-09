@@ -49,6 +49,8 @@ RUN addgroup -g 1001 -S nodejs && \
 
 USER nodejs
 
-EXPOSE 4000
+# Railway sets PORT env var automatically, but we expose both common ports
+EXPOSE 3333 4000
 
-CMD ["node", "dist/server.js"]
+# Run migrations before starting the server (matches package.json "start" script)
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
