@@ -147,6 +147,9 @@ importers:
       '@fastify/cors':
         specifier: ^11.1.0
         version: 11.1.0
+      '@fastify/static':
+        specifier: ^8.3.0
+        version: 8.3.0
       '@moralisweb3/common-evm-utils':
         specifier: ^2.27.2
         version: 2.27.2
