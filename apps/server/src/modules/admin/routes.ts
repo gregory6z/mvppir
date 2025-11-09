@@ -6,6 +6,7 @@ import { getBatchCollectStatusController } from "@/modules/admin/controllers/get
 import { getBatchCollectHistoryController } from "@/modules/admin/controllers/get-batch-collect-history-controller";
 import { getMaticStatusController } from "@/modules/admin/controllers/get-matic-status-controller";
 import { getMaticRechargeHistoryController } from "@/modules/admin/controllers/get-matic-recharge-history-controller";
+import { getWorkersStatus } from "@/modules/admin/controllers/get-workers-status";
 
 /**
  * Rotas admin
@@ -26,4 +27,7 @@ export async function adminRoutes(app: FastifyInstance) {
   // MATIC
   app.get("/matic/status", getMaticStatusController);
   app.get("/matic/recharge-history", getMaticRechargeHistoryController);
+
+  // Workers
+  app.get("/workers/status", getWorkersStatus);
 }
