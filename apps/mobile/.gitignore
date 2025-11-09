@@ -30,7 +30,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
+# environment files (keep only .env.example)
+.env
+.env.development
+.env.production
 .env*.local
 
 # typescript

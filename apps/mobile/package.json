@@ -8,6 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "dev": "expo start --clear",
+    "dev:local": "cp .env.development .env && expo start --clear",
+    "dev:prod": "cp .env.production .env && expo start --clear",
     "lint": "expo lint",
     "type-check": "tsc --noEmit"
   },
