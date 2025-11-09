@@ -51,6 +51,7 @@ async function main() {
     // Check if admin already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: admin.email },
+      select: { id: true, email: true }, // Only select fields that definitely exist
     })
 
     if (existingUser) {
