@@ -1,6 +1,7 @@
 # Railway Dockerfile for monorepo
 # Build context: root of monorepo
 # This file copies from apps/server/
+# Updated: 2025-01-09 - Force rebuild without cache
 
 # Build stage
 FROM node:20-alpine AS builder
