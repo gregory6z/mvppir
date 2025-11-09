@@ -26,25 +26,20 @@ infra/
 ### Railway (Desenvolvimento/Staging)
 - **Plataforma**: Railway (managed services)
 - **Banco de dados**: PostgreSQL 16 + Redis 7 (managed)
-- **Deploy**: Automático via GitHub ou Railway CLI
-- **Região**: us-west1
+- **Deploy**: Railway CLI + railway.json
+- **IaC**: Não usa Pulumi (Railway tem CLI própria)
 
 ### Njalla VPS (Produção)
 - **Plataforma**: VPS (self-hosted)
 - **Banco de dados**: PostgreSQL 16 + Redis 7 (Docker)
-- **Deploy**: Docker Compose
+- **Deploy**: Docker Compose + Pulumi (IaC)
 - **Proxy**: Nginx com SSL/TLS (opcional)
 
 ## 🚀 Quick Start
 
-### 1. Instalar Dependências
+### 1. Setup Railway (Teste/Staging)
 
-```bash
-cd infra/pulumi
-pnpm install
-```
-
-### 2. Setup Railway
+Railway **NÃO usa Pulumi**. Use a Railway CLI diretamente:
 
 ```bash
 # Instalar Railway CLI
@@ -53,9 +48,8 @@ npm i -g @railway/cli
 # Login
 railway login
 
-# Configurar projeto
-cd infra/scripts
-./setup.sh railway
+# Link ao projeto (ou criar novo)
+railway link
 ```
 
 **Passos manuais no Railway UI:**
@@ -66,19 +60,37 @@ cd infra/scripts
    - `DATABASE_URL`: `${{Postgres.DATABASE_URL}}`
    - `REDIS_URL`: `${{Redis.REDIS_URL}}`
 5. Adicionar variáveis de ambiente (ver seção abaixo)
-6. Deploy via Railway CLI ou GitHub integration
 
-### 3. Setup Njalla VPS
+**Deploy:**
+```bash
+cd apps/server
+railway up
+```
+
+**Documentação Railway:** Railway usa `railway.json` (na raiz do monorepo) para configuração.
+
+### 2. Setup Njalla VPS (Produção)
+
+Njalla VPS usa **Pulumi + Docker Compose**:
 
 ```bash
-cd infra/scripts
-./setup.sh prod
+# Instalar dependências Pulumi
+cd infra/pulumi
+pnpm install
 
-# Editar .env com seus secrets
-nano ../docker/.env
+```bash
+# Configurar secrets
+cd infra/docker
+cp .env.example .env
+nano .env  # Preencher todos os valores
 
-# Deploy
+# Deploy via script helper
+cd ../scripts
 ./deploy.sh prod
+
+# OU deploy manual com Docker Compose
+cd ../docker
+docker-compose up -d
 ```
 
 ## 🔐 Criação da Global Wallet
@@ -165,32 +177,26 @@ nano infra/docker/.env
 
 Preencha todos os valores obrigatórios marcados com `your-*-here`.
 
-## 📦 Pulumi Secrets Management
+## 📦 Pulumi Secrets Management (Apenas Njalla VPS)
 
-Pulumi oferece gerenciamento seguro de secrets:
+**Nota:** Pulumi é usado **SOMENTE para Njalla VPS**. Railway usa variáveis via Railway UI.
 
 ```bash
 cd infra/pulumi
 
-# Selecionar stack
-pulumi stack select railway  # ou prod
-
-# Configurar secrets (criptografados automaticamente)
-pulumi config set --secret authSecret "your-auth-secret-min-32-chars"
-pulumi config set --secret encryptionKey "your-64-char-hex-key"
-pulumi config set --secret moralisApiKey "your-moralis-key"
-pulumi config set --secret moralisStreamSecret "your-stream-secret"
-pulumi config set --secret polygonRpcUrl "https://polygon-rpc.com"
-pulumi config set --secret globalWalletPrivateKey "your-wallet-key"
-
-# Para produção (Njalla)
+# Selecionar stack de produção
 pulumi stack select prod
-pulumi config set --secret databaseUrl "postgresql://..."
-pulumi config set --secret redisUrl "redis://..."
 
-# Ver configurações (secrets aparecem como [secret])
+# Configurar VPS
+pulumi config set vpsHost "your-njalla-vps-ip"
+pulumi config set vpsUser "deploy"
+pulumi config set sshKeyPath "~/.ssh/id_rsa_njalla"
+
+# Ver configurações
 pulumi config
 ```
+
+**Nota:** Secrets da aplicação (AUTH_SECRET, ENCRYPTION_KEY, etc.) ficam no `.env` do VPS, não no Pulumi.
 
 ## 🛠️ Comandos Úteis
 
@@ -238,21 +244,21 @@ docker-compose exec backend sh -c "cd /app && npx prisma migrate deploy"
 docker-compose ps
 ```
 
-### Pulumi
+### Pulumi (Njalla VPS apenas)
 
 ```bash
 cd infra/pulumi
 
-# Preview changes
+# Preview changes (produção)
 pulumi preview
 
-# Apply changes
+# Deploy to VPS
 pulumi up
 
-# Ver outputs
+# Ver outputs (VPS host, deployment status)
 pulumi stack output
 
-# Destroy infrastructure
+# Destroy infrastructure (cuidado!)
 pulumi destroy
 ```
 

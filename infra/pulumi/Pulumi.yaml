@@ -1,5 +1,5 @@
 name: mvppir-infra
-description: Infrastructure as Code for MVPPIR - Railway (dev/staging) and Njalla (production)
+description: Infrastructure as Code for MVPPIR - Njalla VPS (production)
 runtime:
   name: nodejs
   options:
