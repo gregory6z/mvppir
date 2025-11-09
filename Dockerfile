@@ -6,12 +6,12 @@
 # Build stage
 FROM node:20-alpine AS builder
 
+WORKDIR /app
+
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-WORKDIR /app
-
-# Copy package files from apps/server
+# Copy package files from apps/server (MONOREPO)
 COPY apps/server/package.json apps/server/pnpm-lock.yaml* ./
 COPY apps/server/prisma ./prisma/
 
