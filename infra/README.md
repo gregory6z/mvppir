@@ -93,41 +93,46 @@ cd ../docker
 docker-compose up -d
 ```
 
-## 🔐 Criação da Global Wallet
+## 🔐 Global Wallet
 
-A **Global Wallet** é criada via script e armazenada **CRIPTOGRAFADA** no banco de dados.
+A **Global Wallet** é armazenada **CRIPTOGRAFADA** no banco de dados.
 
-### Railway
+Você tem 2 opções:
 
-Após fazer deploy no Railway:
+### Opção A: Importar carteira existente
 
+Se você **já tem uma carteira** com MATIC:
+
+**Railway:**
 ```bash
-# 1. Conectar ao projeto
 railway link
-
-# 2. Criar Global Wallet (armazenada no banco)
-railway run npx tsx scripts/create-global-wallet.ts
-
-# 3. Adicionar MATIC para pagar gas fees
-# Acesse o endereço exibido e envie MATIC via faucet ou transferência
+PRIVATE_KEY="0x..." railway run npx tsx scripts/import-global-wallet.ts
 ```
 
-### Njalla VPS (Docker Compose)
-
-Após fazer deploy com Docker Compose:
-
+**Njalla VPS (Docker):**
 ```bash
-# 1. Acessar container do backend
 docker-compose exec backend sh
-
-# 2. Criar Global Wallet
-npx tsx scripts/create-global-wallet.ts
-
-# 3. Sair do container
+PRIVATE_KEY="0x..." npx tsx scripts/import-global-wallet.ts
 exit
+```
 
-# 4. Adicionar MATIC para pagar gas fees
-# Acesse o endereço exibido e envie MATIC
+### Opção B: Criar nova carteira
+
+Se você **NÃO tem uma carteira**:
+
+**Railway:**
+```bash
+railway link
+railway run npx tsx scripts/create-global-wallet.ts
+# Depois, adicione MATIC ao endereço exibido
+```
+
+**Njalla VPS (Docker):**
+```bash
+docker-compose exec backend sh
+npx tsx scripts/create-global-wallet.ts
+exit
+# Depois, adicione MATIC ao endereço exibido
 ```
 
 **Documentação completa:** `infra/docs/GLOBAL-WALLET-SETUP.md`

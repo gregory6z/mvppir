@@ -17,6 +17,36 @@ A **Global Wallet** é a carteira centralizada que:
 2. ✅ Migrations do Prisma aplicadas
 3. ✅ Variável `ENCRYPTION_KEY` configurada no .env
 
+## 🔄 Importar Carteira Existente
+
+Se você **já tem uma carteira** e quer apenas importá-la:
+
+```bash
+cd apps/server
+
+# Opção 1: Via variável de ambiente (mais segura)
+PRIVATE_KEY="0x..." npx tsx scripts/import-global-wallet.ts
+
+# Opção 2: Via argumento
+npx tsx scripts/import-global-wallet.ts 0x...
+
+# Opção 3: Script interativo (não salva no histórico)
+cd ../../infra/scripts
+./import-global-wallet.sh
+```
+
+**O que acontece:**
+1. ✅ Valida a private key
+2. ✅ Criptografa com AES-256-GCM
+3. ✅ Salva no banco (tabela `global_wallets`)
+4. ✅ Preserva o endereço original
+
+**Importante:** Certifique-se de que a carteira já tem MATIC para pagar gas fees!
+
+## 🆕 Criar Nova Carteira
+
+Se você **NÃO tem uma carteira** ainda:
+
 ## 🚀 Método 1: Script Automatizado (Recomendado)
 
 ### Passo 1: Gerar ENCRYPTION_KEY
