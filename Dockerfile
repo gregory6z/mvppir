@@ -7,6 +7,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install OpenSSL and other dependencies required by Prisma
+RUN apk add --no-cache openssl libc6-compat
+
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
@@ -32,6 +35,9 @@ RUN pnpm run build
 FROM node:20-alpine
 
 WORKDIR /app
+
+# Install OpenSSL and other dependencies required by Prisma
+RUN apk add --no-cache openssl libc6-compat
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
