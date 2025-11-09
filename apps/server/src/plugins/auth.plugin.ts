@@ -4,13 +4,11 @@ import { auth } from "../lib/auth";
 
 const authPlugin: FastifyPluginAsync = async (fastify) => {
   // Registra as rotas do Better Auth em /api/auth/*
-  fastify.route({
-    method: ["GET", "POST"],
-    url: "/api/auth/*",
-    async handler(request, reply) {
-      try {
-        // Construct request URL
-        const url = new URL(request.url, `http://${request.headers.host}`);
+  // Fastify wildcard syntax: use :path* to match any path
+  fastify.all("/api/auth/*", async (request, reply) => {
+    try {
+      // Construct request URL
+      const url = new URL(request.url, `http://${request.headers.host}`);
 
         // Convert Fastify headers to standard Headers object
         const headers = new Headers();
@@ -69,8 +67,7 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
           code: "AUTH_FAILURE",
         });
       }
-    },
-  });
+    });
 
   // Adiciona helper para verificar autenticação
   fastify.decorate("auth", auth);
