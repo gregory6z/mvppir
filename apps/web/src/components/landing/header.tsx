@@ -11,7 +11,7 @@ export const Header = () => {
     { label: "Recursos", href: "#features" },
     { label: "Como Funciona", href: "#how-it-works" },
     { label: "Tecnologia IA", href: "#ai-technology" },
-    { label: "Investidores", href: "#testimonials" },
+    { label: "Investidores", href: "#global-reach" },
   ]
 
   const scrollToSection = (href: string) => {
