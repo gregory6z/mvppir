@@ -24,8 +24,8 @@ const vpsUser = config.get("vpsUser") || "deploy";
 const sshKeyPath = config.get("sshKeyPath") || "~/.ssh/id_rsa";
 
 // Export stack information
-pulumi.export("environment", environment);
-pulumi.export("vpsHost", vpsHost);
+export const stackEnvironment = environment;
+export const stackVpsHost = vpsHost;
 
 /**
  * Njalla VPS Production Deployment
@@ -68,12 +68,12 @@ const deploy = new command.remote.Command("deploy-to-vps", {
 });
 
 // Export VPS deployment info
-pulumi.export("vpsDeployment", {
+export const vpsDeployment = {
   host: vpsHost,
   user: vpsUser,
   imageName: image.imageName,
   deploymentStatus: deploy.stdout,
-});
+};
 
 pulumi.log.info("✅ VPS deployment configured");
 pulumi.log.info(`SSH: ${vpsUser}@${vpsHost}`);
