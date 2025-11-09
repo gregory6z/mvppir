@@ -62,6 +62,9 @@ async function main() {
     // Hash password with bcrypt (same as Better Auth)
     const hashedPassword = await bcrypt.hash(admin.password, 10)
 
+    // Generate referral code (ALPHA, BRAVO, CHARLIE, DELTA)
+    const referralCode = admin.name.split(" ")[0].toUpperCase()
+
     // Create admin user
     const user = await prisma.user.create({
       data: {
@@ -70,6 +73,7 @@ async function main() {
         emailVerified: true,
         role: "ADMIN",
         status: "ACTIVE",
+        referralCode,
       },
     })
 
@@ -86,15 +90,18 @@ async function main() {
 
     console.log(`✅ Created admin: ${admin.email}`)
     console.log(`   Password: ${admin.password}`)
+    console.log(`   Referral Code: ${referralCode}`)
   }
 
   console.log("\n🎉 Seed completed!")
   console.log("\n📋 Admin Credentials:")
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
   admins.forEach((admin) => {
+    const code = admin.name.split(" ")[0].toUpperCase()
     console.log(`${admin.name}`)
     console.log(`  Email: ${admin.email}`)
     console.log(`  Password: ${admin.password}`)
+    console.log(`  Referral Code: ${code}`)
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
   })
 }
