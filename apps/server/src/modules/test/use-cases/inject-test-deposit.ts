@@ -59,38 +59,64 @@ export async function injectTestDeposit(
   const amountDecimal = new Decimal(amount)
   const rawAmount = amountDecimal.mul(new Decimal(10).pow(tokenDecimals)).toString()
 
-  // 4. Criar transação de teste
-  const transaction = await prisma.walletTransaction.create({
-    data: {
-      userId: user.id,
-      depositAddressId: depositAddress.id,
-      type: "CREDIT",
-      tokenSymbol,
-      tokenAddress,
-      tokenDecimals,
-      amount: amountDecimal,
-      rawAmount,
-      txHash: testTxHash,
-      status: "CONFIRMED", // Já começa confirmada
-      isTest: true, // 🔑 Flag que marca como teste
-    },
+  // 4. Criar transação de teste E atualizar balance do usuário
+  const result = await prisma.$transaction(async (tx) => {
+    // 4.1. Criar transação de teste
+    const transaction = await tx.walletTransaction.create({
+      data: {
+        userId: user.id,
+        depositAddressId: depositAddress.id,
+        type: "CREDIT",
+        tokenSymbol,
+        tokenAddress,
+        tokenDecimals,
+        amount: amountDecimal,
+        rawAmount,
+        txHash: testTxHash,
+        status: "CONFIRMED", // Já começa confirmada
+        isTest: true, // 🔑 Flag que marca como teste
+      },
+    })
+
+    // 4.2. Atualizar Balance do usuário (adiciona saldo fictício)
+    await tx.balance.upsert({
+      where: {
+        userId_tokenSymbol: {
+          userId: user.id,
+          tokenSymbol,
+        },
+      },
+      create: {
+        userId: user.id,
+        tokenSymbol,
+        tokenAddress,
+        availableBalance: amountDecimal,
+        lockedBalance: new Decimal(0),
+      },
+      update: {
+        availableBalance: { increment: amountDecimal },
+      },
+    })
+
+    return transaction
   })
 
   console.log(`✅ Test deposit injected for ${userEmail}:`, {
     amount: `${amount} ${tokenSymbol}`,
     txHash: testTxHash,
     isTest: true,
+    balanceUpdated: true,
   })
 
   return {
     transaction: {
-      id: transaction.id,
-      userId: transaction.userId,
-      tokenSymbol: transaction.tokenSymbol,
-      amount: transaction.amount.toString(),
-      status: transaction.status,
-      isTest: transaction.isTest,
-      createdAt: transaction.createdAt,
+      id: result.id,
+      userId: result.userId,
+      tokenSymbol: result.tokenSymbol,
+      amount: result.amount.toString(),
+      status: result.status,
+      isTest: result.isTest,
+      createdAt: result.createdAt,
     },
   }
 }

@@ -221,10 +221,12 @@ export async function calculateNetworkVolume(
   ];
 
   // Sum all confirmed deposits from network
+  // Ignora depósitos de teste (apenas dinheiro real conta para volume MLM)
   const whereClause: any = {
     userId: { in: allNetworkUserIds },
     status: "CONFIRMED",
     type: "CREDIT",
+    isTest: false, // 🔑 Ignora depósitos de teste
   };
 
   // Add date range if provided (for monthly volume)

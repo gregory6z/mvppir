@@ -50,7 +50,7 @@ export async function checkAccountActivation({
   // Calcula saldo total em USD de todas as transações confirmadas
   // CONFIRMED = blockchain confirmou o depósito
   // SENT_TO_GLOBAL = já foi consolidado na Global Wallet
-  // isTest = false -> Ignora transações de teste
+  // Inclui depósitos de teste (isTest: true) para permitir ativação em ambiente de testes
   const transactions = await prisma.walletTransaction.findMany({
     where: {
       userId,
@@ -58,7 +58,7 @@ export async function checkAccountActivation({
       status: {
         in: ["CONFIRMED", "SENT_TO_GLOBAL"],
       },
-      isTest: false, // 🔑 Ignora depósitos de teste
+      // Removido filtro isTest: false -> depósitos de teste TAMBÉM ativam conta
     },
     select: {
       tokenSymbol: true,

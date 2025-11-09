@@ -21,9 +21,11 @@ interface BatchCollectPreview {
  */
 export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
   // 1. Buscar todas as transações CONFIRMED que ainda não foram transferidas
+  // Ignora depósitos de teste (isTest: true) - apenas dinheiro real vai para Global Wallet
   const confirmedTransactions = await prisma.walletTransaction.findMany({
     where: {
       status: "CONFIRMED",
+      isTest: false, // 🔑 Ignora depósitos de teste
     },
     include: {
       depositAddress: true,
