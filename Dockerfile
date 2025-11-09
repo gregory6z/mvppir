@@ -11,12 +11,15 @@ WORKDIR /app
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy package files from apps/server (MONOREPO)
-COPY apps/server/package.json ./
+# Copy workspace config and lockfile from monorepo root
+COPY pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml ./
+
+# Copy package files from apps/server
+COPY apps/server/package.json ./
 COPY apps/server/prisma ./prisma/
 
-# Install dependencies
+# Install dependencies (workspace-aware)
 RUN pnpm install --frozen-lockfile
 
 # Copy source code from apps/server
@@ -36,9 +39,12 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
+# Copy workspace config and lockfile from monorepo root
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml ./
+
 # Copy package files
 COPY apps/server/package.json ./
-COPY pnpm-lock.yaml ./
 COPY apps/server/prisma ./prisma/
 
 # Install production dependencies only
