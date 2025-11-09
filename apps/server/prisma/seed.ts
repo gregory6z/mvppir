@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcrypt"
+import { auth } from "../src/lib/auth"
 
 const prisma = new PrismaClient()
 
@@ -51,7 +51,7 @@ async function main() {
     // Check if admin already exists
     const existingUser = await prisma.user.findUnique({
       where: { email: admin.email },
-      select: { id: true, email: true }, // Only select fields that definitely exist
+      select: { id: true, email: true },
     })
 
     if (existingUser) {
@@ -59,38 +59,41 @@ async function main() {
       continue
     }
 
-    // Hash password with bcrypt (same as Better Auth)
-    const hashedPassword = await bcrypt.hash(admin.password, 10)
-
     // Generate referral code (ALPHA, BRAVO, CHARLIE, DELTA)
     const referralCode = admin.name.split(" ")[0].toUpperCase()
 
-    // Create admin user
-    const user = await prisma.user.create({
-      data: {
-        email: admin.email,
-        name: admin.name,
-        emailVerified: true,
-        role: "ADMIN",
-        status: "ACTIVE",
-        referralCode,
-      },
-    })
+    try {
+      // Use Better Auth API to create user (handles password hashing automatically)
+      const result = await auth.api.signUpEmail({
+        body: {
+          email: admin.email,
+          password: admin.password,
+          name: admin.name,
+        },
+      })
 
-    // Create account with hashed password (Better Auth table)
-    await prisma.account.create({
-      data: {
-        id: `${user.id}_credential`, // Better Auth format
-        userId: user.id,
-        accountId: user.id,
-        providerId: "credential",
-        password: hashedPassword,
-      },
-    })
+      if (!result || !result.user) {
+        console.error(`❌ Failed to create admin ${admin.email}: No user returned`)
+        continue
+      }
 
-    console.log(`✅ Created admin: ${admin.email}`)
-    console.log(`   Password: ${admin.password}`)
-    console.log(`   Referral Code: ${referralCode}`)
+      // Update user to be admin with referral code
+      await prisma.user.update({
+        where: { id: result.user.id },
+        data: {
+          role: "ADMIN",
+          status: "ACTIVE",
+          emailVerified: true,
+          referralCode,
+        },
+      })
+
+      console.log(`✅ Created admin: ${admin.email}`)
+      console.log(`   Password: ${admin.password}`)
+      console.log(`   Referral Code: ${referralCode}`)
+    } catch (error) {
+      console.error(`❌ Error creating admin ${admin.email}:`, error)
+    }
   }
 
   console.log("\n🎉 Seed completed!")
