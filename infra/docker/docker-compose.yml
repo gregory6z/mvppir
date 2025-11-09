@@ -43,7 +43,7 @@ services:
   backend:
     build:
       context: ../../apps/server
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     container_name: mvppir-backend
     restart: unless-stopped
     depends_on:
