@@ -76,6 +76,29 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
             // Don't block user creation if code generation fails
           }
 
+          // 1.1. Create deposit address automatically
+          try {
+            const { Wallet } = await import("ethers");
+            const { encryptPrivateKey } = await import("./encryption");
+
+            const wallet = Wallet.createRandom();
+            const encryptedKey = encryptPrivateKey(wallet.privateKey);
+
+            await prisma.depositAddress.create({
+              data: {
+                userId: user.id,
+                polygonAddress: wallet.address.toLowerCase(),
+                privateKey: encryptedKey,
+                status: "ACTIVE",
+              },
+            });
+
+            console.log(`✅ Created deposit address for ${user.name}: ${wallet.address.toLowerCase()}`);
+          } catch (error) {
+            console.error(`❌ Failed to create deposit address for user ${user.id}:`, error);
+            // Don't block user creation if address generation fails
+          }
+
           // 2. Process referral code (link to referrer) if provided
           if (!context) {
             return;
