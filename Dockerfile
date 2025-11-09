@@ -30,6 +30,8 @@ COPY apps/server ./apps/server
 WORKDIR /app/apps/server
 RUN pnpm prisma generate
 RUN pnpm run build
+# Compile seed.ts to JavaScript for production
+RUN pnpm tsup prisma/seed.ts --out-dir dist --no-splitting
 
 # Production stage
 FROM node:20-alpine
@@ -74,5 +76,5 @@ USER nodejs
 # Railway sets PORT env var automatically
 EXPOSE 3333 4000
 
-# Run migrations before starting (from apps/server directory)
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+# Run migrations and seed before starting (from apps/server directory)
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/seed.js && node dist/server.js"]
