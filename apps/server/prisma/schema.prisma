@@ -222,11 +222,13 @@ model WalletTransaction {
   txHash           String            @unique // Hash da transação de depósito
   transferTxHash   String?           @unique // Hash da transferência para global
   status           TransactionStatus @default(PENDING)
+  isTest           Boolean           @default(false) // Transações de teste não afetam balance
   createdAt        DateTime          @default(now())
 
   user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   depositAddress DepositAddress @relation(fields: [depositAddressId], references: [id], onDelete: Cascade)
 
+  @@index([isTest])
   @@map("wallet_transactions")
 }
 

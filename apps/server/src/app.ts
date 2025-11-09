@@ -11,6 +11,7 @@ import { transferRoutes } from './modules/transfer/routes'
 import { mlmRoutes } from './modules/mlm/routes'
 import { adminRoutes } from './modules/admin/routes'
 import { referralRoutes } from './modules/referral/routes'
+import { testRoutes } from './modules/test/routes'
 
 export async function buildApp() {
   const app = Fastify({
@@ -123,6 +124,9 @@ export async function buildApp() {
 
   // Referral routes (public)
   await app.register(referralRoutes, { prefix: '/referral' })
+
+  // Test routes (admin only)
+  await app.register(testRoutes, { prefix: '/admin/test' })
 
   return app
 }
