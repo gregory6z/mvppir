@@ -694,8 +694,522 @@ Notifications.addNotificationResponseReceivedListener((response) => {
 8. ✅ Deep links avançados
 9. ✅ Notificações agendadas (lembretes)
 
+### Fase 4 (Admin Broadcasting):
+10. ✅ **Painel admin para enviar notificações customizadas**
+11. ✅ **Segmentação de usuários** (rank, status, etc)
+12. ✅ **Agendamento de campanhas**
+13. ✅ **Estatísticas de entrega e abertura**
+
+---
+
+## 📣 Notificações Admin (Broadcast)
+
+### Casos de Uso:
+
+**Marketing/Publicidade:**
+- "🎉 Nova promoção: 2x comissões neste fim de semana!"
+- "🚀 Novo recurso disponível no app!"
+- "💎 Upgrade seu rank e ganhe 20% a mais em comissões"
+
+**Avisos Importantes:**
+- "⚠️ Manutenção programada para amanhã às 2h"
+- "📢 Mudanças nos termos de serviço"
+- "🔒 Atualização de segurança disponível"
+
+**Engajamento:**
+- "👋 Sentimos sua falta! Volte e ganhe bônus"
+- "🎯 Você está a $50 de subir para o próximo rank!"
+- "💰 Não deixe suas comissões acumularem - faça um saque!"
+
+---
+
+## 🎛️ Interface Admin - Painel de Notificações
+
+### Tela: `/admin/notifications/broadcast`
+
+```
+┌──────────────────────────────────────────────────────┐
+│  📣 Enviar Notificação para Usuários                 │
+├──────────────────────────────────────────────────────┤
+│                                                       │
+│  🎯 Segmentação:                                     │
+│  ◉ Todos os usuários                                 │
+│  ○ Filtrar por:                                      │
+│    □ Rank: [ ] RECRUIT [ ] BRONZE [x] SILVER [x] GOLD│
+│    □ Status: [x] ACTIVE [ ] INACTIVE [ ] BLOCKED    │
+│    □ Última atividade: [Últimos 7 dias ▼]          │
+│                                                       │
+│  📝 Conteúdo:                                        │
+│  Título:                                             │
+│  ┌─────────────────────────────────────────────┐   │
+│  │ 🎉 Nova Promoção!                           │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                       │
+│  Mensagem:                                           │
+│  ┌─────────────────────────────────────────────┐   │
+│  │ Ganhe 2x comissões neste fim de semana!    │   │
+│  │ Válido de 15/11 a 17/11.                   │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                       │
+│  🔗 Link (opcional):                                 │
+│  ┌─────────────────────────────────────────────┐   │
+│  │ https://mvppir.com/promocao                │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                       │
+│  📅 Quando Enviar:                                   │
+│  ◉ Agora                                             │
+│  ○ Agendar para: [15/11/2025 10:00 ▼]              │
+│                                                       │
+│  📊 Estimativa: ~1,234 usuários receberão           │
+│                                                       │
+│  [📱 Preview]  [💾 Salvar Rascunho]  [📤 Enviar]   │
+└──────────────────────────────────────────────────────┘
+```
+
+### Preview Modal:
+
+```
+┌─────────────────────────────────┐
+│  📱 Preview da Notificação      │
+├─────────────────────────────────┤
+│                                 │
+│  Como vai aparecer no celular:  │
+│                                 │
+│  ┌───────────────────────────┐ │
+│  │ MVPPIR               agora │ │
+│  ├───────────────────────────┤ │
+│  │ 🎉 Nova Promoção!        │ │
+│  │ Ganhe 2x comissões neste │ │
+│  │ fim de semana! Válido... │ │
+│  └───────────────────────────┘ │
+│                                 │
+│  [Fechar]                       │
+└─────────────────────────────────┘
+```
+
+---
+
+## 📊 Schema do Banco de Dados - Broadcast
+
+### Tabela: `broadcast_notifications`
+
+```prisma
+enum BroadcastStatus {
+  DRAFT      // Rascunho (não enviado)
+  SCHEDULED  // Agendado para envio futuro
+  SENDING    // Sendo enviado agora
+  SENT       // Enviado com sucesso
+  FAILED     // Falhou ao enviar
+}
+
+model BroadcastNotification {
+  id          String          @id @default(uuid())
+  createdBy   String          // Admin userId que criou
+  title       String
+  message     String
+  linkUrl     String?         // Link opcional
+  status      BroadcastStatus @default(DRAFT)
+
+  // Segmentação
+  targetAll   Boolean         @default(true)
+  targetRanks String[]        // ["BRONZE", "SILVER"] ou []
+  targetStatus String[]       // ["ACTIVE"] ou []
+
+  // Agendamento
+  scheduledFor DateTime?      // null = enviar agora
+  sentAt       DateTime?      // Quando foi enviado
+
+  // Estatísticas
+  totalSent   Int             @default(0)
+  totalOpened Int             @default(0)
+  totalFailed Int             @default(0)
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([status])
+  @@index([scheduledFor])
+  @@map("broadcast_notifications")
+}
+```
+
+---
+
+## 🔧 Backend - Endpoints Admin
+
+### 1. Criar/Salvar Rascunho
+
+```typescript
+POST /admin/notifications/broadcast
+Authorization: Bearer <admin-token>
+
+{
+  "title": "🎉 Nova Promoção!",
+  "message": "Ganhe 2x comissões neste fim de semana!",
+  "linkUrl": "https://mvppir.com/promocao",
+  "targetAll": false,
+  "targetRanks": ["SILVER", "GOLD"],
+  "targetStatus": ["ACTIVE"],
+  "scheduledFor": "2025-11-15T10:00:00Z" // null = enviar agora
+}
+
+Response:
+{
+  "id": "broadcast-123",
+  "status": "DRAFT",
+  "estimatedRecipients": 1234
+}
+```
+
+### 2. Preview (Quantos Usuários Vão Receber)
+
+```typescript
+POST /admin/notifications/broadcast/preview
+Authorization: Bearer <admin-token>
+
+{
+  "targetAll": false,
+  "targetRanks": ["SILVER", "GOLD"],
+  "targetStatus": ["ACTIVE"]
+}
+
+Response:
+{
+  "totalUsers": 1234,
+  "breakdown": {
+    "SILVER": 800,
+    "GOLD": 434
+  }
+}
+```
+
+### 3. Enviar/Agendar
+
+```typescript
+POST /admin/notifications/broadcast/:id/send
+Authorization: Bearer <admin-token>
+
+Response:
+{
+  "id": "broadcast-123",
+  "status": "SENDING", // ou "SCHEDULED"
+  "message": "Notificação sendo enviada para 1234 usuários"
+}
+```
+
+### 4. Histórico de Broadcasts
+
+```typescript
+GET /admin/notifications/broadcast/history
+Authorization: Bearer <admin-token>
+
+Response:
+{
+  "broadcasts": [
+    {
+      "id": "broadcast-123",
+      "title": "🎉 Nova Promoção!",
+      "status": "SENT",
+      "totalSent": 1234,
+      "totalOpened": 567,
+      "sentAt": "2025-11-15T10:00:00Z",
+      "createdBy": "Admin User"
+    }
+  ]
+}
+```
+
+### 5. Estatísticas de um Broadcast
+
+```typescript
+GET /admin/notifications/broadcast/:id/stats
+Authorization: Bearer <admin-token>
+
+Response:
+{
+  "id": "broadcast-123",
+  "title": "🎉 Nova Promoção!",
+  "totalSent": 1234,
+  "totalOpened": 567,
+  "totalFailed": 12,
+  "openRate": 45.9,  // %
+  "deliveryRate": 99.0, // %
+  "timeline": [
+    { "time": "2025-11-15T10:00:00Z", "sent": 100 },
+    { "time": "2025-11-15T10:01:00Z", "sent": 200 }
+  ]
+}
+```
+
+---
+
+## 🔄 Fluxo Completo - Broadcast
+
+### 1. Admin Cria Notificação
+
+```
+Admin Dashboard          Backend                   Database
+     │                      │                          │
+     ├─ Preenche form ──────>│                          │
+     │                      ├─ Valida dados            │
+     │                      ├─ Salva rascunho ───────>│
+     │<─ Confirmação ────────┤                          │
+```
+
+### 2. Admin Visualiza Preview
+
+```
+Admin Dashboard          Backend                   Database
+     │                      │                          │
+     ├─ Clica "Preview" ────>│                          │
+     │                      ├─ Query usuários ────────>│
+     │                      │<─ Count (1234) ──────────┤
+     │<─ Mostra preview ─────┤                          │
+```
+
+### 3. Admin Envia/Agenda
+
+```
+Admin Dashboard          Backend                   Job Queue
+     │                      │                          │
+     ├─ Clica "Enviar" ─────>│                          │
+     │                      ├─ Cria job ──────────────>│
+     │<─ Confirmação ────────┤                          │
+     │                      │                          │
+     │                      │<─ Processa em background ┤
+     │                      ├─ Busca usuários          │
+     │                      ├─ Envia push (lote)       │
+     │                      └─ Atualiza estatísticas   │
+```
+
+### 4. Usuário Recebe
+
+```
+Mobile                   Push Service              Backend
+  │                         │                        │
+  │<─ Push notification ────┤<─ Expo API ────────────┤
+  ├─ Mostra notificação     │                        │
+  ├─ Usuário clica          │                        │
+  ├─ Abre app/link ─────────────────────────────────>│
+  │                         │                        ├─ Marca "opened"
+```
+
+---
+
+## 🎯 Segmentação de Usuários
+
+### Filtros Disponíveis:
+
+**Por Rank:**
+- [ ] RECRUIT
+- [ ] BRONZE
+- [ ] SILVER
+- [ ] GOLD
+
+**Por Status:**
+- [ ] ACTIVE (conta ativada)
+- [ ] INACTIVE (conta não ativada)
+- [ ] BLOCKED (bloqueado)
+
+**Por Atividade:**
+- Última atividade nos últimos X dias
+- Usuários que não sacaram nos últimos X dias
+- Usuários com comissões acumuladas > $X
+
+**Por Volume:**
+- Saldo total > $X
+- Volume da rede > $X
+
+**Exemplo de Query:**
+
+```sql
+-- Enviar para usuários SILVER/GOLD ativos
+SELECT DISTINCT u.id
+FROM users u
+INNER JOIN push_tokens pt ON pt.userId = u.id
+WHERE u.currentRank IN ('SILVER', 'GOLD')
+  AND u.status = 'ACTIVE'
+  AND pt.active = true
+```
+
+---
+
+## 📈 Estatísticas e Analytics
+
+### Métricas por Broadcast:
+
+- **Taxa de Entrega:** (enviados / total) × 100%
+- **Taxa de Abertura:** (abertos / enviados) × 100%
+- **Taxa de Falha:** (falhas / total) × 100%
+- **Conversão:** Se tiver link, quantos clicaram
+
+### Dashboard Admin:
+
+```
+┌────────────────────────────────────────────┐
+│  📊 Estatísticas de Broadcasts             │
+├────────────────────────────────────────────┤
+│                                            │
+│  Total Enviados (30 dias): 5              │
+│  Usuários Alcançados: 12,345              │
+│  Taxa Média de Abertura: 42.3%            │
+│                                            │
+│  📈 Últimos Broadcasts:                    │
+│                                            │
+│  🎉 Nova Promoção! (15/11)                │
+│     1,234 enviados | 567 abertos (45.9%) │
+│                                            │
+│  ⚠️ Manutenção Programada (10/11)         │
+│     3,456 enviados | 1,234 abertos (35.7%)│
+│                                            │
+└────────────────────────────────────────────┘
+```
+
+---
+
+## ⚡ Rate Limiting e Segurança
+
+### Limites:
+
+- **Max 1 broadcast** a cada 15 minutos (evitar spam)
+- **Max 100 broadcasts** por mês (plano free)
+- **Max 10 agendamentos** simultâneos
+
+### Validações:
+
+```typescript
+// Backend validation
+async function validateBroadcast(data) {
+  // 1. Título entre 5-50 caracteres
+  if (data.title.length < 5 || data.title.length > 50) {
+    throw new Error('Título deve ter entre 5 e 50 caracteres')
+  }
+
+  // 2. Mensagem entre 10-200 caracteres
+  if (data.message.length < 10 || data.message.length > 200) {
+    throw new Error('Mensagem deve ter entre 10 e 200 caracteres')
+  }
+
+  // 3. Link válido (se fornecido)
+  if (data.linkUrl && !isValidUrl(data.linkUrl)) {
+    throw new Error('URL inválida')
+  }
+
+  // 4. Não pode enviar para 0 usuários
+  const count = await countTargetUsers(data)
+  if (count === 0) {
+    throw new Error('Nenhum usuário será alcançado com essa segmentação')
+  }
+
+  // 5. Rate limit
+  const recentBroadcasts = await prisma.broadcastNotification.count({
+    where: {
+      createdBy: adminId,
+      createdAt: { gte: new Date(Date.now() - 15 * 60 * 1000) }
+    }
+  })
+
+  if (recentBroadcasts > 0) {
+    throw new Error('Aguarde 15 minutos antes de enviar outro broadcast')
+  }
+}
+```
+
+---
+
+## 🛠️ Implementação - Checklist
+
+### Backend:
+
+- [ ] Criar migration `broadcast_notifications`
+- [ ] Criar endpoint `POST /admin/notifications/broadcast`
+- [ ] Criar endpoint `POST /admin/notifications/broadcast/preview`
+- [ ] Criar endpoint `POST /admin/notifications/broadcast/:id/send`
+- [ ] Criar endpoint `GET /admin/notifications/broadcast/history`
+- [ ] Criar endpoint `GET /admin/notifications/broadcast/:id/stats`
+- [ ] Criar worker para broadcasts agendados
+- [ ] Implementar rate limiting
+- [ ] Implementar segmentação de usuários
+- [ ] Implementar tracking de aberturas
+
+### Web (Admin Dashboard):
+
+- [ ] Criar tela `/admin/notifications/broadcast`
+- [ ] Form de criação com validação
+- [ ] Preview de notificação
+- [ ] Segmentação UI (filtros)
+- [ ] Agendamento (date/time picker)
+- [ ] Histórico de broadcasts
+- [ ] Dashboard de estatísticas
+- [ ] Gráficos de taxa de abertura
+
+### Mobile:
+
+- [ ] Tracking quando usuário abre notificação broadcast
+- [ ] Deep link para `linkUrl` customizado
+- [ ] Marcar broadcast como "opened"
+
+---
+
+## 💡 Ideias Futuras
+
+### Templates de Mensagens:
+
+```typescript
+const templates = [
+  {
+    name: "Promoção",
+    title: "🎉 {promo_name}",
+    message: "{promo_description}. Válido até {date}.",
+  },
+  {
+    name: "Novo Recurso",
+    title: "🚀 Novidade no App!",
+    message: "{feature_description}. Confira agora!",
+  },
+  {
+    name: "Aviso",
+    title: "⚠️ {warning_title}",
+    message: "{warning_message}",
+  }
+]
+```
+
+### A/B Testing:
+
+Enviar 2 versões diferentes e ver qual tem melhor abertura:
+
+```typescript
+{
+  "variants": [
+    {
+      "title": "🎉 Promoção Especial!",
+      "message": "Versão A...",
+      "percentage": 50
+    },
+    {
+      "title": "💰 Ganhe Mais Comissões!",
+      "message": "Versão B...",
+      "percentage": 50
+    }
+  ]
+}
+```
+
+### Automações:
+
+- "Se usuário não abriu app em 7 dias, enviar notificação de re-engajamento"
+- "Se usuário está a $50 do próximo rank, enviar motivação"
+- "Se usuário tem saldo > $500 e não sacou em 30 dias, enviar lembrete"
+
 ---
 
 **Pronto para começar a implementação?**
+
+Agora temos 4 fases no roadmap:
+1. **Fase 1 (MVP):** Notificações automáticas básicas
+2. **Fase 2:** Notificações de saque e rank
+3. **Fase 3:** Notificações in-app e deep links
+4. **Fase 4:** **Painel admin de broadcasts** 📣
 
 Vamos começar pelo backend (migration + endpoints) ou pelo mobile (setup de push)?
