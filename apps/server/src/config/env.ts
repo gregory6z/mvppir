@@ -48,13 +48,13 @@ const envSchema = z.object({
   POLYGON_RPC_URL: z.string().url().default('https://polygon-rpc.com'),
   POLYGON_CHAIN_ID: z.string().default('137'),
 
-  // Global Wallet
+  // Global Wallet (DEPRECATED - sistema usa banco de dados)
+  // A Global Wallet é criada via script e armazenada CRIPTOGRAFADA no banco
+  // Essas variáveis são opcionais e não são usadas pelo código
   GLOBAL_WALLET_ADDRESS: z.string().regex(/^0x[a-fA-F0-9]{40}$/, {
     message: 'GLOBAL_WALLET_ADDRESS must be a valid Ethereum address',
-  }),
-  GLOBAL_WALLET_PRIVATE_KEY: z.string().min(1, {
-    message: 'GLOBAL_WALLET_PRIVATE_KEY is required',
-  }),
+  }).optional(),
+  GLOBAL_WALLET_PRIVATE_KEY: z.string().optional(),
 
   // Testing
   SKIP_BLOCKCHAIN_PROCESSING: z.coerce.boolean().default(false),

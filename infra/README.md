@@ -81,6 +81,45 @@ nano ../docker/.env
 ./deploy.sh prod
 ```
 
+## 🔐 Criação da Global Wallet
+
+A **Global Wallet** é criada via script e armazenada **CRIPTOGRAFADA** no banco de dados.
+
+### Railway
+
+Após fazer deploy no Railway:
+
+```bash
+# 1. Conectar ao projeto
+railway link
+
+# 2. Criar Global Wallet (armazenada no banco)
+railway run npx tsx scripts/create-global-wallet.ts
+
+# 3. Adicionar MATIC para pagar gas fees
+# Acesse o endereço exibido e envie MATIC via faucet ou transferência
+```
+
+### Njalla VPS (Docker Compose)
+
+Após fazer deploy com Docker Compose:
+
+```bash
+# 1. Acessar container do backend
+docker-compose exec backend sh
+
+# 2. Criar Global Wallet
+npx tsx scripts/create-global-wallet.ts
+
+# 3. Sair do container
+exit
+
+# 4. Adicionar MATIC para pagar gas fees
+# Acesse o endereço exibido e envie MATIC
+```
+
+**Documentação completa:** `infra/docs/GLOBAL-WALLET-SETUP.md`
+
 ## 🔐 Variáveis de Ambiente
 
 ### Railway
@@ -108,9 +147,8 @@ MORALIS_STREAM_SECRET=<your-secret>
 POLYGON_RPC_URL=https://polygon-rpc.com
 POLYGON_CHAIN_ID=137
 
-# Global Wallet
-GLOBAL_WALLET_ADDRESS=0x...
-GLOBAL_WALLET_PRIVATE_KEY=<encrypted-or-plain>
+# Global Wallet (criada via script - não necessário aqui)
+# Após deploy, execute: railway run npx tsx scripts/create-global-wallet.ts
 
 # Frontend
 FRONTEND_URL=https://mvppir.vercel.app

@@ -32,6 +32,8 @@ config:
   # mvppir-infra:moralisApiKey: <set-via-cli>
   # mvppir-infra:moralisStreamSecret: <set-via-cli>
   # mvppir-infra:polygonRpcUrl: <set-via-cli>
-  # mvppir-infra:globalWalletPrivateKey: <set-via-cli>
   # mvppir-infra:databaseUrl: <set-via-cli>
   # mvppir-infra:redisUrl: <set-via-cli>
+
+  # Global Wallet não é mais necessário como env var
+  # Será criada via: docker-compose exec backend npx tsx scripts/create-global-wallet.ts

@@ -23,7 +23,6 @@ const encryptionKey = config.requireSecret("encryptionKey");
 const moralisApiKey = config.requireSecret("moralisApiKey");
 const moralisStreamSecret = config.requireSecret("moralisStreamSecret");
 const polygonRpcUrl = config.requireSecret("polygonRpcUrl");
-const globalWalletPrivateKey = config.requireSecret("globalWalletPrivateKey");
 
 // Database secrets
 const postgresVersion = config.get("postgresVersion") || "16";
@@ -71,8 +70,7 @@ if (platform === "railway") {
     moralisApiKey,
     moralisStreamSecret,
     polygonRpcUrl,
-    globalWalletPrivateKey,
-  ]).apply(([auth, encryption, moralisKey, moralisStream, rpcUrl, walletKey]) => ({
+  ]).apply(([auth, encryption, moralisKey, moralisStream, rpcUrl]) => ({
     NODE_ENV: nodeEnv,
     PORT: port.toString(),
 
@@ -92,16 +90,16 @@ if (platform === "railway") {
     POLYGON_RPC_URL: rpcUrl,
     POLYGON_CHAIN_ID: "137",
 
-    // Wallet
-    GLOBAL_WALLET_ADDRESS: config.get("globalWalletAddress") || "<set-in-railway>",
-    GLOBAL_WALLET_PRIVATE_KEY: walletKey,
+    // Global Wallet (não necessário - criada via script após deploy)
+    // Execute: railway run npx tsx scripts/create-global-wallet.ts
 
     // Frontend
     FRONTEND_URL: config.get("frontendUrl") || "https://mvppir.vercel.app",
   }));
 
-  export const railwayEnvTemplate = envVars;
-  export const dockerImageName = image.imageName;
+  // Note: These are conditionally exported based on platform
+  pulumi.export("railwayEnvTemplate", envVars);
+  pulumi.export("dockerImageName", image.imageName);
 
   pulumi.log.warn("⚠️  Manual steps required:");
   pulumi.log.warn("1. Railway UI → Add Database → PostgreSQL");
@@ -127,9 +125,8 @@ if (platform === "njalla-vps") {
   const vpsUser = config.get("vpsUser") || "deploy";
   const sshKeyPath = config.get("sshKeyPath") || "~/.ssh/id_rsa";
 
-  // Database configuration
-  const databaseUrl = config.requireSecret("databaseUrl");
-  const redisUrl = config.requireSecret("redisUrl");
+  // Note: DATABASE_URL and REDIS_URL would be set in VPS .env file
+  // Not needed as Pulumi secrets since we use Docker Compose .env
 
   // Build Docker image
   const image = new docker.Image(`${appName}-prod-image`, {
@@ -157,12 +154,13 @@ if (platform === "njalla-vps") {
     `,
   });
 
-  export const vpsDeployment = {
+  // Export VPS deployment info
+  pulumi.export("vpsDeployment", {
     host: vpsHost,
     user: vpsUser,
     imageName: image.imageName,
     deploymentStatus: deploy.stdout,
-  };
+  });
 
   pulumi.log.info("✅ VPS deployment configured");
   pulumi.log.info(`SSH: ${vpsUser}@${vpsHost}`);
