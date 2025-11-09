@@ -1,7 +1,6 @@
 # Railway Dockerfile for monorepo
 # Build context: root of monorepo
-# This file copies from apps/server/
-# Updated: 2025-01-09 - Force rebuild without cache
+# Updated: 2025-01-09 - Monorepo-aware build
 
 # Build stage
 FROM node:20-alpine AS builder
@@ -11,59 +10,60 @@ WORKDIR /app
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy workspace config and lockfile from monorepo root
-COPY pnpm-workspace.yaml ./
-COPY pnpm-lock.yaml ./
+# Copy monorepo workspace files
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 
-# Copy package files from apps/server
-COPY apps/server/package.json ./
-COPY apps/server/prisma ./prisma/
+# Copy all workspace packages (needed for lockfile resolution)
+COPY apps/server/package.json ./apps/server/package.json
+COPY apps/server/prisma ./apps/server/prisma
 
-# Install dependencies (workspace-aware)
+# Install ALL dependencies (monorepo workspace)
 RUN pnpm install --frozen-lockfile
 
-# Copy source code from apps/server
-COPY apps/server/ ./
+# Copy server source code
+COPY apps/server ./apps/server
 
-# Generate Prisma Client
+# Generate Prisma Client and build
+WORKDIR /app/apps/server
 RUN pnpm prisma generate
-
-# Build application
 RUN pnpm run build
 
 # Production stage
 FROM node:20-alpine
 
+WORKDIR /app
+
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-WORKDIR /app
+# Copy monorepo workspace files
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 
-# Copy workspace config and lockfile from monorepo root
-COPY pnpm-workspace.yaml ./
-COPY pnpm-lock.yaml ./
+# Copy server package files
+COPY apps/server/package.json ./apps/server/package.json
+COPY apps/server/prisma ./apps/server/prisma
 
-# Copy package files
-COPY apps/server/package.json ./
-COPY apps/server/prisma ./prisma/
-
-# Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
+# Install production dependencies
+RUN pnpm install --frozen-lockfile --prod --filter @mvppir/server
 
 # Generate Prisma Client
+WORKDIR /app/apps/server
 RUN pnpm prisma generate
 
 # Copy built application from builder stage
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/apps/server/dist ./dist
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
+# Change ownership
+RUN chown -R nodejs:nodejs /app
+
 USER nodejs
 
-# Railway sets PORT env var automatically, but we expose both common ports
+# Railway sets PORT env var automatically
 EXPOSE 3333 4000
 
-# Run migrations before starting the server (matches package.json "start" script)
+# Run migrations before starting (from apps/server directory)
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
