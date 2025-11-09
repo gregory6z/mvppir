@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsup src && prisma generate",
-    "start": "prisma migrate deploy && node dist/server.js",
+    "start": "prisma migrate deploy && npm run prisma:seed && node dist/server.js",
     "start:dev": "node dist/server.js",
     "test": "NODE_ENV=test node --import tsx --test src/tests/integration/**/*.test.ts",
     "lint": "eslint src --ext .ts",
