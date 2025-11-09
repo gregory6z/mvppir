@@ -43,12 +43,15 @@ COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY apps/server/package.json ./apps/server/package.json
 COPY apps/server/prisma ./apps/server/prisma
 
-# Install production dependencies
-RUN pnpm install --frozen-lockfile --prod --filter @mvppir/server
+# Install ALL dependencies (need prisma CLI from devDeps to generate client)
+RUN pnpm install --frozen-lockfile --filter @mvppir/server
 
 # Generate Prisma Client
 WORKDIR /app/apps/server
 RUN pnpm prisma generate
+
+# Remove dev dependencies after generating Prisma client
+RUN pnpm install --frozen-lockfile --prod --filter @mvppir/server
 
 # Copy built application from builder stage
 COPY --from=builder /app/apps/server/dist ./dist
