@@ -46,10 +46,11 @@ export const dailyCommissionsQueue = new Queue(
 );
 
 /**
- * Monthly Maintenance Queue
+ * Individual Maintenance Queue
  *
  * Checks if users met monthly requirements and handles downrank flow.
- * Runs on the 1st of every month at 00:00 UTC.
+ * Each user has individual 30-day cycles starting from account activation.
+ * Runs daily at 00:00 UTC, processes only users with nextMaintenanceCheck <= today.
  */
 export const monthlyMaintenanceQueue = new Queue(
   QUEUE_NAMES.MONTHLY_MAINTENANCE,
@@ -63,9 +64,9 @@ export const monthlyMaintenanceQueue = new Queue(
       },
       removeOnComplete: {
         age: 2592000, // Keep for 30 days
-        count: 12, // Keep last 12 monthly runs
+        count: 365, // Keep last 365 daily runs (1 year)
       },
-      removeOnFail: false, // Never remove failed monthly jobs (manual review)
+      removeOnFail: false, // Never remove failed jobs (manual review)
     },
   }
 );
@@ -118,6 +119,7 @@ export const batchCollectQueue = new Queue(QUEUE_NAMES.BATCH_COLLECT, {
 
 /**
  * Initialize all repeatable jobs (cron schedules)
+ * All jobs run on UTC timezone
  */
 export async function initializeRepeatingJobs() {
   // Daily commissions at 00:05 UTC
@@ -126,7 +128,7 @@ export async function initializeRepeatingJobs() {
     {},
     {
       repeat: {
-        pattern: "5 0 * * *", // Every day at 00:05 UTC
+        pattern: "5 0 * * *", // Every day at 00:05
         tz: "UTC",
       },
       jobId: "daily-commissions-cron", // Prevent duplicates
@@ -135,20 +137,20 @@ export async function initializeRepeatingJobs() {
 
   console.log("✅ Daily commissions job scheduled (00:05 UTC)");
 
-  // Monthly maintenance on 1st at 00:00 UTC
+  // Individual maintenance cycles (daily check) at 00:00 UTC
   await monthlyMaintenanceQueue.add(
-    "check-monthly",
+    "check-individual-cycles",
     {},
     {
       repeat: {
-        pattern: "0 0 1 * *", // 1st of every month at 00:00 UTC
+        pattern: "0 0 * * *", // Every day at 00:00 (checks individual nextMaintenanceCheck)
         tz: "UTC",
       },
       jobId: "monthly-maintenance-cron",
     }
   );
 
-  console.log("✅ Monthly maintenance job scheduled (1st at 00:00 UTC)");
+  console.log("✅ Individual maintenance job scheduled (00:00 UTC daily)");
 
   // Grace period recovery at 12:00 UTC
   await gracePeriodRecoveryQueue.add(
@@ -156,7 +158,7 @@ export async function initializeRepeatingJobs() {
     {},
     {
       repeat: {
-        pattern: "0 12 * * *", // Every day at 12:00 UTC
+        pattern: "0 12 * * *", // Every day at 12:00
         tz: "UTC",
       },
       jobId: "grace-period-recovery-cron",

@@ -94,13 +94,22 @@ export async function checkAccountActivation({
   if (totalUSD >= ACTIVATION_THRESHOLD_USD) {
     console.log(`✅ Ativando conta ${userId} - Depósito mínimo atingido!`);
 
+    const activationDate = new Date();
+    const nextMaintenanceCheck = new Date(activationDate);
+    nextMaintenanceCheck.setDate(nextMaintenanceCheck.getDate() + 30); // +30 dias
+
     await prisma.user.update({
       where: { id: userId },
       data: {
         status: "ACTIVE",
-        activatedAt: new Date(),
+        activatedAt: activationDate,
+        nextMaintenanceCheck, // Ciclo individual: primeira verificação em 30 dias
       },
     });
+
+    console.log(
+      `📅 Primeira verificação de manutenção agendada para: ${nextMaintenanceCheck.toISOString()}`
+    );
 
     return {
       activated: true,

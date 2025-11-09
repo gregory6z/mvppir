@@ -1,12 +1,14 @@
 /**
- * Monthly Maintenance Worker
+ * Monthly Maintenance Worker (Individual Cycles)
  *
  * Checks if users met monthly requirements and handles immediate downrank/upgrade.
  *
- * Schedule: 1st of every month at 00:00 UTC
+ * Schedule: Every day at 00:00 UTC (ciclo individual por usuário)
  * Flow:
+ *   - Processa apenas usuários com nextMaintenanceCheck <= hoje
  *   - Se NÃO cumpriu requisitos mensais → Downgrade imediato (-1 rank)
  *   - Se cumpriu requisitos mensais → Mantém rank ou verifica upgrade
+ *   - Atualiza nextMaintenanceCheck para +30 dias após processamento
  */
 
 import { Worker, Job } from "bullmq";
@@ -23,24 +25,22 @@ import { MLMRank } from "@prisma/client";
 async function processMonthlyMaintenance(job: Job) {
   const startTime = Date.now();
 
-  job.log("Starting monthly maintenance check...");
+  job.log("Starting individual maintenance check...");
 
-  // Get last month info
   const now = new Date();
-  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const monthName = lastMonth.toLocaleDateString("pt-BR", {
-    month: "long",
-    year: "numeric",
-  });
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  job.log(`Checking requirements for: ${monthName}`);
+  job.log(`Checking users with maintenance due on or before: ${today.toISOString()}`);
 
-  // Get all active users (excluding RECRUIT - they don't have maintenance requirements)
+  // Get all active users (excluding RECRUIT) whose nextMaintenanceCheck is due (ciclo individual)
   const users = await prisma.user.findMany({
     where: {
       status: "ACTIVE",
       currentRank: {
         not: "RECRUIT", // RECRUIT has no maintenance requirements
+      },
+      nextMaintenanceCheck: {
+        lte: today, // Only users whose maintenance is due
       },
     },
     select: {
@@ -51,6 +51,7 @@ async function processMonthlyMaintenance(job: Job) {
       rankStatus: true,
       warningCount: true,
       originalRank: true,
+      nextMaintenanceCheck: true,
     },
   });
 
@@ -108,7 +109,7 @@ async function processMonthlyMaintenance(job: Job) {
   const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
   const summary = {
-    month: monthName,
+    date: today.toISOString(),
     usersChecked: totalProcessed,
     downranks: totalDownranks,
     upgrades: totalUpgrades,
@@ -116,7 +117,7 @@ async function processMonthlyMaintenance(job: Job) {
     durationSeconds: duration,
   };
 
-  job.log(`Monthly maintenance completed: ${JSON.stringify(summary)}`);
+  job.log(`Individual maintenance completed: ${JSON.stringify(summary)}`);
 
   return summary;
 }
@@ -145,6 +146,10 @@ async function handleMaintenanceFailure(
   const oldRank = user.currentRank;
   const newRank = downgradeRank(user.currentRank, 1);
 
+  // Calculate next maintenance check (+30 days)
+  const nextCheck = new Date();
+  nextCheck.setDate(nextCheck.getDate() + 30);
+
   await prisma.user.update({
     where: { id: user.id },
     data: {
@@ -154,6 +159,7 @@ async function handleMaintenanceFailure(
       warningCount: 0, // Reset warnings
       originalRank: null,
       gracePeriodEndsAt: null,
+      nextMaintenanceCheck: nextCheck, // Próxima verificação em 30 dias
     },
   });
 
@@ -190,6 +196,19 @@ async function handleMaintenanceSuccess(
   if (promoted) {
     job.log(`⬆️  ${user.email}: Auto-promoted to next rank!`);
   }
+
+  // Update next maintenance check (+30 days)
+  const nextCheck = new Date();
+  nextCheck.setDate(nextCheck.getDate() + 30);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      nextMaintenanceCheck: nextCheck, // Próxima verificação em 30 dias
+    },
+  });
+
+  job.log(`📅 ${user.email}: Next maintenance check scheduled for ${nextCheck.toISOString()}`);
 
   return promoted;
 }

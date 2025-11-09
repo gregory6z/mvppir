@@ -110,6 +110,9 @@ model User {
   originalRank      MLMRank?   // Rank original antes do downrank temporário
   gracePeriodEndsAt DateTime?  // Fim do grace period de 7 dias (WARNING status)
 
+  // Ciclo Individual de Manutenção
+  nextMaintenanceCheck DateTime? // Próxima verificação de requisitos (30 dias após ativação)
+
   // Network Stats (cached for performance)
   totalDirects   Int     @default(0) // Total lifetime de diretos (nunca diminui)
   lifetimeVolume Decimal @default(0) @db.Decimal(20, 2) // Volume total da rede (nunca diminui)
