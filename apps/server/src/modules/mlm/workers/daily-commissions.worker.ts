@@ -57,21 +57,25 @@ async function processDailyCommissions(job: Job) {
 
       // ===== N0: Calculate commission on own balance (comissão principal) =====
       if (config.commissions.N0 > 0) {
-        // Get user's own balance (availableBalance in USDC)
-        const userBalance = await prisma.balance.findUnique({
+        // Get ALL user's balances (sum all tokens: USDC, USD, USDT, etc.)
+        const userBalances = await prisma.balance.findMany({
           where: {
-            userId_tokenSymbol: {
-              userId: user.id,
-              tokenSymbol: "USDC",
-            },
+            userId: user.id,
           },
           select: {
+            tokenSymbol: true,
             availableBalance: true,
           },
         });
 
-        if (userBalance && userBalance.availableBalance.gt(0)) {
-          const baseAmount = userBalance.availableBalance;
+        // Sum all available balances (assumes all stablecoins ~= 1:1 USD)
+        let totalAvailableBalance = new Decimal(0);
+        for (const balance of userBalances) {
+          totalAvailableBalance = totalAvailableBalance.add(balance.availableBalance);
+        }
+
+        if (totalAvailableBalance.gt(0)) {
+          const baseAmount = totalAvailableBalance;
           const commissionAmount = baseAmount.mul(config.commissions.N0).div(100);
 
           if (commissionAmount.gt(0)) {
