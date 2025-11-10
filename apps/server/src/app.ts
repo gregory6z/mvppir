@@ -12,6 +12,7 @@ import { mlmRoutes } from './modules/mlm/routes'
 import { adminRoutes } from './modules/admin/routes'
 import { referralRoutes } from './modules/referral/routes'
 import { testRoutes } from './modules/test/routes'
+import { notificationsRoutes } from './modules/notifications/routes'
 
 export async function buildApp() {
   const app = Fastify({
@@ -124,6 +125,9 @@ export async function buildApp() {
 
   // Referral routes (public)
   await app.register(referralRoutes, { prefix: '/referral' })
+
+  // Notifications routes (authenticated users)
+  await app.register(notificationsRoutes, { prefix: '/notifications' })
 
   // Test routes (admin only)
   await app.register(testRoutes, { prefix: '/admin/test' })

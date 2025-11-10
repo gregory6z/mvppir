@@ -14,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { getRankRequirements, getMaxCommissionDepth } from "@/modules/mlm/mlm-config";
 import { getNetworkLevels } from "@/modules/mlm/helpers/network";
 import { Decimal } from "@prisma/client/runtime/library";
+import { createAndSendNotification } from "@/modules/notifications/use-cases/create-and-send-notification";
 
 /**
  * Process daily commissions job
@@ -189,6 +190,27 @@ async function processDailyCommissions(job: Job) {
             paidAt: new Date(),
           },
         });
+
+        // Send push notification about daily commission
+        try {
+          await createAndSendNotification({
+            userId: user.id,
+            type: "DAILY_COMMISSION",
+            title: "Comissão Diária Recebida! 💰",
+            body: `Você recebeu ${userTotalCommissions.toFixed(2)} USDC em comissões hoje.`,
+            data: {
+              amount: parseFloat(userTotalCommissions.toString()),
+              tokenSymbol: "USDC",
+              rank: user.currentRank,
+              date: new Date().toISOString(),
+            },
+          });
+        } catch (error) {
+          job.log(
+            `Failed to send push notification to ${user.email}: ${error instanceof Error ? error.message : "Unknown"}`
+          );
+          // Don't fail the job if notification fails
+        }
 
         totalCommissions = totalCommissions.add(userTotalCommissions);
       }

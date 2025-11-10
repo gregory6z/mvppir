@@ -42,10 +42,21 @@ enum WithdrawalStatus {
 }
 
 enum NotificationType {
+  // Withdrawal notifications
   WITHDRAWAL_APPROVED
   WITHDRAWAL_REJECTED
   WITHDRAWAL_COMPLETED
   WITHDRAWAL_FAILED
+
+  // Push notifications (Phase 1 - MVP)
+  DEPOSIT_CONFIRMED   // Depósito confirmado na blockchain
+  DAILY_COMMISSION    // Comissão diária recebida
+  ACCOUNT_ACTIVATED   // Conta ativada (>= $100 depositado)
+
+  // Push notifications (Phase 2)
+  RANK_UPGRADED       // Rank promovido
+  RANK_DOWNGRADED     // Rank rebaixado
+  RANK_WARNING        // Aviso de manutenção
 }
 
 // ===== MLM v1.0 Enums =====
@@ -144,6 +155,10 @@ model User {
   // MLM relations
   commissions  Commission[]
   monthlyStats MonthlyStats[]
+
+  // Push notifications relations
+  pushTokens    PushToken[]
+  notifications Notification[]
 
   @@index([referrerId])
   @@index([currentRank])
@@ -250,6 +265,51 @@ model Balance {
   @@unique([userId, tokenSymbol])
   @@index([userId])
   @@map("balances")
+}
+
+// ===== Push Notifications =====
+
+model PushToken {
+  id            String   @id @default(uuid())
+  userId        String
+  expoPushToken String   // Expo Push Token (ex: "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]")
+  deviceInfo    Json?    // Informações do dispositivo (modelo, OS version, app version)
+  isActive      Boolean  @default(true) // Token ativo ou revogado
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, expoPushToken])
+  @@index([userId])
+  @@index([isActive])
+  @@map("push_tokens")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  title     String           // Título da notificação
+  body      String           // Corpo da notificação
+  data      Json?            // Dados adicionais (amount, txHash, rank, etc)
+
+  // Push tracking
+  pushSent  Boolean  @default(false) // Se foi enviado via push
+  pushError String?  // Erro ao enviar push (se houver)
+
+  // In-app tracking
+  read   Boolean   @default(false) // Se foi lida no app
+  readAt DateTime? // Data da leitura
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read]) // Para query de notificações não lidas
+  @@index([userId, type])
+  @@index([createdAt])
+  @@map("notifications")
 }
 
 model GlobalWallet {
