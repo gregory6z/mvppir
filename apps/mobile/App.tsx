@@ -10,6 +10,7 @@ import { queryClient, asyncStoragePersister } from "@/lib/react-query";
 import { useReactQueryConfig } from "@/lib/react-query-config";
 import { useAuthStore } from "@/stores/auth.store";
 import { useUserStatus } from "@/api/user/queries/use-user-status-query";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { LoginScreen } from "@/screens/auth/LoginScreen";
 import { SignupScreen } from "@/screens/auth/SignupScreen";
 import { ReferralInputScreen } from "@/screens/auth/ReferralInputScreen";
@@ -34,6 +35,23 @@ function AppContent() {
   // IMPORTANT: Call all hooks BEFORE any conditional returns (React Rules of Hooks)
   // This hook is only active when authenticated, but must be called unconditionally
   const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus();
+
+  // Setup push notifications (only for authenticated + ACTIVE users)
+  usePushNotifications({
+    enabled: isAuthenticated && userStatus?.status === "ACTIVE",
+    onNotificationReceived: (notification) => {
+      console.log("📬 Received notification:", notification);
+      // TODO: Show in-app notification banner or modal
+    },
+    onNotificationTapped: (response) => {
+      console.log("👆 User tapped notification:", response);
+      // TODO: Navigate to relevant screen based on notification type
+      const notificationType = response.notification.request.content.data?.type;
+      if (notificationType === "DAILY_COMMISSION") {
+        // TODO: Open commission modal
+      }
+    },
+  });
 
   const handleValidReferralCode = (referrerId: string, referralCode: string) => {
     setReferralData({ referrerId, referralCode });

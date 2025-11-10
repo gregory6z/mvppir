@@ -33,5 +33,22 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       reactCompiler: false,
       tsconfigPaths: true,
     },
+    extra: {
+      eas: {
+        // EAS Project ID - será gerado automaticamente ao rodar "eas build:configure"
+        // Necessário para push notifications
+        projectId: process.env.EXPO_PUBLIC_EAS_PROJECT_ID || "mvppir-mobile-dev",
+      },
+    },
+    plugins: [
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/notification-icon.png", // Opcional: ícone customizado para notificações
+          color: "#3b82f6", // Cor do ícone de notificação (azul primary)
+          sounds: ["./assets/notification-sound.wav"], // Opcional: som customizado
+        },
+      ],
+    ],
   };
 };
