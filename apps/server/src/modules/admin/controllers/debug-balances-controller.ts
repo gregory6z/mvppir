@@ -12,11 +12,9 @@ export async function debugBalancesController(
   reply: FastifyReply
 ) {
   try {
-    // Get all active users with their balances
+    // Get all users with their balances (including INACTIVE)
     const users = await prisma.user.findMany({
-      where: {
-        status: "ACTIVE",
-      },
+      where: {},
       select: {
         id: true,
         email: true,
