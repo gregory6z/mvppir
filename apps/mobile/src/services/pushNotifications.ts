@@ -8,7 +8,6 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import { api } from '@/api/client';
 
 /**
  * Configure how notifications are handled when app is in foreground
@@ -79,52 +78,15 @@ export async function registerForPushNotifications(): Promise<string | null> {
 }
 
 /**
- * Register push token with backend
+ * Get device info for backend registration
  */
-export async function registerPushTokenWithBackend(
-  expoPushToken: string
-): Promise<boolean> {
-  try {
-    const deviceInfo = {
-      deviceName: Device.deviceName || 'Unknown',
-      osName: Device.osName || Platform.OS,
-      osVersion: Device.osVersion || 'Unknown',
-      appVersion: Constants.expoConfig?.version || '1.0.0',
-    };
-
-    await api.post('/notifications/register-token', {
-      expoPushToken,
-      deviceInfo,
-    });
-
-    console.log('✅ Push token registered with backend');
-    return true;
-  } catch (error) {
-    console.error('❌ Failed to register push token with backend:', error);
-    return false;
-  }
-}
-
-/**
- * Complete push notification setup (call on app startup after login)
- */
-export async function setupPushNotifications(): Promise<boolean> {
-  try {
-    // 1. Get Expo Push Token
-    const expoPushToken = await registerForPushNotifications();
-
-    if (!expoPushToken) {
-      return false;
-    }
-
-    // 2. Register with backend
-    const registered = await registerPushTokenWithBackend(expoPushToken);
-
-    return registered;
-  } catch (error) {
-    console.error('Error setting up push notifications:', error);
-    return false;
-  }
+export function getDeviceInfo() {
+  return {
+    deviceName: Device.deviceName || 'Unknown',
+    osName: Device.osName || Platform.OS,
+    osVersion: Device.osVersion || 'Unknown',
+    appVersion: Constants.expoConfig?.version || '1.0.0',
+  };
 }
 
 /**

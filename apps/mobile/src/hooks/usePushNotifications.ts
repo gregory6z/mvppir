@@ -8,11 +8,13 @@
 import { useEffect, useRef, useState } from 'react';
 import * as Notifications from 'expo-notifications';
 import {
-  setupPushNotifications,
+  registerForPushNotifications,
+  getDeviceInfo,
   addNotificationReceivedListener,
   addNotificationResponseReceivedListener,
   setBadgeCount,
 } from '@/services/pushNotifications';
+import { useRegisterPushToken } from '@/api/notifications/mutations/use-register-push-token';
 
 interface UsePushNotificationsOptions {
   enabled?: boolean; // Only setup if user is authenticated
@@ -29,26 +31,47 @@ export function usePushNotifications(options: UsePushNotificationsOptions = {}) 
   const notificationListener = useRef<ReturnType<typeof Notifications.addNotificationReceivedListener> | null>(null);
   const responseListener = useRef<ReturnType<typeof Notifications.addNotificationResponseReceivedListener> | null>(null);
 
+  const registerToken = useRegisterPushToken();
+
   useEffect(() => {
     if (!enabled) {
       return;
     }
 
     // Setup push notifications
-    setupPushNotifications()
-      .then((success) => {
-        if (success) {
-          setIsReady(true);
-          console.log('✅ Push notifications ready');
-        } else {
-          setError('Failed to setup push notifications');
+    (async () => {
+      try {
+        // 1. Get Expo Push Token
+        const expoPushToken = await registerForPushNotifications();
+
+        if (!expoPushToken) {
+          setError('Failed to get push token');
           console.warn('⚠️ Push notifications not available');
+          return;
         }
-      })
-      .catch((err) => {
-        setError(err.message || 'Unknown error');
+
+        // 2. Register with backend using React Query mutation
+        registerToken.mutate(
+          {
+            expoPushToken,
+            deviceInfo: getDeviceInfo(),
+          },
+          {
+            onSuccess: () => {
+              setIsReady(true);
+              console.log('✅ Push notifications ready');
+            },
+            onError: (err) => {
+              setError(err instanceof Error ? err.message : 'Unknown error');
+              console.error('❌ Failed to register push token:', err);
+            },
+          }
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
         console.error('❌ Push notifications error:', err);
-      });
+      }
+    })();
 
     // Listen for notifications received while app is in foreground
     notificationListener.current = addNotificationReceivedListener((notification) => {
