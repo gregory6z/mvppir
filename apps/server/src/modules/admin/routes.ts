@@ -9,6 +9,7 @@ import { getMaticRechargeHistoryController } from "@/modules/admin/controllers/g
 import { getWorkersStatus } from "@/modules/admin/controllers/get-workers-status";
 import { triggerWorkerController } from "@/modules/admin/controllers/trigger-worker-controller";
 import { debugBalancesController } from "@/modules/admin/controllers/debug-balances-controller";
+import { activateUserController } from "@/modules/admin/controllers/activate-user-controller";
 
 /**
  * Rotas admin
@@ -36,4 +37,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
   // Debug
   app.get("/debug/balances", debugBalancesController);
+
+  // User management
+  app.post("/users/activate", activateUserController);
 }
