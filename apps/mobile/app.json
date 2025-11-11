@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MVPPIR",
-    "slug": "mvppir-mobile",
+    "name": "STAKLY",
+    "slug": "stakly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -36,7 +36,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "SERA_GERADO_AUTOMATICAMENTE"
+        "projectId": "11c097e2-6e4a-45ad-b58d-2f7d9afff399"
       }
     }
   }
