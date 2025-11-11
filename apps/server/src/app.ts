@@ -76,8 +76,14 @@ export async function buildApp() {
   // Register CORS plugin
   await app.register(cors, {
     // Allow all origins in development (for mobile app testing)
-    // In production, only allow the frontend URL
-    origin: env.isDevelopment ? true : (env.FRONTEND_URL || 'http://localhost:3000'),
+    // In production, allow frontend URL + localhost for PWA development
+    origin: env.isDevelopment
+      ? true
+      : [
+          env.FRONTEND_URL || 'http://localhost:3000',
+          'http://localhost:3001', // PWA development
+          'http://localhost:5173', // Vite default port
+        ],
     credentials: true,
   })
 
