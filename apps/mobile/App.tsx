@@ -10,7 +10,7 @@ import { queryClient, asyncStoragePersister } from "@/lib/react-query";
 import { useReactQueryConfig } from "@/lib/react-query-config";
 import { useAuthStore } from "@/stores/auth.store";
 import { useUserStatus } from "@/api/user/queries/use-user-status-query";
-import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useNotifications } from "@/hooks/useNotifications";
 import { LoginScreen } from "@/screens/auth/LoginScreen";
 import { SignupScreen } from "@/screens/auth/SignupScreen";
 import { ReferralInputScreen } from "@/screens/auth/ReferralInputScreen";
@@ -37,7 +37,7 @@ function AppContent() {
   const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus();
 
   // Setup push notifications (only for authenticated + ACTIVE users)
-  usePushNotifications({
+  useNotifications({
     enabled: isAuthenticated && userStatus?.status === "ACTIVE",
     onNotificationReceived: (notification) => {
       console.log("📬 Received notification:", notification);

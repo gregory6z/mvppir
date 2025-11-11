@@ -4,7 +4,7 @@
  * Service functions for notifications endpoints.
  */
 
-import { api } from "../client";
+import { apiClient } from "@/lib/api-client";
 
 interface RegisterPushTokenInput {
   expoPushToken: string;
@@ -42,21 +42,19 @@ interface UnreadNotificationsResponse {
 export async function registerPushToken(
   input: RegisterPushTokenInput
 ): Promise<RegisterPushTokenResponse> {
-  const response = await api.post("/notifications/register-token", input);
-  return response.data;
+  return apiClient.post("notifications/register-token", { json: input }).json<RegisterPushTokenResponse>();
 }
 
 /**
  * Get unread notifications
  */
 export async function getUnreadNotifications(): Promise<UnreadNotificationsResponse> {
-  const response = await api.get("/notifications/unread");
-  return response.data;
+  return apiClient.get("notifications/unread").json<UnreadNotificationsResponse>();
 }
 
 /**
  * Mark notification as read (TODO: add endpoint in backend)
  */
 export async function markNotificationAsRead(notificationId: string): Promise<void> {
-  await api.patch(`/notifications/${notificationId}/read`);
+  await apiClient.patch(`notifications/${notificationId}/read`);
 }
