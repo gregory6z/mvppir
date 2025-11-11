@@ -1,9 +1,11 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { bearer } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { generateUniqueReferralCode } from "./generate-referral-code";
 
 export const auth: ReturnType<typeof betterAuth> = betterAuth({
+  plugins: [bearer()],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -58,6 +60,12 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
       enabled: true,
       maxAge: 5 * 60, // 5 minutos
     },
+  },
+
+  // Advanced options for cookie configuration
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === "production",
+    cookieSameSite: process.env.NODE_ENV === "development" ? "lax" : "lax",
   },
 
   // Database hooks para processar referral code e gerar código próprio
