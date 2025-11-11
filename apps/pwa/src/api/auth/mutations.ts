@@ -1,6 +1,5 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { signIn, signUp } from "@/lib/auth-client"
-import { useAuthStore } from "@/stores/auth.store"
 import type { LoginInput, SignupInput } from "./schemas"
 
 // Chaves de tradução para erros de login (i18n) - caminhos relativos ao namespace "auth.login"
@@ -85,38 +84,43 @@ export function transformSignupError(error: any): SignupError {
 }
 
 export function useLoginMutation() {
-  const { setAuth } = useAuthStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: LoginInput) => {
+      console.log("🔐 Login attempt:", data.email)
       const result = await signIn.email({
         email: data.email,
         password: data.password,
       })
 
+      console.log("📦 Better Auth result:", result)
+
       // Se houver erro, lança o erro bruto para ser tratado no onError
       if (result.error) {
+        console.error("❌ Login error:", result.error)
         throw result.error
       }
 
-      if (!result.data?.token || !result.data?.user) {
-        throw new Error("MISSING_DATA")
-      }
-
+      console.log("✅ Login successful! Session cookie set by Better Auth")
       return result.data
     },
-    onSuccess: (data) => {
-      // Atualiza o estado de autenticação
-      setAuth(data.token, data.user.id)
+    onSuccess: async () => {
+      console.log("🔄 Invalidating session query to trigger refetch")
+      // Pequeno delay para garantir que o cookie foi setado pelo servidor
+      await new Promise(resolve => setTimeout(resolve, 200))
+      // Força o useSession a refazer a query e detectar a nova sessão
+      queryClient.invalidateQueries({ queryKey: ["better-auth", "session"] })
     },
   })
 }
 
 export function useSignupMutation() {
-  const { setAuth } = useAuthStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: SignupInput) => {
+      console.log("📝 Signup attempt:", data.email)
       const result = await signUp.email({
         name: data.name,
         email: data.email,
@@ -125,20 +129,23 @@ export function useSignupMutation() {
         referralCode: data.referralCode?.toUpperCase(),
       })
 
+      console.log("📦 Better Auth signup result:", result)
+
       // Se houver erro, lança o erro bruto para ser tratado no onError
       if (result.error) {
+        console.error("❌ Signup error:", result.error)
         throw result.error
       }
 
-      if (!result.data?.token || !result.data?.user) {
-        throw new Error("MISSING_DATA")
-      }
-
+      console.log("✅ Signup successful! Session cookie set by Better Auth")
       return result.data
     },
-    onSuccess: (data) => {
-      // Atualiza o estado de autenticação
-      setAuth(data.token, data.user.id)
+    onSuccess: async () => {
+      console.log("🔄 Invalidating session query to trigger refetch")
+      // Pequeno delay para garantir que o cookie foi setado pelo servidor
+      await new Promise(resolve => setTimeout(resolve, 200))
+      // Força o useSession a refazer a query e detectar a nova sessão
+      queryClient.invalidateQueries({ queryKey: ["better-auth", "session"] })
     },
   })
 }

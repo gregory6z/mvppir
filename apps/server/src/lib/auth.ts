@@ -17,13 +17,19 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   trustedOrigins: process.env.NODE_ENV === "development"
     ? [
         process.env.FRONTEND_URL || "http://localhost:3000",
+        "http://localhost:3001", // PWA development
+        "http://localhost:5173", // Vite default port
         "http://localhost:3333",
         "http://127.0.0.1:3333",
         "http://192.168.1.4:3333", // Mobile app (local network IP - old)
         "http://192.168.1.122:3333", // Mobile app (local network IP - current)
         "http://0.0.0.0:3333",
       ]
-    : [process.env.FRONTEND_URL || "http://localhost:3000"],
+    : [
+        process.env.FRONTEND_URL || "http://localhost:3000",
+        "http://localhost:3001", // PWA development (production também)
+        "http://localhost:5173", // Vite default port (production também)
+      ],
   secret: process.env.AUTH_SECRET!,
   baseURL: process.env.API_BASE_URL || "http://localhost:3333",
 
