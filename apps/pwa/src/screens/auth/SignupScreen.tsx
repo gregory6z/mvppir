@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
-import { Link, useSearchParams } from "react-router-dom"
+import { Link, useSearchParams, useNavigate } from "react-router-dom"
 import { signupSchema, type SignupInput } from "@/api/auth/schemas"
 import { useSignupMutation, transformSignupError, type SignupError } from "@/api/auth/mutations"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import { Logo } from "@/components/ui/logo"
 
 export function SignupScreen() {
   const { t } = useTranslation("auth.signup")
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const referralCode = searchParams.get("ref") || ""
   const [error, setError] = useState<SignupError | null>(null)
@@ -38,6 +39,10 @@ export function SignupScreen() {
   const onSubmit = (data: SignupInput) => {
     setError(null)
     signupMutation.mutate(data, {
+      onSuccess: () => {
+        // Redireciona para home após cadastro bem-sucedido
+        navigate("/")
+      },
       onError: (err) => {
         const errorType = transformSignupError(err)
         setError(errorType)
