@@ -41,11 +41,6 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
         required: false,
         input: false,
       },
-      referralCode: {
-        type: "string",
-        required: false,
-        input: true, // Allow user to provide referral code on signup
-      },
     },
   },
 
