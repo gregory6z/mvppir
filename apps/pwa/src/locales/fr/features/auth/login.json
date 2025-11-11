@@ -1,0 +1,39 @@
+{
+  "welcome": "Bon retour",
+  "title": "Connectez-vous à votre compte",
+  "description": "Entrez vos identifiants pour accéder",
+  "fields": {
+    "email": "E-mail",
+    "password": "Mot de passe"
+  },
+  "placeholders": {
+    "email": "votre@email.com",
+    "password": "Votre mot de passe"
+  },
+  "buttons": {
+    "submit": "Se connecter",
+    "loading": "Connexion en cours..."
+  },
+  "links": {
+    "noAccount": "Vous n'avez pas de compte ?",
+    "createAccount": "Créer un compte"
+  },
+  "errors": {
+    "invalidCredentials": "E-mail ou mot de passe incorrect",
+    "accountBlocked": "Votre compte a été bloqué. Contactez le support.",
+    "networkError": "Erreur de connexion. Réessayez.",
+    "unknownError": "Erreur inconnue. Réessayez."
+  },
+  "accessibility": {
+    "logo": "Logo Stakly",
+    "emailField": "Champ e-mail",
+    "emailHint": "Entrez votre adresse e-mail",
+    "passwordField": "Champ mot de passe",
+    "passwordHint": "Entrez votre mot de passe",
+    "submitButton": "Se connecter à votre compte",
+    "submitButtonLoading": "Chargement, veuillez patienter",
+    "submitButtonHint": "Appuyez deux fois pour vous connecter",
+    "createAccountButton": "Créer un nouveau compte",
+    "createAccountHint": "Appuyez deux fois pour aller à l'écran d'inscription"
+  }
+}

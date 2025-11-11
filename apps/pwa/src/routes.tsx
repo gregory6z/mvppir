@@ -1,28 +1,9 @@
 import { Navigate, createBrowserRouter } from "react-router-dom"
 import { useAuthStore } from "@/stores/auth.store"
-
-// Placeholder screens (serão implementados depois)
-function LoginScreen() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-      <div className="rounded-lg bg-zinc-900 p-8 text-center">
-        <h1 className="text-2xl font-bold text-white">Login Screen</h1>
-        <p className="mt-2 text-zinc-400">Em desenvolvimento...</p>
-      </div>
-    </div>
-  )
-}
-
-function HomeScreen() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-      <div className="rounded-lg bg-zinc-900 p-8 text-center">
-        <h1 className="text-2xl font-bold text-white">Home Screen</h1>
-        <p className="mt-2 text-zinc-400">PWA funcionando! ✅</p>
-      </div>
-    </div>
-  )
-}
+import { LoginScreen } from "@/screens/auth/LoginScreen"
+import { SignupScreen } from "@/screens/auth/SignupScreen"
+import { InviteScreen } from "@/screens/auth/InviteScreen"
+import { HomeScreen } from "@/screens/home/HomeScreen"
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -40,6 +21,14 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginScreen />,
+  },
+  {
+    path: "/invite",
+    element: <InviteScreen />,
+  },
+  {
+    path: "/signup",
+    element: <SignupScreen />,
   },
 
   // Protected routes

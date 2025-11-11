@@ -1,0 +1,18 @@
+{
+  "email": {
+    "required": "El correo es obligatorio",
+    "invalid": "Correo inválido"
+  },
+  "password": {
+    "required": "La contraseña es obligatoria",
+    "minLength": "La contraseña debe tener al menos {{min}} caracteres"
+  },
+  "name": {
+    "required": "El nombre es obligatorio",
+    "minLength": "El nombre debe tener al menos {{min}} caracteres"
+  },
+  "passwordConfirm": {
+    "required": "La confirmación de contraseña es obligatoria",
+    "mismatch": "Las contraseñas no coinciden"
+  }
+}

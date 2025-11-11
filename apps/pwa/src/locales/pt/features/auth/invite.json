@@ -1,0 +1,37 @@
+{
+  "subtitle": "Junte-se à comunidade",
+  "title": "Código de Convite",
+  "description": "Digite seu código de convite para começar. Se você tem um código, insira abaixo para continuar.",
+  "fields": {
+    "referralCode": "Código de Convite"
+  },
+  "placeholders": {
+    "referralCode": "Digite o código de convite"
+  },
+  "buttons": {
+    "validate": "Validar Código",
+    "continue": "Continuar"
+  },
+  "errors": {
+    "required": "Por favor, digite um código de convite",
+    "invalidCode": "Código de convite inválido",
+    "failedValidation": "Falha ao validar código"
+  },
+  "success": {
+    "validCode": "Código de convite válido!",
+    "invitedBy": "Convidado por"
+  },
+  "info": {
+    "requirement": "Um código de convite válido é necessário para criar uma conta. Peça para um amigo que já usa o Stakly!"
+  },
+  "links": {
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "backToLogin": "Voltar para Login"
+  },
+  "accessibility": {
+    "referralCodeField": "Campo de código de convite",
+    "validateButton": "Validar código de convite",
+    "continueButton": "Continuar para cadastro",
+    "backToLoginButton": "Voltar para tela de login"
+  }
+}

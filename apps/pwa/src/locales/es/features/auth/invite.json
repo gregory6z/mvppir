@@ -1,0 +1,37 @@
+{
+  "subtitle": "Únete a la comunidad",
+  "title": "Código de Invitación",
+  "description": "Ingresa tu código de invitación para comenzar. Si tienes un código, ingrésalo a continuación para continuar.",
+  "fields": {
+    "referralCode": "Código de Invitación"
+  },
+  "placeholders": {
+    "referralCode": "Ingresa el código de invitación"
+  },
+  "buttons": {
+    "validate": "Validar Código",
+    "continue": "Continuar"
+  },
+  "errors": {
+    "required": "Por favor, ingresa un código de invitación",
+    "invalidCode": "Código de invitación inválido",
+    "failedValidation": "Error al validar código"
+  },
+  "success": {
+    "validCode": "¡Código de invitación válido!",
+    "invitedBy": "Invitado por"
+  },
+  "info": {
+    "requirement": "Se requiere un código de invitación válido para crear una cuenta. ¡Pide uno a un amigo que ya usa Stakly!"
+  },
+  "links": {
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "backToLogin": "Volver al Inicio de Sesión"
+  },
+  "accessibility": {
+    "referralCodeField": "Campo de código de invitación",
+    "validateButton": "Validar código de invitación",
+    "continueButton": "Continuar al registro",
+    "backToLoginButton": "Volver a la pantalla de inicio de sesión"
+  }
+}

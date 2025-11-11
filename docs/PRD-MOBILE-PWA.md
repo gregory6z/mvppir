@@ -1267,20 +1267,141 @@ export function useInstallPrompt() {
 
 ## 10. Deploy
 
-### Hosting
+### Deploy Strategy: Njalla VPS (Docker Compose)
 
-**Opção 1: Vercel**
-- Deploy automático do GitHub
+**Infraestrutura Atual (`infra/pulumi/`):**
+- PostgreSQL 16 container
+- Redis 7 container
+- Backend API container
+- Nginx reverse proxy
+
+**TODO: Adicionar PWA ao Docker Compose** (Fase 7 - Semana 8)
+
+O PWA será integrado à infraestrutura existente do Njalla VPS:
+
+```yaml
+# docker-compose.yml (futuro)
+services:
+  postgres:
+    image: postgres:16
+    # ...existing config
+
+  redis:
+    image: redis:7
+    # ...existing config
+
+  backend:
+    build: ./apps/server
+    # ...existing config
+
+  pwa:  # 🆕 Novo serviço
+    image: nginx:alpine
+    volumes:
+      - ./apps/pwa/dist:/usr/share/nginx/html:ro
+      - ./nginx/pwa.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    networks:
+      - mvppir-network
+```
+
+**Nginx Config para PWA:**
+```nginx
+server {
+  listen 80;
+  server_name app.stakly.com;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  # Servir arquivos estáticos
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+
+  # Cache de assets
+  location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+  }
+
+  # Service Worker (sem cache)
+  location = /sw.js {
+    add_header Cache-Control "no-cache, no-store, must-revalidate";
+    expires 0;
+  }
+
+  # Manifest
+  location = /manifest.json {
+    add_header Content-Type "application/manifest+json";
+  }
+}
+```
+
+**Pulumi Deploy (Futuro):**
+```typescript
+// infra/pulumi/index.ts (adicionar)
+const pwaImage = new docker.Image("pwa-image", {
+  imageName: "mvppir-pwa:prod",
+  build: {
+    context: "../../apps/pwa",
+    dockerfile: "Dockerfile.pwa",
+  },
+});
+
+// Deploy via SSH para VPS
+const deployPWA = new command.remote.Command("deploy-pwa-to-vps", {
+  connection: {
+    host: vpsHost,
+    user: vpsUser,
+    privateKey: sshKeyPath,
+  },
+  create: `
+    cd /opt/mvppir && \
+    docker-compose up -d pwa --remove-orphans && \
+    docker-compose ps
+  `,
+});
+```
+
+**Dockerfile.pwa (Multi-stage):**
+```dockerfile
+# Build stage
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable && pnpm install --frozen-lockfile
+COPY . .
+RUN pnpm build
+
+# Production stage
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+**Vantagens desta abordagem:**
+- ✅ Tudo no mesmo VPS (backend + PWA)
+- ✅ Docker Compose unificado
+- ✅ Deploy via Pulumi SSH
+- ✅ Nginx otimizado para PWA
+- ✅ HTTPS via Let's Encrypt (Nginx)
+- ✅ Anonimato total (Njalla + crypto payment)
+
+---
+
+### Hosting Alternativo (Não recomendado)
+
+**Opção: Vercel/Cloudflare Pages**
+- Deploy separado do backend
 - HTTPS automático
 - CDN global
-
-**Opção 2: Cloudflare Pages**
-- Melhor privacidade
-- CDN global
-
-**Opção 3: VPS Self-Hosted**
-- Anonimato total
-- Pagar com crypto
+- ⚠️ **Problema:** Expõe identidade (GitHub vinculado)
 
 ### Environment Variables
 

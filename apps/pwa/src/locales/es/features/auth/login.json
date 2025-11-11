@@ -1,0 +1,39 @@
+{
+  "welcome": "Bienvenido de vuelta",
+  "title": "Iniciar sesión en tu cuenta",
+  "description": "Ingresa tus credenciales para acceder",
+  "fields": {
+    "email": "Correo electrónico",
+    "password": "Contraseña"
+  },
+  "placeholders": {
+    "email": "tu@email.com",
+    "password": "Tu contraseña"
+  },
+  "buttons": {
+    "submit": "Iniciar sesión",
+    "loading": "Iniciando sesión..."
+  },
+  "links": {
+    "noAccount": "¿No tienes una cuenta?",
+    "createAccount": "Crear cuenta"
+  },
+  "errors": {
+    "invalidCredentials": "Correo o contraseña incorrectos",
+    "accountBlocked": "Tu cuenta ha sido bloqueada. Contacta con soporte.",
+    "networkError": "Error de conexión. Inténtalo de nuevo.",
+    "unknownError": "Error desconocido. Inténtalo de nuevo."
+  },
+  "accessibility": {
+    "logo": "Logo Stakly",
+    "emailField": "Campo de correo electrónico",
+    "emailHint": "Ingresa tu dirección de correo",
+    "passwordField": "Campo de contraseña",
+    "passwordHint": "Ingresa tu contraseña",
+    "submitButton": "Iniciar sesión en tu cuenta",
+    "submitButtonLoading": "Cargando, por favor espera",
+    "submitButtonHint": "Toca dos veces para iniciar sesión",
+    "createAccountButton": "Crear nueva cuenta",
+    "createAccountHint": "Toca dos veces para ir a la pantalla de registro"
+  }
+}

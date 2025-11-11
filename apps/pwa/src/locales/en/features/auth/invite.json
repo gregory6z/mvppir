@@ -1,0 +1,37 @@
+{
+  "subtitle": "Join the community",
+  "title": "Invite Code",
+  "description": "Enter your invite code to get started. If you have a code, enter it below to continue.",
+  "fields": {
+    "referralCode": "Invite Code"
+  },
+  "placeholders": {
+    "referralCode": "Enter invite code"
+  },
+  "buttons": {
+    "validate": "Validate Code",
+    "continue": "Continue"
+  },
+  "errors": {
+    "required": "Please enter an invite code",
+    "invalidCode": "Invalid invite code",
+    "failedValidation": "Failed to validate code"
+  },
+  "success": {
+    "validCode": "Valid invite code!",
+    "invitedBy": "Invited by"
+  },
+  "info": {
+    "requirement": "A valid invite code is required to create an account. Ask a friend who's already using Stakly!"
+  },
+  "links": {
+    "alreadyHaveAccount": "Already have an account?",
+    "backToLogin": "Back to Login"
+  },
+  "accessibility": {
+    "referralCodeField": "Invite code field",
+    "validateButton": "Validate invite code",
+    "continueButton": "Continue to sign up",
+    "backToLoginButton": "Go back to login screen"
+  }
+}

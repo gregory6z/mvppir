@@ -1,0 +1,52 @@
+{
+  "title": "Créer un nouveau compte",
+  "subtitle": "Créez votre compte",
+  "description": "Remplissez les données ci-dessous pour commencer",
+  "fields": {
+    "name": "Nom complet",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "passwordConfirm": "Confirmer le mot de passe",
+    "referralCode": "Code de parrainage"
+  },
+  "placeholders": {
+    "name": "Votre nom",
+    "email": "votre@email.com",
+    "password": "Votre mot de passe",
+    "passwordConfirm": "Confirmez votre mot de passe",
+    "referralCode": "Entrez le code"
+  },
+  "optional": "(facultatif)",
+  "buttons": {
+    "submit": "Créer un compte",
+    "loading": "Création du compte..."
+  },
+  "links": {
+    "hasAccount": "Vous avez déjà un compte ?",
+    "login": "Se connecter"
+  },
+  "errors": {
+    "emailExists": "Cet e-mail est déjà enregistré",
+    "invalidReferral": "Code de parrainage invalide",
+    "networkError": "Erreur de connexion. Réessayez.",
+    "unknownError": "Erreur inconnue. Réessayez."
+  },
+  "accessibility": {
+    "logo": "Logo Stakly",
+    "nameField": "Champ nom complet",
+    "nameHint": "Entrez votre nom complet",
+    "emailField": "Champ e-mail",
+    "emailHint": "Entrez votre adresse e-mail",
+    "passwordField": "Champ mot de passe",
+    "passwordHint": "Entrez votre mot de passe, minimum 8 caractères",
+    "passwordConfirmField": "Champ de confirmation du mot de passe",
+    "passwordConfirmHint": "Entrez à nouveau votre mot de passe pour confirmer",
+    "referralField": "Champ code de parrainage",
+    "referralHint": "Entrez le code de parrainage si vous en avez un",
+    "submitButton": "Créer votre compte",
+    "submitButtonLoading": "Chargement, veuillez patienter",
+    "submitButtonHint": "Appuyez deux fois pour créer un compte",
+    "loginButton": "Se connecter",
+    "loginHint": "Appuyez deux fois pour aller à l'écran de connexion"
+  }
+}

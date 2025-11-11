@@ -1,0 +1,52 @@
+{
+  "title": "Criar nova conta",
+  "subtitle": "Crie sua conta",
+  "description": "Preencha os dados abaixo para começar",
+  "fields": {
+    "name": "Nome completo",
+    "email": "Email",
+    "password": "Senha",
+    "passwordConfirm": "Confirmar senha",
+    "referralCode": "Código de indicação"
+  },
+  "placeholders": {
+    "name": "Seu nome",
+    "email": "seu@email.com",
+    "password": "Sua senha",
+    "passwordConfirm": "Confirme sua senha",
+    "referralCode": "Digite o código"
+  },
+  "optional": "(opcional)",
+  "buttons": {
+    "submit": "Criar conta",
+    "loading": "Criando conta..."
+  },
+  "links": {
+    "hasAccount": "Já tem uma conta?",
+    "login": "Entrar"
+  },
+  "errors": {
+    "emailExists": "Este email já está cadastrado",
+    "invalidReferral": "Código de indicação inválido",
+    "networkError": "Erro de conexão. Tente novamente.",
+    "unknownError": "Erro desconhecido. Tente novamente."
+  },
+  "accessibility": {
+    "logo": "Logo Stakly",
+    "nameField": "Campo de nome completo",
+    "nameHint": "Digite seu nome completo",
+    "emailField": "Campo de email",
+    "emailHint": "Digite seu endereço de email",
+    "passwordField": "Campo de senha",
+    "passwordHint": "Digite sua senha, mínimo 8 caracteres",
+    "passwordConfirmField": "Campo de confirmação de senha",
+    "passwordConfirmHint": "Digite sua senha novamente para confirmar",
+    "referralField": "Campo de código de indicação",
+    "referralHint": "Digite o código de indicação, se tiver",
+    "submitButton": "Criar sua conta",
+    "submitButtonLoading": "Carregando, aguarde",
+    "submitButtonHint": "Toca duas vezes para criar conta",
+    "loginButton": "Fazer login",
+    "loginHint": "Toca duas vezes para ir para a tela de login"
+  }
+}
