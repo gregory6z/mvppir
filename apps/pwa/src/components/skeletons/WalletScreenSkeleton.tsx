@@ -1,23 +1,22 @@
-import { HeaderSkeleton } from "@/components/skeletons/HeaderSkeleton"
 import { BottomNavigation } from "@/components/navigation/BottomNavigation"
 
 export function WalletScreenSkeleton() {
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
       {/* Header Skeleton */}
-      <HeaderSkeleton />
+      <div className="sticky top-0 z-10 bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 backdrop-blur-lg border-b border-zinc-800/50">
+        <div className="flex items-center justify-between p-4">
+          <div className="w-10 h-10 rounded-full bg-zinc-800 animate-pulse" />
+          <div className="h-5 w-32 bg-zinc-800 rounded-full animate-pulse" />
+          <div className="w-10 h-10 rounded-full bg-zinc-800 animate-pulse" />
+        </div>
+      </div>
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto pb-24">
-        {/* Title Section */}
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="h-7 w-40 bg-zinc-800 rounded-full animate-pulse mb-2" />
-              <div className="h-4 w-32 bg-zinc-800 rounded-full animate-pulse" />
-            </div>
-            <div className="w-9 h-9 bg-zinc-800 rounded-full animate-pulse" />
-          </div>
+        {/* Subtitle Section */}
+        <div className="px-6 pt-4 pb-2">
+          <div className="h-4 w-40 bg-zinc-800 rounded-full animate-pulse" />
         </div>
 
         {/* Date Header */}

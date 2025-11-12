@@ -4,6 +4,9 @@ import { LoginScreen } from "@/screens/auth/LoginScreen"
 import { SignupScreen } from "@/screens/auth/SignupScreen"
 import { InviteScreen } from "@/screens/auth/InviteScreen"
 import { HomeScreen } from "@/screens/home/HomeScreen"
+import { DepositScreen } from "@/screens/deposit/DepositScreen"
+import { WithdrawScreen } from "@/screens/withdraw/WithdrawScreen"
+import { NotificationsScreen } from "@/screens/notifications/NotificationsScreen"
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -60,6 +63,30 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <HomeScreen />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/deposit",
+    element: (
+      <ProtectedRoute>
+        <DepositScreen />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/withdraw",
+    element: (
+      <ProtectedRoute>
+        <WithdrawScreen />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/notifications",
+    element: (
+      <ProtectedRoute>
+        <NotificationsScreen />
       </ProtectedRoute>
     ),
   },

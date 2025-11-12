@@ -25,20 +25,19 @@ export function ReferralCode({
   }
 
   const handleShare = async () => {
-    const shareData = {
-      title: "Join Stakly",
-      text: `Join Stakly and start earning! Use my referral code: ${referralCode}`,
-      url: referralLink,
-    }
+    const shareMessage = `🚀 Junte-se a mim no Stakly e comece a ganhar!\n\n💰 Use meu código de indicação: ${referralCode}\n\nGanhe comissões diárias com IA! 📈`
 
     try {
       // Try Web Share API first (mobile browsers)
       if (navigator.share) {
-        await navigator.share(shareData)
+        await navigator.share({
+          title: "Junte-se ao Stakly",
+          text: shareMessage,
+        })
       } else {
-        // Fallback: copy link to clipboard
-        await navigator.clipboard.writeText(referralLink)
-        alert("Link copied to clipboard!")
+        // Fallback: copy full message to clipboard
+        await navigator.clipboard.writeText(shareMessage)
+        alert("Mensagem copiada para a área de transferência!")
       }
     } catch (error) {
       console.error("Share failed:", error)

@@ -1,0 +1,29 @@
+{
+  "title": "Transaction Details",
+  "notFound": "Transaction not found",
+  "types": {
+    "deposit": "Deposit",
+    "withdrawal": "Withdrawal",
+    "commission": "Network Commission",
+    "dailyCommission": "Daily Commission"
+  },
+  "status": {
+    "PENDING": "Pending",
+    "CONFIRMED": "Confirmed",
+    "SENT_TO_GLOBAL": "Completed",
+    "PAID": "Paid",
+    "CANCELLED": "Cancelled"
+  },
+  "commissionLevel": "Commission Level",
+  "levels": {
+    "N0": "Own Commission (Daily)",
+    "N1": "Direct (N1)",
+    "N2": "Indirect (N2)",
+    "N3": "Indirect (N3)"
+  },
+  "from": "From",
+  "details": "Details",
+  "date": "Date",
+  "txHash": "Transaction Hash",
+  "transferHash": "Transfer Hash"
+}

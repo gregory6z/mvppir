@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Users, User, TrendUp, Calendar } from "phosphor-react"
 import type { MLMRank } from "@/api/mlm/schemas"
+import { MonthlyMaintenanceDrawer } from "@/components/drawers"
 
 interface NetworkStatsProps {
   totalDirects: number // Lifetime count
@@ -16,6 +18,7 @@ export function NetworkStats({
   currentRank,
 }: NetworkStatsProps) {
   const { t } = useTranslation("referrals.referrals")
+  const [maintenanceOpen, setMaintenanceOpen] = useState(false)
 
   const formatNumber = (num: number) => {
     const value = typeof num === "number" && !isNaN(num) ? num : 0
@@ -38,6 +41,7 @@ export function NetworkStats({
       {/* Monthly Maintenance Info Button */}
       <button
         type="button"
+        onClick={() => setMaintenanceOpen(true)}
         className="flex items-center justify-center gap-2 w-full bg-orange-500/20 px-4 py-2.5 rounded-xl border border-orange-500/30 hover:bg-orange-500/30 transition-colors mb-4"
         aria-label="Monthly maintenance requirements"
       >
@@ -108,6 +112,13 @@ export function NetworkStats({
           </div>
         </div>
       </div>
+
+      {/* Monthly Maintenance Drawer */}
+      <MonthlyMaintenanceDrawer
+        open={maintenanceOpen}
+        onOpenChange={setMaintenanceOpen}
+        currentRank={currentRank}
+      />
     </div>
   )
 }

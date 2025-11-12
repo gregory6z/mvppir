@@ -1,10 +1,10 @@
 import { useMemo, useRef, useCallback } from "react"
+import { useNavigate } from "react-router-dom"
 import { format, isToday, isYesterday } from "date-fns"
 import { ptBR, enUS, es, fr } from "date-fns/locale"
 import { useTranslation } from "react-i18next"
+import { ArrowLeft } from "phosphor-react"
 import { RefreshCw } from "lucide-react"
-import { Header } from "@/components/layout/Header"
-import { useUserAccount } from "@/api/user/queries/use-user-account"
 import { useInfiniteUnifiedTransactions } from "@/api/user/queries/use-infinite-unified-transactions"
 import { useUIStore } from "@/stores/ui.store"
 import { TransactionItem } from "@/components/wallet/TransactionItem"
@@ -18,8 +18,8 @@ type TransactionWithDate = UnifiedTransaction & {
 }
 
 export function WalletScreen() {
+  const navigate = useNavigate()
   const { t, i18n } = useTranslation("wallet.wallet")
-  const { data: userAccount } = useUserAccount()
   const {
     data,
     isPending,
@@ -32,9 +32,14 @@ export function WalletScreen() {
   const { isBalanceVisible } = useUIStore()
   const observerTarget = useRef<HTMLDivElement>(null)
 
+  const handleBack = () => {
+    navigate(-1)
+  }
+
   const handleTransactionPress = (id: string) => {
-    console.log(`Transaction ${id} pressed - show details`)
-    // TODO: Navigate to transaction details
+    const allTransactions = data?.pages.flatMap((page) => page.transactions) || []
+    const transaction = allTransactions.find((tx) => tx.id === id)
+    navigate(`/transactions/${id}`, { state: { transaction } })
   }
 
   // Infinite scroll observer
@@ -129,36 +134,36 @@ export function WalletScreen() {
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
       {/* Header */}
-      <Header
-        userName={userAccount?.name || ""}
-        notificationCount={0}
-        onAvatarPress={() => console.log("Avatar pressed")}
-        onNotificationPress={() => console.log("Notification pressed")}
-      />
+      <div className="sticky top-0 z-10 bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 backdrop-blur-lg border-b border-zinc-800/50">
+        <div className="flex items-center justify-between p-4">
+          <button
+            onClick={handleBack}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors"
+          >
+            <ArrowLeft size={20} color="#fff" weight="bold" />
+          </button>
+          <h1 className="text-white text-lg font-bold">{t("title")}</h1>
+          <button
+            onClick={handleRefresh}
+            disabled={isRefetching}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors disabled:opacity-50"
+            aria-label="Refresh transactions"
+          >
+            <RefreshCw
+              size={18}
+              className={`text-white ${isRefetching ? "animate-spin" : ""}`}
+            />
+          </button>
+        </div>
+      </div>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto pb-24">
-        {/* Title */}
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-white text-2xl font-bold">{t("title")}</h1>
-              <p className="text-zinc-400 text-sm mt-1">
-                {t("subtitle", { count: totalCount })}
-              </p>
-            </div>
-            <button
-              onClick={handleRefresh}
-              disabled={isRefetching}
-              className="p-2 rounded-full hover:bg-zinc-800 active:scale-95 transition-all disabled:opacity-50"
-              aria-label="Refresh transactions"
-            >
-              <RefreshCw
-                size={20}
-                className={`text-purple-500 ${isRefetching ? "animate-spin" : ""}`}
-              />
-            </button>
-          </div>
+        {/* Subtitle */}
+        <div className="px-6 pt-4 pb-2">
+          <p className="text-zinc-400 text-sm">
+            {t("subtitle", { count: totalCount })}
+          </p>
         </div>
 
         {/* Transactions List */}

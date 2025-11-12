@@ -1,0 +1,69 @@
+{
+  "title": "Retrait",
+  "subtitle": {
+    "step1": "Étape 1: Choisissez le montant",
+    "step2": "Étape 2: Adresse de destination"
+  },
+  "availableBalance": "Solde disponible",
+  "balanceInfo": "Solde pouvant être retiré immédiatement",
+  "amountLabel": "Montant du retrait",
+  "maxButton": "Maximum",
+  "feeBreakdown": {
+    "title": "Détail des frais",
+    "withdrawalAmount": "Montant du retrait",
+    "fee": "Frais",
+    "youWillReceive": "Vous recevrez",
+    "estimatedArrival": "Temps estimé",
+    "perMonth": "par mois",
+    "perYear": "par an"
+  },
+  "limits": {
+    "title": "Limites de retrait",
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "continueButton": "Continuer",
+  "withdrawalAmount": "Montant du retrait",
+  "youWillReceive": "Vous recevrez",
+  "addressLabel": "Adresse Polygon",
+  "pasteButton": "Coller",
+  "addressWarning": "Vérifiez attentivement l'adresse. Les transactions blockchain ne peuvent pas être annulées.",
+  "network": "Réseau Polygon (MATIC)",
+  "networkWarning": "Nous enverrons uniquement via le réseau Polygon. Assurez-vous que votre adresse supporte ce réseau.",
+  "submitButton": "Confirmer le retrait",
+  "submitting": "Traitement en cours...",
+  "success": {
+    "title": "Retrait demandé!",
+    "description": "Votre retrait est en cours de traitement. Vous recevrez les fonds dans les 24 heures."
+  },
+  "errors": {
+    "amountRequired": "Entrez un montant valide",
+    "calculatingFee": "Calcul des frais...",
+    "belowMinimum": "Montant minimum: ${{minimum}}",
+    "aboveMaximum": "Montant maximum: ${{maximum}}",
+    "insufficientBalance": "Solde insuffisant",
+    "addressRequired": "Entrez une adresse",
+    "invalidAddress": "Adresse invalide. Utilisez le format: 0x...",
+    "requestFailed": "Échec de la demande de retrait. Réessayez."
+  },
+  "modal": {
+    "title": "Attention: Rétrogradation de rang",
+    "rankChange": "Votre rang changera de {{from}} à {{to}}",
+    "balanceAfter": "Solde après retrait",
+    "belowMinimum": "En dessous du minimum de ${{minimum}}",
+    "longTermImpact": {
+      "title": "Impact à long terme",
+      "monthlyLoss": "Perte mensuelle",
+      "annualLoss": "Perte annuelle",
+      "warning": "En rétrogradant de rang, vous perdrez des gains significatifs au fil du temps."
+    },
+    "inactivationWarning": {
+      "title": "Le compte sera désactivé",
+      "description": "Votre solde sera en dessous du minimum nécessaire. Votre compte sera marqué comme inactif et vous ne recevrez pas de gains jusqu'à effectuer un nouveau dépôt."
+    },
+    "confirmMessage": "Êtes-vous sûr de vouloir continuer avec ce retrait?",
+    "confirmButton": "Oui, continuer",
+    "cancelButton": "Annuler",
+    "inactive": "Inactif"
+  }
+}

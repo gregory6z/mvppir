@@ -1,0 +1,25 @@
+{
+  "title": "Notifications",
+  "empty": {
+    "title": "No notifications",
+    "subtitle": "You don't have any notifications at the moment"
+  },
+  "markAllAsRead": "Mark all as read",
+  "loading": "Loading notifications...",
+  "error": "Error loading notifications",
+  "types": {
+    "deposit": "Deposit",
+    "withdrawal": "Withdrawal",
+    "commission": "Commission",
+    "system": "System",
+    "referral": "Referral"
+  },
+  "timeAgo": {
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m",
+    "hoursAgo": "{{count}}h",
+    "daysAgo": "{{count}}d",
+    "weeksAgo": "{{count}}w",
+    "monthsAgo": "{{count}}mo"
+  }
+}

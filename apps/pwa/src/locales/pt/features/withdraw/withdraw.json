@@ -1,0 +1,69 @@
+{
+  "title": "Saque",
+  "subtitle": {
+    "step1": "Passo 1: Escolha o valor",
+    "step2": "Passo 2: Endereço de destino"
+  },
+  "availableBalance": "Saldo disponível",
+  "balanceInfo": "Saldo que pode ser sacado imediatamente",
+  "amountLabel": "Valor do saque",
+  "maxButton": "Máximo",
+  "feeBreakdown": {
+    "title": "Detalhamento da taxa",
+    "withdrawalAmount": "Valor do saque",
+    "fee": "Taxa",
+    "youWillReceive": "Você receberá",
+    "estimatedArrival": "Tempo estimado",
+    "perMonth": "por mês",
+    "perYear": "por ano"
+  },
+  "limits": {
+    "title": "Limites de saque",
+    "minimum": "Mínimo",
+    "maximum": "Máximo"
+  },
+  "continueButton": "Continuar",
+  "withdrawalAmount": "Valor do saque",
+  "youWillReceive": "Você receberá",
+  "addressLabel": "Endereço Polygon",
+  "pasteButton": "Colar",
+  "addressWarning": "Verifique cuidadosamente o endereço. Transações blockchain não podem ser revertidas.",
+  "network": "Rede Polygon (MATIC)",
+  "networkWarning": "Enviaremos apenas via rede Polygon. Certifique-se de que seu endereço suporta esta rede.",
+  "submitButton": "Confirmar saque",
+  "submitting": "Processando...",
+  "success": {
+    "title": "Saque solicitado!",
+    "description": "Seu saque está sendo processado. Você receberá os fundos em até 24 horas."
+  },
+  "errors": {
+    "amountRequired": "Insira um valor válido",
+    "calculatingFee": "Calculando taxa...",
+    "belowMinimum": "Valor mínimo: ${{minimum}}",
+    "aboveMaximum": "Valor máximo: ${{maximum}}",
+    "insufficientBalance": "Saldo insuficiente",
+    "addressRequired": "Insira um endereço",
+    "invalidAddress": "Endereço inválido. Use formato: 0x...",
+    "requestFailed": "Falha ao solicitar saque. Tente novamente."
+  },
+  "modal": {
+    "title": "Atenção: Rebaixamento de Rank",
+    "rankChange": "Seu rank mudará de {{from}} para {{to}}",
+    "balanceAfter": "Saldo após saque",
+    "belowMinimum": "Abaixo do mínimo de ${{minimum}}",
+    "longTermImpact": {
+      "title": "Impacto de longo prazo",
+      "monthlyLoss": "Perda mensal",
+      "annualLoss": "Perda anual",
+      "warning": "Ao rebaixar seu rank, você perderá rendimentos significativos ao longo do tempo."
+    },
+    "inactivationWarning": {
+      "title": "Conta será inativada",
+      "description": "Seu saldo ficará abaixo do mínimo necessário. Sua conta será marcada como inativa e você não receberá rendimentos até fazer um novo depósito."
+    },
+    "confirmMessage": "Tem certeza que deseja continuar com este saque?",
+    "confirmButton": "Sim, continuar",
+    "cancelButton": "Cancelar",
+    "inactive": "Inativo"
+  }
+}

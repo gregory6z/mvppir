@@ -1,0 +1,69 @@
+{
+  "title": "Retiro",
+  "subtitle": {
+    "step1": "Paso 1: Elige el monto",
+    "step2": "Paso 2: Dirección de destino"
+  },
+  "availableBalance": "Saldo disponible",
+  "balanceInfo": "Saldo que puede retirarse inmediatamente",
+  "amountLabel": "Monto del retiro",
+  "maxButton": "Máximo",
+  "feeBreakdown": {
+    "title": "Desglose de comisión",
+    "withdrawalAmount": "Monto del retiro",
+    "fee": "Comisión",
+    "youWillReceive": "Recibirás",
+    "estimatedArrival": "Tiempo estimado",
+    "perMonth": "por mes",
+    "perYear": "por año"
+  },
+  "limits": {
+    "title": "Límites de retiro",
+    "minimum": "Mínimo",
+    "maximum": "Máximo"
+  },
+  "continueButton": "Continuar",
+  "withdrawalAmount": "Monto del retiro",
+  "youWillReceive": "Recibirás",
+  "addressLabel": "Dirección Polygon",
+  "pasteButton": "Pegar",
+  "addressWarning": "Verifica cuidadosamente la dirección. Las transacciones blockchain no pueden revertirse.",
+  "network": "Red Polygon (MATIC)",
+  "networkWarning": "Enviaremos solo a través de la red Polygon. Asegúrate de que tu dirección soporte esta red.",
+  "submitButton": "Confirmar retiro",
+  "submitting": "Procesando...",
+  "success": {
+    "title": "¡Retiro solicitado!",
+    "description": "Tu retiro está siendo procesado. Recibirás los fondos en hasta 24 horas."
+  },
+  "errors": {
+    "amountRequired": "Ingresa un monto válido",
+    "calculatingFee": "Calculando comisión...",
+    "belowMinimum": "Monto mínimo: ${{minimum}}",
+    "aboveMaximum": "Monto máximo: ${{maximum}}",
+    "insufficientBalance": "Saldo insuficiente",
+    "addressRequired": "Ingresa una dirección",
+    "invalidAddress": "Dirección inválida. Usa formato: 0x...",
+    "requestFailed": "Error al solicitar retiro. Inténtalo de nuevo."
+  },
+  "modal": {
+    "title": "Atención: Descenso de Rango",
+    "rankChange": "Tu rango cambiará de {{from}} a {{to}}",
+    "balanceAfter": "Saldo después del retiro",
+    "belowMinimum": "Por debajo del mínimo de ${{minimum}}",
+    "longTermImpact": {
+      "title": "Impacto a largo plazo",
+      "monthlyLoss": "Pérdida mensual",
+      "annualLoss": "Pérdida anual",
+      "warning": "Al descender de rango, perderás ganancias significativas con el tiempo."
+    },
+    "inactivationWarning": {
+      "title": "Cuenta será desactivada",
+      "description": "Tu saldo quedará por debajo del mínimo necesario. Tu cuenta será marcada como inactiva y no recibirás ganancias hasta hacer un nuevo depósito."
+    },
+    "confirmMessage": "¿Estás seguro de que deseas continuar con este retiro?",
+    "confirmButton": "Sí, continuar",
+    "cancelButton": "Cancelar",
+    "inactive": "Inactivo"
+  }
+}

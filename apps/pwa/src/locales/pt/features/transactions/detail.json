@@ -1,0 +1,29 @@
+{
+  "title": "Detalhes da Transação",
+  "notFound": "Transação não encontrada",
+  "types": {
+    "deposit": "Depósito",
+    "withdrawal": "Saque",
+    "commission": "Comissão de Rede",
+    "dailyCommission": "Comissão Diária"
+  },
+  "status": {
+    "PENDING": "Pendente",
+    "CONFIRMED": "Confirmado",
+    "SENT_TO_GLOBAL": "Concluído",
+    "PAID": "Pago",
+    "CANCELLED": "Cancelado"
+  },
+  "commissionLevel": "Nível de Comissão",
+  "levels": {
+    "N0": "Comissão Própria (Diária)",
+    "N1": "Diretos (N1)",
+    "N2": "Indiretos (N2)",
+    "N3": "Indiretos (N3)"
+  },
+  "from": "De",
+  "details": "Detalhes",
+  "date": "Data",
+  "txHash": "Hash da Transação",
+  "transferHash": "Hash da Transferência"
+}

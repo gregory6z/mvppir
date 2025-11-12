@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Crown, Lock, Sparkle } from "phosphor-react"
 import type { MLMRank, RankStatus } from "@/api/mlm/schemas"
+import { MLMExplainerDrawer } from "@/components/drawers"
 
 interface RankCardProps {
   currentRank: MLMRank
@@ -66,6 +68,7 @@ export function RankCard({
   progressToNext,
 }: RankCardProps) {
   const { t } = useTranslation("referrals.referrals")
+  const [explainerOpen, setExplainerOpen] = useState(false)
   const rankInfo = RANK_CONFIG[currentRank]
   const statusInfo = RANK_STATUS_CONFIG[rankStatus]
 
@@ -126,6 +129,7 @@ export function RankCard({
         {/* How It Works Button */}
         <button
           type="button"
+          onClick={() => setExplainerOpen(true)}
           className="flex items-center justify-center gap-2 w-full bg-violet-500/20 px-4 py-2.5 rounded-xl border border-violet-500/30 hover:bg-violet-500/30 transition-colors"
           aria-label="How the ranking system works"
         >
@@ -247,6 +251,12 @@ export function RankCard({
           </p>
         </div>
       )}
+
+      {/* MLM Explainer Drawer */}
+      <MLMExplainerDrawer
+        open={explainerOpen}
+        onOpenChange={setExplainerOpen}
+      />
     </div>
   )
 }

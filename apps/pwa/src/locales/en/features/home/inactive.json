@@ -1,0 +1,37 @@
+{
+  "statusBadge": "Inactive Account",
+  "hero": {
+    "title": "Activate your account",
+    "subtitle": "Deposit ${{threshold}} USD to unlock all features",
+    "tagline": "Profit with AI and earn up to 2.60% daily + commissions"
+  },
+  "progress": {
+    "title": "Activation Progress",
+    "of": "of",
+    "remaining": "${{remaining}} remaining to activate your account",
+    "activated": "Account activated! Reloading..."
+  },
+  "depositButton": "Make Deposit",
+  "benefits": {
+    "title": "What you get when you activate:",
+    "benefit1": {
+      "title": "AI Generating Profits 24/7",
+      "description": "Artificial Intelligence working for you while you sleep",
+      "badge": "Up to 2.60% daily in earnings"
+    },
+    "benefit2": {
+      "title": "3-Level Commissions",
+      "description": "Earn on network profits up to 3 generations of referrals",
+      "badge": "Multiplied earnings through your network"
+    },
+    "benefit3": {
+      "title": "Fast Withdrawals",
+      "description": "Withdraw AI profits and commissions whenever you want",
+      "badge": "Secure and fast processing"
+    }
+  },
+  "footer": {
+    "info": "💡 After your first deposit of ${{threshold}}, your account will be automatically activated and you will start earning commissions"
+  },
+  "loading": "Loading..."
+}

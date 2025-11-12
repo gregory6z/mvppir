@@ -1,21 +1,22 @@
 import { Bell, UserCircle } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { useUnreadNotifications } from "@/api/notifications/queries/use-unread-notifications"
 
 interface HeaderProps {
   userName: string
   avatarUrl?: string
-  notificationCount?: number
   onAvatarPress: () => void
   onNotificationPress: () => void
 }
 
 export function Header({
   userName,
-  notificationCount = 0,
   onAvatarPress,
   onNotificationPress,
 }: HeaderProps) {
   const { t } = useTranslation("common.greetings")
+  const { data: notifications } = useUnreadNotifications()
+  const notificationCount = notifications?.unreadCount || 0
 
   // Get time-based greeting
   const getGreeting = () => {

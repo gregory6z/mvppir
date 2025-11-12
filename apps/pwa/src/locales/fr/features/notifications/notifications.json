@@ -1,0 +1,25 @@
+{
+  "title": "Notifications",
+  "empty": {
+    "title": "Aucune notification",
+    "subtitle": "Vous n'avez aucune notification pour le moment"
+  },
+  "markAllAsRead": "Tout marquer comme lu",
+  "loading": "Chargement des notifications...",
+  "error": "Erreur lors du chargement des notifications",
+  "types": {
+    "deposit": "Dépôt",
+    "withdrawal": "Retrait",
+    "commission": "Commission",
+    "system": "Système",
+    "referral": "Parrainage"
+  },
+  "timeAgo": {
+    "justNow": "À l'instant",
+    "minutesAgo": "{{count}}m",
+    "hoursAgo": "{{count}}h",
+    "daysAgo": "{{count}}j",
+    "weeksAgo": "{{count}}sem",
+    "monthsAgo": "{{count}}mois"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "title": "¡Comisión Recibida!",
+  "subtitle": "Tu comisión diaria ha sido acreditada",
+  "amountLabel": "Cantidad Recibida",
+  "credited": "Acreditado con éxito",
+  "yourRank": "Tu Rango Actual",
+  "ranks": {
+    "RECRUIT": "Recluta",
+    "BRONZE": "Bronce",
+    "SILVER": "Plata",
+    "GOLD": "Oro"
+  },
+  "frequency": "Frecuencia",
+  "daily": "Diaria",
+  "status": "Estado",
+  "paid": "Pagado",
+  "viewDetails": "Ver Detalles"
+}

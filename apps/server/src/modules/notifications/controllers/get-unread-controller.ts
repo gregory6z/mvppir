@@ -14,7 +14,7 @@ export async function getUnreadController(
 ) {
   try {
     // Usuário vem do middleware requireAuth
-    const userId = request.headers.get("x-user-id");
+    const userId = request.user?.id;
     if (!userId) {
       return reply.status(401).send({ error: "Unauthorized" });
     }

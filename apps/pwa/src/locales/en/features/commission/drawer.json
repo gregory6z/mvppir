@@ -1,0 +1,18 @@
+{
+  "title": "Commission Received!",
+  "subtitle": "Your daily commission has been credited",
+  "amountLabel": "Amount Received",
+  "credited": "Successfully credited",
+  "yourRank": "Your Current Rank",
+  "ranks": {
+    "RECRUIT": "Recruit",
+    "BRONZE": "Bronze",
+    "SILVER": "Silver",
+    "GOLD": "Gold"
+  },
+  "frequency": "Frequency",
+  "daily": "Daily",
+  "status": "Status",
+  "paid": "Paid",
+  "viewDetails": "View Details"
+}

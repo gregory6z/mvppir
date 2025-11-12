@@ -1,0 +1,32 @@
+{
+  "title": "Depósito",
+  "subtitle": "Adicionar fundos à sua conta",
+  "network": "Rede Polygon (MATIC)",
+  "networkWarning": "Envie apenas USDT ou USDC via rede Polygon. Outros tokens ou redes resultarão em perda permanente.",
+  "qrCode": "Código QR",
+  "scanQR": "Escaneie este código QR com sua carteira",
+  "address": "Endereço da carteira",
+  "copyAddress": "Copiar endereço",
+  "addressCopied": "Endereço copiado!",
+  "supportedTokens": {
+    "title": "Tokens suportados",
+    "usdt": "USDT (Tether) - Polygon",
+    "usdc": "USDC (USD Coin) - Polygon"
+  },
+  "instructions": {
+    "title": "Como depositar",
+    "step1": "Copie o endereço acima ou escaneie o QR code",
+    "step2": "Abra sua carteira de criptomoedas (MetaMask, Trust Wallet, etc)",
+    "step3": "Envie USDT ou USDC via rede Polygon para este endereço",
+    "step4": "Aguarde a confirmação (geralmente 2-3 minutos)"
+  },
+  "warnings": {
+    "title": "Avisos importantes",
+    "wrongNetwork": "Não envie tokens via outras redes (Ethereum, BSC, etc). Use apenas Polygon!",
+    "minDeposit": "Depósito mínimo: $10.00 USD",
+    "activation": "Seu saldo estará disponível após 12 confirmações na blockchain"
+  },
+  "errors": {
+    "loadFailed": "Falha ao carregar endereço de depósito. Tente novamente."
+  }
+}

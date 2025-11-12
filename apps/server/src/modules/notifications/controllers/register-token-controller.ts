@@ -29,7 +29,7 @@ export async function registerTokenController(
     const body = schema.parse(request.body);
 
     // Usuário vem do middleware requireAuth
-    const userId = request.headers.get("x-user-id");
+    const userId = request.user?.id;
     if (!userId) {
       return reply.status(401).send({ error: "Unauthorized" });
     }

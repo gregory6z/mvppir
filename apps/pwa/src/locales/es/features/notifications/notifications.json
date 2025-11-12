@@ -1,0 +1,25 @@
+{
+  "title": "Notificaciones",
+  "empty": {
+    "title": "Sin notificaciones",
+    "subtitle": "No tienes notificaciones en este momento"
+  },
+  "markAllAsRead": "Marcar todas como leídas",
+  "loading": "Cargando notificaciones...",
+  "error": "Error al cargar notificaciones",
+  "types": {
+    "deposit": "Depósito",
+    "withdrawal": "Retiro",
+    "commission": "Comisión",
+    "system": "Sistema",
+    "referral": "Referido"
+  },
+  "timeAgo": {
+    "justNow": "Ahora",
+    "minutesAgo": "{{count}}m",
+    "hoursAgo": "{{count}}h",
+    "daysAgo": "{{count}}d",
+    "weeksAgo": "{{count}}sem",
+    "monthsAgo": "{{count}}mes"
+  }
+}

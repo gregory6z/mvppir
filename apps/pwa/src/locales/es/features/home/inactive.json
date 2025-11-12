@@ -1,0 +1,37 @@
+{
+  "statusBadge": "Cuenta Inactiva",
+  "hero": {
+    "title": "Active su cuenta",
+    "subtitle": "Deposite ${{threshold}} USD para desbloquear todas las funciones",
+    "tagline": "Gane con IA y obtenga hasta 2.60% diario + comisiones"
+  },
+  "progress": {
+    "title": "Progreso de Activación",
+    "of": "de",
+    "remaining": "Faltan ${{remaining}} para activar su cuenta",
+    "activated": "¡Cuenta activada! Recargando..."
+  },
+  "depositButton": "Realizar Depósito",
+  "benefits": {
+    "title": "Lo que obtiene al activar:",
+    "benefit1": {
+      "title": "IA Generando Ganancias 24/7",
+      "description": "Inteligencia Artificial trabajando para usted mientras duerme",
+      "badge": "Hasta 2.60% diario en ganancias"
+    },
+    "benefit2": {
+      "title": "Comisiones en 3 Niveles",
+      "description": "Gane sobre las ganancias de la red hasta 3 generaciones de referidos",
+      "badge": "Ganancias multiplicadas por su red"
+    },
+    "benefit3": {
+      "title": "Retiros Rápidos",
+      "description": "Retire ganancias de IA y comisiones cuando quiera",
+      "badge": "Procesamiento seguro y rápido"
+    }
+  },
+  "footer": {
+    "info": "💡 Después de su primer depósito de ${{threshold}}, su cuenta se activará automáticamente y comenzará a ganar comisiones"
+  },
+  "loading": "Cargando..."
+}

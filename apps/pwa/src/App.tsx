@@ -7,6 +7,11 @@ import { HomeScreen } from "@/screens/home/HomeScreen"
 import { WalletScreen } from "@/screens/wallet/WalletScreen"
 import { NetworkScreen } from "@/screens/network/NetworkScreen"
 import { ProfileScreen } from "@/screens/profile/ProfileScreen"
+import { DepositScreen } from "@/screens/deposit/DepositScreen"
+import { WithdrawScreen } from "@/screens/withdraw/WithdrawScreen"
+import { NotificationsScreen } from "@/screens/notifications/NotificationsScreen"
+import { TransactionDetailScreen } from "@/screens/transactions/TransactionDetailScreen"
+import { ReferScreen } from "@/screens/refer/ReferScreen"
 
 export function App() {
   // Usa authStore com token Bearer (fallback quando cookies cross-origin não funcionam)
@@ -33,12 +38,12 @@ export function App() {
       <Route path="/wallet" element={<WalletScreen />} />
       <Route path="/network" element={<NetworkScreen />} />
       <Route path="/profile" element={<ProfileScreen />} />
-      <Route path="/notifications" element={<div>Notifications (TODO)</div>} />
-      <Route path="/deposit" element={<div>Deposit (TODO)</div>} />
-      <Route path="/withdraw" element={<div>Withdraw (TODO)</div>} />
-      <Route path="/refer" element={<div>Refer (TODO)</div>} />
+      <Route path="/notifications" element={<NotificationsScreen />} />
+      <Route path="/deposit" element={<DepositScreen />} />
+      <Route path="/withdraw" element={<WithdrawScreen />} />
+      <Route path="/refer" element={<ReferScreen />} />
       <Route path="/transactions" element={<div>Transactions List (TODO)</div>} />
-      <Route path="/transactions/:id" element={<div>Transaction Detail (TODO)</div>} />
+      <Route path="/transactions/:id" element={<TransactionDetailScreen />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
