@@ -1,0 +1,161 @@
+{
+  "screen": {
+    "loading": "Loading...",
+    "loadingData": "Loading data...",
+    "error": "Error",
+    "errorLoading": "Error loading data",
+    "unknownError": "An unknown error occurred",
+    "tryAgain": "Try again",
+    "user": "User"
+  },
+  "rankCard": {
+    "dailyCommission": "Daily Commission",
+    "blockedBalance": "Invested Balance",
+    "progressTo": "Progress to",
+    "directReferrals": "Direct Referrals",
+    "requiredBlocked": "Required Investment",
+    "networkVolume": "Network Volume",
+    "maxRankTitle": "Maximum Rank Achieved!",
+    "maxRankDescription": "You've reached the highest rank in the system",
+    "howItWorksButton": "How It Works",
+    "ranks": {
+      "recruit": "Recruit",
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold"
+    },
+    "status": {
+      "active": "Active",
+      "warning": "Warning",
+      "tempDownrank": "Temp Downrank",
+      "downranked": "Downranked"
+    }
+  },
+  "referralCode": {
+    "title": "Your Referral Code",
+    "shareCode": "Share this code with friends",
+    "referralCodeLabel": "REFERRAL CODE",
+    "copyCode": "Copy Code",
+    "copied": "Copied!",
+    "referralLink": "Referral Link",
+    "infoMessage": "Earn commissions when your referrals make deposits and build their network"
+  },
+  "networkStats": {
+    "title": "Network Overview",
+    "totalDirects": "Total Directs",
+    "lifetime": "Lifetime",
+    "activeNow": "Active Now",
+    "thisMonth": "This month",
+    "networkVolume": "Network Volume",
+    "networkLevels": "Network Levels",
+    "ownBalance": "Your Investment",
+    "you": "You",
+    "blockedBalance": "Invested",
+    "directReferrals": "Direct Referrals",
+    "secondLevel": "2nd Level",
+    "thirdLevel": "3rd Level",
+    "people": "people",
+    "totalBalance": "Total Balance"
+  },
+  "commissionOverview": {
+    "title": "Commission Earnings",
+    "today": "Today",
+    "thisMonth": "This Month",
+    "totalEarned": "Total Earned",
+    "allTime": "All Time",
+    "dailyAverage": "Daily Average",
+    "monthlyEst": "Monthly Est.",
+    "byLevel": "Earnings by Level",
+    "ownBalance": "Own Investment",
+    "directReferrals": "Direct Referrals",
+    "indirectN2": "2nd Level Network",
+    "indirectN3": "3rd Level Network"
+  },
+  "recentCommissions": {
+    "title": "Recent Commissions",
+    "recent": "recent",
+    "empty": {
+      "title": "No commissions yet",
+      "subtitle": "Start inviting friends to earn daily commissions"
+    },
+    "status": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "cancelled": "Cancelled"
+    },
+    "recently": "Recently"
+  },
+  "explainer": {
+    "title": "How It Works",
+    "hero": {
+      "title": "AI-Powered Earnings",
+      "description": "Your investment is managed by our advanced AI agent that generates consistent high returns through intelligent market strategies."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "step1": {
+        "title": "1. Invest Your Balance",
+        "description": "Keep funds invested to earn daily dividends. The more you invest, the higher your rank and daily earnings."
+      },
+      "step2": {
+        "title": "2. Build Your Network",
+        "description": "Invite people to join. Each active referral helps you climb ranks and unlock higher commission rates."
+      },
+      "step3": {
+        "title": "3. Earn Daily Dividends",
+        "description": "Receive automatic daily payments based on your rank. Higher ranks = higher percentage returns on your investment."
+      }
+    },
+    "ranks": {
+      "title": "Rank Benefits",
+      "recruit": "Entry level - Start earning 0.35% daily with $100 invested",
+      "bronze": "3 directs + $500 invested + $2,500 lifetime network volume - Earn 1.05% daily",
+      "silver": "5 directs + $2,000 invested + $30,000 lifetime network volume - Earn 1.80% daily",
+      "gold": "8 directs + $5,000 invested + $150,000 lifetime network volume - Earn 2.60% daily"
+    },
+    "ai": {
+      "title": "AI Trading Agent",
+      "description": "Our proprietary AI analyzes markets 24/7, executing high-probability trades to generate consistent returns for all investors. The more you invest and the higher your rank, the more you earn."
+    },
+    "keyPoints": {
+      "title": "Key Points",
+      "point1": "Daily dividends are paid automatically based on your invested balance and rank",
+      "point2": "To maintain your rank, keep the required investment amount active",
+      "point3": "The AI works for you 24/7 - higher ranks unlock exponentially higher daily earnings"
+    },
+    "maintenance": {
+      "title": "Monthly Maintenance",
+      "subtitle": "To keep your rank, you need to meet these requirements every month:",
+      "recruit": {
+        "title": "No Monthly Requirements!",
+        "description": "Invest $100 once and earn 0.35% daily forever. No need to do anything else."
+      },
+      "bronze": {
+        "activeDirects": "3 active referrals",
+        "monthlyVolume": "$500 network volume/month"
+      },
+      "silver": {
+        "activeDirects": "5 active referrals",
+        "monthlyVolume": "$6,000 network volume/month"
+      },
+      "gold": {
+        "activeDirects": "8 active referrals",
+        "monthlyVolume": "$30,000 network volume/month"
+      },
+      "note": "Network volume = your deposits + deposits from your direct and indirect referrals",
+      "warning": "If you don't meet requirements for 3 consecutive months, you may be downranked"
+    },
+    "closeButton": "Got it!"
+  },
+  "monthlyMaintenance": {
+    "yourCurrentRank": "Your Current Rank",
+    "requirementsTitle": "Monthly Requirements",
+    "activeDirectsTitle": "Active Directs",
+    "networkVolumeTitle": "Network Volume",
+    "volumeExplanation": "This is the total deposits made by YOU + your entire network (directs + indirects) during the current month",
+    "importantInfo": "Important Information",
+    "whatIsVolumeTitle": "What is Network Volume?",
+    "downrankWarningTitle": "Warning",
+    "allRanksTitle": "All Ranks Requirements"
+  }
+}

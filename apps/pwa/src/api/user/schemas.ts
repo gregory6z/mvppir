@@ -59,3 +59,11 @@ export interface UnifiedTransactionsResponse {
     hasMore: boolean
   }
 }
+
+// ===== Referral (API Response Types) =====
+
+export interface ReferralLinkResponse {
+  referralCode: string
+  referralLink: string
+  message: string
+}

@@ -3,6 +3,7 @@ import type {
   UserAccount,
   UserBalanceResponse,
   UnifiedTransactionsResponse,
+  ReferralLinkResponse,
 } from "./schemas"
 
 // User API Services
@@ -37,4 +38,10 @@ export async function getUnifiedTransactions(
   return apiClient
     .get(`user/transactions/all${query}`)
     .json<UnifiedTransactionsResponse>()
+}
+
+// ===== Referral =====
+
+export async function getUserReferralLink(): Promise<ReferralLinkResponse> {
+  return apiClient.get("user/referral").json<ReferralLinkResponse>()
 }
