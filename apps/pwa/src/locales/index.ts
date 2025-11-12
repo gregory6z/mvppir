@@ -9,6 +9,7 @@ import ptInvite from "./pt/features/auth/invite.json"
 import ptValidation from "./pt/features/auth/validation.json"
 import ptHome from "./pt/features/home/home.json"
 import ptWallet from "./pt/features/wallet/wallet.json"
+import ptProfile from "./pt/features/profile/profile.json"
 
 // English translations
 import enCommon from "./en/common.json"
@@ -18,6 +19,7 @@ import enInvite from "./en/features/auth/invite.json"
 import enValidation from "./en/features/auth/validation.json"
 import enHome from "./en/features/home/home.json"
 import enWallet from "./en/features/wallet/wallet.json"
+import enProfile from "./en/features/profile/profile.json"
 
 // Spanish translations
 import esCommon from "./es/common.json"
@@ -27,6 +29,7 @@ import esInvite from "./es/features/auth/invite.json"
 import esValidation from "./es/features/auth/validation.json"
 import esHome from "./es/features/home/home.json"
 import esWallet from "./es/features/wallet/wallet.json"
+import esProfile from "./es/features/profile/profile.json"
 
 // French translations
 import frCommon from "./fr/common.json"
@@ -36,6 +39,7 @@ import frInvite from "./fr/features/auth/invite.json"
 import frValidation from "./fr/features/auth/validation.json"
 import frHome from "./fr/features/home/home.json"
 import frWallet from "./fr/features/wallet/wallet.json"
+import frProfile from "./fr/features/profile/profile.json"
 
 const resources = {
   pt: {
@@ -47,6 +51,7 @@ const resources = {
     "auth.validation": ptValidation,
     "home.home": ptHome,
     "wallet.wallet": ptWallet,
+    "profile.profile": ptProfile,
   },
   en: {
     "common.greetings": enCommon.greetings,
@@ -57,6 +62,7 @@ const resources = {
     "auth.validation": enValidation,
     "home.home": enHome,
     "wallet.wallet": enWallet,
+    "profile.profile": enProfile,
   },
   es: {
     "common.greetings": esCommon.greetings,
@@ -67,6 +73,7 @@ const resources = {
     "auth.validation": esValidation,
     "home.home": esHome,
     "wallet.wallet": esWallet,
+    "profile.profile": esProfile,
   },
   fr: {
     "common.greetings": frCommon.greetings,
@@ -77,6 +84,7 @@ const resources = {
     "auth.validation": frValidation,
     "home.home": frHome,
     "wallet.wallet": frWallet,
+    "profile.profile": frProfile,
   },
 }
 

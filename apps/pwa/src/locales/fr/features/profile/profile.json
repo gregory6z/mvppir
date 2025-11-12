@@ -1,0 +1,29 @@
+{
+  "title": "Profil",
+  "subtitle": "Gérez votre compte et préférences",
+  "editProfile": {
+    "button": "Modifier le Profil",
+    "comingSoon": "Bientôt Disponible",
+    "comingSoonMessage": "La modification du profil sera bientôt disponible!"
+  },
+  "accountInfo": {
+    "title": "Informations du Compte",
+    "name": "Nom",
+    "email": "E-mail",
+    "status": "Statut du Compte",
+    "statusActive": "Actif",
+    "statusInactive": "Inactif",
+    "referralCode": "Code de Parrainage"
+  },
+  "language": {
+    "title": "Langue"
+  },
+  "logout": {
+    "button": "Se Déconnecter",
+    "title": "Se Déconnecter",
+    "message": "Êtes-vous sûr de vouloir vous déconnecter?",
+    "cancel": "Annuler",
+    "confirm": "Se Déconnecter"
+  },
+  "version": "Version {{version}}"
+}
