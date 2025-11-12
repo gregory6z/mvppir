@@ -32,6 +32,13 @@
       "completed": "Completed",
       "cancelled": "Cancelled"
     },
-    "commissionFrom": "from"
+    "commissionFrom": "from",
+    "selfCommission": "from daily commission",
+    "rankLabels": {
+      "recruit": "Recruit",
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold"
+    }
   }
 }

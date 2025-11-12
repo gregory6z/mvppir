@@ -32,6 +32,13 @@
       "completed": "Concluído",
       "cancelled": "Cancelado"
     },
-    "commissionFrom": "de"
+    "commissionFrom": "de",
+    "selfCommission": "da comissão diária",
+    "rankLabels": {
+      "recruit": "Recruta",
+      "bronze": "Bronze",
+      "silver": "Prata",
+      "gold": "Ouro"
+    }
   }
 }

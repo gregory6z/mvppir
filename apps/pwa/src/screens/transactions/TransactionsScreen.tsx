@@ -1,5 +1,5 @@
 import { BottomNavigation } from "@/components/navigation/BottomNavigation"
-import { Header } from "@/components/home/Header"
+import { Header } from "@/components/layout/Header"
 import { useNavigate } from "react-router-dom"
 import { useUserAccount } from "@/api/user/queries/use-user-account"
 import { useUnifiedTransactions } from "@/api/user/queries/use-unified-transactions"

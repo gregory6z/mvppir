@@ -156,7 +156,12 @@ export function RecentActivity({
               <div className="flex items-center gap-3">
                 {/* Icon */}
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBgColor}`}>
-                  <Icon size={18} className={iconColor} strokeWidth={2.5} />
+                  <Icon
+                    size={18}
+                    className={iconColor}
+                    strokeWidth={isCommission ? 0 : 2.5}
+                    fill={isCommission ? "currentColor" : "none"}
+                  />
                 </div>
 
                 {/* Transaction Info */}

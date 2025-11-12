@@ -1,0 +1,19 @@
+{
+  "title": "Transactions",
+  "subtitle_one": "{{count}} transaction",
+  "subtitle_other": "{{count}} transactions",
+  "dateLabels": {
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "empty": {
+    "title": "No transactions yet",
+    "subtitle": "Your transactions will appear here"
+  },
+  "filters": {
+    "all": "All",
+    "deposits": "Deposits",
+    "withdrawals": "Withdrawals",
+    "commissions": "Commissions"
+  }
+}
