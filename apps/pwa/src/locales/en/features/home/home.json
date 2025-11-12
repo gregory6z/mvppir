@@ -1,0 +1,37 @@
+{
+  "balanceCard": {
+    "title": "Total Balance",
+    "period": {
+      "day": "today",
+      "week": "this week",
+      "month": "this month"
+    }
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "refer": "Refer"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "viewAll": "View all",
+    "empty": {
+      "title": "No transactions yet",
+      "subtitle": "Your transactions will appear here"
+    },
+    "types": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal",
+      "commission": "Commission",
+      "dailyCommission": "Daily Commission"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "commissionFrom": "from"
+  }
+}

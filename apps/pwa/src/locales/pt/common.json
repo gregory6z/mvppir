@@ -1,0 +1,13 @@
+{
+  "greetings": {
+    "morning": "Bom dia",
+    "afternoon": "Boa tarde",
+    "evening": "Boa noite"
+  },
+  "navigation": {
+    "home": "Home",
+    "wallet": "Wallet",
+    "referrals": "Referrals",
+    "profile": "Profile"
+  }
+}

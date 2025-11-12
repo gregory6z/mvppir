@@ -1,5 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { signIn, signUp } from "@/lib/auth-client"
+import { useAuthStore } from "@/stores/auth.store"
 import type { LoginInput, SignupInput } from "./schemas"
 
 // Chaves de tradução para erros de login (i18n) - caminhos relativos ao namespace "auth.login"
@@ -84,7 +85,7 @@ export function transformSignupError(error: any): SignupError {
 }
 
 export function useLoginMutation() {
-  const queryClient = useQueryClient()
+  const { setAuth } = useAuthStore()
 
   return useMutation({
     mutationFn: async (data: LoginInput) => {
@@ -102,21 +103,25 @@ export function useLoginMutation() {
         throw result.error
       }
 
-      console.log("✅ Login successful! Session cookie set by Better Auth")
+      if (!result.data?.token || !result.data?.user) {
+        console.error("❌ Missing token or user in response")
+        throw new Error("MISSING_DATA")
+      }
+
+      console.log("✅ Login successful! Token:", result.data.token.substring(0, 20) + "...")
       return result.data
     },
-    onSuccess: async () => {
-      console.log("🔄 Invalidating session query to trigger refetch")
-      // Pequeno delay para garantir que o cookie foi setado pelo servidor
-      await new Promise(resolve => setTimeout(resolve, 200))
-      // Força o useSession a refazer a query e detectar a nova sessão
-      queryClient.invalidateQueries({ queryKey: ["better-auth", "session"] })
+    onSuccess: (data) => {
+      console.log("💾 Saving token to authStore")
+      // Salva o token no Zustand (para usar como Bearer token)
+      setAuth(data.token, data.user.id)
+      console.log("✅ Auth state updated, App will re-render and redirect")
     },
   })
 }
 
 export function useSignupMutation() {
-  const queryClient = useQueryClient()
+  const { setAuth } = useAuthStore()
 
   return useMutation({
     mutationFn: async (data: SignupInput) => {
@@ -137,15 +142,19 @@ export function useSignupMutation() {
         throw result.error
       }
 
-      console.log("✅ Signup successful! Session cookie set by Better Auth")
+      if (!result.data?.token || !result.data?.user) {
+        console.error("❌ Missing token or user in response")
+        throw new Error("MISSING_DATA")
+      }
+
+      console.log("✅ Signup successful! Token:", result.data.token.substring(0, 20) + "...")
       return result.data
     },
-    onSuccess: async () => {
-      console.log("🔄 Invalidating session query to trigger refetch")
-      // Pequeno delay para garantir que o cookie foi setado pelo servidor
-      await new Promise(resolve => setTimeout(resolve, 200))
-      // Força o useSession a refazer a query e detectar a nova sessão
-      queryClient.invalidateQueries({ queryKey: ["better-auth", "session"] })
+    onSuccess: (data) => {
+      console.log("💾 Saving token to authStore")
+      // Salva o token no Zustand (para usar como Bearer token)
+      setAuth(data.token, data.user.id)
+      console.log("✅ Auth state updated, App will re-render and redirect")
     },
   })
 }

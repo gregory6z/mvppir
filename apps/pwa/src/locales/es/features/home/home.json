@@ -1,0 +1,37 @@
+{
+  "balanceCard": {
+    "title": "Saldo Total",
+    "period": {
+      "day": "hoy",
+      "week": "esta semana",
+      "month": "este mes"
+    }
+  },
+  "quickActions": {
+    "title": "Acciones Rápidas",
+    "deposit": "Depositar",
+    "withdraw": "Retirar",
+    "refer": "Referir"
+  },
+  "recentActivity": {
+    "title": "Actividad Reciente",
+    "viewAll": "Ver todo",
+    "empty": {
+      "title": "Sin transacciones aún",
+      "subtitle": "Sus transacciones aparecerán aquí"
+    },
+    "types": {
+      "deposit": "Depósito",
+      "withdrawal": "Retiro",
+      "commission": "Comisión",
+      "dailyCommission": "Comisión Diaria"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmado",
+      "completed": "Completado",
+      "cancelled": "Cancelado"
+    },
+    "commissionFrom": "de"
+  }
+}

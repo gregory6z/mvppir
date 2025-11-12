@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { loginSchema, type LoginInput } from "@/api/auth/schemas"
 import { useLoginMutation, transformLoginError, type LoginError } from "@/api/auth/mutations"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,6 @@ import { Logo } from "@/components/ui/logo"
 
 export function LoginScreen() {
   const { t } = useTranslation("auth.login")
-  const navigate = useNavigate()
   const [error, setError] = useState<LoginError | null>(null)
 
   const loginMutation = useLoginMutation()
@@ -34,10 +33,6 @@ export function LoginScreen() {
   const onSubmit = (data: LoginInput) => {
     setError(null)
     loginMutation.mutate(data, {
-      onSuccess: () => {
-        // Redireciona para home após login bem-sucedido
-        navigate("/")
-      },
       onError: (err) => {
         const errorType = transformLoginError(err)
         setError(errorType)

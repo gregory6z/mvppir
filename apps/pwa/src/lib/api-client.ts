@@ -1,4 +1,5 @@
 import ky from "ky"
+import { useAuthStore } from "@/stores/auth.store"
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://mvppir-production.up.railway.app"
@@ -7,7 +8,7 @@ const API_URL =
 export const apiClient = ky.create({
   prefixUrl: API_URL,
   timeout: 30000, // 30 segundos
-  credentials: "include", // IMPORTANTE: Envia cookies para o backend
+  credentials: "include", // Tenta usar cookies se disponíveis
   retry: {
     limit: 2,
     methods: ["get", "post"],
@@ -16,8 +17,15 @@ export const apiClient = ky.create({
   hooks: {
     beforeRequest: [
       (request) => {
-        // Better Auth usa cookies, não precisamos adicionar Bearer token manualmente
-        // Os cookies são enviados automaticamente com credentials: "include"
+        // Adiciona Bearer token se existir (fallback quando cookies não funcionam)
+        const token = useAuthStore.getState().token
+        if (token) {
+          request.headers.set("Authorization", `Bearer ${token}`)
+          if (import.meta.env.DEV) {
+            console.log(`[API] Adding Bearer token: ${token.substring(0, 20)}...`)
+          }
+        }
+
         if (import.meta.env.DEV) {
           console.log(`[API] ${request.method} ${request.url}`)
         }
@@ -30,9 +38,10 @@ export const apiClient = ky.create({
           console.log(`[API] ${request.method} ${request.url} - ${response.status}`)
         }
 
-        // Se 401, o Better Auth vai detectar automaticamente e limpar a sessão
+        // Se 401 (não autenticado), limpa o token
         if (response.status === 401) {
-          console.warn("🚫 401 Unauthorized - Better Auth will handle session cleanup")
+          console.warn("🚫 401 Unauthorized - Clearing auth")
+          useAuthStore.getState().clearAuth()
         }
 
         return response

@@ -1,30 +1,21 @@
 import { Routes, Route, Navigate } from "react-router-dom"
-import { useSession } from "@/lib/auth-client"
+import { useAuthStore } from "@/stores/auth.store"
 import { LoginScreen } from "@/screens/auth/LoginScreen"
 import { SignupScreen } from "@/screens/auth/SignupScreen"
 import { InviteScreen } from "@/screens/auth/InviteScreen"
 import { HomeScreen } from "@/screens/home/HomeScreen"
+import { WalletScreen } from "@/screens/wallet/WalletScreen"
+import { NetworkScreen } from "@/screens/network/NetworkScreen"
+import { ProfileScreen } from "@/screens/profile/ProfileScreen"
 
 export function App() {
-  // Better Auth gerencia a sessão via cookies - usa useSession hook
-  const { data: session, isPending } = useSession()
+  // Usa authStore com token Bearer (fallback quando cookies cross-origin não funcionam)
+  const { isAuthenticated } = useAuthStore()
 
-  console.log("🔍 App render - session:", session, "isPending:", isPending)
+  console.log("🔍 App render - isAuthenticated:", isAuthenticated)
 
-  // Mostra loading enquanto verifica sessão
-  if (isPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-zinc-400">Carregando...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Se não há sessão, mostra rotas de auth
-  if (!session) {
+  // Se não está autenticado, mostra rotas de auth
+  if (!isAuthenticated) {
     return (
       <Routes>
         <Route path="/login" element={<LoginScreen />} />
@@ -35,16 +26,18 @@ export function App() {
     )
   }
 
-  // Se há sessão, mostra rotas da app
+  // Se está autenticado, mostra rotas da app
   return (
     <Routes>
       <Route path="/" element={<HomeScreen />} />
-      <Route path="/profile" element={<div>Profile (TODO)</div>} />
+      <Route path="/wallet" element={<WalletScreen />} />
+      <Route path="/network" element={<NetworkScreen />} />
+      <Route path="/profile" element={<ProfileScreen />} />
       <Route path="/notifications" element={<div>Notifications (TODO)</div>} />
       <Route path="/deposit" element={<div>Deposit (TODO)</div>} />
       <Route path="/withdraw" element={<div>Withdraw (TODO)</div>} />
       <Route path="/refer" element={<div>Refer (TODO)</div>} />
-      <Route path="/transactions" element={<div>Transactions (TODO)</div>} />
+      <Route path="/transactions" element={<div>Transactions List (TODO)</div>} />
       <Route path="/transactions/:id" element={<div>Transaction Detail (TODO)</div>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

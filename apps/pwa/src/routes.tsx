@@ -16,19 +16,42 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+// Public Route Component (redirects to home if already authenticated)
+function PublicRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuthStore()
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
+}
+
 export const router = createBrowserRouter([
-  // Public routes
+  // Public routes (redirect to home if authenticated)
   {
     path: "/login",
-    element: <LoginScreen />,
+    element: (
+      <PublicRoute>
+        <LoginScreen />
+      </PublicRoute>
+    ),
   },
   {
     path: "/invite",
-    element: <InviteScreen />,
+    element: (
+      <PublicRoute>
+        <InviteScreen />
+      </PublicRoute>
+    ),
   },
   {
     path: "/signup",
-    element: <SignupScreen />,
+    element: (
+      <PublicRoute>
+        <SignupScreen />
+      </PublicRoute>
+    ),
   },
 
   // Protected routes
