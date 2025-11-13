@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { ArrowLeft, ArrowDown, ArrowUp, Star, Copy, ArrowSquareOut, Calendar, Hash, Check } from "phosphor-react"
 import type { UnifiedTransaction } from "@/api/user/schemas"
@@ -14,7 +14,6 @@ const localeMap = {
 }
 
 export function TransactionDetailScreen() {
-  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const location = useLocation()
   const { t, i18n } = useTranslation("transactions.detail")

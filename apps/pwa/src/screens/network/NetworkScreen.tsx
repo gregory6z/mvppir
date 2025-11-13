@@ -109,7 +109,6 @@ export function NetworkScreen() {
       <div className="flex min-h-screen flex-col bg-zinc-950">
         <Header
           userName={t("screen.error")}
-          notificationCount={0}
           onAvatarPress={handleAvatarPress}
           onNotificationPress={handleNotificationPress}
         />
@@ -181,7 +180,6 @@ export function NetworkScreen() {
       {/* Header */}
       <Header
         userName={userData?.name || t("screen.user")}
-        notificationCount={0}
         onAvatarPress={handleAvatarPress}
         onNotificationPress={handleNotificationPress}
       />

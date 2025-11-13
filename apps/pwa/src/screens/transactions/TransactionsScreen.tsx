@@ -29,7 +29,6 @@ export function TransactionsScreen() {
     <div className="flex min-h-screen flex-col bg-zinc-950">
       <Header
         userName={account?.name || "User"}
-        notificationCount={0}
         onAvatarPress={() => navigate("/profile")}
         onNotificationPress={() => navigate("/notifications")}
       />

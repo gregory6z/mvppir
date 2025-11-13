@@ -142,7 +142,7 @@ export function WithdrawScreen() {
     if (!validateAddress()) return
 
     try {
-      const response = await requestWithdrawalMutation.mutateAsync({
+      await requestWithdrawalMutation.mutateAsync({
         amount: numericAmount,
         polygonAddress: address,
       })
