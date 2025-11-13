@@ -4,12 +4,10 @@ import { Link, Copy, Share } from "phosphor-react"
 
 interface ReferralCodeProps {
   referralCode: string // e.g., "GREGORY123"
-  referralLink: string // e.g., "https://stakly.com/ref/GREGORY123"
 }
 
 export function ReferralCode({
   referralCode,
-  referralLink,
 }: ReferralCodeProps) {
   const { t } = useTranslation("referrals.referrals")
   const [copied, setCopied] = useState(false)

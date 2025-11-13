@@ -1,4 +1,4 @@
-import { Bell, UserCircle } from "lucide-react"
+import { Bell } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useUnreadNotifications } from "@/api/notifications/queries/use-unread-notifications"
 

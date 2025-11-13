@@ -201,7 +201,6 @@ export function NetworkScreen() {
             currentRank={userData.currentRank}
             rankStatus={userData.rankStatus}
             blockedBalance={userData.blockedBalance}
-            lifetimeVolume={networkData.lifetimeVolume}
             nextRank={nextRankData?.rank}
             progressToNext={progressToNext}
           />
@@ -211,7 +210,6 @@ export function NetworkScreen() {
         {referralLink && (
           <ReferralCode
             referralCode={referralLink.referralCode}
-            referralLink={referralLink.referralLink}
           />
         )}
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useUnreadNotifications } from "@/api/notifications/queries/use-unread-notifications"
-import { MLMRank } from "@/types/mlm"
+import type { MLMRank } from "@/types/mlm"
 
 interface CommissionData {
   amount: number

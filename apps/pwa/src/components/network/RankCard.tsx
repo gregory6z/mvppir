@@ -8,7 +8,6 @@ interface RankCardProps {
   currentRank: MLMRank
   rankStatus: RankStatus
   blockedBalance: number // USD
-  lifetimeVolume: number // USD - Network volume (user + N1+N2+N3)
   nextRank?: MLMRank | null // null if already at max rank
   progressToNext?: {
     directs: { current: number; required: number }
@@ -63,7 +62,6 @@ export function RankCard({
   currentRank,
   rankStatus,
   blockedBalance,
-  lifetimeVolume,
   nextRank,
   progressToNext,
 }: RankCardProps) {

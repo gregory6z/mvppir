@@ -66,12 +66,6 @@ export function DownrankWarningDrawer({
     ? t("modal.inactive")
     : RANK_NAMES[newRank]
 
-  const yieldDifference = currentDailyYield - newDailyYield
-  const yieldPercentageLoss =
-    currentDailyYield > 0
-      ? ((yieldDifference / currentDailyYield) * 100).toFixed(1)
-      : "0"
-
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">

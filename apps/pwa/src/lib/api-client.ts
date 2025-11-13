@@ -32,7 +32,7 @@ export const apiClient = ky.create({
       },
     ],
     afterResponse: [
-      async (request, options, response) => {
+      async (request, _options, response) => {
         // Log de requisições em desenvolvimento
         if (import.meta.env.DEV) {
           console.log(`[API] ${request.method} ${request.url} - ${response.status}`)
