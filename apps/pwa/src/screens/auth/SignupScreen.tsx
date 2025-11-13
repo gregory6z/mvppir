@@ -19,8 +19,8 @@ export function SignupScreen() {
 
   const signupMutation = useSignupMutation()
 
-  const form = useForm<SignupInput>({
-    resolver: zodResolver(signupSchema) as any,
+  const form = useForm({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -29,7 +29,7 @@ export function SignupScreen() {
       referralCode: referralCode, // From URL query parameter
     },
     mode: "onBlur",
-  })
+  }) as any
 
   const { control, handleSubmit, formState: { errors } } = form
 
