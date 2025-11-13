@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Logo } from "@/components/ui/logo"
+import { InstallButton } from "@/components/ui/install-button"
 
 export function LoginScreen() {
   const { t } = useTranslation("auth.login")
@@ -154,6 +155,9 @@ export function LoginScreen() {
                   <AlertDescription>{t(error)}</AlertDescription>
                 </Alert>
               )}
+
+              {/* Install Button */}
+              <InstallButton />
 
               {/* Submit Button */}
               <Button
