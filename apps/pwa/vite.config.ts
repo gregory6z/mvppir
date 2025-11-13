@@ -11,12 +11,12 @@ export default defineConfig({
     tailwindcss(), // Tailwind v4
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png"],
+      includeAssets: ["favicon.ico", "icons/apple-touch-icon.png"],
       manifest: {
         name: "Stakly - Staking & MLM",
         short_name: "Stakly",
         description: "Plataforma de staking com recompensas MLM",
-        theme_color: "#3b82f6",
+        theme_color: "#8b5cf6",
         background_color: "#09090b",
         display: "standalone",
         start_url: "/",
