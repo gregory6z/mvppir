@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { Lock, Wallet, TrendUp, Users, ArrowRight, Sparkle, Lightning, ShieldCheck, ChartLineUp } from "phosphor-react"
+import { Lock, Wallet, TrendUp, Users, ArrowRight, Sparkle, Lightning, ShieldCheck, ChartLineUp, SignOut } from "phosphor-react"
 import { useUserStatus } from "@/api/user/queries/use-user-status"
+import { useAuthStore } from "@/stores/auth.store"
 
 export function InactiveAccountScreen() {
   const navigate = useNavigate()
   const { t } = useTranslation("home.inactive")
   const { data: status, isLoading: isLoadingStatus } = useUserStatus()
+  const { clearAuth } = useAuthStore()
 
   const totalDeposits = parseFloat(status?.totalDepositsUsd || "0")
   const threshold = parseFloat(status?.activationThreshold || "100")
@@ -15,6 +17,11 @@ export function InactiveAccountScreen() {
 
   const handleDeposit = () => {
     navigate("/deposit")
+  }
+
+  const handleLogout = () => {
+    clearAuth()
+    navigate("/login")
   }
 
   if (isLoadingStatus) {
@@ -209,11 +216,22 @@ export function InactiveAccountScreen() {
         </div>
 
         {/* Info Footer */}
-        <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-2xl p-5 shadow-lg">
+        <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-2xl p-5 shadow-lg mb-6">
           <p className="text-blue-300 text-sm text-center leading-6 font-medium">
             {t("footer.info", { threshold: threshold.toFixed(0) })}
           </p>
         </div>
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="w-full bg-zinc-900/50 hover:bg-zinc-800/50 border border-zinc-800 rounded-2xl py-4 px-6 flex items-center justify-center gap-3 transition-all active:scale-95"
+        >
+          <SignOut size={20} color="#ef4444" weight="bold" />
+          <span className="text-red-400 font-semibold text-base">
+            Sair da conta
+          </span>
+        </button>
       </div>
     </div>
   )
