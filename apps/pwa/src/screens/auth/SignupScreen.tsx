@@ -19,11 +19,7 @@ export function SignupScreen() {
 
   const signupMutation = useSignupMutation()
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupInput>({
+  const form = useForm<SignupInput>({
     resolver: zodResolver(signupSchema) as any,
     defaultValues: {
       name: "",
@@ -34,6 +30,8 @@ export function SignupScreen() {
     },
     mode: "onBlur",
   })
+
+  const { control, handleSubmit, formState: { errors } } = form
 
   const onSubmit = (data: SignupInput) => {
     setError(null)

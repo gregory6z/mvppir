@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next"
 import {
   Drawer,
   DrawerClose,
@@ -55,8 +54,6 @@ export function DailyCommissionDrawer({
   breakdown = [],
   date,
 }: DailyCommissionDrawerProps) {
-  const { t } = useTranslation("referrals.referrals")
-
   const formattedDate = new Date(date).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "long",

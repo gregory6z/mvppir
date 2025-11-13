@@ -1,6 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { getUnifiedTransactions } from "../client"
-import type { UnifiedTransactionsResponse } from "../schemas"
 
 const TRANSACTIONS_PER_PAGE = 20
 

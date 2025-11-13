@@ -109,7 +109,7 @@ export function ReferScreen() {
         </div>
 
         {/* Referral Code Component */}
-        <ReferralCode referralCode={data.referralCode} referralLink={data.referralLink} />
+        <ReferralCode referralCode={data.referralCode} />
 
         {/* How It Works */}
         <div className="px-6 mt-8">
