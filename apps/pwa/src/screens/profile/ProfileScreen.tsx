@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { Globe, Check, LogOut } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { Header } from "@/components/layout/Header"
 import { useUserAccount } from "@/api/user/queries/use-user-account"
 import { BottomNavigation } from "@/components/navigation/BottomNavigation"
 import { useAuthStore } from "@/stores/auth.store"
@@ -52,22 +51,8 @@ export function ProfileScreen() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
-      {/* Header */}
-      <Header
-        userName={userAccount?.name || ""}
-        notificationCount={0}
-        onAvatarPress={() => {}}
-        onNotificationPress={() => console.log("Notification pressed")}
-      />
-
-      {/* Title Section */}
-      <div className="px-6 py-6 border-b border-zinc-800">
-        <h1 className="text-white text-2xl font-bold">{t("title")}</h1>
-        <p className="text-zinc-400 text-sm mt-1.5">{t("subtitle")}</p>
-      </div>
-
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto pb-24">
+      <div className="flex-1 overflow-y-auto pb-24 pt-6">
         {/* User Info Card */}
         <div className="mx-6 mt-6 bg-gradient-to-br from-violet-500/20 to-blue-500/20 p-4 rounded-2xl border border-violet-500/30">
           <div className="flex items-center">

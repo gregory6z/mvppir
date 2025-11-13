@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import { useAuthStore } from "@/stores/auth.store"
+import { useUserStatus } from "@/api/user/queries/use-user-status"
 import { LoginScreen } from "@/screens/auth/LoginScreen"
 import { SignupScreen } from "@/screens/auth/SignupScreen"
 import { InviteScreen } from "@/screens/auth/InviteScreen"
@@ -16,6 +17,7 @@ import { ReferScreen } from "@/screens/refer/ReferScreen"
 export function App() {
   // Usa authStore com token Bearer (fallback quando cookies cross-origin não funcionam)
   const { isAuthenticated } = useAuthStore()
+  const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus()
 
   console.log("🔍 App render - isAuthenticated:", isAuthenticated)
 
@@ -31,7 +33,27 @@ export function App() {
     )
   }
 
-  // Se está autenticado, mostra rotas da app
+  // Loading do status do usuário
+  if (isLoadingStatus) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
+        <div className="w-16 h-16 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  // Se conta está INATIVA, só permite acesso ao depósito e home
+  if (userStatus?.status === "INACTIVE") {
+    return (
+      <Routes>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/deposit" element={<DepositScreen />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    )
+  }
+
+  // Se está autenticado E ativo, mostra todas as rotas
   return (
     <Routes>
       <Route path="/" element={<HomeScreen />} />

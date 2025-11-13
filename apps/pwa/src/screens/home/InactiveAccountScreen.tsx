@@ -2,33 +2,22 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Lock, Wallet, TrendUp, Users, ArrowRight, Sparkle, Lightning, ShieldCheck, ChartLineUp } from "phosphor-react"
 import { useUserStatus } from "@/api/user/queries/use-user-status"
-import { useUserProfile } from "@/api/user/queries/use-user-profile"
-import { Header } from "@/components/layout/Header"
 
 export function InactiveAccountScreen() {
   const navigate = useNavigate()
   const { t } = useTranslation("home.inactive")
   const { data: status, isLoading: isLoadingStatus } = useUserStatus()
-  const { data: userProfile, isLoading: isLoadingAccount } = useUserProfile()
 
   const totalDeposits = parseFloat(status?.totalDepositsUsd || "0")
   const threshold = parseFloat(status?.activationThreshold || "100")
   const remaining = Math.max(0, threshold - totalDeposits)
   const progress = status?.activationProgress || 0
 
-  const handleAvatarPress = () => {
-    navigate("/profile")
-  }
-
-  const handleNotificationPress = () => {
-    navigate("/notifications")
-  }
-
   const handleDeposit = () => {
     navigate("/deposit")
   }
 
-  if (isLoadingStatus || isLoadingAccount) {
+  if (isLoadingStatus) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-950">
         <div className="flex flex-col items-center gap-4">
@@ -48,16 +37,8 @@ export function InactiveAccountScreen() {
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-96 bg-gradient-to-t from-violet-500/5 to-transparent" />
       </div>
 
-      {/* Header */}
-      <Header
-        userName={userProfile?.name || "User"}
-        
-        onAvatarPress={handleAvatarPress}
-        onNotificationPress={handleNotificationPress}
-      />
-
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-6 py-8 relative z-10">
+      <div className="flex-1 overflow-y-auto px-6 py-12 relative z-10">
         {/* Status Badge */}
         <div className="flex justify-center mb-8">
           <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/40">

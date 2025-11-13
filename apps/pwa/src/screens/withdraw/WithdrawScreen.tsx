@@ -10,9 +10,7 @@ import {
   ArrowRight,
   Wallet,
 } from "phosphor-react"
-import { Header } from "@/components/layout/Header"
 import { BottomNavigation } from "@/components/navigation/BottomNavigation"
-import { useUserProfile } from "@/api/user/queries/use-user-profile"
 import { useUserBalance } from "@/api/user/queries/use-user-balance"
 import { useCalculateWithdrawalFee } from "@/api/withdrawal/queries/use-calculate-withdrawal-fee"
 import { useRequestWithdrawal } from "@/api/withdrawal/queries/use-request-withdrawal"
@@ -33,7 +31,6 @@ function calculateNewRank(balance: number): MLMRank {
 export function WithdrawScreen() {
   const { t } = useTranslation("withdraw.withdraw")
   const navigate = useNavigate()
-  const { data: userProfile } = useUserProfile()
   const { data: balanceData } = useUserBalance()
   const { data: mlmProfile } = useMLMProfile()
 
@@ -88,14 +85,6 @@ export function WithdrawScreen() {
     } else {
       navigate("/")
     }
-  }
-
-  const handleAvatarPress = () => {
-    navigate("/profile")
-  }
-
-  const handleNotificationPress = () => {
-    navigate("/notifications")
   }
 
   const validateAmount = (): boolean => {
@@ -184,30 +173,26 @@ export function WithdrawScreen() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
-      {/* Header */}
-      <Header
-        userName={userProfile?.name || ""}
-        
-        onAvatarPress={handleAvatarPress}
-        onNotificationPress={handleNotificationPress}
-      />
-
-      {/* Title Section with Back Button */}
-      <div className="flex items-center px-6 py-5 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm sticky top-[72px] z-10">
-        <button
-          onClick={handleBack}
-          className="mr-4 w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 hover:from-zinc-700 hover:to-zinc-800 transition-all shadow-lg shadow-black/20 active:scale-95"
-        >
-          <ArrowLeft size={24} color="#ffffff" weight="bold" />
-        </button>
-        <div className="flex-1">
-          <h1 className="text-white text-2xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="text-zinc-400 text-sm mt-0.5">
-            {step === 1 ? t("subtitle.step1") : t("subtitle.step2")}
-          </p>
+      {/* Title Section with Back Button and Steppers */}
+      <div className="bg-zinc-950/95 backdrop-blur-sm sticky top-0 z-10">
+        {/* Title and Back Button */}
+        <div className="flex items-center px-6 py-5 border-b border-zinc-800">
+          <button
+            onClick={handleBack}
+            className="mr-4 w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 hover:from-zinc-700 hover:to-zinc-800 transition-all shadow-lg shadow-black/20 active:scale-95"
+          >
+            <ArrowLeft size={24} color="#ffffff" weight="bold" />
+          </button>
+          <div className="flex-1">
+            <h1 className="text-white text-2xl font-bold tracking-tight">{t("title")}</h1>
+            <p className="text-zinc-400 text-sm mt-0.5">
+              {step === 1 ? t("subtitle.step1") : t("subtitle.step2")}
+            </p>
+          </div>
         </div>
-        {/* Step Indicator */}
-        <div className="flex items-center gap-2">
+
+        {/* Step Indicator - Centered Below Separator */}
+        <div className="flex items-center justify-center gap-2 py-4">
           <div
             className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
               step === 1

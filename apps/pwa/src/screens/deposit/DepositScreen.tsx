@@ -9,15 +9,12 @@ import {
   CurrencyCircleDollar,
   Clock,
 } from "phosphor-react"
-import { Header } from "@/components/layout/Header"
 import { BottomNavigation } from "@/components/navigation/BottomNavigation"
 import { useDepositAddress } from "@/api/user/queries/use-deposit-address"
-import { useUserProfile } from "@/api/user/queries/use-user-profile"
 
 export function DepositScreen() {
   const { t } = useTranslation("deposit.deposit")
   const navigate = useNavigate()
-  const { data: userProfile } = useUserProfile()
   const { data: depositAddress, isPending, isError } = useDepositAddress()
   const [copied, setCopied] = useState(false)
 
@@ -37,24 +34,10 @@ export function DepositScreen() {
     navigate("/")
   }
 
-  const handleAvatarPress = () => {
-    navigate("/profile")
-  }
-
-  const handleNotificationPress = () => {
-    navigate("/notifications")
-  }
-
   // Loading state
   if (isPending) {
     return (
       <div className="flex min-h-screen flex-col bg-zinc-950">
-        <Header
-          userName={userProfile?.name || ""}
-          
-          onAvatarPress={handleAvatarPress}
-          onNotificationPress={handleNotificationPress}
-        />
         <div className="flex-row items-center px-6 py-4 border-b border-zinc-800">
           <button
             onClick={handleBack}
@@ -79,12 +62,6 @@ export function DepositScreen() {
   if (isError || !depositAddress) {
     return (
       <div className="flex min-h-screen flex-col bg-zinc-950">
-        <Header
-          userName={userProfile?.name || ""}
-          
-          onAvatarPress={handleAvatarPress}
-          onNotificationPress={handleNotificationPress}
-        />
         <div className="flex-row items-center px-6 py-4 border-b border-zinc-800">
           <button
             onClick={handleBack}
@@ -109,16 +86,8 @@ export function DepositScreen() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
-      {/* Header */}
-      <Header
-        userName={userProfile?.name || ""}
-        
-        onAvatarPress={handleAvatarPress}
-        onNotificationPress={handleNotificationPress}
-      />
-
       {/* Title Section with Back Button */}
-      <div className="flex items-center px-6 py-5 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm sticky top-[72px] z-10">
+      <div className="flex items-center px-6 py-5 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm sticky top-0 z-10">
         <button
           onClick={handleBack}
           className="mr-4 w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 hover:from-zinc-700 hover:to-zinc-800 transition-all shadow-lg shadow-black/20 active:scale-95"
