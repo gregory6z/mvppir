@@ -32,11 +32,22 @@ export async function moralisWebhookController(
       });
     }
 
-    // Valida assinatura
-    const isValid = validateMoralisSignature(body, signature);
+    // Get raw body for signature validation
+    const rawBody = (request as any).rawBody as string;
+
+    if (!rawBody) {
+      request.log.error("Raw body not available for signature validation");
+      return reply.status(500).send({
+        error: "Internal Server Error",
+        message: "Raw body not preserved",
+      });
+    }
+
+    // Valida assinatura usando raw body
+    const isValid = validateMoralisSignature(rawBody, signature);
 
     if (!isValid) {
-      request.log.warn("Invalid Moralis webhook signature");
+      request.log.warn({ signature, rawBodyLength: rawBody.length }, "Invalid Moralis webhook signature");
       return reply.status(401).send({
         error: "Unauthorized",
         message: "Invalid signature",
