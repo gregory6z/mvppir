@@ -43,7 +43,7 @@ export function useInstallPWA() {
     await installPrompt.prompt()
 
     // Wait for the user's response
-    const choiceResult = await installPrompt.userChoice
+    await installPrompt.userChoice
 
     // Clear the prompt after use
     setInstallPrompt(null)

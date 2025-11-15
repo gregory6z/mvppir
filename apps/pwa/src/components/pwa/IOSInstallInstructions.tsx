@@ -1,5 +1,4 @@
 import { Share, Plus, X } from "lucide-react"
-import { useTranslation } from "react-i18next"
 import { useBrowserDetection } from "@/hooks/useBrowserDetection"
 
 interface IOSInstallInstructionsProps {
@@ -11,7 +10,6 @@ export function IOSInstallInstructions({
   onClose,
   appName = "Stakly",
 }: IOSInstallInstructionsProps) {
-  const { t } = useTranslation()
   const { browserName, isInAppBrowser } = useBrowserDetection()
 
   // If in-app browser (Instagram, Facebook, etc.), show special message

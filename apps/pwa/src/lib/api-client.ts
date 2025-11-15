@@ -25,7 +25,7 @@ export const apiClient = ky.create({
       },
     ],
     afterResponse: [
-      async (request, _options, response) => {
+      async (_request, _options, response) => {
         // Se 401 (não autenticado), limpa o token
         if (response.status === 401) {
           useAuthStore.getState().clearAuth()
