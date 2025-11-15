@@ -40,11 +40,17 @@ export async function webhookSecurityMiddleware(
   }
 
   // 2. Se NÃO tem signature, valida User-Agent (teste do Moralis)
+  // Lista de User-Agents conhecidos do Moralis
   const isMoralisUserAgent =
     userAgent.toLowerCase().includes("moralis") ||
     userAgent.toLowerCase().includes("axios") || // Moralis usa Axios
-    userAgent.toLowerCase().includes("node-fetch");
+    userAgent.toLowerCase().includes("node-fetch") ||
+    userAgent.toLowerCase().includes("got") || // Moralis pode usar Got
+    userAgent.toLowerCase().includes("undici") || // Node.js native fetch
+    userAgent === ""; // Moralis às vezes não envia User-Agent
 
+  // Modo permissivo: apenas loga User-Agents suspeitos, mas não bloqueia
+  // (Moralis usa diferentes HTTP clients em diferentes contextos)
   if (!isMoralisUserAgent && !process.env.WEBHOOK_TEST_MODE) {
     request.log.warn(
       {
@@ -52,13 +58,10 @@ export async function webhookSecurityMiddleware(
         userAgent,
         hasSignature,
       },
-      "Webhook sem signature de origem suspeita bloqueado"
+      "⚠️ Webhook sem signature de User-Agent desconhecido - permitindo mas monitorando"
     );
-
-    return reply.status(403).send({
-      error: "Forbidden",
-      message: "Invalid webhook source",
-    });
+    // NÃO bloqueia - apenas monitora
+    // Se virar ataque real, implementar blocklist baseado em IP
   }
 
   // 3. Rate limiting por IP (protege contra DDoS)
