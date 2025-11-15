@@ -13,6 +13,7 @@ import { WithdrawScreen } from "@/screens/withdraw/WithdrawScreen"
 import { NotificationsScreen } from "@/screens/notifications/NotificationsScreen"
 import { TransactionDetailScreen } from "@/screens/transactions/TransactionDetailScreen"
 import { ReferScreen } from "@/screens/refer/ReferScreen"
+import { IOSInstallScreen } from "@/screens/install/IOSInstallScreen"
 
 export function App() {
   // Usa authStore com token Bearer (fallback quando cookies cross-origin não funcionam)
@@ -25,6 +26,7 @@ export function App() {
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/signup" element={<SignupScreen />} />
         <Route path="/invite" element={<InviteScreen />} />
+        <Route path="/install-ios" element={<IOSInstallScreen />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     )

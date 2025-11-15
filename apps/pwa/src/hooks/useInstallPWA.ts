@@ -45,12 +45,6 @@ export function useInstallPWA() {
     // Wait for the user's response
     const choiceResult = await installPrompt.userChoice
 
-    if (choiceResult.outcome === "accepted") {
-      console.log("PWA installed successfully")
-    } else {
-      console.log("PWA installation dismissed")
-    }
-
     // Clear the prompt after use
     setInstallPrompt(null)
     setIsInstallable(false)

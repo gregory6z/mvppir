@@ -40,13 +40,6 @@ export function usePWAInstallStatus(): PWAInstallStatus {
       const timestamp = new Date().toISOString()
       localStorage.setItem("pwa-installed-at", timestamp)
       localStorage.setItem("pwa-first-launch", "true")
-
-      // Track installation in analytics (if you have it)
-      console.log("📱 PWA installed!", {
-        timestamp,
-        platform: isIOS ? "iOS" : isAndroid ? "Android" : "Desktop",
-        displayMode,
-      })
     }
 
     return {
