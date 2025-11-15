@@ -18,8 +18,6 @@ export function App() {
   // Usa authStore com token Bearer (fallback quando cookies cross-origin não funcionam)
   const { isAuthenticated } = useAuthStore()
 
-  console.log("🔍 App render - isAuthenticated:", isAuthenticated)
-
   // Se não está autenticado, mostra rotas de auth
   if (!isAuthenticated) {
     return (
