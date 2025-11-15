@@ -17,13 +17,12 @@ export async function webhookRoutes(fastify: FastifyInstance) {
 
   // POST /webhooks/moralis - Receive Moralis webhook events
   // Segurança em camadas:
-  // 1. webhookSecurityMiddleware - valida User-Agent, rate limiting, IP (TEMPORARIAMENTE DESABILITADO)
+  // 1. webhookSecurityMiddleware - valida User-Agent, rate limiting, IP
   // 2. moralisWebhookController - valida signature (HMAC Keccak256)
   // 3. Webhooks SEM signature válida: retorna 200 mas NÃO processa dados
-  //
-  // NOTA: Middleware desabilitado temporariamente para permitir criação do Stream
-  // Após criar Stream, reabilitar adicionando: preHandler: webhookSecurityMiddleware
-  fastify.post("/moralis", moralisWebhookController);
+  fastify.post("/moralis", {
+    preHandler: webhookSecurityMiddleware,
+  }, moralisWebhookController);
 
   // GET /webhooks/moralis - Health check for webhook configuration
   fastify.get("/moralis", async (request, reply) => {
