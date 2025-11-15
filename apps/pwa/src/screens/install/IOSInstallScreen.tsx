@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Share, Plus, Smartphone, ArrowLeft } from "lucide-react"
 import { usePWAInstallStatus } from "@/hooks/usePWAInstallStatus"
@@ -8,6 +8,27 @@ export function IOSInstallScreen() {
   const navigate = useNavigate()
   const { isInstalled, isIOS } = usePWAInstallStatus()
   const { isSafari, browserName, isInAppBrowser } = useBrowserDetection()
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
+
+  // Detect large screens (desktop) - redirect to home
+  useEffect(() => {
+    const checkScreenSize = () => {
+      // Redirect if screen is larger than iPad (> 768px)
+      setIsLargeScreen(window.innerWidth > 768)
+    }
+
+    checkScreenSize()
+    window.addEventListener("resize", checkScreenSize)
+
+    return () => window.removeEventListener("resize", checkScreenSize)
+  }, [])
+
+  // If large screen (desktop), redirect to landing page
+  useEffect(() => {
+    if (isLargeScreen) {
+      window.location.href = "https://stakly.com" // Update to your landing page URL
+    }
+  }, [isLargeScreen])
 
   // If already installed, redirect to login
   useEffect(() => {
