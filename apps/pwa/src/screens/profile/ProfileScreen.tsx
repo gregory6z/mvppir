@@ -26,13 +26,11 @@ export function ProfileScreen() {
     if (confirmed) {
       clearAuth()
       navigate("/login")
-      console.log("User logged out")
     }
   }
 
   const handleChangeLanguage = (languageCode: string) => {
     i18n.changeLanguage(languageCode)
-    console.log(`Language changed to: ${languageCode}`)
   }
 
   // Get initials from name

@@ -35,7 +35,6 @@ export function HomeScreen() {
   }
 
   const handleNotificationPress = () => {
-    console.log("=== Navegando para /notifications ===")
     navigate("/notifications")
   }
 

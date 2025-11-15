@@ -89,33 +89,25 @@ export function useLoginMutation() {
 
   return useMutation({
     mutationFn: async (data: LoginInput) => {
-      console.log("🔐 Login attempt:", data.email)
       const result = await signIn.email({
         email: data.email,
         password: data.password,
       })
 
-      console.log("📦 Better Auth result:", result)
-
       // Se houver erro, lança o erro bruto para ser tratado no onError
       if (result.error) {
-        console.error("❌ Login error:", result.error)
         throw result.error
       }
 
       if (!result.data?.token || !result.data?.user) {
-        console.error("❌ Missing token or user in response")
         throw new Error("MISSING_DATA")
       }
 
-      console.log("✅ Login successful! Token:", result.data.token.substring(0, 20) + "...")
       return result.data
     },
     onSuccess: (data) => {
-      console.log("💾 Saving token to authStore")
       // Salva o token no Zustand (para usar como Bearer token)
       setAuth(data.token, data.user.id)
-      console.log("✅ Auth state updated, App will re-render and redirect")
     },
   })
 }
@@ -125,7 +117,6 @@ export function useSignupMutation() {
 
   return useMutation({
     mutationFn: async (data: SignupInput) => {
-      console.log("📝 Signup attempt:", data.email)
       const result = await signUp.email({
         name: data.name,
         email: data.email,
@@ -134,27 +125,20 @@ export function useSignupMutation() {
         referralCode: data.referralCode?.toUpperCase(),
       })
 
-      console.log("📦 Better Auth signup result:", result)
-
       // Se houver erro, lança o erro bruto para ser tratado no onError
       if (result.error) {
-        console.error("❌ Signup error:", result.error)
         throw result.error
       }
 
       if (!result.data?.token || !result.data?.user) {
-        console.error("❌ Missing token or user in response")
         throw new Error("MISSING_DATA")
       }
 
-      console.log("✅ Signup successful! Token:", result.data.token.substring(0, 20) + "...")
       return result.data
     },
     onSuccess: (data) => {
-      console.log("💾 Saving token to authStore")
       // Salva o token no Zustand (para usar como Bearer token)
       setAuth(data.token, data.user.id)
-      console.log("✅ Auth state updated, App will re-render and redirect")
     },
   })
 }

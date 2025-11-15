@@ -21,26 +21,13 @@ export const apiClient = ky.create({
         const token = useAuthStore.getState().token
         if (token) {
           request.headers.set("Authorization", `Bearer ${token}`)
-          if (import.meta.env.DEV) {
-            console.log(`[API] Adding Bearer token: ${token.substring(0, 20)}...`)
-          }
-        }
-
-        if (import.meta.env.DEV) {
-          console.log(`[API] ${request.method} ${request.url}`)
         }
       },
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // Log de requisições em desenvolvimento
-        if (import.meta.env.DEV) {
-          console.log(`[API] ${request.method} ${request.url} - ${response.status}`)
-        }
-
         // Se 401 (não autenticado), limpa o token
         if (response.status === 401) {
-          console.warn("🚫 401 Unauthorized - Clearing auth")
           useAuthStore.getState().clearAuth()
         }
 
