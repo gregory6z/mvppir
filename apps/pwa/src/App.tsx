@@ -17,7 +17,6 @@ import { ReferScreen } from "@/screens/refer/ReferScreen"
 export function App() {
   // Usa authStore com token Bearer (fallback quando cookies cross-origin não funcionam)
   const { isAuthenticated } = useAuthStore()
-  const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus()
 
   console.log("🔍 App render - isAuthenticated:", isAuthenticated)
 
@@ -32,6 +31,13 @@ export function App() {
       </Routes>
     )
   }
+
+  return <AuthenticatedApp />
+}
+
+function AuthenticatedApp() {
+  // Só chama useUserStatus quando autenticado (evita loop infinito)
+  const { data: userStatus, isLoading: isLoadingStatus } = useUserStatus()
 
   // Loading do status do usuário
   if (isLoadingStatus) {
