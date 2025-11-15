@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { moralisWebhookController } from "./controllers/moralis-webhook-controller";
+import { webhookSecurityMiddleware } from "@/middlewares/webhook-security.middleware";
 
 export async function webhookRoutes(fastify: FastifyInstance) {
   // Add content type parser to preserve raw body for signature validation
@@ -15,9 +16,13 @@ export async function webhookRoutes(fastify: FastifyInstance) {
   );
 
   // POST /webhooks/moralis - Receive Moralis webhook events
-  // Nota: Esta rota NÃO tem autenticação (é chamada pelo Moralis)
-  // A autenticação é feita via signature validation
-  fastify.post("/moralis", moralisWebhookController);
+  // Segurança em camadas:
+  // 1. webhookSecurityMiddleware - valida User-Agent, rate limiting, IP
+  // 2. moralisWebhookController - valida signature (HMAC Keccak256)
+  // 3. Webhooks SEM signature válida: retorna 200 mas NÃO processa dados
+  fastify.post("/moralis", {
+    preHandler: webhookSecurityMiddleware,
+  }, moralisWebhookController);
 
   // GET /webhooks/moralis - Health check for webhook configuration
   fastify.get("/moralis", async (request, reply) => {
