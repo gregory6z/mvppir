@@ -6,4 +6,12 @@ export async function webhookRoutes(fastify: FastifyInstance) {
   // Nota: Esta rota NÃO tem autenticação (é chamada pelo Moralis)
   // A autenticação é feita via signature validation
   fastify.post("/moralis", moralisWebhookController);
+
+  // GET /webhooks/moralis - Health check for webhook configuration
+  fastify.get("/moralis", async (request, reply) => {
+    return reply.status(200).send({
+      message: "Moralis webhook endpoint is active",
+      status: "ok",
+    });
+  });
 }
