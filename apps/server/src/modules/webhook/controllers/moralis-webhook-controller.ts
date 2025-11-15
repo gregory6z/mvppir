@@ -8,6 +8,15 @@ export async function moralisWebhookController(
 ) {
   try {
     const signature = request.headers["x-signature"] as string;
+    const body = request.body as any;
+
+    // Moralis test requests: allow empty body or test payload without signature
+    if (!body || Object.keys(body).length === 0 || body.test === true) {
+      request.log.info("Moralis webhook test request received");
+      return reply.status(200).send({
+        message: "Webhook endpoint is reachable",
+      });
+    }
 
     if (!signature) {
       return reply.status(401).send({
@@ -17,7 +26,7 @@ export async function moralisWebhookController(
     }
 
     // Valida assinatura
-    const isValid = validateMoralisSignature(request.body, signature);
+    const isValid = validateMoralisSignature(body, signature);
 
     if (!isValid) {
       request.log.warn("Invalid Moralis webhook signature");
