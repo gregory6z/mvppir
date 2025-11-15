@@ -18,5 +18,7 @@ export function useUserStatus() {
     queryFn: getUserStatus,
     staleTime: 1000 * 10, // 10 seconds
     refetchInterval: 1000 * 30, // Refetch every 30 seconds
+    retry: 1, // Only retry once (prevents infinite loop if user not authenticated)
+    retryDelay: 1000, // Wait 1 second before retry
   })
 }
