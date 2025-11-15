@@ -25,10 +25,12 @@ export async function moralisWebhookController(
       });
     }
 
+    // Se não tem signature, aceitar SOMENTE se for teste do Moralis
+    // (durante criação do Stream, o Moralis envia webhook sem signature)
     if (!signature) {
-      return reply.status(401).send({
-        error: "Unauthorized",
-        message: "Missing signature header",
+      request.log.warn("Webhook without signature - accepting as Moralis test");
+      return reply.status(200).send({
+        message: "Webhook endpoint is reachable (test mode)",
       });
     }
 
