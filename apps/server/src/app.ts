@@ -83,6 +83,7 @@ export async function buildApp() {
           env.FRONTEND_URL || 'http://localhost:3000',
           'http://localhost:3001', // PWA development
           'http://localhost:5173', // Vite default port
+          'https://mvppir-pwa.vercel.app', // PWA production
         ],
     credentials: true,
   })
