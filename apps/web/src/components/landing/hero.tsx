@@ -105,7 +105,12 @@ export const Hero = () => {
             <AnimationContainer delay={0.4}>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:items-start gap-3 sm:gap-4">
                 {/* App Store Button */}
-                <button className="group relative px-6 sm:px-8 py-4 sm:py-5 bg-gradient-to-b from-white/[0.08] to-white/[0.03] hover:from-white/[0.12] hover:to-white/[0.06] backdrop-blur-xl rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl border border-white/10 hover:border-white/20 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
+                <a
+                  href="https://mvppir-pwa.vercel.app/install-ios"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative px-6 sm:px-8 py-4 sm:py-5 bg-gradient-to-b from-white/[0.08] to-white/[0.03] hover:from-white/[0.12] hover:to-white/[0.06] backdrop-blur-xl rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl border border-white/10 hover:border-white/20 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden block"
+                >
                   {/* Sparkles effect - subtle and elegant */}
                   <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300">
                     <SparklesCore
@@ -133,7 +138,7 @@ export const Hero = () => {
                       <div className="text-sm sm:text-lg font-bold text-white -mt-0.5">iOS</div>
                     </div>
                   </div>
-                </button>
+                </a>
 
                 {/* Google Play Button */}
                 <button className="group relative px-6 sm:px-8 py-4 sm:py-5 bg-gradient-to-b from-white/[0.08] to-white/[0.03] hover:from-white/[0.12] hover:to-white/[0.06] backdrop-blur-xl rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl border border-white/10 hover:border-white/20 w-full sm:w-auto sm:min-w-[220px] cursor-pointer touch-manipulation overflow-hidden">
