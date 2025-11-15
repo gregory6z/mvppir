@@ -29,8 +29,9 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
       ]
     : [
         process.env.FRONTEND_URL || "http://localhost:3000",
-        "http://localhost:3001", // PWA development (production também)
-        "http://localhost:5173", // Vite default port (production também)
+        "http://localhost:3001", // PWA development
+        "http://localhost:5173", // Vite default port
+        "https://mvppir-pwa.vercel.app", // PWA production (CRITICAL for Bearer token)
       ],
   secret: process.env.AUTH_SECRET!,
   baseURL: process.env.API_BASE_URL || "http://localhost:3333",
