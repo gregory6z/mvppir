@@ -10,9 +10,16 @@ export async function moralisWebhookController(
     const signature = request.headers["x-signature"] as string;
     const body = request.body as any;
 
+    // Log all webhook requests for debugging
+    request.log.info({
+      headers: request.headers,
+      bodyKeys: body ? Object.keys(body) : [],
+      hasSignature: !!signature,
+    }, "Moralis webhook request received");
+
     // Moralis test requests: allow empty body or test payload without signature
     if (!body || Object.keys(body).length === 0 || body.test === true) {
-      request.log.info("Moralis webhook test request received");
+      request.log.info("Moralis webhook test request - returning 200");
       return reply.status(200).send({
         message: "Webhook endpoint is reachable",
       });
