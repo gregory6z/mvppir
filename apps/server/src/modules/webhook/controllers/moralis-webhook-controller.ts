@@ -59,10 +59,21 @@ export async function moralisWebhookController(
 
     if (!isValid) {
       request.log.warn({ signature, rawBodyLength: rawBody.length }, "Invalid Moralis webhook signature");
-      return reply.status(401).send({
-        error: "Unauthorized",
-        message: "Invalid signature",
+
+      // TEMPORÁRIO: Durante criação do Stream, aceitar signature inválida
+      // Moralis envia teste com signature gerada com secret aleatório
+      // Após criar Stream e configurar MORALIS_STREAM_SECRET correto, remover este bypass
+      request.log.warn("⚠️ MODO TESTE: Aceitando signature inválida temporariamente");
+      return reply.status(200).send({
+        message: "Webhook endpoint is reachable (test mode - invalid signature accepted)",
+        processed: false,
       });
+
+      // DESCOMENTAR APÓS CONFIGURAR MORALIS_STREAM_SECRET:
+      // return reply.status(401).send({
+      //   error: "Unauthorized",
+      //   message: "Invalid signature",
+      // });
     }
 
     // Processa webhook
