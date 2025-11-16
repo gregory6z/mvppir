@@ -99,11 +99,12 @@ export async function injectTestDeposit(
       },
     })
 
-    // 4.3. Atualizar apenas lifetimeVolume (não blockedBalance para evitar duplicação)
+    // 4.3. Atualizar lifetimeVolume e blockedBalance (para requisitos de rank)
     await tx.user.update({
       where: { id: user.id },
       data: {
         lifetimeVolume: { increment: amountDecimal },
+        blockedBalance: { increment: amountDecimal },
       },
     })
 
