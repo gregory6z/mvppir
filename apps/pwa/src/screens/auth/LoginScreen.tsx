@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
-import { loginSchema, type LoginInput } from "@/api/auth/schemas"
+import { type LoginInput } from "@/api/auth/schemas"
 import { useLoginMutation, transformLoginError, type LoginError } from "@/api/auth/mutations"
+import { useLoginForm } from "@/hooks/useAuthForms"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,19 +18,11 @@ export function LoginScreen() {
 
   const loginMutation = useLoginMutation()
 
-  // @ts-ignore - Type instantiation depth issue in Vercel build (works fine locally)
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    } as LoginInput,
-    mode: "onBlur",
-  }) as any
+  } = useLoginForm()
 
   const onSubmit = (data: LoginInput) => {
     setError(null)

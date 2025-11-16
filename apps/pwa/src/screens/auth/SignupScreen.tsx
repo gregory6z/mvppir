@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Link, useSearchParams } from "react-router-dom"
-import { signupSchema, type SignupInput } from "@/api/auth/schemas"
+import { type SignupInput } from "@/api/auth/schemas"
 import { useSignupMutation, transformSignupError, type SignupError } from "@/api/auth/mutations"
+import { useSignupForm } from "@/hooks/useAuthForms"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,22 +20,11 @@ export function SignupScreen() {
 
   const signupMutation = useSignupMutation()
 
-  // @ts-ignore - Type instantiation depth issue in Vercel build (works fine locally)
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      referralCode: referralCode, // From URL query parameter
-    } as SignupInput,
-    mode: "onBlur",
-  }) as any
+  } = useSignupForm(referralCode)
 
   const onSubmit = (data: SignupInput) => {
     setError(null)
