@@ -18,18 +18,16 @@ export function LoginScreen() {
 
   const loginMutation = useLoginMutation()
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginInput>({
+  const form = useForm({
     resolver: zodResolver(loginSchema) as any,
     defaultValues: {
       email: "",
       password: "",
-    },
-    mode: "onBlur",
-  })
+    } as LoginInput,
+    mode: "onBlur" as const,
+  }) as any
+
+  const { control, handleSubmit, formState: { errors } } = form
 
   const onSubmit = (data: LoginInput) => {
     setError(null)
