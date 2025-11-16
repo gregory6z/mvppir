@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Crown, Lock, Sparkle } from "phosphor-react"
+import { Crown, Sparkle } from "phosphor-react"
 import type { MLMRank, RankStatus } from "@/api/mlm/schemas"
 import { MLMExplainerDrawer } from "@/components/drawers"
 
@@ -61,7 +61,6 @@ const RANK_STATUS_CONFIG = {
 export function RankCard({
   currentRank,
   rankStatus,
-  blockedBalance,
   nextRank,
   progressToNext,
 }: RankCardProps) {
@@ -136,19 +135,6 @@ export function RankCard({
             {t("rankCard.howItWorksButton")}
           </span>
         </button>
-      </div>
-
-      {/* Blocked Balance */}
-      <div className="bg-zinc-800/50 p-4 rounded-xl mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <Lock size={16} color="#8b5cf6" weight="duotone" />
-          <span className="text-zinc-400 text-xs font-medium">
-            {t("rankCard.blockedBalance")}
-          </span>
-        </div>
-        <p className="text-white text-2xl font-bold">
-          ${blockedBalance.toFixed(2)}
-        </p>
       </div>
 
       {/* Progress to Next Rank */}

@@ -98,11 +98,12 @@ export async function injectTestDeposit(
       },
     })
 
-    // 4.3. Atualizar lifetimeVolume do usuário
+    // 4.3. Atualizar lifetimeVolume e blockedBalance do usuário
     await tx.user.update({
       where: { id: user.id },
       data: {
         lifetimeVolume: { increment: amountDecimal },
+        blockedBalance: { increment: amountDecimal },
       },
     })
 
