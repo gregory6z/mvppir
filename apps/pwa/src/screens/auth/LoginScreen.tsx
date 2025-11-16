@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { loginSchema, type LoginInput } from "@/api/auth/schemas"
@@ -18,18 +17,26 @@ export function LoginScreen() {
 
   const loginMutation = useLoginMutation()
 
-  const form = useForm({
-    resolver: zodResolver(loginSchema) as any,
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
     defaultValues: {
       email: "",
       password: "",
-    } as LoginInput,
-    mode: "onBlur" as const,
-  }) as any
-
-  const { control, handleSubmit, formState: { errors } } = form
+    },
+    mode: "onBlur",
+  })
 
   const onSubmit = (data: LoginInput) => {
+    // Manual Zod validation (avoids TS2589 error with zodResolver)
+    const validationResult = loginSchema.safeParse(data)
+    if (!validationResult.success) {
+      setError("errors.invalidCredentials")
+      return
+    }
+
     setError(null)
     loginMutation.mutate(data, {
       onError: (err) => {

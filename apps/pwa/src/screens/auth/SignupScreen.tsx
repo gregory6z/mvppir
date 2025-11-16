@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { Link, useSearchParams } from "react-router-dom"
 import { signupSchema, type SignupInput } from "@/api/auth/schemas"
@@ -20,21 +19,29 @@ export function SignupScreen() {
 
   const signupMutation = useSignupMutation()
 
-  const form = useForm({
-    resolver: zodResolver(signupSchema) as any,
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupInput>({
     defaultValues: {
       name: "",
       email: "",
       password: "",
       passwordConfirm: "",
       referralCode,
-    } as SignupInput,
-    mode: "onBlur" as const,
-  }) as any
-
-  const { control, handleSubmit, formState: { errors } } = form
+    },
+    mode: "onBlur",
+  })
 
   const onSubmit = (data: SignupInput) => {
+    // Manual Zod validation (avoids TS2589 error with zodResolver)
+    const validationResult = signupSchema.safeParse(data)
+    if (!validationResult.success) {
+      setError("errors.unknownError")
+      return
+    }
+
     setError(null)
     signupMutation.mutate(data, {
       onError: (err) => {
