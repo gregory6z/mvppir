@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Controller } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
-import { type LoginInput } from "@/api/auth/schemas"
+import { loginSchema, type LoginInput } from "@/api/auth/schemas"
 import { useLoginMutation, transformLoginError, type LoginError } from "@/api/auth/mutations"
-import { useLoginForm } from "@/hooks/useAuthForms"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -22,7 +22,14 @@ export function LoginScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useLoginForm()
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onBlur",
+  })
 
   const onSubmit = (data: LoginInput) => {
     setError(null)

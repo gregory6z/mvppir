@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { Controller } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { Link, useSearchParams } from "react-router-dom"
-import { type SignupInput } from "@/api/auth/schemas"
+import { signupSchema, type SignupInput } from "@/api/auth/schemas"
 import { useSignupMutation, transformSignupError, type SignupError } from "@/api/auth/mutations"
-import { useSignupForm } from "@/hooks/useAuthForms"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,7 +24,17 @@ export function SignupScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useSignupForm(referralCode)
+  } = useForm<SignupInput>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+      referralCode,
+    },
+    mode: "onBlur",
+  })
 
   const onSubmit = (data: SignupInput) => {
     setError(null)
