@@ -75,7 +75,8 @@ export async function getUserBalance({
       available,
       locked: b.lockedBalance,
       blocked,
-      total: available.add(b.lockedBalance).add(blocked),
+      // Total = available + locked (blocked não soma para evitar duplicação)
+      total: available.add(b.lockedBalance),
     };
   });
 
