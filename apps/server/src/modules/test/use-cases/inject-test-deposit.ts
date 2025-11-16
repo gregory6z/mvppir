@@ -59,7 +59,7 @@ export async function injectTestDeposit(
   const amountDecimal = new Decimal(amount)
   const rawAmount = amountDecimal.mul(new Decimal(10).pow(tokenDecimals)).toString()
 
-  // 4. Criar transação de teste E atualizar balance do usuário
+  // 4. Criar transação de teste E atualizar balance + lifetimeVolume do usuário
   const result = await prisma.$transaction(async (tx) => {
     // 4.1. Criar transação de teste
     const transaction = await tx.walletTransaction.create({
@@ -95,6 +95,14 @@ export async function injectTestDeposit(
       },
       update: {
         availableBalance: { increment: amountDecimal },
+      },
+    })
+
+    // 4.3. Atualizar lifetimeVolume do usuário
+    await tx.user.update({
+      where: { id: user.id },
+      data: {
+        lifetimeVolume: { increment: amountDecimal },
       },
     })
 
