@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { Decimal } from "@prisma/client/runtime/library"
+import { autoCheckAndPromote } from "@/modules/mlm/use-cases/check-rank-progression"
 
 interface InjectTestDepositInput {
   userEmail: string
@@ -116,6 +117,12 @@ export async function injectTestDeposit(
     isTest: true,
     balanceUpdated: true,
   })
+
+  // 5. Auto-check and promote user if eligible
+  const promoted = await autoCheckAndPromote(user.id)
+  if (promoted) {
+    console.log(`🎖️  User ${userEmail} was automatically promoted to next rank!`)
+  }
 
   return {
     transaction: {
