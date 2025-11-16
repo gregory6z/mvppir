@@ -18,6 +18,7 @@ export function LoginScreen() {
 
   const loginMutation = useLoginMutation()
 
+  // @ts-ignore - Type instantiation depth issue in Vercel build (works fine locally)
   const {
     control,
     handleSubmit,

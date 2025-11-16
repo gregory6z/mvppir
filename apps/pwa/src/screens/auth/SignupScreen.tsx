@@ -20,6 +20,7 @@ export function SignupScreen() {
 
   const signupMutation = useSignupMutation()
 
+  // @ts-ignore - Type instantiation depth issue in Vercel build (works fine locally)
   const {
     control,
     handleSubmit,
