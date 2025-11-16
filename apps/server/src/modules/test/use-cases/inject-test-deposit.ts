@@ -79,7 +79,7 @@ export async function injectTestDeposit(
       },
     })
 
-    // 4.2. Atualizar Balance do usuário (adiciona saldo fictício)
+    // 4.2. Atualizar Balance do usuário (adiciona saldo disponível)
     await tx.balance.upsert({
       where: {
         userId_tokenSymbol: {
@@ -99,12 +99,11 @@ export async function injectTestDeposit(
       },
     })
 
-    // 4.3. Atualizar lifetimeVolume e blockedBalance do usuário
+    // 4.3. Atualizar apenas lifetimeVolume (não blockedBalance para evitar duplicação)
     await tx.user.update({
       where: { id: user.id },
       data: {
         lifetimeVolume: { increment: amountDecimal },
-        blockedBalance: { increment: amountDecimal },
       },
     })
 
