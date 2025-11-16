@@ -22,14 +22,14 @@ export function LoginScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginInput>({
+  } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
-    },
+    } as LoginInput,
     mode: "onBlur",
-  })
+  }) as any
 
   const onSubmit = (data: LoginInput) => {
     setError(null)

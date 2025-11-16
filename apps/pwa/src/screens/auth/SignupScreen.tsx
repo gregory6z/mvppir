@@ -24,7 +24,7 @@ export function SignupScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupInput>({
+  } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
@@ -32,9 +32,9 @@ export function SignupScreen() {
       password: "",
       passwordConfirm: "",
       referralCode: referralCode, // From URL query parameter
-    },
+    } as SignupInput,
     mode: "onBlur",
-  })
+  }) as any
 
   const onSubmit = (data: SignupInput) => {
     setError(null)
