@@ -27,8 +27,8 @@ export async function injectTestDepositController(
 
     return reply.status(201).send({
       success: true,
-      message: `Test deposit of ${data.amount} ${data.tokenSymbol} injected for ${data.userEmail}`,
-      data: result.transaction,
+      message: result.message,
+      data: result,
     })
   } catch (error: any) {
     console.error("❌ Failed to inject test deposit:", error)
