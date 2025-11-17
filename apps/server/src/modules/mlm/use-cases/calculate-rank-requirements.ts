@@ -6,12 +6,35 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/library";
 import { getRankRequirements } from "@/modules/mlm/mlm-config";
 import { MLMRank } from "@prisma/client";
 import {
   getActiveDirects,
   calculateNetworkVolume,
 } from "@/modules/mlm/helpers/network";
+
+/**
+ * Get user's total available balance (USDC + USDT)
+ */
+async function getUserAvailableBalance(userId: string): Promise<number> {
+  const balances = await prisma.balance.findMany({
+    where: {
+      userId,
+      tokenSymbol: { in: ["USDC", "USDT"] },
+    },
+    select: {
+      availableBalance: true,
+    },
+  });
+
+  const total = balances.reduce(
+    (sum, balance) => sum.add(balance.availableBalance),
+    new Decimal(0)
+  );
+
+  return parseFloat(total.toString());
+}
 
 export interface RankRequirementsCheck {
   rank: MLMRank;
@@ -68,7 +91,6 @@ export async function checkConquestRequirements(
     select: {
       totalDirects: true,
       lifetimeVolume: true,
-      blockedBalance: true,
     },
   });
 
@@ -98,15 +120,17 @@ export async function checkConquestRequirements(
   // Get active directs count
   const activeDirectsCount = await getActiveDirects(userId);
 
+  // Get available balance (USDC + USDT)
+  const availableBalance = await getUserAvailableBalance(userId);
+
   // Convert Decimals to numbers for comparison
   const lifetimeVolumeNum = parseFloat(user.lifetimeVolume.toString());
-  const blockedBalanceNum = parseFloat(user.blockedBalance.toString());
   const monthlyVolumeNum = parseFloat(monthlyVolume.toString());
 
   // Check conquest requirements
   const directsMet = user.totalDirects >= config.minDirects;
   const lifetimeVolumeMet = lifetimeVolumeNum >= config.minLifetimeVolume;
-  const blockedBalanceMet = blockedBalanceNum >= config.minBlockedBalance;
+  const blockedBalanceMet = availableBalance >= config.minBlockedBalance;
 
   const conquestMet = directsMet && lifetimeVolumeMet && blockedBalanceMet;
 
@@ -114,7 +138,7 @@ export async function checkConquestRequirements(
   const activeDirectsMet = activeDirectsCount >= config.minActiveDirects;
   const monthlyVolumeMet = monthlyVolumeNum >= config.minMonthlyVolume;
   const maintenanceBlockedBalanceMet =
-    blockedBalanceNum >= config.minBlockedBalance;
+    availableBalance >= config.minBlockedBalance;
 
   const maintenanceMet =
     activeDirectsMet && monthlyVolumeMet && maintenanceBlockedBalanceMet;
@@ -135,7 +159,7 @@ export async function checkConquestRequirements(
       },
       blockedBalance: {
         required: config.minBlockedBalance,
-        actual: blockedBalanceNum,
+        actual: availableBalance,
         met: blockedBalanceMet,
       },
     },
@@ -152,7 +176,7 @@ export async function checkConquestRequirements(
       },
       blockedBalance: {
         required: config.minBlockedBalance,
-        actual: blockedBalanceNum,
+        actual: availableBalance,
         met: maintenanceBlockedBalanceMet,
       },
     },
@@ -179,7 +203,6 @@ export async function checkMaintenanceRequirements(
     where: { id: userId },
     select: {
       currentRank: true,
-      blockedBalance: true,
     },
   });
 
@@ -209,13 +232,15 @@ export async function checkMaintenanceRequirements(
   );
   const activeDirectsCount = await getActiveDirects(userId);
 
+  // Get available balance (USDC + USDT)
+  const availableBalance = await getUserAvailableBalance(userId);
+
   const monthlyVolumeNum = parseFloat(monthlyVolume.toString());
-  const blockedBalanceNum = parseFloat(user.blockedBalance.toString());
 
   // Check if requirements are met
   const activeDirectsMet = activeDirectsCount >= config.minActiveDirects;
   const monthlyVolumeMet = monthlyVolumeNum >= config.minMonthlyVolume;
-  const blockedBalanceMet = blockedBalanceNum >= config.minBlockedBalance;
+  const blockedBalanceMet = availableBalance >= config.minBlockedBalance;
 
   const met = activeDirectsMet && monthlyVolumeMet && blockedBalanceMet;
 
@@ -223,7 +248,7 @@ export async function checkMaintenanceRequirements(
     met,
     activeDirects: activeDirectsCount,
     monthlyVolume: monthlyVolumeNum,
-    blockedBalance: blockedBalanceNum,
+    blockedBalance: availableBalance,
     requirements: {
       minActiveDirects: config.minActiveDirects,
       minMonthlyVolume: config.minMonthlyVolume,
