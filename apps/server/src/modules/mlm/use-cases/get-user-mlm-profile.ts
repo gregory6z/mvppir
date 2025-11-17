@@ -10,6 +10,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/library";
 import { MLMRank, RankStatus } from "@prisma/client";
 import { getNetworkStats } from "@/modules/mlm/helpers/network";
 import {
@@ -28,6 +29,7 @@ export interface MLMProfileResponse {
     rankStatus: RankStatus;
     rankConqueredAt: Date | null;
     blockedBalance: number;
+    totalInvested: number; // Total de depósitos USDC/USDT (para slider)
     loyaltyTier: string;
   };
 
@@ -105,6 +107,22 @@ export async function getUserMLMProfile(
   if (!user) {
     throw new Error("User not found");
   }
+
+  // Get total deposits (USDC + USDT only) - for blocking slider
+  const totalDeposits = await prisma.walletTransaction.aggregate({
+    where: {
+      userId,
+      type: "CREDIT",
+      status: "CONFIRMED",
+      tokenSymbol: { in: ["USDC", "USDT"] },
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  // Total deposited (investimento total do usuário)
+  const totalInvested = totalDeposits._sum.amount || new Decimal(0);
 
   // Get network statistics
   const networkStats = await getNetworkStats(userId);
@@ -219,6 +237,7 @@ export async function getUserMLMProfile(
       rankStatus: user.rankStatus,
       rankConqueredAt: user.rankConqueredAt,
       blockedBalance: parseFloat(user.blockedBalance.toString()),
+      totalInvested: parseFloat(totalInvested.toString()),
       loyaltyTier: user.loyaltyTier,
     },
     network: {
