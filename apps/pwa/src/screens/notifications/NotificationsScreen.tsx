@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import { useEffect, useRef } from "react"
 import {
   ArrowLeft,
   Bell,
@@ -10,8 +11,9 @@ import {
   Trophy,
   Users,
   MegaphoneSimple,
+  CircleNotch,
 } from "phosphor-react"
-import { useUnreadNotifications } from "@/api/notifications/queries/use-unread-notifications"
+import { useInfiniteNotifications } from "@/api/notifications/queries/use-infinite-notifications"
 import { useMarkAsRead } from "@/api/notifications/mutations/use-mark-as-read"
 import { useMarkAllAsRead } from "@/api/notifications/mutations/use-mark-all-as-read"
 import { formatDistanceToNow } from "date-fns"
@@ -27,11 +29,37 @@ const localeMap = {
 export function NotificationsScreen() {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation("notifications.notifications")
-  const { data, isLoading, error } = useUnreadNotifications()
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteNotifications()
   const { mutate: markAsRead } = useMarkAsRead()
   const { mutate: markAllAsRead, isPending: isMarkingAll } = useMarkAllAsRead()
 
+  const loadMoreRef = useRef<HTMLDivElement>(null)
   const locale = localeMap[i18n.language as keyof typeof localeMap] || enUS
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasNextPage || isFetchingNextPage) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage()
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    observer.observe(loadMoreRef.current)
+
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   const handleBack = () => {
     navigate(-1)
@@ -145,8 +173,9 @@ export function NotificationsScreen() {
     )
   }
 
-  const notifications = data?.notifications || []
-  const unreadCount = data?.unreadCount || 0
+  // Flatten all pages into single array
+  const notifications = data?.pages.flatMap((page) => page.notifications) || []
+  const unreadCount = data?.pages[0]?.unreadCount || 0
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
@@ -246,6 +275,21 @@ export function NotificationsScreen() {
                 </div>
               </div>
             ))}
+
+            {/* Load More Trigger */}
+            {hasNextPage && (
+              <div
+                ref={loadMoreRef}
+                className="flex items-center justify-center py-6"
+              >
+                {isFetchingNextPage && (
+                  <div className="flex items-center gap-2 text-violet-400">
+                    <CircleNotch size={20} weight="bold" className="animate-spin" />
+                    <span className="text-sm font-semibold">{t("loadingMore")}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

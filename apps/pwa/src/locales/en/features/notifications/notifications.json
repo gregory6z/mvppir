@@ -6,6 +6,7 @@
   },
   "markAllAsRead": "Mark all as read",
   "loading": "Loading notifications...",
+  "loadingMore": "Loading more...",
   "error": "Error loading notifications",
   "types": {
     "deposit": "Deposit",

@@ -18,13 +18,32 @@ export interface Notification {
 export interface UnreadNotificationsResponse {
   notifications: Notification[]
   unreadCount: number
+  nextCursor: string | null
+  hasMore: boolean
 }
 
 /**
- * Get unread notifications
+ * Get unread notifications with cursor-based pagination
  */
-export async function getUnreadNotifications(): Promise<UnreadNotificationsResponse> {
-  return apiClient.get("notifications/unread").json<UnreadNotificationsResponse>()
+export async function getUnreadNotifications(params?: {
+  cursor?: string
+  limit?: number
+}): Promise<UnreadNotificationsResponse> {
+  const searchParams = new URLSearchParams()
+
+  if (params?.cursor) {
+    searchParams.append("cursor", params.cursor)
+  }
+
+  if (params?.limit) {
+    searchParams.append("limit", params.limit.toString())
+  }
+
+  const url = searchParams.toString()
+    ? `notifications/unread?${searchParams.toString()}`
+    : "notifications/unread"
+
+  return apiClient.get(url).json<UnreadNotificationsResponse>()
 }
 
 /**

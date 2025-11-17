@@ -1,15 +1,20 @@
 /**
  * Get Unread Notifications Controller
  *
- * GET /notifications/unread
- * Retorna todas as notificações não lidas do usuário autenticado.
+ * GET /notifications/unread?cursor=xxx&limit=20
+ * Retorna notificações não lidas do usuário autenticado com suporte a paginação.
  */
 
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getUnreadNotifications } from "../use-cases/get-unread-notifications";
 
+interface QueryParams {
+  cursor?: string;
+  limit?: string;
+}
+
 export async function getUnreadController(
-  request: FastifyRequest,
+  request: FastifyRequest<{ Querystring: QueryParams }>,
   reply: FastifyReply
 ) {
   try {
@@ -19,7 +24,13 @@ export async function getUnreadController(
       return reply.status(401).send({ error: "Unauthorized" });
     }
 
-    const result = await getUnreadNotifications({ userId });
+    const { cursor, limit } = request.query;
+
+    const result = await getUnreadNotifications({
+      userId,
+      cursor,
+      limit: limit ? parseInt(limit, 10) : undefined,
+    });
 
     return reply.status(200).send(result);
   } catch (error) {

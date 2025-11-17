@@ -6,6 +6,7 @@
   },
   "markAllAsRead": "Tout marquer comme lu",
   "loading": "Chargement des notifications...",
+  "loadingMore": "Chargement...",
   "error": "Erreur lors du chargement des notifications",
   "types": {
     "deposit": "Dépôt",
