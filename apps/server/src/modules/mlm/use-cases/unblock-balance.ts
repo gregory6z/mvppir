@@ -16,6 +16,7 @@ import { prisma } from "@/lib/prisma"
 import { Decimal } from "@prisma/client/runtime/library"
 import { MLMRank } from "@prisma/client"
 import { getRankRequirements } from "../mlm-config"
+import { updateUserBlockedBalance } from "../helpers/update-blocked-balance"
 
 interface UnblockBalanceRequest {
   userId: string
@@ -90,28 +91,7 @@ export async function unblockBalance({
     const newRank = calculateRankFromBlockedBalance(newBlockedBalanceNumber)
     const rankChanged = newRank !== user.currentRank
 
-    // 5. Update User: decrease blockedBalance and update rank if needed
-    const updatedUser = await tx.user.update({
-      where: { id: userId },
-      data: {
-        blockedBalance: {
-          decrement: amountDecimal,
-        },
-        ...(rankChanged && {
-          currentRank: newRank,
-          rankStatus: "ACTIVE", // Reset to ACTIVE on manual change
-          warningCount: 0,
-          originalRank: null,
-          gracePeriodEndsAt: null,
-        }),
-      },
-      select: {
-        blockedBalance: true,
-        currentRank: true,
-      },
-    })
-
-    // 6. Update Balance: increase availableBalance (or create if doesn't exist)
+    // 5. Update Balance: increase availableBalance (or create if doesn't exist)
     const updatedBalance = await tx.balance.upsert({
       where: {
         userId_tokenSymbol: {
@@ -136,8 +116,29 @@ export async function unblockBalance({
       },
     })
 
+    // 6. Update User.blockedBalance automatically based on available USDC + USDT
+    const newBlockedBalance = await updateUserBlockedBalance(userId, tx)
+
+    // 7. Update rank if needed based on new blocked balance
+    const updatedUser = await tx.user.update({
+      where: { id: userId },
+      data: {
+        ...(rankChanged && {
+          currentRank: newRank,
+          rankStatus: "ACTIVE", // Reset to ACTIVE on manual change
+          warningCount: 0,
+          originalRank: null,
+          gracePeriodEndsAt: null,
+        }),
+      },
+      select: {
+        blockedBalance: true,
+        currentRank: true,
+      },
+    })
+
     return {
-      blockedBalance: updatedUser.blockedBalance,
+      blockedBalance: newBlockedBalance,
       availableBalance: updatedBalance.availableBalance,
       previousRank: user.currentRank,
       newRank: updatedUser.currentRank,

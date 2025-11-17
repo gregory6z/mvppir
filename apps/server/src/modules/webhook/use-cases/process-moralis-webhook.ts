@@ -5,6 +5,7 @@ import { autoCheckAndPromote } from "@/modules/mlm/use-cases/check-rank-progress
 import { autoBlockBalance } from "@/modules/mlm/use-cases/auto-block-balance";
 import { updateNetworkVolume } from "@/modules/mlm/use-cases/update-network-volume";
 import { identifyToken, KNOWN_TOKENS } from "@/lib/tokens";
+import { updateUserBlockedBalance } from "@/modules/mlm/helpers/update-blocked-balance";
 
 interface MoralisWebhookPayload {
   confirmed: boolean;
@@ -85,27 +86,9 @@ export async function processMoralisWebhook({
         },
       });
 
-      // 3. Atualiza User.blockedBalance com total disponível (USDC + USDT)
+      // 3. Atualiza User.blockedBalance se for USDC/USDT
       if (existingTx.tokenSymbol === "USDC" || existingTx.tokenSymbol === "USDT") {
-        const balances = await tx.balance.findMany({
-          where: {
-            userId: existingTx.userId,
-            tokenSymbol: { in: ["USDC", "USDT"] },
-          },
-          select: {
-            availableBalance: true,
-          },
-        });
-
-        const totalAvailable = balances.reduce(
-          (sum, balance) => sum.add(balance.availableBalance),
-          new Decimal(0)
-        );
-
-        await tx.user.update({
-          where: { id: existingTx.userId },
-          data: { blockedBalance: totalAvailable },
-        });
+        await updateUserBlockedBalance(existingTx.userId, tx);
       }
 
       return updatedTx;
@@ -293,27 +276,9 @@ export async function processMoralisWebhook({
         },
       });
 
-      // 3. Atualiza User.blockedBalance com total disponível (USDC + USDT)
+      // 3. Atualiza User.blockedBalance se for USDC/USDT
       if (token.symbol === "USDC" || token.symbol === "USDT") {
-        const balances = await tx.balance.findMany({
-          where: {
-            userId: depositAddress.userId,
-            tokenSymbol: { in: ["USDC", "USDT"] },
-          },
-          select: {
-            availableBalance: true,
-          },
-        });
-
-        const totalAvailable = balances.reduce(
-          (sum, balance) => sum.add(balance.availableBalance),
-          new Decimal(0)
-        );
-
-        await tx.user.update({
-          where: { id: depositAddress.userId },
-          data: { blockedBalance: totalAvailable },
-        });
+        await updateUserBlockedBalance(depositAddress.userId, tx);
       }
     }
 

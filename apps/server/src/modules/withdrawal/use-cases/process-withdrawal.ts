@@ -6,6 +6,7 @@ import {
   FailureType,
 } from "@/modules/withdrawal/use-cases/categorize-withdrawal-error";
 import { checkRankAfterBalanceChange } from "@/modules/mlm/use-cases/check-rank-after-balance-change";
+import { updateUserBlockedBalance } from "@/modules/mlm/helpers/update-blocked-balance";
 
 interface ProcessWithdrawalRequest {
   withdrawalId: string;
@@ -167,6 +168,11 @@ export async function processWithdrawal({
         },
       });
 
+      // Atualiza User.blockedBalance se for USDC/USDT
+      if (withdrawal.tokenSymbol === "USDC" || withdrawal.tokenSymbol === "USDT") {
+        await updateUserBlockedBalance(withdrawal.userId, tx);
+      }
+
       // Cria notificação de conclusão
       await tx.withdrawalNotification.create({
         data: {
@@ -257,6 +263,11 @@ export async function processWithdrawal({
             lockedBalance: { decrement: withdrawal.amount },
           },
         });
+
+        // Atualiza User.blockedBalance se for USDC/USDT
+        if (withdrawal.tokenSymbol === "USDC" || withdrawal.tokenSymbol === "USDT") {
+          await updateUserBlockedBalance(withdrawal.userId, tx);
+        }
       }
 
       // Cria notificação adequada ao tipo de erro
