@@ -3,6 +3,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 import { checkAccountActivation } from "@/modules/user/use-cases/check-account-activation";
 import { autoCheckAndPromote } from "@/modules/mlm/use-cases/check-rank-progression";
 import { autoBlockBalance } from "@/modules/mlm/use-cases/auto-block-balance";
+import { updateNetworkVolume } from "@/modules/mlm/use-cases/update-network-volume";
 import { identifyToken, KNOWN_TOKENS } from "@/lib/tokens";
 
 interface MoralisWebhookPayload {
@@ -93,6 +94,18 @@ export async function processMoralisWebhook({
       previousStatus: "PENDING",
       newStatus: "CONFIRMED",
     });
+
+    // Atualiza lifetimeVolume da rede (apenas para USDC/USDT)
+    if (existingTx.tokenSymbol === "USDC" || existingTx.tokenSymbol === "USDT") {
+      try {
+        await updateNetworkVolume({
+          userId: existingTx.userId,
+          amount: existingTx.amount,
+        });
+      } catch (error) {
+        console.error("⚠️  Erro ao atualizar volume da rede:", error);
+      }
+    }
 
     // Verifica ativação de conta após confirmação
     try {
@@ -280,6 +293,18 @@ export async function processMoralisWebhook({
 
   // Só verifica ativação se transação já está confirmada
   if (initialStatus === "CONFIRMED") {
+    // Atualiza lifetimeVolume da rede (apenas para USDC/USDT)
+    if (token.symbol === "USDC" || token.symbol === "USDT") {
+      try {
+        await updateNetworkVolume({
+          userId: depositAddress.userId,
+          amount: amount,
+        });
+      } catch (error) {
+        console.error("⚠️  Erro ao atualizar volume da rede:", error);
+      }
+    }
+
     try {
       const activationResult = await checkAccountActivation({
         userId: depositAddress.userId,
