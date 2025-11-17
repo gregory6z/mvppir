@@ -108,7 +108,7 @@ export async function getUserMLMProfile(
     throw new Error("User not found");
   }
 
-  // Get total deposits (USDC + USDT only) - for blocking slider
+  // Get total deposits (USDC + USDT only)
   const totalDeposits = await prisma.walletTransaction.aggregate({
     where: {
       userId,
@@ -121,8 +121,22 @@ export async function getUserMLMProfile(
     },
   });
 
-  // Total deposited (investimento total do usuário)
-  const totalInvested = totalDeposits._sum.amount || new Decimal(0);
+  // Get total withdrawals (USDC + USDT only)
+  const totalWithdrawals = await prisma.withdrawal.aggregate({
+    where: {
+      userId,
+      status: { in: ["COMPLETED"] }, // Apenas saques completos
+      tokenSymbol: { in: ["USDC", "USDT"] },
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  // Total invested (depósitos - saques)
+  const deposits = totalDeposits._sum.amount || new Decimal(0);
+  const withdrawals = totalWithdrawals._sum.amount || new Decimal(0);
+  const totalInvested = deposits.sub(withdrawals);
 
   // Get network statistics
   const networkStats = await getNetworkStats(userId);
