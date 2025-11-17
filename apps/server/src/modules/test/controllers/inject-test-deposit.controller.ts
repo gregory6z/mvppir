@@ -20,6 +20,8 @@ export async function injectTestDepositController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
+  console.log("🚀🚀🚀 INJECT TEST DEPOSIT CONTROLLER CALLED 🚀🚀🚀", new Date().toISOString())
+
   try {
     const data = injectTestDepositSchema.parse(request.body)
 
