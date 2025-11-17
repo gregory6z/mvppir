@@ -83,12 +83,12 @@ export async function unblockBalance({
       )
     }
 
-    // 3. Calculate new blocked balance
-    const newBlockedBalance = user.blockedBalance.sub(amountDecimal)
-    const newBlockedBalanceNumber = parseFloat(newBlockedBalance.toString())
+    // 3. Calculate expected new blocked balance (for rank calculation)
+    const expectedBlockedBalance = user.blockedBalance.sub(amountDecimal)
+    const expectedBlockedBalanceNumber = parseFloat(expectedBlockedBalance.toString())
 
-    // 4. Calculate new rank based on new blocked balance
-    const newRank = calculateRankFromBlockedBalance(newBlockedBalanceNumber)
+    // 4. Calculate new rank based on expected blocked balance
+    const newRank = calculateRankFromBlockedBalance(expectedBlockedBalanceNumber)
     const rankChanged = newRank !== user.currentRank
 
     // 5. Update Balance: increase availableBalance (or create if doesn't exist)
