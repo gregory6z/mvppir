@@ -68,7 +68,7 @@ export async function injectTestDeposit(
     confirmed: true, // Já confirmado na blockchain
     chainId: "0x89", // Polygon
     txHash: testTxHash,
-    to: depositAddress.polygonAddress,
+    to: depositAddress.polygonAddress.toLowerCase(), // IMPORTANTE: lowercase para match no webhook handler
     from: "0x0000000000000000000000000000000000000000", // Address fake
     value: rawAmount,
     tokenAddress: tokenAddress?.toLowerCase(),
