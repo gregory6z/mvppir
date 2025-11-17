@@ -85,14 +85,18 @@ export async function injectTestDeposit(
     userEmail,
     amount: `${amount} ${tokenSymbol}`,
     txHash: testTxHash,
+    depositAddress: depositAddress.polygonAddress,
+    depositAddressLowercase: depositAddress.polygonAddress.toLowerCase(),
   })
+
+  console.log(`📦 Full webhook payload:`, JSON.stringify(fakeWebhookPayload, null, 2))
 
   // 5. Processar via webhook handler (faz TUDO automaticamente)
   const result = await processMoralisWebhook({
     payload: fakeWebhookPayload,
   })
 
-  console.log(`✅ Test deposit processed successfully:`, result)
+  console.log(`✅ Test deposit processed successfully:`, JSON.stringify(result, null, 2))
 
   return {
     txHash: testTxHash,
