@@ -1,6 +1,16 @@
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { ArrowLeft, Bell, BellSlash, CheckCircle } from "phosphor-react"
+import {
+  ArrowLeft,
+  Bell,
+  BellSlash,
+  CheckCircle,
+  CurrencyCircleDollar,
+  ArrowCircleUp,
+  Trophy,
+  Users,
+  MegaphoneSimple,
+} from "phosphor-react"
 import { useUnreadNotifications } from "@/api/notifications/queries/use-unread-notifications"
 import { useMarkAsRead } from "@/api/notifications/mutations/use-mark-as-read"
 import { useMarkAllAsRead } from "@/api/notifications/mutations/use-mark-all-as-read"
@@ -36,19 +46,21 @@ export function NotificationsScreen() {
   }
 
   const getNotificationIcon = (type: string) => {
+    const iconProps = { size: 24, weight: "duotone" as const }
+
     switch (type) {
       case "deposit":
-        return "💰"
+        return <CurrencyCircleDollar {...iconProps} color="#10b981" />
       case "withdrawal":
-        return "💸"
+        return <ArrowCircleUp {...iconProps} color="#3b82f6" />
       case "commission":
-        return "🎉"
+        return <Trophy {...iconProps} color="#a855f7" />
       case "referral":
-        return "👥"
+        return <Users {...iconProps} color="#f59e0b" />
       case "system":
-        return "📢"
+        return <MegaphoneSimple {...iconProps} color="#71717a" />
       default:
-        return "🔔"
+        return <Bell {...iconProps} color="#8b5cf6" />
     }
   }
 
@@ -212,7 +224,7 @@ export function NotificationsScreen() {
               >
                 <div className="flex items-start gap-4">
                   {/* Icon */}
-                  <div className="w-12 h-12 rounded-xl bg-zinc-900/50 flex items-center justify-center flex-shrink-0 text-2xl">
+                  <div className="w-12 h-12 rounded-xl bg-zinc-900/50 flex items-center justify-center flex-shrink-0">
                     {getNotificationIcon(notification.type)}
                   </div>
 
