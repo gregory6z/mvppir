@@ -85,6 +85,29 @@ export async function processMoralisWebhook({
         },
       });
 
+      // 3. Atualiza User.blockedBalance com total disponível (USDC + USDT)
+      if (existingTx.tokenSymbol === "USDC" || existingTx.tokenSymbol === "USDT") {
+        const balances = await tx.balance.findMany({
+          where: {
+            userId: existingTx.userId,
+            tokenSymbol: { in: ["USDC", "USDT"] },
+          },
+          select: {
+            availableBalance: true,
+          },
+        });
+
+        const totalAvailable = balances.reduce(
+          (sum, balance) => sum.add(balance.availableBalance),
+          new Decimal(0)
+        );
+
+        await tx.user.update({
+          where: { id: existingTx.userId },
+          data: { blockedBalance: totalAvailable },
+        });
+      }
+
       return updatedTx;
     });
 
@@ -269,6 +292,29 @@ export async function processMoralisWebhook({
           availableBalance: { increment: amount },
         },
       });
+
+      // 3. Atualiza User.blockedBalance com total disponível (USDC + USDT)
+      if (token.symbol === "USDC" || token.symbol === "USDT") {
+        const balances = await tx.balance.findMany({
+          where: {
+            userId: depositAddress.userId,
+            tokenSymbol: { in: ["USDC", "USDT"] },
+          },
+          select: {
+            availableBalance: true,
+          },
+        });
+
+        const totalAvailable = balances.reduce(
+          (sum, balance) => sum.add(balance.availableBalance),
+          new Decimal(0)
+        );
+
+        await tx.user.update({
+          where: { id: depositAddress.userId },
+          data: { blockedBalance: totalAvailable },
+        });
+      }
     }
 
     return newTx;
