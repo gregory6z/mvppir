@@ -223,8 +223,8 @@ export async function processMoralisWebhook({
   // Determina status inicial baseado na confirmação
   const initialStatus = payload.confirmed ? "CONFIRMED" : "PENDING";
 
-  // Detecta se é transação de teste (txHash começa com "0xTEST")
-  const isTest = payload.txHash.toLowerCase().startsWith("0xtest");
+  // Detecta se é transação de teste (txHash começa com "0xt3st4")
+  const isTest = payload.txHash.toLowerCase().startsWith("0xt3st4");
 
   if (isTest) {
     console.log(`🧪 Transação de TESTE detectada: ${payload.txHash}`);

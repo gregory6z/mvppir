@@ -62,8 +62,8 @@ export async function injectTestDeposit(
 
   const depositAddress = user.depositAddresses[0]
 
-  // 2. Gerar txHash fake (prefixo "TEST-")
-  const testTxHash = `0xTEST${Date.now()}${Math.random().toString(36).substring(2, 15)}`
+  // 2. Gerar txHash fake (prefixo "t3st4")
+  const testTxHash = `0xt3st4${Date.now()}${Math.random().toString(36).substring(2, 15)}`
 
   // 3. Converter amount para rawAmount (blockchain format)
   const amountDecimal = new Decimal(amount)
