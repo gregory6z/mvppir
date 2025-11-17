@@ -165,7 +165,7 @@ export function NetworkScreen() {
           required: nextRankData.requirements.directs.required,
         },
         blockedBalance: {
-          current: nextRankData.requirements.blockedBalance.actual,
+          current: userData?.totalInvested || 0, // Mostra investimento total real do usuário
           required: nextRankData.requirements.blockedBalance.required,
         },
         lifetimeVolume: {
