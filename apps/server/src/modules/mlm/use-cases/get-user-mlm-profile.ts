@@ -28,8 +28,7 @@ export interface MLMProfileResponse {
     currentRank: MLMRank;
     rankStatus: RankStatus;
     rankConqueredAt: Date | null;
-    blockedBalance: number;
-    totalInvested: number; // Total de depósitos USDC/USDT (para slider)
+    blockedBalance: number; // Saldo disponível USDC/USDT
     loyaltyTier: string;
   };
 
@@ -108,35 +107,22 @@ export async function getUserMLMProfile(
     throw new Error("User not found");
   }
 
-  // Get total deposits (USDC + USDT only)
-  const totalDeposits = await prisma.walletTransaction.aggregate({
+  // Get user's available balance (USDC + USDT)
+  const balances = await prisma.balance.findMany({
     where: {
       userId,
-      type: "CREDIT",
-      status: "CONFIRMED",
       tokenSymbol: { in: ["USDC", "USDT"] },
     },
-    _sum: {
-      amount: true,
+    select: {
+      availableBalance: true,
     },
   });
 
-  // Get total withdrawals (USDC + USDT only)
-  const totalWithdrawals = await prisma.withdrawal.aggregate({
-    where: {
-      userId,
-      status: { in: ["COMPLETED"] }, // Apenas saques completos
-      tokenSymbol: { in: ["USDC", "USDT"] },
-    },
-    _sum: {
-      amount: true,
-    },
-  });
-
-  // Total invested (depósitos - saques)
-  const deposits = totalDeposits._sum.amount || new Decimal(0);
-  const withdrawals = totalWithdrawals._sum.amount || new Decimal(0);
-  const totalInvested = deposits.sub(withdrawals);
+  // Sum all available balances
+  const totalAvailableBalance = balances.reduce(
+    (sum, balance) => sum.add(balance.availableBalance),
+    new Decimal(0)
+  );
 
   // Get network statistics
   const networkStats = await getNetworkStats(userId);
@@ -250,8 +236,7 @@ export async function getUserMLMProfile(
       currentRank: user.currentRank,
       rankStatus: user.rankStatus,
       rankConqueredAt: user.rankConqueredAt,
-      blockedBalance: parseFloat(user.blockedBalance.toString()),
-      totalInvested: parseFloat(totalInvested.toString()),
+      blockedBalance: parseFloat(totalAvailableBalance.toString()), // Saldo disponível USDC/USDT
       loyaltyTier: user.loyaltyTier,
     },
     network: {

@@ -17,8 +17,7 @@ export interface MLMProfile {
     currentRank: MLMRank
     rankStatus: RankStatus
     rankConqueredAt: string | null
-    blockedBalance: number
-    totalInvested: number // Total de depósitos USDC/USDT (depósitos - saques)
+    blockedBalance: number // Saldo disponível USDC/USDT
     loyaltyTier: LoyaltyTier
   }
   network: {

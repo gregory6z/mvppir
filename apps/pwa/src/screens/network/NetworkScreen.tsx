@@ -165,7 +165,7 @@ export function NetworkScreen() {
           required: nextRankData.requirements.directs.required,
         },
         blockedBalance: {
-          current: userData?.totalInvested || 0, // Mostra investimento total real do usuário
+          current: userData?.blockedBalance || 0, // Saldo disponível USDC/USDT
           required: nextRankData.requirements.blockedBalance.required,
         },
         lifetimeVolume: {
