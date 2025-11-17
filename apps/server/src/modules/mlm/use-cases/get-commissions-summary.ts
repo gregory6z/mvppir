@@ -35,12 +35,12 @@ export async function getCommissionsSummary({
   // This month (first day of current month)
   const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
-  // Aggregate commissions for today
+  // Aggregate commissions for today (usa paidAt para pegar comissões pagas hoje)
   const todayCommissions = await prisma.commission.aggregate({
     where: {
       userId,
       status: "PAID",
-      createdAt: {
+      paidAt: {
         gte: today,
       },
     },
@@ -49,12 +49,12 @@ export async function getCommissionsSummary({
     },
   })
 
-  // Aggregate commissions for this month
+  // Aggregate commissions for this month (usa paidAt para pegar comissões pagas este mês)
   const monthCommissions = await prisma.commission.aggregate({
     where: {
       userId,
       status: "PAID",
-      createdAt: {
+      paidAt: {
         gte: thisMonth,
       },
     },
