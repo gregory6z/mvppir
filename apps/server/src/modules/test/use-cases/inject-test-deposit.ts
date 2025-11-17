@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { Decimal } from "@prisma/client/runtime/library"
-import { autoCheckAndPromote } from "@/modules/mlm/use-cases/check-rank-progression"
+import { processMoralisWebhook } from "@/modules/webhook/use-cases/process-moralis-webhook"
 
 interface InjectTestDepositInput {
   userEmail: string
@@ -11,31 +11,34 @@ interface InjectTestDepositInput {
 }
 
 interface InjectTestDepositOutput {
-  transaction: {
-    id: string
-    userId: string
-    tokenSymbol: string
-    amount: string
-    status: string
-    isTest: boolean
-    createdAt: Date
-  }
+  txHash: string
+  userId: string
+  amount: string
+  tokenSymbol: string
+  message: string
 }
 
 /**
- * Injeta um depósito de teste para um usuário
+ * Injeta um depósito de teste para um usuário usando o webhook handler
  *
- * Regras:
- * - Apenas admins podem executar
- * - Cria transação com isTest=true
- * - NÃO afeta balance real (não atualiza tabela Balance)
- * - NÃO conta para ativação de conta
- * - Aparece no histórico mas marcado como teste
+ * Novo fluxo (v2):
+ * - Usa o mesmo webhook handler que depósitos reais
+ * - Cria payload fake do Moralis com confirmed=true
+ * - TUDO é processado automaticamente:
+ *   - Balance atualizado
+ *   - Ativação de conta verificada
+ *   - Rank auto-promovido se elegível
+ *   - Saldo auto-bloqueado para rank
+ *
+ * Benefícios:
+ * - Fluxo 100% idêntico a depósitos reais
+ * - Não duplica código
+ * - Sempre em sincronia com webhook handler
  */
 export async function injectTestDeposit(
   input: InjectTestDepositInput
 ): Promise<InjectTestDepositOutput> {
-  const { userEmail, tokenSymbol, amount, tokenAddress, tokenDecimals = 18 } = input
+  const { userEmail, tokenSymbol, amount, tokenAddress, tokenDecimals = 6 } = input
 
   // 1. Buscar usuário pelo email
   const user = await prisma.user.findUnique({
@@ -54,85 +57,48 @@ export async function injectTestDeposit(
   const depositAddress = user.depositAddresses[0]
 
   // 2. Gerar txHash fake (prefixo "TEST-")
-  const testTxHash = `TEST-${Date.now()}-${Math.random().toString(36).substring(7)}`
+  const testTxHash = `0xTEST${Date.now()}${Math.random().toString(36).substring(2, 15)}`
 
-  // 3. Converter amount para rawAmount
+  // 3. Converter amount para rawAmount (blockchain format)
   const amountDecimal = new Decimal(amount)
   const rawAmount = amountDecimal.mul(new Decimal(10).pow(tokenDecimals)).toString()
 
-  // 4. Criar transação de teste E atualizar balance + lifetimeVolume do usuário
-  const result = await prisma.$transaction(async (tx) => {
-    // 4.1. Criar transação de teste
-    const transaction = await tx.walletTransaction.create({
-      data: {
-        userId: user.id,
-        depositAddressId: depositAddress.id,
-        type: "CREDIT",
-        tokenSymbol,
-        tokenAddress,
-        tokenDecimals,
-        amount: amountDecimal,
-        rawAmount,
-        txHash: testTxHash,
-        status: "CONFIRMED", // Já começa confirmada
-        isTest: true, // 🔑 Flag que marca como teste
-      },
-    })
-
-    // 4.2. Atualizar Balance do usuário (adiciona saldo disponível)
-    await tx.balance.upsert({
-      where: {
-        userId_tokenSymbol: {
-          userId: user.id,
-          tokenSymbol,
-        },
-      },
-      create: {
-        userId: user.id,
-        tokenSymbol,
-        tokenAddress,
-        availableBalance: amountDecimal,
-        lockedBalance: new Decimal(0),
-      },
-      update: {
-        availableBalance: { increment: amountDecimal },
-      },
-    })
-
-    // 4.3. Atualizar lifetimeVolume e blockedBalance (para requisitos de rank)
-    await tx.user.update({
-      where: { id: user.id },
-      data: {
-        lifetimeVolume: { increment: amountDecimal },
-        blockedBalance: { increment: amountDecimal },
-      },
-    })
-
-    return transaction
-  })
-
-  console.log(`✅ Test deposit injected for ${userEmail}:`, {
-    amount: `${amount} ${tokenSymbol}`,
+  // 4. Criar payload fake do Moralis (simula webhook real)
+  const fakeWebhookPayload = {
+    confirmed: true, // Já confirmado na blockchain
+    chainId: "0x89", // Polygon
     txHash: testTxHash,
-    isTest: true,
-    balanceUpdated: true,
-  })
-
-  // 5. Auto-check and promote user if eligible
-  const promoted = await autoCheckAndPromote(user.id)
-  if (promoted) {
-    console.log(`🎖️  User ${userEmail} was automatically promoted to next rank!`)
+    to: depositAddress.polygonAddress,
+    from: "0x0000000000000000000000000000000000000000", // Address fake
+    value: rawAmount,
+    tokenAddress: tokenAddress?.toLowerCase(),
+    tokenName: tokenSymbol,
+    tokenSymbol: tokenSymbol,
+    tokenDecimals: tokenDecimals.toString(),
+    block: {
+      number: "999999999",
+      timestamp: new Date().toISOString(),
+    },
   }
 
+  console.log(`🧪 Injecting test deposit via webhook handler:`, {
+    userEmail,
+    amount: `${amount} ${tokenSymbol}`,
+    txHash: testTxHash,
+  })
+
+  // 5. Processar via webhook handler (faz TUDO automaticamente)
+  const result = await processMoralisWebhook({
+    payload: fakeWebhookPayload,
+  })
+
+  console.log(`✅ Test deposit processed successfully:`, result)
+
   return {
-    transaction: {
-      id: result.id,
-      userId: result.userId,
-      tokenSymbol: result.tokenSymbol,
-      amount: result.amount.toString(),
-      status: result.status,
-      isTest: result.isTest,
-      createdAt: result.createdAt,
-    },
+    txHash: testTxHash,
+    userId: user.id,
+    amount: amount.toString(),
+    tokenSymbol,
+    message: "Test deposit injected via webhook handler (identical to real deposits)",
   }
 }
