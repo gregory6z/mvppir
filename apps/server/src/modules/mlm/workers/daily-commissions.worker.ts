@@ -90,7 +90,8 @@ async function processDailyCommissions(job: Job) {
                 percentage: new Decimal(config.commissions.N0),
                 finalAmount: commissionAmount,
                 referenceDate: new Date(Date.now() - 86400000), // Yesterday
-                status: "PENDING",
+                status: "PAID", // Já começa como PAID pois o saldo será creditado imediatamente
+                paidAt: new Date(),
               },
             });
 
@@ -143,7 +144,8 @@ async function processDailyCommissions(job: Job) {
               percentage: new Decimal(level.rate),
               finalAmount: commissionAmount,
               referenceDate: new Date(Date.now() - 86400000), // Yesterday
-              status: "PENDING",
+              status: "PAID", // Já começa como PAID pois o saldo será creditado imediatamente
+              paidAt: new Date(),
             },
           });
 
@@ -175,21 +177,7 @@ async function processDailyCommissions(job: Job) {
           },
         });
 
-        // Mark commissions as PAID
-        await prisma.commission.updateMany({
-          where: {
-            userId: user.id,
-            status: "PENDING",
-            referenceDate: {
-              gte: new Date(Date.now() - 86400000),
-              lte: new Date(),
-            },
-          },
-          data: {
-            status: "PAID",
-            paidAt: new Date(),
-          },
-        });
+        // Commissions are already created as PAID above, no need to update
 
         // Send push notification about daily commission
         try {
