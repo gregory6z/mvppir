@@ -97,13 +97,16 @@ export async function processMoralisWebhook({
 
     // Atualiza lifetimeVolume da rede (apenas para USDC/USDT)
     if (existingTx.tokenSymbol === "USDC" || existingTx.tokenSymbol === "USDT") {
+      console.log(`📊 Atualizando volume da rede para usuário ${existingTx.userId}, token: ${existingTx.tokenSymbol}, amount: ${existingTx.amount}`);
       try {
         await updateNetworkVolume({
           userId: existingTx.userId,
           amount: existingTx.amount,
         });
       } catch (error) {
-        console.error("⚠️  Erro ao atualizar volume da rede:", error);
+        console.error("❌ ERRO CRÍTICO ao atualizar volume da rede:", error);
+        // Re-throw para não engolir o erro
+        throw error;
       }
     }
 
@@ -295,13 +298,16 @@ export async function processMoralisWebhook({
   if (initialStatus === "CONFIRMED") {
     // Atualiza lifetimeVolume da rede (apenas para USDC/USDT)
     if (token.symbol === "USDC" || token.symbol === "USDT") {
+      console.log(`📊 Atualizando volume da rede para usuário ${depositAddress.userId}, token: ${token.symbol}, amount: ${amount}`);
       try {
         await updateNetworkVolume({
           userId: depositAddress.userId,
           amount: amount,
         });
       } catch (error) {
-        console.error("⚠️  Erro ao atualizar volume da rede:", error);
+        console.error("❌ ERRO CRÍTICO ao atualizar volume da rede:", error);
+        // Re-throw para não engolir o erro
+        throw error;
       }
     }
 
