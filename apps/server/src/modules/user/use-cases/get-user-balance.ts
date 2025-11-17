@@ -93,12 +93,12 @@ export async function getUserBalance({
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  // Soma comissões do mês atual
+  // Soma comissões do mês atual (usa paidAt, que é quando foram creditadas)
   const currentMonthCommissions = await prisma.commission.aggregate({
     where: {
       userId,
       status: "PAID",
-      createdAt: {
+      paidAt: {
         gte: new Date(currentYear, currentMonth, 1), // Primeiro dia do mês
         lt: new Date(currentYear, currentMonth + 1, 1), // Primeiro dia do próximo mês
       },
