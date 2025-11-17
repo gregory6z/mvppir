@@ -65,7 +65,6 @@ export function DailyCommissionDrawer({
       <DrawerContent>
         {/* Header - Gradient Background */}
         <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-6 text-center border-b border-zinc-800">
-          <div className="text-4xl mb-2">💰</div>
           <h2 className="text-white text-2xl font-bold">
             Comissão Diária Recebida!
           </h2>
