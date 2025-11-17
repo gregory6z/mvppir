@@ -207,6 +207,13 @@ export async function processMoralisWebhook({
   // Determina status inicial baseado na confirmação
   const initialStatus = payload.confirmed ? "CONFIRMED" : "PENDING";
 
+  // Detecta se é transação de teste (txHash começa com "0xTEST")
+  const isTest = payload.txHash.toLowerCase().startsWith("0xtest");
+
+  if (isTest) {
+    console.log(`🧪 Transação de TESTE detectada: ${payload.txHash}`);
+  }
+
   // Cria transação (e atualiza saldo se CONFIRMED)
   const transaction = await prisma.$transaction(async (tx) => {
     // 1. Cria transação
@@ -222,6 +229,7 @@ export async function processMoralisWebhook({
         rawAmount,
         txHash: payload.txHash,
         status: initialStatus,
+        isTest, // Marca como teste se txHash começa com "0xTEST"
       },
     });
 
