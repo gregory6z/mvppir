@@ -38,7 +38,13 @@ interface InjectTestDepositOutput {
 export async function injectTestDeposit(
   input: InjectTestDepositInput
 ): Promise<InjectTestDepositOutput> {
-  const { userEmail, tokenSymbol, amount, tokenAddress, tokenDecimals = 6 } = input
+  const {
+    userEmail,
+    tokenSymbol,
+    amount,
+    tokenAddress = "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC on Polygon (default)
+    tokenDecimals = 6
+  } = input
 
   // 1. Buscar usuário pelo email
   const user = await prisma.user.findUnique({
