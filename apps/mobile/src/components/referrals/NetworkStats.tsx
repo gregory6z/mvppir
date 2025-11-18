@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Users, UserCheck, CalendarCheck, TrendUp } from "phosphor-react-native";
+import { Users, UserCheck, CalendarCheck, TrendUp, CaretRight } from "phosphor-react-native";
 import { MonthlyMaintenanceModal } from "./MonthlyMaintenanceModal";
 import type { MLMRank } from "@/api/mlm/schemas/mlm.schema";
 
@@ -49,6 +49,7 @@ export function NetworkStats({
         <Text className="text-orange-400 text-sm font-semibold">
           {t("explainer.maintenance.title")}
         </Text>
+        <CaretRight size={16} color="#f59e0b" weight="bold" />
       </TouchableOpacity>
 
       {/* Summary Cards */}

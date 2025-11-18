@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { View, Text, TouchableOpacity } from "react-native"
 import { useTranslation } from "react-i18next"
-import { Crown, LockKey, Sparkle } from "phosphor-react-native"
+import { Crown, LockKey, Sparkle, CaretRight } from "phosphor-react-native"
 import type { MLMRank, RankStatus } from "@/api/mlm/schemas/mlm.schema"
 import { MLMExplainerModal } from "./MLMExplainerModal"
 
@@ -144,6 +144,7 @@ export function RankCard({
           <Text className="text-violet-400 text-sm font-semibold">
             {t("rankCard.howItWorksButton")}
           </Text>
+          <CaretRight size={16} color="#8b5cf6" weight="bold" />
         </TouchableOpacity>
       </View>
 
