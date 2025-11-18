@@ -1,5 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { ptBR, enUS, es, fr } from "date-fns/locale";
+import type { Locale } from "date-fns";
 
 /**
  * Utility function to merge Tailwind CSS classes
@@ -21,6 +23,20 @@ export function formatCurrency(value: number | string, currency = "USD") {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(numValue);
+}
+
+/**
+ * Get date-fns locale based on i18n language code
+ */
+export function getDateFnsLocale(languageCode: string): Locale {
+  const localeMap: Record<string, Locale> = {
+    pt: ptBR,
+    en: enUS,
+    es: es,
+    fr: fr,
+  };
+
+  return localeMap[languageCode] || ptBR;
 }
 
 /**

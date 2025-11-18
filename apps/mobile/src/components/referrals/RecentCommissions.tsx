@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Star } from "phosphor-react-native";
 import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { getDateFnsLocale } from "@/lib/utils";
 
 type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
 type CommissionStatus = "PENDING" | "PAID" | "CANCELLED";
@@ -39,7 +39,7 @@ export function RecentCommissions({
   maxItems = 10,
   onCommissionPress,
 }: RecentCommissionsProps) {
-  const { t } = useTranslation("referrals.referrals");
+  const { t, i18n } = useTranslation("referrals.referrals");
   const limitedCommissions = commissions.slice(0, maxItems);
 
   const getStatusColor = (status: CommissionStatus) => {
@@ -66,9 +66,10 @@ export function RecentCommissions({
 
   const formatRelativeTime = (dateString: string) => {
     try {
+      const locale = getDateFnsLocale(i18n.language);
       return formatDistanceToNow(new Date(dateString), {
         addSuffix: true,
-        locale: ptBR
+        locale
       });
     } catch {
       return t("recentCommissions.recently");

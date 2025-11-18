@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { ArrowDown, ArrowUp, Star, ArrowRight } from "phosphor-react-native";
 import { formatDistanceToNow } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { getDateFnsLocale } from "@/lib/utils";
 
 type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
 
@@ -36,7 +37,7 @@ export function RecentActivity({
   onTransactionPress,
   isBalanceVisible = true,
 }: RecentActivityProps) {
-  const { t } = useTranslation("home.home");
+  const { t, i18n } = useTranslation("home.home");
   const limitedTransactions = transactions.slice(0, maxItems);
 
   const getStatusColor = (status: Transaction["status"]) => {
@@ -75,9 +76,13 @@ export function RecentActivity({
 
   const formatRelativeTime = (dateString: string) => {
     try {
-      return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+      const locale = getDateFnsLocale(i18n.language);
+      return formatDistanceToNow(new Date(dateString), {
+        addSuffix: true,
+        locale
+      });
     } catch {
-      return "Recently";
+      return t("recentActivity.recently");
     }
   };
 

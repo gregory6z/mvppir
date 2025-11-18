@@ -2,8 +2,8 @@ import { View, Text, FlatList, RefreshControl, ActivityIndicator } from "react-n
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useMemo } from "react";
 import { format, isToday, isYesterday } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
+import { getDateFnsLocale } from "@/lib/utils";
 import { Header } from "@/components/home/Header";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 import { useInfiniteUnifiedTransactions } from "@/api/user/queries/use-infinite-unified-transactions-query";
@@ -56,7 +56,7 @@ export function WalletScreen() {
       } else if (isYesterday(date)) {
         dateLabel = t("dateLabels.yesterday");
       } else {
-        const locale = i18n.language === "pt" ? ptBR : undefined;
+        const locale = getDateFnsLocale(i18n.language);
         dateLabel = format(date, "d 'de' MMMM", { locale });
       }
 
