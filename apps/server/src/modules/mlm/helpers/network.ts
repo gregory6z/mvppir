@@ -14,7 +14,8 @@ export interface NetworkUser {
   email: string;
   currentRank: string;
   status: string;
-  totalBalance: Decimal;
+  totalBalance: Decimal; // Para retrocompatibilidade (agora usa blockedBalance)
+  blockedBalance: Decimal; // Saldo bloqueado/investido (usado para comissões)
   createdAt: Date;
 }
 
@@ -59,6 +60,7 @@ export async function getNetworkLevels(
       email: true,
       currentRank: true,
       status: true,
+      blockedBalance: true,
       createdAt: true,
     },
   });
@@ -66,7 +68,8 @@ export async function getNetworkLevels(
   const N1WithBalances = await Promise.all(
     N1Users.map(async (user) => ({
       ...user,
-      totalBalance: await getUserTotalBalance(user.id),
+      totalBalance: await getUserTotalBalance(user.id), // Retrocompatibilidade
+      blockedBalance: user.blockedBalance, // Usado para comissões
     }))
   );
 
@@ -86,6 +89,7 @@ export async function getNetworkLevels(
             email: true,
             currentRank: true,
             status: true,
+            blockedBalance: true,
             createdAt: true,
           },
         })
@@ -94,7 +98,8 @@ export async function getNetworkLevels(
   const N2WithBalances = await Promise.all(
     N2Users.map(async (user) => ({
       ...user,
-      totalBalance: await getUserTotalBalance(user.id),
+      totalBalance: await getUserTotalBalance(user.id), // Retrocompatibilidade
+      blockedBalance: user.blockedBalance, // Usado para comissões
     }))
   );
 
@@ -114,6 +119,7 @@ export async function getNetworkLevels(
             email: true,
             currentRank: true,
             status: true,
+            blockedBalance: true,
             createdAt: true,
           },
         })
@@ -122,7 +128,8 @@ export async function getNetworkLevels(
   const N3WithBalances = await Promise.all(
     N3Users.map(async (user) => ({
       ...user,
-      totalBalance: await getUserTotalBalance(user.id),
+      totalBalance: await getUserTotalBalance(user.id), // Retrocompatibilidade
+      blockedBalance: user.blockedBalance, // Usado para comissões
     }))
   );
 

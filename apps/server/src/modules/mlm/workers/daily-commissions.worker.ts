@@ -15,6 +15,7 @@ import { getRankRequirements, getMaxCommissionDepth } from "@/modules/mlm/mlm-co
 import { getNetworkLevels } from "@/modules/mlm/helpers/network";
 import { Decimal } from "@prisma/client/runtime/library";
 import { createAndSendNotification } from "@/modules/notifications/use-cases/create-and-send-notification";
+import { updateUserBlockedBalance } from "@/modules/mlm/helpers/update-blocked-balance";
 
 /**
  * Process daily commissions job
@@ -56,27 +57,17 @@ async function processDailyCommissions(job: Job) {
 
       let userTotalCommissions = new Decimal(0);
 
-      // ===== N0: Calculate commission on own balance (comissão principal) =====
+      // ===== N0: Calculate commission on own BLOCKED balance (comissão principal) =====
+      // IMPORTANTE: Usa blockedBalance (investimento) ao invés de availableBalance
+      // para evitar calcular comissão sobre comissões anteriores
       if (config.commissions.N0 > 0) {
-        // Get ALL user's balances (sum all tokens: USDC, USD, USDT, etc.)
-        const userBalances = await prisma.balance.findMany({
-          where: {
-            userId: user.id,
-          },
-          select: {
-            tokenSymbol: true,
-            availableBalance: true,
-          },
+        const userData = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { blockedBalance: true },
         });
 
-        // Sum all available balances (assumes all stablecoins ~= 1:1 USD)
-        let totalAvailableBalance = new Decimal(0);
-        for (const balance of userBalances) {
-          totalAvailableBalance = totalAvailableBalance.add(balance.availableBalance);
-        }
-
-        if (totalAvailableBalance.gt(0)) {
-          const baseAmount = totalAvailableBalance;
+        if (userData && userData.blockedBalance.gt(0)) {
+          const baseAmount = userData.blockedBalance;
           const commissionAmount = baseAmount.mul(config.commissions.N0).div(100);
 
           if (commissionAmount.gt(0)) {
@@ -124,7 +115,9 @@ async function processDailyCommissions(job: Job) {
 
         // Process each person in this level
         for (const networkUser of level.users) {
-          const baseAmount = networkUser.totalBalance;
+          // IMPORTANTE: Usa blockedBalance (investimento) ao invés de totalBalance
+          // para evitar calcular comissão sobre comissões anteriores
+          const baseAmount = networkUser.blockedBalance;
 
           // Skip if user has no balance
           if (baseAmount.lte(0)) continue;
@@ -156,25 +149,31 @@ async function processDailyCommissions(job: Job) {
 
       // Credit commissions to user's balance (USDC)
       if (userTotalCommissions.gt(0)) {
-        await prisma.balance.upsert({
-          where: {
-            userId_tokenSymbol: {
+        // Use transaction to sync Balance + User.blockedBalance atomically
+        await prisma.$transaction(async (tx) => {
+          await tx.balance.upsert({
+            where: {
+              userId_tokenSymbol: {
+                userId: user.id,
+                tokenSymbol: "USDC",
+              },
+            },
+            create: {
               userId: user.id,
               tokenSymbol: "USDC",
+              tokenAddress: null,
+              availableBalance: userTotalCommissions,
+              lockedBalance: 0,
             },
-          },
-          create: {
-            userId: user.id,
-            tokenSymbol: "USDC",
-            tokenAddress: null,
-            availableBalance: userTotalCommissions,
-            lockedBalance: 0,
-          },
-          update: {
-            availableBalance: {
-              increment: userTotalCommissions,
+            update: {
+              availableBalance: {
+                increment: userTotalCommissions,
+              },
             },
-          },
+          });
+
+          // Update User.blockedBalance automatically
+          await updateUserBlockedBalance(user.id, tx);
         });
 
         // Commissions are already created as PAID above, no need to update
