@@ -45,38 +45,21 @@ export async function getUserBalance({
 
   const blockedBalance = user?.blockedBalance || new Decimal(0);
 
-  // Busca comissões pagas que ainda não foram creditadas no Balance
-  // (garantia de que o saldo sempre reflete todas as comissões PAID)
-  const paidCommissions = await prisma.commission.aggregate({
-    where: {
-      userId,
-      status: "PAID",
-    },
-    _sum: {
-      finalAmount: true,
-    },
-  });
-
-  const totalCommissions = paidCommissions._sum.finalAmount || new Decimal(0);
-
   // Converte para formato de resposta
+  // NOTA: Balance.availableBalance já inclui comissões creditadas pelo worker
+  // Não é necessário somar comissões novamente (evita duplicação)
   const balances: TokenBalance[] = userBalances.map((b) => {
     // Apenas USDC tem blockedBalance
     const blocked = b.tokenSymbol === "USDC" ? blockedBalance : new Decimal(0);
 
-    // Adiciona comissões pagas ao availableBalance de USDC
-    const available = b.tokenSymbol === "USDC"
-      ? b.availableBalance.add(totalCommissions)
-      : b.availableBalance;
-
     return {
       tokenSymbol: b.tokenSymbol,
       tokenAddress: b.tokenAddress,
-      available,
+      available: b.availableBalance, // Já inclui comissões creditadas
       locked: b.lockedBalance,
       blocked,
       // Total = available + locked (blocked não soma para evitar duplicação)
-      total: available.add(b.lockedBalance),
+      total: b.availableBalance.add(b.lockedBalance),
     };
   });
 
