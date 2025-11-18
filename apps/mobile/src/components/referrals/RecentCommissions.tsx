@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Star } from "phosphor-react-native";
 import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD";
 type CommissionStatus = "PENDING" | "PAID" | "CANCELLED";
@@ -65,7 +66,10 @@ export function RecentCommissions({
 
   const formatRelativeTime = (dateString: string) => {
     try {
-      return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+      return formatDistanceToNow(new Date(dateString), {
+        addSuffix: true,
+        locale: ptBR
+      });
     } catch {
       return t("recentCommissions.recently");
     }
