@@ -263,11 +263,6 @@ export async function processWithdrawal({
             lockedBalance: { decrement: withdrawal.amount },
           },
         });
-
-        // Atualiza User.blockedBalance se for USDC/USDT
-        if (withdrawal.tokenSymbol === "USDC" || withdrawal.tokenSymbol === "USDT") {
-          await updateUserBlockedBalance(withdrawal.userId, tx);
-        }
       }
 
       // Cria notificação adequada ao tipo de erro

@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { updateUserBlockedBalance } from "@/modules/mlm/helpers/update-blocked-balance";
 
 interface RejectWithdrawalRequest {
   withdrawalId: string;
@@ -61,11 +60,6 @@ export async function rejectWithdrawal({
         lockedBalance: { decrement: withdrawal.amount },
       },
     });
-
-    // Atualiza User.blockedBalance se for USDC/USDT
-    if (withdrawal.tokenSymbol === "USDC" || withdrawal.tokenSymbol === "USDT") {
-      await updateUserBlockedBalance(withdrawal.userId, tx);
-    }
 
     // Cria notificação
     await tx.withdrawalNotification.create({

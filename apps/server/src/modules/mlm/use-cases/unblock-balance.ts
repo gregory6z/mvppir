@@ -16,7 +16,6 @@ import { prisma } from "@/lib/prisma"
 import { Decimal } from "@prisma/client/runtime/library"
 import { MLMRank } from "@prisma/client"
 import { getRankRequirements } from "../mlm-config"
-import { updateUserBlockedBalance } from "../helpers/update-blocked-balance"
 
 interface UnblockBalanceRequest {
   userId: string
@@ -116,8 +115,11 @@ export async function unblockBalance({
       },
     })
 
-    // 6. Update User.blockedBalance automatically based on available USDC + USDT
-    const newBlockedBalance = await updateUserBlockedBalance(userId, tx)
+    // 6. Get current blockedBalance (not changed by unblocking)
+    const userData = await tx.user.findUnique({
+      where: { id: userId },
+      select: { blockedBalance: true },
+    })
 
     // 7. Update rank if needed based on new blocked balance
     const updatedUser = await tx.user.update({
@@ -138,7 +140,7 @@ export async function unblockBalance({
     })
 
     return {
-      blockedBalance: newBlockedBalance,
+      blockedBalance: userData?.blockedBalance || new Decimal(0),
       availableBalance: updatedBalance.availableBalance,
       previousRank: user.currentRank,
       newRank: updatedUser.currentRank,

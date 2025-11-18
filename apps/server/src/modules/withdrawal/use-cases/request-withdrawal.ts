@@ -4,7 +4,6 @@ import { calculateTotalUSD } from "@/providers/price/price.provider";
 import { unblockBalance } from "@/modules/mlm/use-cases/unblock-balance";
 import { MLMRank } from "@prisma/client";
 import { getRankRequirements } from "@/modules/mlm/mlm-config";
-import { updateUserBlockedBalance } from "@/modules/mlm/helpers/update-blocked-balance";
 
 interface RequestWithdrawalRequest {
   userId: string;
@@ -232,11 +231,6 @@ export async function requestWithdrawal({
 
     if (updated.count === 0) {
       throw new Error("INSUFFICIENT_BALANCE"); // Race condition detectada
-    }
-
-    // Atualiza User.blockedBalance se for USDC/USDT
-    if (tokenSymbol === "USDC" || tokenSymbol === "USDT") {
-      await updateUserBlockedBalance(userId, tx);
     }
 
     // Cria withdrawal

@@ -15,7 +15,6 @@ import { getRankRequirements, getMaxCommissionDepth } from "@/modules/mlm/mlm-co
 import { getNetworkLevels } from "@/modules/mlm/helpers/network";
 import { Decimal } from "@prisma/client/runtime/library";
 import { createAndSendNotification } from "@/modules/notifications/use-cases/create-and-send-notification";
-import { updateUserBlockedBalance } from "@/modules/mlm/helpers/update-blocked-balance";
 
 /**
  * Process daily commissions job
@@ -148,32 +147,28 @@ async function processDailyCommissions(job: Job) {
       }
 
       // Credit commissions to user's balance (USDC)
+      // Nota: Comissões não contam como investimento (blockedBalance),
+      // então não precisa atualizar User.blockedBalance
       if (userTotalCommissions.gt(0)) {
-        // Use transaction to sync Balance + User.blockedBalance atomically
-        await prisma.$transaction(async (tx) => {
-          await tx.balance.upsert({
-            where: {
-              userId_tokenSymbol: {
-                userId: user.id,
-                tokenSymbol: "USDC",
-              },
-            },
-            create: {
+        await prisma.balance.upsert({
+          where: {
+            userId_tokenSymbol: {
               userId: user.id,
               tokenSymbol: "USDC",
-              tokenAddress: null,
-              availableBalance: userTotalCommissions,
-              lockedBalance: 0,
             },
-            update: {
-              availableBalance: {
-                increment: userTotalCommissions,
-              },
+          },
+          create: {
+            userId: user.id,
+            tokenSymbol: "USDC",
+            tokenAddress: null,
+            availableBalance: userTotalCommissions,
+            lockedBalance: 0,
+          },
+          update: {
+            availableBalance: {
+              increment: userTotalCommissions,
             },
-          });
-
-          // Update User.blockedBalance automatically
-          await updateUserBlockedBalance(user.id, tx);
+          },
         });
 
         // Commissions are already created as PAID above, no need to update
