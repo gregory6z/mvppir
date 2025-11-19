@@ -64,12 +64,37 @@ export async function injectTestReferrals(
   const createdReferrals: InjectTestReferralsOutput["createdReferrals"] = []
   const timestamp = Date.now()
 
+  // Lista de nomes fictícios brasileiros
+  const firstNames = [
+    "João", "Maria", "Pedro", "Ana", "Carlos", "Juliana", "Rafael", "Fernanda",
+    "Lucas", "Beatriz", "Gabriel", "Camila", "Felipe", "Larissa", "Bruno", "Amanda",
+    "Guilherme", "Carolina", "Rodrigo", "Mariana", "Thiago", "Patricia", "Diego", "Aline",
+    "Matheus", "Isabela", "Daniel", "Jessica", "André", "Renata", "Vinicius", "Leticia",
+    "Leonardo", "Gabriela", "Marcelo", "Tatiana", "Ricardo", "Vanessa", "Henrique", "Bianca",
+    "Gustavo", "Priscila", "Fernando", "Claudia", "Eduardo", "Monica", "Alexandre", "Silvia"
+  ]
+
+  const lastNames = [
+    "Silva", "Santos", "Oliveira", "Souza", "Lima", "Pereira", "Costa", "Rodrigues",
+    "Almeida", "Nascimento", "Carvalho", "Ferreira", "Gomes", "Martins", "Rocha", "Ribeiro",
+    "Barbosa", "Araujo", "Cardoso", "Dias", "Cavalcanti", "Monteiro", "Mendes", "Vieira",
+    "Campos", "Moreira", "Freitas", "Pinto", "Nunes", "Correia", "Azevedo", "Teixeira"
+  ]
+
   // 2. Criar diretos fake
   for (let i = 0; i < count; i++) {
-    const fakeEmail = `test-referral-${timestamp}-${i}@test.com`
-    const fakeName = `Test Referral ${i + 1}`
+    // Gerar nome e email realistas
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
+    const fakeName = `${firstName} ${lastName}`
 
-    console.log(`📝 Creating referral ${i + 1}/${count}: ${fakeEmail}`)
+    // Email baseado no nome (normalizado)
+    const emailName = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+    const fakeEmail = `${emailName}.${timestamp}.${i}@fake.com`
+
+    console.log(`📝 Creating referral ${i + 1}/${count}: ${fakeName} (${fakeEmail})`)
 
     // Criar usuário com referrerId
     const newUser = await prisma.user.create({
