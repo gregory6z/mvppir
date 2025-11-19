@@ -6,6 +6,7 @@ const injectTestReferralsSchema = z.object({
   referrerEmail: z.string().email(),
   count: z.number().int().min(1).max(100),
   depositAmount: z.number().positive().optional(),
+  locale: z.enum(["pt_BR", "en", "es", "fr", "de", "it"]).optional(),
 })
 
 /**
@@ -13,10 +14,13 @@ const injectTestReferralsSchema = z.object({
  *
  * Injeta diretos de teste (N1) para um usuário
  * Cada direto é criado com:
- * - Email fake (test-referral-{timestamp}-{index}@test.com)
+ * - Nome realista gerado por faker (locale configurável)
+ * - Email fake gerado por faker
  * - Status ACTIVE
  * - Depósito inicial (default 100 USDC)
  * - Deposit address gerado
+ *
+ * Locales disponíveis: pt_BR (padrão), en, es, fr, de, it
  *
  * Isso permite testar sistema de ranks e comissões MLM
  */

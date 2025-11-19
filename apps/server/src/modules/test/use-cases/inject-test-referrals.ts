@@ -1,11 +1,19 @@
 import { prisma } from "@/lib/prisma"
 import { injectTestDeposit } from "./inject-test-deposit"
-import { faker } from "@faker-js/faker/locale/pt_BR"
+import { faker as fakerPtBr } from "@faker-js/faker/locale/pt_BR"
+import { faker as fakerEn } from "@faker-js/faker/locale/en"
+import { faker as fakerEs } from "@faker-js/faker/locale/es"
+import { faker as fakerFr } from "@faker-js/faker/locale/fr"
+import { faker as fakerDe } from "@faker-js/faker/locale/de"
+import { faker as fakerIt } from "@faker-js/faker/locale/it"
+
+type SupportedLocale = "pt_BR" | "en" | "es" | "fr" | "de" | "it"
 
 interface InjectTestReferralsInput {
   referrerEmail: string
   count: number // Quantidade de diretos a criar
   depositAmount?: number // Depósito inicial para cada direto (default: 100 USD)
+  locale?: SupportedLocale // Locale para geração de nomes (default: pt_BR)
 }
 
 interface InjectTestReferralsOutput {
@@ -40,7 +48,19 @@ interface InjectTestReferralsOutput {
 export async function injectTestReferrals(
   input: InjectTestReferralsInput
 ): Promise<InjectTestReferralsOutput> {
-  const { referrerEmail, count, depositAmount = 100 } = input
+  const { referrerEmail, count, depositAmount = 100, locale = "pt_BR" } = input
+
+  // Selecionar faker baseado no locale
+  const fakerMap = {
+    pt_BR: fakerPtBr,
+    en: fakerEn,
+    es: fakerEs,
+    fr: fakerFr,
+    de: fakerDe,
+    it: fakerIt,
+  }
+
+  const faker = fakerMap[locale]
 
   // Validação
   if (count <= 0 || count > 100) {
@@ -60,13 +80,13 @@ export async function injectTestReferrals(
     throw new Error(`Referrer with email ${referrerEmail} not found`)
   }
 
-  console.log(`🧪 Creating ${count} test referrals for ${referrerEmail}`)
+  console.log(`🧪 Creating ${count} test referrals for ${referrerEmail} (locale: ${locale})`)
 
   const createdReferrals: InjectTestReferralsOutput["createdReferrals"] = []
 
   // 2. Criar diretos fake
   for (let i = 0; i < count; i++) {
-    // Gerar nome brasileiro realista usando faker pt_BR
+    // Gerar nome realista usando faker com locale selecionado
     const fakeName = faker.person.fullName()
     const fakeEmail = faker.internet.email()
 
