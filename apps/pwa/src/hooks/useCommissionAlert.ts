@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useUnreadNotifications } from "@/api/notifications/queries/use-unread-notifications"
+import type { Notification } from "@/api/notifications/client"
 import type { MLMRank } from "@/types/mlm"
 
 interface CommissionData {
@@ -38,14 +39,14 @@ export function useCommissionAlert() {
 
     // Filter for DAILY_COMMISSION notifications
     const commissionNotifications = notifications.notifications.filter(
-      (n) => n.type === "DAILY_COMMISSION"
+      (n: Notification) => n.type === "DAILY_COMMISSION"
     )
 
     if (commissionNotifications.length === 0) return
 
     // Find the most recent commission that hasn't been shown yet
     const newCommission = commissionNotifications.find(
-      (n) => !shownIdsRef.current.has(n.id)
+      (n: Notification) => !shownIdsRef.current.has(n.id)
     )
 
     if (!newCommission || !newCommission.data) return
