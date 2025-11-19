@@ -28,6 +28,7 @@ function calculateNewRank(balance: number): MLMRank {
 
 export function WithdrawScreen({ onBack }: WithdrawScreenProps) {
   const { t } = useTranslation("withdraw.withdraw");
+  const { t: tAccessibility } = useTranslation("common.accessibility");
   const { data: userAccount, isLoading: isLoadingAccount } = useUserAccount();
   const { data: balanceData, isLoading: isLoadingBalance } = useUserBalance();
   const { data: mlmProfile, isLoading: isLoadingMLM } = useMLMProfile();
@@ -179,7 +180,7 @@ export function WithdrawScreen({ onBack }: WithdrawScreenProps) {
         <TouchableOpacity
           onPress={handlePreviousStep}
           className="mr-3 w-11 h-11 items-center justify-center rounded-xl bg-zinc-900 active:bg-zinc-800"
-          accessibilityLabel="Go back"
+          accessibilityLabel={tAccessibility("navigation.goBack")}
           accessibilityRole="button"
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
@@ -342,7 +343,7 @@ export function WithdrawScreen({ onBack }: WithdrawScreenProps) {
                   <TouchableOpacity
                     onPress={handlePasteAddress}
                     className="px-4 py-3 active:opacity-70"
-                    accessibilityLabel="Paste address"
+                    accessibilityLabel={tAccessibility("actions.pasteAddress")}
                     accessibilityRole="button"
                   >
                     <ClipboardText size={20} color="#8b5cf6" weight="duotone" />
@@ -431,7 +432,7 @@ export function WithdrawScreen({ onBack }: WithdrawScreenProps) {
             <TouchableOpacity
               onPress={handleSuccessClose}
               className="bg-purple-500 rounded-xl py-3.5 active:bg-purple-600"
-              accessibilityLabel="Close success modal"
+              accessibilityLabel={tAccessibility("actions.closeModal")}
               accessibilityRole="button"
             >
               <Text className="text-white font-bold text-sm text-center">

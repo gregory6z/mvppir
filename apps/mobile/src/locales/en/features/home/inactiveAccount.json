@@ -1,0 +1,41 @@
+{
+  "defaultUserName": "User",
+  "logout": {
+    "title": "Logout",
+    "message": "Do you want to logout from your account?",
+    "cancel": "Cancel",
+    "confirm": "Logout"
+  },
+  "status": {
+    "inactive": "Inactive Account"
+  },
+  "hero": {
+    "title": "Activate your account",
+    "subtitle": "Deposit ${{threshold}} USD to unlock all features",
+    "description": "Profit from AI investments and earn up to 2.60% per day + network commissions"
+  },
+  "progress": {
+    "title": "Activation Progress",
+    "remaining": "${{remaining}} remaining to activate your account",
+    "activated": "Account activated! Reloading..."
+  },
+  "depositButton": "Make Deposit",
+  "benefits": {
+    "title": "What you gain by activating:",
+    "benefit1": {
+      "title": "AI Generating Profits 24/7",
+      "description": "Artificial Intelligence working for you while you sleep"
+    },
+    "benefit2": {
+      "title": "3-Level Commissions",
+      "description": "Earn on network profits up to 3 generations of referrals"
+    },
+    "benefit3": {
+      "title": "Fast Withdrawals",
+      "description": "Withdraw AI profits and commissions whenever you want"
+    }
+  },
+  "footer": {
+    "info": "After your first $100 deposit, your account will be automatically activated and you'll start earning commissions"
+  }
+}

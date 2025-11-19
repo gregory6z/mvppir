@@ -1,0 +1,27 @@
+{
+  "balance": {
+    "hideBalance": "Ocultar saldo",
+    "showBalance": "Mostrar saldo",
+    "toggleBalanceHint": "Toque duas vezes para alternar visibilidade do saldo"
+  },
+  "header": {
+    "profile": "Perfil",
+    "profileHint": "Toque para abrir configurações do perfil",
+    "notifications": "Notificações",
+    "notificationsHint": "Toque para ver notificações"
+  },
+  "transactions": {
+    "viewAll": "Ver todas as transações",
+    "transactionItem": "Transação de {{type}}, {{amount}}"
+  },
+  "navigation": {
+    "goBack": "Voltar"
+  },
+  "actions": {
+    "copyAddress": "Copiar endereço",
+    "pasteAddress": "Colar endereço",
+    "closeModal": "Fechar modal",
+    "selectLanguage": "Selecionar {{language}}",
+    "logout": "Sair"
+  }
+}

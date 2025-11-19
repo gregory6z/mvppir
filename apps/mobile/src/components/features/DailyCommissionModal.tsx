@@ -6,6 +6,9 @@
  */
 
 import { View, Text, Modal, Pressable, ScrollView } from "react-native";
+import { useTranslation } from "react-i18next";
+import { format } from "date-fns";
+import { getDateFnsLocale } from "@/lib/utils";
 
 interface CommissionBreakdown {
   level: number; // 0, 1, 2, 3
@@ -25,25 +28,11 @@ interface DailyCommissionModalProps {
   date: string; // ISO date string
 }
 
-const RANK_LABELS: Record<string, string> = {
-  RECRUIT: "Recruta",
-  BRONZE: "Bronze",
-  SILVER: "Prata",
-  GOLD: "Ouro",
-};
-
 const RANK_COLORS: Record<string, string> = {
   RECRUIT: "text-zinc-400",
   BRONZE: "text-orange-500",
   SILVER: "text-gray-300",
   GOLD: "text-yellow-400",
-};
-
-const LEVEL_LABELS: Record<number, string> = {
-  0: "Comissão Principal (N0)",
-  1: "Diretos (N1)",
-  2: "Nível 2 (N2)",
-  3: "Nível 3 (N3)",
 };
 
 export function DailyCommissionModal({
@@ -55,11 +44,18 @@ export function DailyCommissionModal({
   breakdown = [],
   date,
 }: DailyCommissionModalProps) {
-  const formattedDate = new Date(date).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+  const { t, i18n } = useTranslation("home.dailyCommissionModal");
+
+  const locale = getDateFnsLocale(i18n.language);
+  const formattedDate = format(new Date(date), "d 'de' MMMM, yyyy", { locale });
+
+  const getRankLabel = (rankKey: string) => {
+    return t(`ranks.${rankKey.toLowerCase()}`);
+  };
+
+  const getLevelLabel = (level: number) => {
+    return t(`levels.level${level}`);
+  };
 
   return (
     <Modal
@@ -75,21 +71,21 @@ export function DailyCommissionModal({
           <View className="bg-gradient-to-br from-blue-600 to-purple-600 p-6 items-center">
             <Text className="text-4xl mb-2">💰</Text>
             <Text className="text-white text-2xl font-bold text-center">
-              Comissão Diária Recebida!
+              {t("title")}
             </Text>
             <Text className="text-white/80 text-sm mt-1">{formattedDate}</Text>
           </View>
 
           {/* Total Amount */}
           <View className="p-6 items-center border-b border-zinc-800">
-            <Text className="text-zinc-400 text-sm mb-1">Você recebeu</Text>
+            <Text className="text-zinc-400 text-sm mb-1">{t("youReceived")}</Text>
             <Text className="text-white text-4xl font-bold">
               {totalAmount.toFixed(2)} <Text className="text-2xl">{tokenSymbol}</Text>
             </Text>
             <View className="flex-row items-center gap-2 mt-3">
               <View className="h-1.5 w-1.5 rounded-full bg-blue-500" />
               <Text className={`text-sm font-semibold ${RANK_COLORS[rank]}`}>
-                Rank: {RANK_LABELS[rank]}
+                {t("rank")}: {getRankLabel(rank)}
               </Text>
             </View>
           </View>
@@ -98,7 +94,7 @@ export function DailyCommissionModal({
           {breakdown.length > 0 && (
             <ScrollView className="max-h-64 px-6 py-4">
               <Text className="text-zinc-400 text-xs font-semibold uppercase mb-3">
-                Detalhamento por Nível
+                {t("breakdown")}
               </Text>
 
               {breakdown.map((item) => (
@@ -108,10 +104,10 @@ export function DailyCommissionModal({
                 >
                   <View className="flex-1">
                     <Text className="text-white text-sm font-medium">
-                      {LEVEL_LABELS[item.level]}
+                      {getLevelLabel(item.level)}
                     </Text>
                     <Text className="text-zinc-500 text-xs mt-0.5">
-                      {item.percentage}% · {item.count} {item.count === 1 ? "pessoa" : "pessoas"}
+                      {item.percentage}% · {item.count} {t("people", { count: item.count })}
                     </Text>
                   </View>
                   <Text className="text-green-500 text-sm font-bold">
@@ -128,11 +124,11 @@ export function DailyCommissionModal({
               onPress={onClose}
               className="bg-blue-600 active:bg-blue-700 rounded-xl py-4 items-center"
             >
-              <Text className="text-white text-base font-semibold">Entendi</Text>
+              <Text className="text-white text-base font-semibold">{t("close")}</Text>
             </Pressable>
 
             <Text className="text-zinc-500 text-xs text-center mt-4">
-              As comissões já foram creditadas no seu saldo disponível
+              {t("credited")}
             </Text>
           </View>
         </View>

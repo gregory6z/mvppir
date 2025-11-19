@@ -1,0 +1,22 @@
+{
+  "title": "Daily Commission Received!",
+  "youReceived": "You received",
+  "rank": "Rank",
+  "breakdown": "Breakdown by Level",
+  "close": "Got it",
+  "credited": "Commissions have already been credited to your available balance",
+  "people_one": "person",
+  "people_other": "people",
+  "ranks": {
+    "recruit": "Recruit",
+    "bronze": "Bronze",
+    "silver": "Silver",
+    "gold": "Gold"
+  },
+  "levels": {
+    "level0": "Main Commission (N0)",
+    "level1": "Directs (N1)",
+    "level2": "Level 2 (N2)",
+    "level3": "Level 3 (N3)"
+  }
+}

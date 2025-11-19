@@ -14,6 +14,7 @@ interface DepositScreenProps {
 
 export function DepositScreen({ onBack }: DepositScreenProps) {
   const { t } = useTranslation("deposit.deposit");
+  const { t: tAccessibility } = useTranslation("common.accessibility");
   const { data: userAccount } = useUserAccount();
   const { data: depositAddress, isLoading, error } = useDepositAddress();
   const [copied, setCopied] = useState(false);
@@ -45,7 +46,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
           <TouchableOpacity
             onPress={onBack}
             className="mr-3 w-10 h-10 items-center justify-center rounded-xl bg-zinc-900"
-            accessibilityLabel="Go back"
+            accessibilityLabel={tAccessibility("navigation.goBack")}
             accessibilityRole="button"
           >
             <ArrowLeft size={20} color="#ffffff" weight="bold" />
@@ -77,7 +78,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
           <TouchableOpacity
             onPress={onBack}
             className="mr-3 w-10 h-10 items-center justify-center rounded-xl bg-zinc-900"
-            accessibilityLabel="Go back"
+            accessibilityLabel={tAccessibility("navigation.goBack")}
             accessibilityRole="button"
           >
             <ArrowLeft size={20} color="#ffffff" weight="bold" />
@@ -170,7 +171,7 @@ export function DepositScreen({ onBack }: DepositScreenProps) {
             className={`flex-row items-center justify-center py-3 rounded-xl ${
               copied ? "bg-green-500" : "bg-violet-500"
             }`}
-            accessibilityLabel="Copy address"
+            accessibilityLabel={tAccessibility("actions.copyAddress")}
             accessibilityRole="button"
           >
             {copied ? (

@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Lock, Wallet, TrendUp, Users, ArrowRight } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { useUserStatus } from "@/api/user/queries/use-user-status-query";
 import { useUserAccount } from "@/api/user/queries/use-user-account-query";
 import { Header } from "@/components/home/Header";
@@ -11,6 +12,7 @@ interface InactiveAccountScreenProps {
 }
 
 export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountScreenProps) {
+  const { t } = useTranslation("home.inactiveAccount");
   const { data: status, isLoading: isLoadingStatus } = useUserStatus();
   const { data: userAccount, isLoading: isLoadingAccount } = useUserAccount();
   const { clearAuth } = useAuthStore();
@@ -22,15 +24,15 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
 
   const handleAvatarPress = () => {
     Alert.alert(
-      "Logout",
-      "Do you want to logout from your account?",
+      t("logout.title"),
+      t("logout.message"),
       [
         {
-          text: "Cancel",
+          text: t("logout.cancel"),
           style: "cancel",
         },
         {
-          text: "Logout",
+          text: t("logout.confirm"),
           style: "destructive",
           onPress: () => {
             clearAuth();
@@ -58,7 +60,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
     <SafeAreaView className="flex-1 bg-zinc-950" edges={["bottom", "left", "right"]}>
       {/* Header */}
       <Header
-        userName={userAccount?.name || "User"}
+        userName={userAccount?.name || t("defaultUserName")}
         avatarUrl={undefined}
         notificationCount={0}
         onAvatarPress={handleAvatarPress}
@@ -74,7 +76,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
           <View className="bg-yellow-500/10 border border-yellow-500/30 rounded-full px-6 py-2 flex-row items-center gap-2">
             <Lock size={16} color="#eab308" weight="fill" />
             <Text className="text-yellow-500 font-semibold text-sm">
-              Conta Inativa
+              {t("status.inactive")}
             </Text>
           </View>
         </View>
@@ -86,15 +88,15 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
           </View>
 
           <Text className="text-white text-3xl font-bold text-center mb-4">
-            Ative sua conta
+            {t("hero.title")}
           </Text>
 
           <Text className="text-zinc-400 text-center text-base leading-6 mb-3">
-            Deposite <Text className="text-white font-bold">${threshold.toFixed(0)} USD</Text> para desbloquear todos os recursos
+            {t("hero.subtitle", { threshold: threshold.toFixed(0) })}
           </Text>
 
           <Text className="text-violet-400 text-center text-sm font-medium">
-            Lucre com investimentos em IA e ganhe até 2.60% ao dia + comissões da rede
+            {t("hero.description")}
           </Text>
         </View>
 
@@ -102,7 +104,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
         <View className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-6">
           <View className="flex-row items-center justify-between mb-4">
             <Text className="text-white font-semibold text-base">
-              Progresso de Ativação
+              {t("progress.title")}
             </Text>
             <Text className="text-violet-500 font-bold text-lg">
               ${totalDeposits.toFixed(2)} / ${threshold.toFixed(0)}
@@ -119,8 +121,8 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
 
           <Text className="text-zinc-500 text-xs text-center">
             {remaining > 0
-              ? `Faltam $${remaining.toFixed(2)} para ativar sua conta`
-              : "Conta ativada! Recarregando..."}
+              ? t("progress.remaining", { remaining: remaining.toFixed(2) })
+              : t("progress.activated")}
           </Text>
         </View>
 
@@ -131,7 +133,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
         >
           <Wallet size={24} color="#ffffff" weight="fill" />
           <Text className="text-white font-bold text-lg">
-            Fazer Depósito
+            {t("depositButton")}
           </Text>
           <ArrowRight size={24} color="#ffffff" weight="bold" />
         </TouchableOpacity>
@@ -139,7 +141,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
         {/* Benefits */}
         <View className="gap-4 mb-8">
           <Text className="text-white font-bold text-lg mb-2">
-            O que você ganha ao ativar:
+            {t("benefits.title")}
           </Text>
 
           {/* Benefit 1 */}
@@ -149,10 +151,10 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
             </View>
             <View className="flex-1">
               <Text className="text-white font-semibold text-base mb-1">
-                IA Gerando Lucros 24/7
+                {t("benefits.benefit1.title")}
               </Text>
               <Text className="text-zinc-400 text-sm">
-                Inteligência Artificial trabalhando para você enquanto você dorme
+                {t("benefits.benefit1.description")}
               </Text>
             </View>
           </View>
@@ -164,10 +166,10 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
             </View>
             <View className="flex-1">
               <Text className="text-white font-semibold text-base mb-1">
-                Comissões em 3 Níveis
+                {t("benefits.benefit2.title")}
               </Text>
               <Text className="text-zinc-400 text-sm">
-                Ganhe sobre lucros da rede em até 3 gerações de indicados
+                {t("benefits.benefit2.description")}
               </Text>
             </View>
           </View>
@@ -179,10 +181,10 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
             </View>
             <View className="flex-1">
               <Text className="text-white font-semibold text-base mb-1">
-                Saques Rápidos
+                {t("benefits.benefit3.title")}
               </Text>
               <Text className="text-zinc-400 text-sm">
-                Retire lucros da IA e comissões quando quiser
+                {t("benefits.benefit3.description")}
               </Text>
             </View>
           </View>
@@ -191,7 +193,7 @@ export function InactiveAccountScreen({ onNavigateToDeposit }: InactiveAccountSc
         {/* Info Footer */}
         <View className="mt-8 bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4">
           <Text className="text-blue-400 text-sm text-center">
-            Após seu primeiro depósito de $100, sua conta será ativada automaticamente e você começará a ganhar comissões
+            {t("footer.info")}
           </Text>
         </View>
       </ScrollView>

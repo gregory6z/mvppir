@@ -1,0 +1,41 @@
+{
+  "defaultUserName": "Usuario",
+  "logout": {
+    "title": "Cerrar sesión",
+    "message": "¿Deseas cerrar sesión de tu cuenta?",
+    "cancel": "Cancelar",
+    "confirm": "Cerrar sesión"
+  },
+  "status": {
+    "inactive": "Cuenta Inactiva"
+  },
+  "hero": {
+    "title": "Activa tu cuenta",
+    "subtitle": "Deposita ${{threshold}} USD para desbloquear todas las funciones",
+    "description": "Gana con inversiones en IA y obtén hasta 2.60% diario + comisiones de red"
+  },
+  "progress": {
+    "title": "Progreso de Activación",
+    "remaining": "Faltan ${{remaining}} para activar tu cuenta",
+    "activated": "¡Cuenta activada! Recargando..."
+  },
+  "depositButton": "Hacer Depósito",
+  "benefits": {
+    "title": "Lo que ganas al activar:",
+    "benefit1": {
+      "title": "IA Generando Ganancias 24/7",
+      "description": "Inteligencia Artificial trabajando para ti mientras duermes"
+    },
+    "benefit2": {
+      "title": "Comisiones en 3 Niveles",
+      "description": "Gana sobre beneficios de red hasta 3 generaciones de referidos"
+    },
+    "benefit3": {
+      "title": "Retiros Rápidos",
+      "description": "Retira ganancias de IA y comisiones cuando quieras"
+    }
+  },
+  "footer": {
+    "info": "Después de tu primer depósito de $100, tu cuenta se activará automáticamente y comenzarás a ganar comisiones"
+  }
+}

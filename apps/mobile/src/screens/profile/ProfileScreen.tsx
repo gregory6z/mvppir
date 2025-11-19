@@ -15,6 +15,7 @@ const LANGUAGES = [
 
 export function ProfileScreen() {
   const { t, i18n } = useTranslation("profile.profile");
+  const { t: tAccessibility } = useTranslation("common.accessibility");
   const { data: userAccount } = useUserAccount();
   const { clearAuth } = useAuthStore();
 
@@ -145,7 +146,7 @@ export function ProfileScreen() {
                 className={`flex-row items-center justify-between py-3.5 px-4 rounded-xl ${
                   currentLanguage === language.code ? "bg-violet-500/20 border border-violet-500/50" : "bg-zinc-800"
                 } ${index !== LANGUAGES.length - 1 ? "mb-3" : ""}`}
-                accessibilityLabel={`Select ${language.name}`}
+                accessibilityLabel={tAccessibility("actions.selectLanguage", { language: language.name })}
                 accessibilityRole="button"
               >
                 <View className="flex-row items-center">
@@ -171,7 +172,7 @@ export function ProfileScreen() {
           <TouchableOpacity
             onPress={handleLogout}
             className="flex-row items-center justify-center py-4 rounded-xl bg-red-500/10 border border-red-500/30 active:bg-red-500/20"
-            accessibilityLabel="Logout"
+            accessibilityLabel={tAccessibility("actions.logout")}
             accessibilityRole="button"
           >
             <SignOut size={24} color="#ef4444" weight="bold" />

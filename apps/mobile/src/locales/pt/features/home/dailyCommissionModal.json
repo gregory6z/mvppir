@@ -1,0 +1,22 @@
+{
+  "title": "Comissão Diária Recebida!",
+  "youReceived": "Você recebeu",
+  "rank": "Rank",
+  "breakdown": "Detalhamento por Nível",
+  "close": "Entendi",
+  "credited": "As comissões já foram creditadas no seu saldo disponível",
+  "people_one": "pessoa",
+  "people_other": "pessoas",
+  "ranks": {
+    "recruit": "Recruta",
+    "bronze": "Bronze",
+    "silver": "Prata",
+    "gold": "Ouro"
+  },
+  "levels": {
+    "level0": "Comissão Principal (N0)",
+    "level1": "Diretos (N1)",
+    "level2": "Nível 2 (N2)",
+    "level3": "Nível 3 (N3)"
+  }
+}

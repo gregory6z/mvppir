@@ -19,6 +19,7 @@ export function BalanceCard({
   onToggleVisibility,
 }: BalanceCardProps) {
   const { t } = useTranslation("home.home");
+  const { t: tAccessibility } = useTranslation("common.accessibility");
 
   const formatBalance = (value: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -52,9 +53,9 @@ export function BalanceCard({
           onPress={handleToggleVisibility}
           className="w-11 h-11 items-center justify-center -mr-2"
           accessibilityLabel={
-            isBalanceVisible ? "Hide balance" : "Show balance"
+            isBalanceVisible ? tAccessibility("balance.hideBalance") : tAccessibility("balance.showBalance")
           }
-          accessibilityHint="Double tap to toggle balance visibility"
+          accessibilityHint={tAccessibility("balance.toggleBalanceHint")}
         >
           {isBalanceVisible ? (
             <Eye size={22} color="#a1a1aa" weight="regular" />

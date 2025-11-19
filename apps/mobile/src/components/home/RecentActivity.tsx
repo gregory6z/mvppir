@@ -38,6 +38,7 @@ export function RecentActivity({
   isBalanceVisible = true,
 }: RecentActivityProps) {
   const { t, i18n } = useTranslation("home.home");
+  const { t: tAccessibility } = useTranslation("common.accessibility");
   const limitedTransactions = transactions.slice(0, maxItems);
 
   const getStatusColor = (status: Transaction["status"]) => {
@@ -153,7 +154,10 @@ export function RecentActivity({
         onPress={() => onTransactionPress?.(item.id)}
         className="bg-zinc-900 p-3.5 rounded-2xl border border-zinc-800 mb-3 active:bg-zinc-800 active:scale-[0.99]"
         style={{ minHeight: 64 }}
-        accessibilityLabel={`${item.type} transaction, ${formatAmount(item.amount, item.type)}`}
+        accessibilityLabel={tAccessibility("transactions.transactionItem", {
+          type: item.type,
+          amount: formatAmount(item.amount, item.type)
+        })}
         accessibilityRole="button"
       >
         <View className="flex-row items-center gap-3">
@@ -249,7 +253,7 @@ export function RecentActivity({
         <TouchableOpacity
           onPress={onViewAll}
           className="flex-row items-center gap-1"
-          accessibilityLabel="View all transactions"
+          accessibilityLabel={tAccessibility("transactions.viewAll")}
           accessibilityRole="button"
         >
           <Text className="text-violet-500 text-sm font-medium">

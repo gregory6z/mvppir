@@ -40,10 +40,20 @@ export function getDateFnsLocale(languageCode: string): Locale {
 }
 
 /**
- * Format date values
+ * Format date values with i18n support
+ * Uses the user's current language from i18n
  */
-export function formatDate(date: string | Date) {
-  return new Intl.DateTimeFormat("pt-BR", {
+export function formatDate(date: string | Date, languageCode = "pt") {
+  const localeMap: Record<string, string> = {
+    pt: "pt-BR",
+    en: "en-US",
+    es: "es-ES",
+    fr: "fr-FR",
+  };
+
+  const locale = localeMap[languageCode] || "pt-BR";
+
+  return new Intl.DateTimeFormat(locale, {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

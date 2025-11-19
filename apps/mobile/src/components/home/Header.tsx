@@ -19,6 +19,7 @@ export function Header({
 }: HeaderProps) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("common.greetings");
+  const { t: tAccessibility } = useTranslation("common.accessibility");
 
   // Get time-based greeting
   const getGreeting = () => {
@@ -47,8 +48,8 @@ export function Header({
         <TouchableOpacity
           onPress={onAvatarPress}
           className="flex-row items-center gap-3"
-          accessibilityLabel="Profile"
-          accessibilityHint="Tap to open profile settings"
+          accessibilityLabel={tAccessibility("header.profile")}
+          accessibilityHint={tAccessibility("header.profileHint")}
         >
           {/* Avatar Circle with Initials */}
           <View className="w-12 h-12 rounded-full bg-violet-500 items-center justify-center">
@@ -72,8 +73,8 @@ export function Header({
         <TouchableOpacity
           onPress={onNotificationPress}
           className="relative"
-          accessibilityLabel="Notifications"
-          accessibilityHint="Tap to view notifications"
+          accessibilityLabel={tAccessibility("header.notifications")}
+          accessibilityHint={tAccessibility("header.notificationsHint")}
         >
           <Bell size={28} color="#ffffff" weight="regular" />
           {notificationCount > 0 && (

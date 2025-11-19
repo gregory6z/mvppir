@@ -1,0 +1,41 @@
+{
+  "defaultUserName": "Utilisateur",
+  "logout": {
+    "title": "Déconnexion",
+    "message": "Voulez-vous vous déconnecter de votre compte?",
+    "cancel": "Annuler",
+    "confirm": "Déconnexion"
+  },
+  "status": {
+    "inactive": "Compte Inactif"
+  },
+  "hero": {
+    "title": "Activez votre compte",
+    "subtitle": "Déposez ${{threshold}} USD pour débloquer toutes les fonctionnalités",
+    "description": "Profitez des investissements en IA et gagnez jusqu'à 2.60% par jour + commissions réseau"
+  },
+  "progress": {
+    "title": "Progression de l'Activation",
+    "remaining": "${{remaining}} restants pour activer votre compte",
+    "activated": "Compte activé ! Rechargement..."
+  },
+  "depositButton": "Faire un Dépôt",
+  "benefits": {
+    "title": "Ce que vous gagnez en activant:",
+    "benefit1": {
+      "title": "IA Générant des Profits 24/7",
+      "description": "Intelligence Artificielle travaillant pour vous pendant que vous dormez"
+    },
+    "benefit2": {
+      "title": "Commissions sur 3 Niveaux",
+      "description": "Gagnez sur les profits du réseau jusqu'à 3 générations de parrainages"
+    },
+    "benefit3": {
+      "title": "Retraits Rapides",
+      "description": "Retirez les profits de l'IA et les commissions quand vous voulez"
+    }
+  },
+  "footer": {
+    "info": "Après votre premier dépôt de $100, votre compte sera automatiquement activé et vous commencerez à gagner des commissions"
+  }
+}

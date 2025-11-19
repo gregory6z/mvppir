@@ -1,0 +1,22 @@
+{
+  "title": "Commission Quotidienne Reçue !",
+  "youReceived": "Vous avez reçu",
+  "rank": "Rang",
+  "breakdown": "Répartition par Niveau",
+  "close": "Compris",
+  "credited": "Les commissions ont déjà été créditées sur votre solde disponible",
+  "people_one": "personne",
+  "people_other": "personnes",
+  "ranks": {
+    "recruit": "Recrue",
+    "bronze": "Bronze",
+    "silver": "Argent",
+    "gold": "Or"
+  },
+  "levels": {
+    "level0": "Commission Principale (N0)",
+    "level1": "Directs (N1)",
+    "level2": "Niveau 2 (N2)",
+    "level3": "Niveau 3 (N3)"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "balance": {
+    "hideBalance": "Hide balance",
+    "showBalance": "Show balance",
+    "toggleBalanceHint": "Double tap to toggle balance visibility"
+  },
+  "header": {
+    "profile": "Profile",
+    "profileHint": "Tap to open profile settings",
+    "notifications": "Notifications",
+    "notificationsHint": "Tap to view notifications"
+  },
+  "transactions": {
+    "viewAll": "View all transactions",
+    "transactionItem": "{{type}} transaction, {{amount}}"
+  },
+  "navigation": {
+    "goBack": "Go back"
+  },
+  "actions": {
+    "copyAddress": "Copy address",
+    "pasteAddress": "Paste address",
+    "closeModal": "Close modal",
+    "selectLanguage": "Select {{language}}",
+    "logout": "Logout"
+  }
+}
