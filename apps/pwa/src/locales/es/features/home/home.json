@@ -16,6 +16,7 @@
   "recentActivity": {
     "title": "Actividad Reciente",
     "viewAll": "Ver todo",
+    "recently": "Recientemente",
     "empty": {
       "title": "Sin transacciones aún",
       "subtitle": "Sus transacciones aparecerán aquí"

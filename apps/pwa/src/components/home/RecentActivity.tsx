@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, Star, ArrowRight } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { useTranslation } from "react-i18next"
 import type { UnifiedTransaction } from "@/api/user/schemas"
+import { getDateFnsLocale } from "@/lib/utils"
 
 interface RecentActivityProps {
   transactions: UnifiedTransaction[]
@@ -18,7 +19,7 @@ export function RecentActivity({
   onTransactionPress,
   isBalanceVisible = true,
 }: RecentActivityProps) {
-  const { t } = useTranslation("home.home")
+  const { t, i18n } = useTranslation("home.home")
   const limitedTransactions = transactions.slice(0, maxItems)
 
   const getStatusColor = (status: UnifiedTransaction["status"]) => {
@@ -57,9 +58,10 @@ export function RecentActivity({
 
   const formatRelativeTime = (dateString: string) => {
     try {
-      return formatDistanceToNow(new Date(dateString), { addSuffix: true })
+      const locale = getDateFnsLocale(i18n.language)
+      return formatDistanceToNow(new Date(dateString), { addSuffix: true, locale })
     } catch {
-      return "Recently"
+      return t("recentActivity.recently")
     }
   }
 

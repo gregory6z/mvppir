@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { Star } from "phosphor-react"
 import { formatDistanceToNow } from "date-fns"
+import { getDateFnsLocale } from "@/lib/utils"
 
 type MLMRank = "RECRUIT" | "BRONZE" | "SILVER" | "GOLD"
 type CommissionStatus = "PENDING" | "PAID" | "CANCELLED"
@@ -37,7 +38,7 @@ export function RecentCommissions({
   maxItems = 10,
   onCommissionPress,
 }: RecentCommissionsProps) {
-  const { t } = useTranslation("referrals.referrals")
+  const { t, i18n } = useTranslation("referrals.referrals")
   const limitedCommissions = commissions.slice(0, maxItems)
 
   const getStatusColor = (status: CommissionStatus) => {
@@ -64,7 +65,8 @@ export function RecentCommissions({
 
   const formatRelativeTime = (dateString: string) => {
     try {
-      return formatDistanceToNow(new Date(dateString), { addSuffix: true })
+      const locale = getDateFnsLocale(i18n.language)
+      return formatDistanceToNow(new Date(dateString), { addSuffix: true, locale })
     } catch {
       return t("recentCommissions.recently")
     }
