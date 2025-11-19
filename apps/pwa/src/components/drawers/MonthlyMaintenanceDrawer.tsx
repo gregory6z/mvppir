@@ -6,6 +6,7 @@ import {
   TrendUp,
   CheckCircle,
   WarningCircle,
+  Check,
 } from "phosphor-react"
 import type { MLMRank } from "@/api/mlm/schemas"
 import {
@@ -392,7 +393,8 @@ export function MonthlyMaintenanceDrawer({
         {/* Footer with Close Button */}
         <DrawerFooter className="px-6 py-4 border-t border-zinc-800">
           <DrawerClose asChild>
-            <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold text-base py-4 rounded-xl transition-colors">
+            <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold text-base py-4 rounded-xl transition-colors flex items-center justify-center gap-2">
+              <Check size={20} weight="bold" />
               {t("explainer.closeButton")}
             </Button>
           </DrawerClose>

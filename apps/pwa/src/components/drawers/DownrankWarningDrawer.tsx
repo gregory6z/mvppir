@@ -5,6 +5,8 @@ import {
   CurrencyDollar,
   Lightning,
   ProhibitInset,
+  Check,
+  X,
 } from "phosphor-react"
 import type { MLMRank } from "@/api/mlm/schemas"
 import {
@@ -275,8 +277,9 @@ export function DownrankWarningDrawer({
           <DrawerClose asChild>
             <Button
               onClick={onConfirm}
-              className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold text-base py-4 rounded-xl shadow-lg shadow-purple-500/20 transition-all active:scale-95"
+              className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold text-base py-4 rounded-xl shadow-lg shadow-purple-500/20 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
+              <Check size={20} weight="bold" />
               {t("modal.confirmButton")}
             </Button>
           </DrawerClose>
@@ -284,8 +287,9 @@ export function DownrankWarningDrawer({
           <DrawerClose asChild>
             <Button
               variant="outline"
-              className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-base py-4 rounded-xl border border-zinc-700 shadow-md transition-all active:scale-95"
+              className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-base py-4 rounded-xl border border-zinc-700 shadow-md transition-all active:scale-95 flex items-center justify-center gap-2"
             >
+              <X size={20} weight="bold" />
               {t("modal.cancelButton")}
             </Button>
           </DrawerClose>

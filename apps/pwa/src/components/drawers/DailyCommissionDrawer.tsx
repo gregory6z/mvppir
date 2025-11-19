@@ -5,6 +5,7 @@ import {
   DrawerFooter,
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
+import { Check } from "phosphor-react"
 
 interface CommissionBreakdown {
   level: number // 0, 1, 2, 3
@@ -121,7 +122,8 @@ export function DailyCommissionDrawer({
         {/* Footer */}
         <DrawerFooter className="px-6 py-4 border-t border-zinc-800">
           <DrawerClose asChild>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base py-4 rounded-xl">
+            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base py-4 rounded-xl flex items-center justify-center gap-2">
+              <Check size={20} weight="bold" />
               Entendi
             </Button>
           </DrawerClose>

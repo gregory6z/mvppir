@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { X, Sparkle, TrendUp, Users, Coin, Robot } from "phosphor-react"
+import { X, Sparkle, TrendUp, Users, Coin, Robot, Check } from "phosphor-react"
 import {
   Drawer,
   DrawerClose,
@@ -248,7 +248,8 @@ export function MLMExplainerDrawer({
         {/* Footer with Close Button */}
         <DrawerFooter className="px-6 py-4 border-t border-zinc-800">
           <DrawerClose asChild>
-            <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold text-base py-4 rounded-xl">
+            <Button className="w-full bg-violet-500 hover:bg-violet-600 text-white font-bold text-base py-4 rounded-xl flex items-center justify-center gap-2">
+              <Check size={20} weight="bold" />
               {t("explainer.closeButton")}
             </Button>
           </DrawerClose>
