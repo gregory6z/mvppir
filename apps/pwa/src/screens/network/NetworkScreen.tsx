@@ -7,16 +7,25 @@ import { ReferralCode } from "@/components/network/ReferralCode"
 import { NetworkStats } from "@/components/network/NetworkStats"
 import { CommissionOverview } from "@/components/network/CommissionOverview"
 import { RecentCommissions } from "@/components/network/RecentCommissions"
+import { RankAchievementDrawer } from "@/components/drawers"
 import { useMLMProfile } from "@/api/mlm/queries/use-mlm-profile"
 import { useCommissionsSummary } from "@/api/mlm/queries/use-commissions-summary"
 import { useRecentCommissions } from "@/api/mlm/queries/use-recent-commissions"
 import { useUserReferralLink } from "@/api/user/queries/use-user-referral-link"
+import { useRankAchievementAlert } from "@/hooks/useRankAchievementAlert"
 import { NetworkScreenSkeleton } from "@/components/skeletons/NetworkScreenSkeleton"
 import type { MLMRank } from "@/api/mlm/schemas"
 
 export function NetworkScreen() {
   const { t } = useTranslation("referrals.referrals")
   const navigate = useNavigate()
+
+  // Rank achievement alert
+  const {
+    isDrawerOpen: isRankAlertOpen,
+    rankAchievementData,
+    closeDrawer: closeRankAlert,
+  } = useRankAchievementAlert()
 
   // Fetch data from API
   const {
@@ -243,6 +252,18 @@ export function NetworkScreen() {
 
       {/* Bottom Navigation */}
       <BottomNavigation />
+
+      {/* Rank Achievement Alert Drawer */}
+      {rankAchievementData && (
+        <RankAchievementDrawer
+          open={isRankAlertOpen}
+          onOpenChange={closeRankAlert}
+          type={rankAchievementData.type}
+          newRank={rankAchievementData.newRank}
+          previousRank={rankAchievementData.previousRank}
+          changedAt={rankAchievementData.changedAt}
+        />
+      )}
     </div>
   )
 }

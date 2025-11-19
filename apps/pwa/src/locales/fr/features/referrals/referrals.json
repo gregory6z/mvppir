@@ -156,5 +156,48 @@
     "whatIsVolumeTitle": "Qu'est-ce que le Volume Réseau ?",
     "downrankWarningTitle": "Avertissement",
     "allRanksTitle": "Exigences de Tous les Rangs"
+  },
+  "rankAchievement": {
+    "upgrade": {
+      "title": "Félicitations !",
+      "subtitle": "Nouveau Rang Atteint",
+      "youAchieved": "Vous avez atteint",
+      "from": "depuis",
+      "achievedOn": "Atteint le",
+      "benefits": {
+        "title": "Vos Nouveaux Avantages",
+        "commission": "Commission Journalière",
+        "perDay": "par jour"
+      },
+      "nextSteps": {
+        "title": "Prochaines Étapes",
+        "maintain": "Maintenez votre rang en remplissant les exigences mensuelles",
+        "grow": "Continuez à construire votre réseau pour atteindre le prochain rang"
+      },
+      "celebrate": "Continuez comme ça !",
+      "closeButton": "Merci !"
+    },
+    "downgrade": {
+      "title": "Rétrogradation de Rang",
+      "subtitle": "Votre rang a été réduit",
+      "youWereDowngraded": "Vous avez été rétrogradé à",
+      "from": "depuis",
+      "downgraded": "Rétrogradé le",
+      "reason": {
+        "title": "Raison de la Rétrogradation",
+        "missedRequirements": "Vous n'avez pas rempli les exigences mensuelles nécessaires pour maintenir votre rang précédent"
+      },
+      "newLimits": {
+        "title": "Votre Nouvelle Commission",
+        "commission": "Commission Journalière",
+        "perDay": "par jour"
+      },
+      "recovery": {
+        "title": "Comment Récupérer votre Rang",
+        "rebuild": "Reconstruisez votre réseau et remplissez les exigences pour monter de rang à nouveau",
+        "maintain": "Maintenez vos filleuls actifs et le volume réseau requis"
+      },
+      "closeButton": "Compris"
+    }
   }
 }

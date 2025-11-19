@@ -161,5 +161,48 @@
     "whatIsVolumeTitle": "What is Network Volume?",
     "downrankWarningTitle": "Warning",
     "allRanksTitle": "All Ranks Requirements"
+  },
+  "rankAchievement": {
+    "upgrade": {
+      "title": "Congratulations!",
+      "subtitle": "New Rank Achieved",
+      "youAchieved": "You achieved",
+      "from": "from",
+      "achievedOn": "Achieved on",
+      "benefits": {
+        "title": "Your New Benefits",
+        "commission": "Daily Commission",
+        "perDay": "per day"
+      },
+      "nextSteps": {
+        "title": "Next Steps",
+        "maintain": "Maintain your rank by meeting monthly requirements",
+        "grow": "Keep building your network to reach the next rank"
+      },
+      "celebrate": "Keep it up!",
+      "closeButton": "Thank you!"
+    },
+    "downgrade": {
+      "title": "Rank Downgrade",
+      "subtitle": "Your rank has been reduced",
+      "youWereDowngraded": "You were downgraded to",
+      "from": "from",
+      "downgraded": "Downgraded on",
+      "reason": {
+        "title": "Downgrade Reason",
+        "missedRequirements": "You did not meet the monthly requirements needed to maintain your previous rank"
+      },
+      "newLimits": {
+        "title": "Your New Commission",
+        "commission": "Daily Commission",
+        "perDay": "per day"
+      },
+      "recovery": {
+        "title": "How to Recover Your Rank",
+        "rebuild": "Rebuild your network and meet requirements to rank up again",
+        "maintain": "Maintain your active referrals and required network volume"
+      },
+      "closeButton": "I understand"
+    }
   }
 }

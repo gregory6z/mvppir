@@ -162,5 +162,48 @@
     "whatIsVolumeTitle": "O que é Volume da Rede?",
     "downrankWarningTitle": "Aviso",
     "allRanksTitle": "Requisitos de Todas as Graduações"
+  },
+  "rankAchievement": {
+    "upgrade": {
+      "title": "Parabéns!",
+      "subtitle": "Nova Graduação Conquistada",
+      "youAchieved": "Você alcançou",
+      "from": "de",
+      "achievedOn": "Conquistado em",
+      "benefits": {
+        "title": "Seus Novos Benefícios",
+        "commission": "Comissão Diária",
+        "perDay": "por dia"
+      },
+      "nextSteps": {
+        "title": "Próximos Passos",
+        "maintain": "Mantenha sua graduação cumprindo os requisitos mensais",
+        "grow": "Continue construindo sua rede para alcançar a próxima graduação"
+      },
+      "celebrate": "Continue assim!",
+      "closeButton": "Obrigado!"
+    },
+    "downgrade": {
+      "title": "Rebaixamento de Graduação",
+      "subtitle": "Sua graduação foi reduzida",
+      "youWereDowngraded": "Você foi rebaixado para",
+      "from": "de",
+      "downgraded": "Rebaixado em",
+      "reason": {
+        "title": "Motivo do Rebaixamento",
+        "missedRequirements": "Você não cumpriu os requisitos mensais necessários para manter sua graduação anterior"
+      },
+      "newLimits": {
+        "title": "Sua Nova Comissão",
+        "commission": "Comissão Diária",
+        "perDay": "por dia"
+      },
+      "recovery": {
+        "title": "Como Recuperar sua Graduação",
+        "rebuild": "Reconstrua sua rede e cumpra os requisitos para subir novamente",
+        "maintain": "Mantenha seus indicados ativos e o volume da rede necessário"
+      },
+      "closeButton": "Entendi"
+    }
   }
 }

@@ -162,5 +162,48 @@
     "whatIsVolumeTitle": "¿Qué es el Volumen de Red?",
     "downrankWarningTitle": "Advertencia",
     "allRanksTitle": "Requisitos de Todos los Rangos"
+  },
+  "rankAchievement": {
+    "upgrade": {
+      "title": "¡Felicitaciones!",
+      "subtitle": "Nuevo Rango Alcanzado",
+      "youAchieved": "Has alcanzado",
+      "from": "desde",
+      "achievedOn": "Alcanzado el",
+      "benefits": {
+        "title": "Tus Nuevos Beneficios",
+        "commission": "Comisión Diaria",
+        "perDay": "por día"
+      },
+      "nextSteps": {
+        "title": "Próximos Pasos",
+        "maintain": "Mantén tu rango cumpliendo los requisitos mensuales",
+        "grow": "Continúa construyendo tu red para alcanzar el próximo rango"
+      },
+      "celebrate": "¡Sigue así!",
+      "closeButton": "¡Gracias!"
+    },
+    "downgrade": {
+      "title": "Degradación de Rango",
+      "subtitle": "Tu rango ha sido reducido",
+      "youWereDowngraded": "Fuiste degradado a",
+      "from": "desde",
+      "downgraded": "Degradado el",
+      "reason": {
+        "title": "Motivo de la Degradación",
+        "missedRequirements": "No cumpliste los requisitos mensuales necesarios para mantener tu rango anterior"
+      },
+      "newLimits": {
+        "title": "Tu Nueva Comisión",
+        "commission": "Comisión Diaria",
+        "perDay": "por día"
+      },
+      "recovery": {
+        "title": "Cómo Recuperar tu Rango",
+        "rebuild": "Reconstruye tu red y cumple los requisitos para subir de rango nuevamente",
+        "maintain": "Mantén tus referidos activos y el volumen de red requerido"
+      },
+      "closeButton": "Entendido"
+    }
   }
 }
