@@ -161,6 +161,29 @@ export async function injectTestReferrals(
   console.log(`✅ Successfully created ${count} test referrals for ${referrerEmail}`)
   console.log(`📊 Referrer now has ${updatedReferrer.totalDirects} total directs`)
 
+  // 4. Verificar automaticamente se o referrer pode subir de rank
+  console.log(`🔍 Checking rank progression for ${referrerEmail}...`)
+
+  try {
+    const { autoCheckAndPromote } = await import("@/modules/mlm/use-cases/check-rank-progression")
+    const wasPromoted = await autoCheckAndPromote(referrer.id)
+
+    if (wasPromoted) {
+      // Buscar rank atualizado
+      const promotedUser = await prisma.user.findUnique({
+        where: { id: referrer.id },
+        select: { currentRank: true },
+      })
+
+      console.log(`🎉 PROMOTED! ${referrerEmail} was promoted to ${promotedUser?.currentRank}!`)
+    } else {
+      console.log(`ℹ️  ${referrerEmail} does not meet requirements for next rank yet`)
+    }
+  } catch (error) {
+    console.error(`⚠️  Failed to check rank progression:`, error)
+    // Não falha a operação, apenas loga o erro
+  }
+
   return {
     referrerId: referrer.id,
     referrerEmail: referrer.email,
