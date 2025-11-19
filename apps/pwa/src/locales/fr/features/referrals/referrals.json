@@ -38,7 +38,11 @@
     "copyCode": "Copier le Code",
     "copied": "Copié !",
     "referralLink": "Lien de Parrainage",
-    "infoMessage": "Gagnez des commissions lorsque vos filleuls effectuent des dépôts et construisent leur réseau"
+    "infoMessage": "Gagnez des commissions lorsque vos filleuls effectuent des dépôts et construisent leur réseau",
+    "accessibility": {
+      "copyCode": "Copier le code de parrainage",
+      "shareLink": "Partager le lien de parrainage"
+    }
   },
   "networkStats": {
     "title": "Aperçu du Réseau",

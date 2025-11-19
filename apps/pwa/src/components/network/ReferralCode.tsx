@@ -73,7 +73,7 @@ export function ReferralCode({
           <button
             onClick={handleCopyCode}
             className="flex-1 bg-violet-500 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-violet-600 active:scale-[0.98] transition-all"
-            aria-label="Copy referral code"
+            aria-label={t("referralCode.accessibility.copyCode")}
           >
             <Copy size={18} color="#ffffff" weight="bold" />
             <span className="text-white font-semibold text-sm">
@@ -85,7 +85,7 @@ export function ReferralCode({
           <button
             onClick={handleShare}
             className="bg-zinc-800 py-3 px-4 rounded-xl hover:bg-zinc-700 active:scale-[0.98] transition-all"
-            aria-label="Share referral link"
+            aria-label={t("referralCode.accessibility.shareLink")}
           >
             <Share size={18} color="#8b5cf6" weight="bold" />
           </button>

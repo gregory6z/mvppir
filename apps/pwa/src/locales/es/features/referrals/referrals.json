@@ -38,7 +38,11 @@
     "copyCode": "Copiar Código",
     "copied": "¡Copiado!",
     "referralLink": "Enlace de Referido",
-    "infoMessage": "Gana comisiones cuando tus referidos realicen depósitos y construyan su red"
+    "infoMessage": "Gana comisiones cuando tus referidos realicen depósitos y construyan su red",
+    "accessibility": {
+      "copyCode": "Copiar código de referido",
+      "shareLink": "Compartir enlace de referido"
+    }
   },
   "networkStats": {
     "title": "Resumen de Red",

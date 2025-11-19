@@ -38,7 +38,11 @@
     "copyCode": "Copy Code",
     "copied": "Copied!",
     "referralLink": "Referral Link",
-    "infoMessage": "Earn commissions when your referrals make deposits and build their network"
+    "infoMessage": "Earn commissions when your referrals make deposits and build their network",
+    "accessibility": {
+      "copyCode": "Copy referral code",
+      "shareLink": "Share referral link"
+    }
   },
   "networkStats": {
     "title": "Network Overview",

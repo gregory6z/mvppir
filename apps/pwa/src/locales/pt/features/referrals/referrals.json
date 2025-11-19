@@ -38,7 +38,11 @@
     "copyCode": "Copiar Código",
     "copied": "Copiado!",
     "referralLink": "Link de Indicação",
-    "infoMessage": "Ganhe comissões quando seus indicados fizerem depósitos e construírem sua rede"
+    "infoMessage": "Ganhe comissões quando seus indicados fizerem depósitos e construírem sua rede",
+    "accessibility": {
+      "copyCode": "Copiar código de indicação",
+      "shareLink": "Compartilhar link de indicação"
+    }
   },
   "networkStats": {
     "title": "Visão Geral da Rede",
