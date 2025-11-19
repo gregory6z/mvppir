@@ -98,7 +98,7 @@ export function MonthlyMaintenanceModal({ visible, onClose, currentRank }: Month
                   </View>
                   <View className="flex-1">
                     <Text className="text-white text-base font-bold mb-2">
-                      {t("explainer.maintenance.activeDirectsTitle")}
+                      {t("monthlyMaintenance.activeDirectsTitle")}
                     </Text>
                     <Text className="text-zinc-400 text-sm leading-5">
                       {t(`explainer.maintenance.${currentRank.toLowerCase()}.activeDirects`)}
