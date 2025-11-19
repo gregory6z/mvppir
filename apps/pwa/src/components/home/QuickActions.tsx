@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, UserPlus } from "lucide-react"
+import { ArrowDown, ArrowUp, UserPlus, ChevronRight } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import type { LucideIcon } from "lucide-react"
 
@@ -67,6 +67,7 @@ export function QuickActions({
                 <span className="text-white font-semibold text-sm">
                   {action.label}
                 </span>
+                <ChevronRight size={16} className="text-zinc-500" strokeWidth={2.5} />
               </button>
             )
           })}
@@ -86,6 +87,7 @@ export function QuickActions({
               <span className="text-white font-bold text-sm">
                 {action.label}
               </span>
+              <ChevronRight size={16} className="text-white/70" strokeWidth={2.5} />
             </button>
           )
         })}

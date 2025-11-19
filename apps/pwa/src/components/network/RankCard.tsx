@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Crown, Sparkle } from "phosphor-react"
+import { ChevronRight } from "lucide-react"
 import type { MLMRank, RankStatus } from "@/api/mlm/schemas"
 import { MLMExplainerDrawer } from "@/components/drawers"
 
@@ -134,6 +135,7 @@ export function RankCard({
           <span className="text-violet-400 text-sm font-semibold">
             {t("rankCard.howItWorksButton")}
           </span>
+          <ChevronRight size={16} className="text-violet-400/70" strokeWidth={2.5} />
         </button>
       </div>
 

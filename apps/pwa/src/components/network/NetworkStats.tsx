@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Users, User, TrendUp, Calendar } from "phosphor-react"
+import { ChevronRight } from "lucide-react"
 import type { MLMRank } from "@/api/mlm/schemas"
 import { MonthlyMaintenanceDrawer } from "@/components/drawers"
 
@@ -49,6 +50,7 @@ export function NetworkStats({
         <span className="text-orange-400 text-sm font-semibold">
           {t("explainer.maintenance.title")}
         </span>
+        <ChevronRight size={16} className="text-orange-400/70" strokeWidth={2.5} />
       </button>
 
       {/* Summary Cards */}
