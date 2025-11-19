@@ -148,7 +148,7 @@
         "monthlyVolume": "$30,000 de volumen de red/mes"
       },
       "note": "Volumen de red = tus depósitos + depósitos de tus referidos directos e indirectos",
-      "warning": "Si no cumples los requisitos durante 3 meses consecutivos, puedes ser degradado"
+      "warning": "Si no cumples los requisitos, serás degradado inmediatamente"
     },
     "closeButton": "¡Entendido!"
   },

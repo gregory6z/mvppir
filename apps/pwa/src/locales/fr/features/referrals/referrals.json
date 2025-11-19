@@ -142,7 +142,7 @@
         "monthlyVolume": "$30 000 de volume réseau/mois"
       },
       "note": "Volume réseau = vos dépôts + dépôts de vos filleuls directs et indirects",
-      "warning": "Si vous ne remplissez pas les conditions pendant 3 mois consécutifs, vous pouvez être rétrogradé"
+      "warning": "Si vous ne remplissez pas les conditions, vous serez rétrogradé immédiatement"
     },
     "closeButton": "Compris !"
   },

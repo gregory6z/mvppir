@@ -148,7 +148,7 @@
         "monthlyVolume": "$30.000 de volume da rede/mês"
       },
       "note": "Volume da rede = seus depósitos + depósitos dos seus indicados diretos e indiretos",
-      "warning": "Se não cumprir os requisitos por 3 meses seguidos, você pode ser rebaixado"
+      "warning": "Se não cumprir os requisitos, você será rebaixado imediatamente"
     },
     "closeButton": "Entendi!"
   },

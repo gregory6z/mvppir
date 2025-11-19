@@ -147,7 +147,7 @@
         "monthlyVolume": "$30,000 network volume/month"
       },
       "note": "Network volume = your deposits + deposits from your direct and indirect referrals",
-      "warning": "If you don't meet requirements for 3 consecutive months, you may be downranked"
+      "warning": "If you don't meet the requirements, you will be downranked immediately"
     },
     "closeButton": "Got it!"
   },

@@ -137,7 +137,7 @@ export function MonthlyMaintenanceDrawer({
                       : currentRank === "SILVER" ? "text-zinc-200"
                       : "text-yellow-300"
                     }`}>
-                      {t("explainer.maintenance.activeDirectsTitle")}
+                      {t("monthlyMaintenance.activeDirectsTitle")}
                     </h4>
                     <p className={`text-sm leading-5 ${
                       currentRank === "BRONZE" ? "text-orange-200/80"
