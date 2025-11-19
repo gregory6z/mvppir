@@ -28,10 +28,33 @@ export function ReferralCode({
     try {
       // Try Web Share API first (mobile browsers)
       if (navigator.share) {
-        await navigator.share({
-          title: "Junte-se ao Stakly",
-          text: shareMessage,
-        })
+        // Try to fetch and share the logo image
+        try {
+          const response = await fetch("/icons/icon-512x512.png")
+          const blob = await response.blob()
+          const file = new File([blob], "stakly-logo.png", { type: "image/png" })
+
+          // Check if files can be shared
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: "Junte-se ao Stakly",
+              text: shareMessage,
+              files: [file],
+            })
+          } else {
+            // Share without image if files are not supported
+            await navigator.share({
+              title: "Junte-se ao Stakly",
+              text: shareMessage,
+            })
+          }
+        } catch (imageError) {
+          // If image fetch fails, share without it
+          await navigator.share({
+            title: "Junte-se ao Stakly",
+            text: shareMessage,
+          })
+        }
       } else {
         // Fallback: copy full message to clipboard
         await navigator.clipboard.writeText(shareMessage)
