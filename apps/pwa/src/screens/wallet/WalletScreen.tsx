@@ -1,8 +1,8 @@
 import { useMemo, useRef, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 import { format, isToday, isYesterday } from "date-fns"
-import { ptBR, enUS, es, fr } from "date-fns/locale"
 import { useTranslation } from "react-i18next"
+import { getDateFnsLocale } from "@/lib/utils"
 import { ArrowLeft } from "phosphor-react"
 import { RefreshCw } from "lucide-react"
 import { useInfiniteUnifiedTransactions } from "@/api/user/queries/use-infinite-unified-transactions"
@@ -86,13 +86,7 @@ export function WalletScreen() {
       const date = new Date(tx.createdAt)
       let dateLabel: string
 
-      const localeMap = {
-        pt: ptBR,
-        en: enUS,
-        es: es,
-        fr: fr,
-      }
-      const locale = localeMap[i18n.language as keyof typeof localeMap] || enUS
+      const locale = getDateFnsLocale(i18n.language)
 
       if (isToday(date)) {
         dateLabel = t("dateLabels.today")

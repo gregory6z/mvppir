@@ -4,14 +4,7 @@ import { ArrowLeft, ArrowDown, ArrowUp, Star, Copy, ArrowSquareOut, Calendar, Ha
 import type { UnifiedTransaction } from "@/api/user/schemas"
 import { useState } from "react"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR, enUS, es, fr } from "date-fns/locale"
-
-const localeMap = {
-  pt: ptBR,
-  en: enUS,
-  es: es,
-  fr: fr,
-}
+import { getDateFnsLocale } from "@/lib/utils"
 
 export function TransactionDetailScreen() {
   const navigate = useNavigate()
@@ -19,7 +12,7 @@ export function TransactionDetailScreen() {
   const { t, i18n } = useTranslation("transactions.detail")
   const [copiedField, setCopiedField] = useState<string | null>(null)
 
-  const locale = localeMap[i18n.language as keyof typeof localeMap] || enUS
+  const locale = getDateFnsLocale(i18n.language)
 
   // Get transaction from navigation state (passed from HomeScreen)
   const transaction = location.state?.transaction as UnifiedTransaction | undefined

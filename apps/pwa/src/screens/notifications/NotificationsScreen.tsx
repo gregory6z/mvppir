@@ -17,14 +17,7 @@ import { useInfiniteNotifications } from "@/api/notifications/queries/use-infini
 import { useMarkAsRead } from "@/api/notifications/mutations/use-mark-as-read"
 import { useMarkAllAsRead } from "@/api/notifications/mutations/use-mark-all-as-read"
 import { formatDistanceToNow } from "date-fns"
-import { ptBR, enUS, es, fr } from "date-fns/locale"
-
-const localeMap = {
-  pt: ptBR,
-  en: enUS,
-  es: es,
-  fr: fr,
-}
+import { getDateFnsLocale } from "@/lib/utils"
 
 export function NotificationsScreen() {
   const navigate = useNavigate()
@@ -41,7 +34,7 @@ export function NotificationsScreen() {
   const { mutate: markAllAsRead, isPending: isMarkingAll } = useMarkAllAsRead()
 
   const loadMoreRef = useRef<HTMLDivElement>(null)
-  const locale = localeMap[i18n.language as keyof typeof localeMap] || enUS
+  const locale = getDateFnsLocale(i18n.language)
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
