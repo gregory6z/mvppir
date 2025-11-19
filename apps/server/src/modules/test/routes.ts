@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify"
 import { requireAdmin } from "@/middlewares/admin.middleware"
 import { injectTestDepositController } from "./controllers/inject-test-deposit.controller"
+import { injectTestReferralsController } from "./controllers/inject-test-referrals.controller"
 
 /**
  * Test routes - Admin only
@@ -12,4 +13,7 @@ export async function testRoutes(app: FastifyInstance) {
 
   // POST /admin/test/inject-deposit
   app.post("/inject-deposit", injectTestDepositController)
+
+  // POST /admin/test/inject-referrals
+  app.post("/inject-referrals", injectTestReferralsController)
 }
