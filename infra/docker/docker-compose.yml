@@ -102,6 +102,27 @@ services:
     networks:
       - mvppir-network
 
+  # Netdata - Monitoramento de Performance
+  netdata:
+    image: netdata/netdata:stable
+    container_name: mvppir-netdata
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - netdata_data:/var/lib/netdata
+    environment:
+      - NETDATA_CLAIM_TOKEN=  # Deixa vazio para self-hosted anônimo
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    # Sem porta pública - acesso só via Nginx com senha
+    networks:
+      - mvppir-network
+
   # Nginx Reverse Proxy (opcional - para produção com SSL)
   nginx:
     image: nginx:alpine
@@ -127,6 +148,8 @@ volumes:
   redis_data:
     driver: local
   nginx_logs:
+    driver: local
+  netdata_data:
     driver: local
 
 networks:

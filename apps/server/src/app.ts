@@ -13,6 +13,8 @@ import { adminRoutes } from './modules/admin/routes'
 import { referralRoutes } from './modules/referral/routes'
 import { testRoutes } from './modules/test/routes'
 import { notificationsRoutes } from './modules/notifications/routes'
+import { prisma } from './lib/prisma'
+import { redis } from './lib/redis'
 
 export async function buildApp() {
   const app = Fastify({
@@ -103,10 +105,34 @@ export async function buildApp() {
     }
   })
 
-  // Health check
+  // Health check (para UptimeRobot e monitoramento)
   app.get('/health', async () => {
+    const checks = {
+      database: 'unknown',
+      redis: 'unknown',
+    }
+
+    // Check PostgreSQL
+    try {
+      await prisma.$queryRaw`SELECT 1`
+      checks.database = 'ok'
+    } catch {
+      checks.database = 'error'
+    }
+
+    // Check Redis
+    try {
+      await redis.ping()
+      checks.redis = 'ok'
+    } catch {
+      checks.redis = 'error'
+    }
+
+    const allOk = checks.database === 'ok' && checks.redis === 'ok'
+
     return {
-      status: 'ok',
+      status: allOk ? 'ok' : 'degraded',
+      checks,
       uptime: process.uptime(),
       timestamp: new Date().toISOString()
     }
