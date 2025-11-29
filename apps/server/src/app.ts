@@ -109,7 +109,7 @@ export async function buildApp() {
         'http://127.0.0.1:3001',
         'http://127.0.0.1:5173',
       ]
-    : [env.FRONTEND_URL]
+    : [env.FRONTEND_URL, env.PWA_URL].filter(Boolean) as string[]
 
   await app.register(cors, {
     origin: env.CORS_ORIGINS || defaultOrigins,
