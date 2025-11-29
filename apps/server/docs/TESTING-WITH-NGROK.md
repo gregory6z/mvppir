@@ -52,7 +52,7 @@ ngrok config add-authtoken SEU_AUTHTOKEN
 
 ## 🔐 Passo 2: Configure o `.env.test`
 
-Edite `/Users/gregoryrag/mvppir/.env.test`:
+Edite `.env.test`:
 
 ```bash
 # Database de teste

@@ -107,7 +107,7 @@ model User {
   updatedAt     DateTime   @updatedAt
 
   // Referral System
-  referralCode  String?    @unique // Código único para convites (ex: "GREGORY123")
+  referralCode  String?    @unique // Código único para convites (ex: "JOHN7X9")
 
   // ===== MLM v1.0 Fields =====
 

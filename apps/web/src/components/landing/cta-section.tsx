@@ -1,4 +1,4 @@
-"use client"
+
 
 import { SparklesCore } from "../ui/sparkles"
 

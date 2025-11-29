@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getWithdrawals, approveWithdrawal, rejectWithdrawal } from "@/api/client/admin.api"
+import { queryKeys } from "@/lib/react-query"
 
 export function useWithdrawals(status?: string, page = 1, limit = 20) {
   return useQuery({
-    queryKey: ["admin", "withdrawals", status, page, limit],
+    queryKey: queryKeys.admin.withdrawals(status, page),
     queryFn: () => getWithdrawals(status, page, limit),
   })
 }
@@ -14,8 +15,7 @@ export function useApproveWithdrawal() {
   return useMutation({
     mutationFn: (id: string) => approveWithdrawal(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "withdrawals"] })
-      queryClient.invalidateQueries({ queryKey: ["admin", "global-wallet"] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.all })
     },
   })
 }

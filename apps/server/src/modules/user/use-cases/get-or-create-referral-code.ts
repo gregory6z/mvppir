@@ -2,7 +2,7 @@
  * Get or Create Referral Code
  *
  * Returns the user's referral code, creating one if it doesn't exist.
- * Format: FIRSTNAME{RANDOMNUMBER} (ex: GREGORY123)
+ * Format: FIRSTNAME{RANDOMNUMBER} (ex: JOHN7X9)
  */
 
 import { prisma } from "@/lib/prisma";

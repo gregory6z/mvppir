@@ -1,19 +1,15 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import dynamic from "next/dynamic"
+import { useState, useEffect, lazy, Suspense } from "react"
 import { Globe as GlobeIcon } from "lucide-react"
 import AnimationContainer from "../global/animation-container"
 import { AnimatedCounter } from "@/components/ui/animated-counter"
 
-const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-full">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
-    </div>
-  ),
-})
+const World = lazy(() => import("@/components/ui/globe").then((m) => ({ default: m.World })))
+
+const GlobeLoader = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
+  </div>
+)
 
 export const GlobalReach = () => {
   const [isMobile, setIsMobile] = useState(false)
@@ -249,7 +245,9 @@ export const GlobalReach = () => {
             ) : (
               // Desktop - Full 3D Globe
               <div className="aspect-[1/1] md:aspect-[16/9] w-full relative">
-                <World data={arcsData} globeConfig={globeConfig} />
+                <Suspense fallback={<GlobeLoader />}>
+                  <World data={arcsData} globeConfig={globeConfig} />
+                </Suspense>
               </div>
             )}
           </div>

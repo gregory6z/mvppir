@@ -5,6 +5,7 @@ import { startDailyCommissionsWorker } from './modules/mlm/workers/daily-commiss
 import { startMonthlyMaintenanceWorker } from './modules/mlm/workers/monthly-maintenance.worker'
 import { startGracePeriodRecoveryWorker } from './modules/mlm/workers/grace-period-recovery.worker'
 import { startBatchCollectWorker } from './modules/transfer/workers/batch-collect.worker'
+import { startMoralisWebhookWorker } from './modules/webhook/workers/moralis-webhook.worker'
 
 async function start() {
   const app = await buildApp()
@@ -23,6 +24,7 @@ async function start() {
     startMonthlyMaintenanceWorker()
     startGracePeriodRecoveryWorker()
     startBatchCollectWorker() // Manual execution (no cron)
+    startMoralisWebhookWorker() // Webhook processing (concurrency: 3)
 
     app.log.info('✅ All workers started successfully')
   } catch (err) {

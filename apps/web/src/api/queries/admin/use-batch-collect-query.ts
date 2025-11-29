@@ -5,10 +5,11 @@ import {
   getBatchCollectHistory,
   getBatchCollectStatus,
 } from "@/api/client/admin.api"
+import { queryKeys } from "@/lib/react-query"
 
 export function useBatchCollectPreview() {
   return useQuery({
-    queryKey: ["admin", "batch-collect", "preview"],
+    queryKey: queryKeys.admin.batchCollect.preview(),
     queryFn: getBatchCollectPreview,
     refetchInterval: 30000, // Auto-refresh a cada 30s
     staleTime: 10000,
@@ -21,17 +22,15 @@ export function useExecuteBatchCollect() {
   return useMutation({
     mutationFn: executeBatchCollect,
     onSuccess: () => {
-      // Invalidar preview para atualizar após execução
-      queryClient.invalidateQueries({ queryKey: ["admin", "batch-collect", "preview"] })
-      queryClient.invalidateQueries({ queryKey: ["admin", "batch-collect", "history"] })
-      queryClient.invalidateQueries({ queryKey: ["admin", "global-wallet"] })
+      // Invalidar tudo do admin para atualizar após execução
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.all })
     },
   })
 }
 
 export function useBatchCollectHistory(limit = 20) {
   return useQuery({
-    queryKey: ["admin", "batch-collect", "history", limit],
+    queryKey: queryKeys.admin.batchCollect.history(limit),
     queryFn: () => getBatchCollectHistory(limit),
     refetchInterval: 60000, // Auto-refresh a cada 60s
   })
@@ -39,7 +38,7 @@ export function useBatchCollectHistory(limit = 20) {
 
 export function useBatchCollectJobStatus(jobId: string | null, enabled = false) {
   return useQuery({
-    queryKey: ["admin", "batch-collect", "status", jobId],
+    queryKey: queryKeys.admin.batchCollect.status(jobId || ""),
     queryFn: () => getBatchCollectStatus(jobId!),
     enabled: enabled && !!jobId,
     refetchInterval: (query) => {

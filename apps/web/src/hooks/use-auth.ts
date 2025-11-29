@@ -1,7 +1,5 @@
-"use client"
-
-import { useEffect } from "react"
-import { useSession, signIn as betterAuthSignIn, signOut as betterAuthSignOut } from "@/lib/auth-client"
+import { useSession, signOut as betterAuthSignOut } from "@/lib/auth-client"
+import { signInEmail } from "@/lib/auth-client"
 
 // Estende o tipo User para incluir campos customizados
 type ExtendedUser = {
@@ -20,14 +18,6 @@ export function useAuth() {
   const session = useSession()
   const user = session.data?.user as ExtendedUser | undefined
 
-  useEffect(() => {
-    if (!session.isPending) {
-      console.log("🔐 useAuth - Dados da sessão:", session.data)
-      console.log("👤 useAuth - Usuário:", user)
-      console.log("🎭 useAuth - Papel do usuário:", user?.role)
-    }
-  }, [session.isPending, session.data, user])
-
   return {
     user,
     isLoading: session.isPending,
@@ -38,7 +28,7 @@ export function useAuth() {
 }
 
 export async function signIn(credentials: { email: string; password: string }) {
-  return betterAuthSignIn.email(credentials)
+  return signInEmail(credentials)
 }
 
 export async function signOut() {

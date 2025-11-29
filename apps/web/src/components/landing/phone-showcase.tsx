@@ -1,4 +1,4 @@
-"use client"
+
 
 import { TrendingUp, Shield, Zap, DollarSign, BarChart3, Wallet } from "lucide-react"
 import AnimationContainer from "../global/animation-container"

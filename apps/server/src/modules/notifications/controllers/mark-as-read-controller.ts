@@ -15,7 +15,7 @@ export async function markAsReadController(
   request: FastifyRequest<{ Params: MarkAsReadParams }>,
   reply: FastifyReply
 ) {
-  const userId = request.userId!;
+  const userId = request.user?.id!;
   const notificationId = request.params.id;
 
   try {

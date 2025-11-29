@@ -1,4 +1,4 @@
-"use client"
+
 
 import { Star, Quote } from "lucide-react"
 import AnimationContainer from "../global/animation-container"

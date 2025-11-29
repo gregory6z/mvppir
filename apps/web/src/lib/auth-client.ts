@@ -1,13 +1,16 @@
 import { createAuthClient } from "better-auth/react"
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3333",
   fetchOptions: {
     credentials: "include",
   },
 })
 
-export const { signIn, signOut, useSession } = authClient
+export const { signOut, useSession } = authClient
+
+// Sign in helper
+export const signInEmail = authClient.signIn.email
 
 // Exporta tipos inferidos
 export type Session = typeof authClient.$Infer.Session

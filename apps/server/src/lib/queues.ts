@@ -13,6 +13,7 @@ export const QUEUE_NAMES = {
   MONTHLY_MAINTENANCE: "mlm-monthly-maintenance",
   GRACE_PERIOD_RECOVERY: "mlm-grace-period-recovery",
   BATCH_COLLECT: "admin-batch-collect",
+  WEBHOOK_MORALIS: "webhook-moralis",
 } as const;
 
 // Redis connection config for BullMQ
@@ -118,6 +119,30 @@ export const batchCollectQueue = new Queue(QUEUE_NAMES.BATCH_COLLECT, {
 });
 
 /**
+ * Moralis Webhook Queue
+ *
+ * Processes incoming Moralis webhooks (deposits) asynchronously.
+ * Allows API to respond quickly while processing in background.
+ */
+export const webhookMoralisQueue = new Queue(QUEUE_NAMES.WEBHOOK_MORALIS, {
+  connection,
+  defaultJobOptions: {
+    attempts: 3, // Retry failed webhooks
+    backoff: {
+      type: "exponential",
+      delay: 5000, // Start with 5 seconds
+    },
+    removeOnComplete: {
+      age: 86400, // Keep completed for 24 hours
+      count: 1000, // Keep last 1000 webhooks
+    },
+    removeOnFail: {
+      age: 604800, // Keep failed for 7 days
+    },
+  },
+});
+
+/**
  * Initialize all repeatable jobs (cron schedules)
  * All jobs run on UTC timezone
  */
@@ -176,5 +201,6 @@ export async function cleanupQueues() {
   await monthlyMaintenanceQueue.close();
   await gracePeriodRecoveryQueue.close();
   await batchCollectQueue.close();
+  await webhookMoralisQueue.close();
   console.log("✅ All queues closed");
 }

@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { processMoralisWebhook } from "../use-cases/process-moralis-webhook";
 import { validateMoralisSignature } from "@/lib/webhook-signature";
+import { webhookMoralisQueue } from "@/lib/queues";
 
 export async function moralisWebhookController(
   request: FastifyRequest,
@@ -65,14 +65,24 @@ export async function moralisWebhookController(
       });
     }
 
-    // Processa webhook
-    const result = await processMoralisWebhook({
-      payload: request.body as any,
+    // Adiciona webhook à fila para processamento assíncrono
+    const job = await webhookMoralisQueue.add(
+      "process-webhook",
+      {
+        payload: request.body,
+        receivedAt: new Date().toISOString(),
+      },
+      {
+        jobId: `webhook-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      }
+    );
+
+    request.log.info({ jobId: job.id }, "Moralis webhook queued for processing");
+
+    return reply.status(200).send({
+      message: "Webhook queued for processing",
+      jobId: job.id,
     });
-
-    request.log.info({ result }, "Moralis webhook processed successfully");
-
-    return reply.status(200).send(result);
   } catch (error) {
     request.log.error(error, "Failed to process Moralis webhook");
 

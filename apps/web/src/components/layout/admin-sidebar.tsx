@@ -1,7 +1,4 @@
-"use client"
-
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { Link, useLocation } from "@tanstack/react-router"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -38,7 +35,8 @@ const menuItems = [
 ]
 
 export function AdminSidebar() {
-  const pathname = usePathname()
+  const location = useLocation()
+  const pathname = location.pathname
 
   const handleSignOut = async () => {
     await signOut()
@@ -49,7 +47,7 @@ export function AdminSidebar() {
     <div className="flex h-full w-64 flex-col border-r border-white/10 bg-zinc-950">
       {/* Header */}
       <div className="flex h-16 items-center border-b border-white/10 px-6">
-        <Link href="/admin/dashboard">
+        <Link to="/admin/dashboard">
           <span className="font-bold text-xl text-soft">Dashboard</span>
         </Link>
       </div>
@@ -64,7 +62,7 @@ export function AdminSidebar() {
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                   isActive

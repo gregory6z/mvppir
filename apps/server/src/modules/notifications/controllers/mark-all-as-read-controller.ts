@@ -11,7 +11,7 @@ export async function markAllAsReadController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const userId = request.userId!;
+  const userId = request.user?.id!;
 
   const result = await markAllAsRead({ userId });
 

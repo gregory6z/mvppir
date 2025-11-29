@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", ".next", ".turbo", "dist", "build", "coverage", "*.d.ts", "*.css"]
+    "ignore": ["node_modules", "dist", ".turbo", "build", "coverage", "*.d.ts", "*.css", "routeTree.gen.ts"]
   },
   "formatter": {
     "enabled": true,

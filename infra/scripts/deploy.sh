@@ -108,22 +108,32 @@ if [ "$ENV" == "production" ]; then
 
     echo ""
     echo "⏳ Waiting for services to be healthy..."
-    sleep 10
+    sleep 15
 
     echo ""
     echo "📊 Service status:"
     docker-compose ps
 
     echo ""
-    echo "🔍 Health check:"
-    curl -f http://localhost:4000/health || echo "⚠️  Health check failed"
+    echo "🔍 Health checks:"
+    echo "  Backend API:"
+    curl -sf http://localhost:4000/health && echo " ✅ OK" || echo " ❌ Failed"
+    echo "  Frontend:"
+    curl -sf http://localhost:80 > /dev/null && echo " ✅ OK" || echo " ❌ Failed"
 
     echo ""
     echo "✅ Deployment complete!"
     echo ""
+    echo "🌐 Access:"
+    echo "  Frontend:  http://your-domain.com"
+    echo "  API:       http://your-domain.com/api"
+    echo ""
     echo "Useful commands:"
-    echo "  View logs:    docker-compose logs -f"
-    echo "  Stop:         docker-compose down"
-    echo "  Restart:      docker-compose restart backend"
-    echo "  Shell:        docker-compose exec backend sh"
+    echo "  View logs:         docker-compose logs -f"
+    echo "  Frontend logs:     docker-compose logs -f frontend"
+    echo "  Backend logs:      docker-compose logs -f backend"
+    echo "  Stop:              docker-compose down"
+    echo "  Restart frontend:  docker-compose restart frontend"
+    echo "  Restart backend:   docker-compose restart backend"
+    echo "  Rebuild frontend:  docker-compose build frontend && docker-compose up -d frontend"
 fi

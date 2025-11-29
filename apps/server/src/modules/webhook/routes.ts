@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyRequest } from "fastify";
 import { moralisWebhookController } from "./controllers/moralis-webhook-controller";
 import { webhookSecurityMiddleware } from "@/middlewares/webhook-security.middleware";
 
@@ -7,7 +7,7 @@ export async function webhookRoutes(fastify: FastifyInstance) {
   fastify.addContentTypeParser(
     'application/json',
     { parseAs: 'string' },
-    async (req, body: string) => {
+    async (req: FastifyRequest, body: string) => {
       // Store raw body for signature validation
       (req as any).rawBody = body;
       // Parse JSON normally

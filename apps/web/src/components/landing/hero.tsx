@@ -1,4 +1,4 @@
-"use client"
+
 
 import { Sparkles } from "lucide-react"
 import AnimationContainer from "../global/animation-container"

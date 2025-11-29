@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { Link, Copy, Share } from "phosphor-react"
 
 interface ReferralCodeProps {
-  referralCode: string // e.g., "GREGORY123"
+  referralCode: string
 }
 
 export function ReferralCode({

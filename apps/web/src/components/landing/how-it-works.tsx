@@ -1,4 +1,4 @@
-"use client"
+
 
 import { CheckCircle2, TrendingUp, Shield, Zap, LineChart, Lock } from "lucide-react"
 import AnimationContainer from "../global/animation-container"

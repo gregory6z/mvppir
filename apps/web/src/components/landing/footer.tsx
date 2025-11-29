@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 export const Footer = () => {
   const footerLinks = {
     produto: [
@@ -40,12 +38,12 @@ export const Footer = () => {
             <ul className="space-y-2">
               {footerLinks.produto.map((link, index) => (
                 <li key={index}>
-                  <Link
+                  <a
                     href={link.href}
                     className="text-zinc-400 hover:text-[--color-stakly-blue] transition-colors text-sm"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -57,12 +55,12 @@ export const Footer = () => {
             <ul className="space-y-2">
               {footerLinks.empresa.map((link, index) => (
                 <li key={index}>
-                  <Link
+                  <a
                     href={link.href}
                     className="text-zinc-400 hover:text-[--color-stakly-blue] transition-colors text-sm"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -74,12 +72,12 @@ export const Footer = () => {
             <ul className="space-y-2 mb-6">
               {footerLinks.legal.map((link, index) => (
                 <li key={index}>
-                  <Link
+                  <a
                     href={link.href}
                     className="text-zinc-400 hover:text-[--color-stakly-blue] transition-colors text-sm"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>

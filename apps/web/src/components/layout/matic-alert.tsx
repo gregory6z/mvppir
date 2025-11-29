@@ -1,12 +1,11 @@
-"use client"
-
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { AlertTriangle, X } from "lucide-react"
+import { queryKeys } from "@/lib/react-query"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333"
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333"
 
 interface GlobalWalletBalance {
   totalUsd: number
@@ -22,7 +21,7 @@ export function MaticAlert() {
   const [isExiting, setIsExiting] = useState(false)
 
   const { data } = useQuery<GlobalWalletBalance>({
-    queryKey: ["global-wallet-balance"],
+    queryKey: queryKeys.admin.globalWallet(),
     queryFn: async () => {
       const res = await fetch(`${API_URL}/admin/global-wallet/balance`, {
         credentials: "include",

@@ -1,10 +1,7 @@
-"use client"
-
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { signIn } from "@/hooks/use-auth"
+import { useNavigate } from "@tanstack/react-router"
+import { signInEmail } from "@/lib/auth-client"
 import { adminLoginSchema, type AdminLoginInput } from "@/api/schemas/admin-login.schema"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,7 +26,7 @@ const errorMessages: Record<LoginError, string> = {
 }
 
 export function AdminLoginForm() {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<LoginError | null>(null)
 
@@ -52,30 +49,30 @@ export function AdminLoginForm() {
     }
 
     try {
-      const result = await signIn({
-        email: data.email,
-        password: data.password,
-      })
-
-      if (result.error) {
-        // Tratamento de erros do Better Auth
-        if (result.error.message?.includes("Invalid credentials")) {
-          setError("INVALID_CREDENTIALS")
-        } else if (result.error.message?.includes("not admin")) {
-          setError("NOT_ADMIN")
-        } else if (result.error.message?.includes("blocked")) {
-          setError("ACCOUNT_BLOCKED")
-        } else {
-          setError("UNKNOWN_ERROR")
+      await signInEmail(
+        {
+          email: data.email,
+          password: data.password,
+        },
+        {
+          onSuccess: () => {
+            navigate({ to: "/admin/dashboard" })
+          },
+          onError: (ctx) => {
+            const errorMessage = ctx.error?.message || ""
+            if (errorMessage.includes("Invalid credentials")) {
+              setError("INVALID_CREDENTIALS")
+            } else if (errorMessage.includes("not admin")) {
+              setError("NOT_ADMIN")
+            } else if (errorMessage.includes("blocked")) {
+              setError("ACCOUNT_BLOCKED")
+            } else {
+              setError("UNKNOWN_ERROR")
+            }
+            setIsLoading(false)
+          },
         }
-        setIsLoading(false)
-        return
-      }
-
-      // Login bem-sucedido - redirecionar para dashboard
-      // O layout do dashboard fará a validação de papel
-      router.push("/admin/dashboard")
-      router.refresh()
+      )
     } catch (err) {
       console.error("❌ Erro no login:", err)
       setError("NETWORK_ERROR")

@@ -47,7 +47,7 @@ export async function registerTokenController(
     if (error instanceof z.ZodError) {
       return reply.status(400).send({
         error: "Validation error",
-        details: error.errors,
+        details: error.issues,
       });
     }
 

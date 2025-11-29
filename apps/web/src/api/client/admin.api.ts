@@ -1,6 +1,6 @@
 import type { GlobalWalletBalance } from "@/api/queries/admin/use-global-wallet-query"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333"
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333"
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${endpoint}`, {
