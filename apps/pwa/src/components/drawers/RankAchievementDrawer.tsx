@@ -10,7 +10,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import { TrendUp, TrendDown, Sparkles, Trophy, AlertCircle } from "lucide-react"
+import { TrendingUp, TrendingDown, Sparkles, Trophy, AlertCircle } from "lucide-react"
 import type { MLMRank } from "@/types/mlm"
 
 interface RankAchievementDrawerProps {
@@ -114,9 +114,9 @@ export function RankAchievementDrawer({
                 {/* Arrow */}
                 <div className="flex-1 flex justify-center">
                   {isUpgrade ? (
-                    <TrendUp size={32} className="text-green-500" strokeWidth={2.5} />
+                    <TrendingUp size={32} className="text-green-500" strokeWidth={2.5} />
                   ) : (
-                    <TrendDown size={32} className="text-orange-500" strokeWidth={2.5} />
+                    <TrendingDown size={32} className="text-orange-500" strokeWidth={2.5} />
                   )}
                 </div>
 
