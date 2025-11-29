@@ -4,12 +4,34 @@
 }
 
 html,
-body,
-#root {
+body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+/* Container mobile-first - limita largura no desktop */
+#root {
+  width: 100%;
+  height: 100%;
+  max-width: 430px; /* iPhone 14 Pro Max width */
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Desktop: centraliza e adiciona sombra */
+@media (min-width: 431px) {
+  body {
+    background-color: #000;
+  }
+
+  #root {
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    border-left: 1px solid #27272a;
+    border-right: 1px solid #27272a;
+  }
 }
 
 body {

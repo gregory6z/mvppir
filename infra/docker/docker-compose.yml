@@ -39,12 +39,24 @@ services:
     networks:
       - mvppir-network
 
-  # Frontend (Vite Static)
+  # Frontend - Landing Page (Vite Static)
   frontend:
     build:
       context: ../..
       dockerfile: apps/web/Dockerfile
     container_name: mvppir-frontend
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=${API_URL:-http://localhost:4000}
+    networks:
+      - mvppir-network
+
+  # PWA - Mobile App (Vite Static)
+  pwa:
+    build:
+      context: ../..
+      dockerfile: apps/pwa/Dockerfile
+    container_name: mvppir-pwa
     restart: unless-stopped
     environment:
       - VITE_API_URL=${API_URL:-http://localhost:4000}

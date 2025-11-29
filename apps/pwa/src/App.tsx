@@ -14,6 +14,7 @@ import { NotificationsScreen } from "@/screens/notifications/NotificationsScreen
 import { TransactionDetailScreen } from "@/screens/transactions/TransactionDetailScreen"
 import { ReferScreen } from "@/screens/refer/ReferScreen"
 import { IOSInstallScreen } from "@/screens/install/IOSInstallScreen"
+import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt"
 
 export function App() {
   // Usa authStore com token Bearer (fallback quando cookies cross-origin não funcionam)
@@ -22,17 +23,25 @@ export function App() {
   // Se não está autenticado, mostra rotas de auth
   if (!isAuthenticated) {
     return (
-      <Routes>
-        <Route path="/login" element={<LoginScreen />} />
-        <Route path="/signup" element={<SignupScreen />} />
-        <Route path="/invite" element={<InviteScreen />} />
-        <Route path="/install-ios" element={<IOSInstallScreen />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <>
+        <PWAInstallPrompt />
+        <Routes>
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/signup" element={<SignupScreen />} />
+          <Route path="/invite" element={<InviteScreen />} />
+          <Route path="/install-ios" element={<IOSInstallScreen />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </>
     )
   }
 
-  return <AuthenticatedApp />
+  return (
+    <>
+      <PWAInstallPrompt />
+      <AuthenticatedApp />
+    </>
+  )
 }
 
 function AuthenticatedApp() {
