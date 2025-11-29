@@ -23,16 +23,13 @@ export function validateMoralisSignature(
   const data = rawBody + streamSecret;
   const hash = keccak256(Buffer.from(data));
 
-  // Debug logging
-  console.log('=== MORALIS SIGNATURE DEBUG ===');
-  console.log('Raw Body:', rawBody);
-  console.log('Raw Body Length:', rawBody.length);
-  console.log('Stream Secret Length:', streamSecret.length);
-  console.log('Data to hash:', data.substring(0, 100) + '...');
-  console.log('Calculated hash:', hash);
-  console.log('Received signature:', signature);
-  console.log('Match:', hash === signature);
-  console.log('===============================');
+  // Debug apenas em desenvolvimento (nunca loga secrets em produção)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 Webhook signature validation:', {
+      match: hash === signature,
+      rawBodyLength: rawBody.length,
+    });
+  }
 
   return hash === signature;
 }

@@ -1,5 +1,7 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import helmet from '@fastify/helmet'
+import rateLimit from '@fastify/rate-limit'
 import { env } from './config/env'
 import authPlugin from './plugins/auth.plugin'
 import { bullBoardPlugin } from './plugins/bull-board.plugin'
@@ -75,18 +77,42 @@ export async function buildApp() {
     disableRequestLogging: env.isProduction,
   })
 
+  // Security: Helmet (security headers)
+  await app.register(helmet, {
+    contentSecurityPolicy: env.isProduction ? undefined : false, // Disable CSP in dev
+    crossOriginEmbedderPolicy: false, // Allow embedding
+  })
+
+  // Security: Rate Limiting (anti brute-force, anti DDoS)
+  await app.register(rateLimit, {
+    max: 100, // 100 requests per minute
+    timeWindow: '1 minute',
+    skipOnError: true,
+    keyGenerator: (request) => request.ip,
+    // Rotas mais sensíveis têm limites próprios
+    allowList: (request) => {
+      // Webhooks têm rate limit próprio no Nginx
+      if (request.url.startsWith('/webhooks')) return true
+      // Health check sem limite
+      if (request.url === '/health') return true
+      return false
+    },
+  })
+
   // Register CORS plugin
+  const defaultOrigins = env.isDevelopment
+    ? [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:5173',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001',
+        'http://127.0.0.1:5173',
+      ]
+    : [env.FRONTEND_URL]
+
   await app.register(cors, {
-    // Allow all origins in development (for mobile app testing)
-    // In production, allow frontend URL + localhost for PWA development
-    origin: env.isDevelopment
-      ? true
-      : [
-          env.FRONTEND_URL || 'http://localhost:3000',
-          'http://localhost:3001', // PWA development
-          'http://localhost:5173', // Vite default port
-          'https://mvppir-pwa.vercel.app', // PWA production
-        ],
+    origin: env.CORS_ORIGINS || defaultOrigins,
     credentials: true,
   })
 

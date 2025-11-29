@@ -31,6 +31,12 @@ const envSchema = z.object({
   API_BASE_URL: z.string().url().default('http://localhost:3333'),
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
 
+  // CORS - URLs permitidas separadas por vírgula
+  CORS_ORIGINS: z.string().optional().transform((val) => {
+    if (!val) return undefined
+    return val.split(',').map((origin) => origin.trim())
+  }),
+
   // Moralis (Blockchain Integration)
   MORALIS_API_KEY: z.string().min(1, {
     message: 'MORALIS_API_KEY is required',
