@@ -1,22 +1,6 @@
 import { useEffect } from 'react'
 import '@khmyznikov/pwa-install'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'pwa-install': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          'manifest-url'?: string
-          'name'?: string
-          'description'?: string
-          'icon'?: string
-        },
-        HTMLElement
-      >
-    }
-  }
-}
-
 export function PWAInstallPrompt() {
   useEffect(() => {
     // O componente web carrega automaticamente
