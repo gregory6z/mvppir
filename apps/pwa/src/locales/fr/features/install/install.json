@@ -1,0 +1,48 @@
+{
+  "title": "Installer",
+  "header": "Installer Stakly",
+  "button": "Installer l'App",
+  "notIOS": {
+    "title": "Accédez depuis iPhone",
+    "description": "Ce guide d'installation est conçu pour les appareils iOS (iPhone/iPad).",
+    "hint": "Veuillez ouvrir ce lien sur votre iPhone avec Safari pour installer l'application.",
+    "currentDevice": "Appareil actuel",
+    "deviceType": "Desktop/Android"
+  },
+  "inAppBrowser": {
+    "title": "Navigateur In-App Détecté",
+    "description": "Vous utilisez {{browser}}. L'installation PWA nécessite Safari.",
+    "howToOpen": "Comment ouvrir dans Safari:",
+    "step1": "Appuyez sur le bouton menu (•••) en haut ou en bas",
+    "step2": "Sélectionnez \"Ouvrir dans Safari\" ou \"Ouvrir dans le Navigateur\""
+  },
+  "notSafari": {
+    "title": "Safari Requis",
+    "description": "L'installation PWA sur iOS nécessite le navigateur Safari. Vous utilisez actuellement {{browser}}.",
+    "howToInstall": "Comment installer:",
+    "step1": "Copiez l'URL de cette page ou partagez-la avec Safari",
+    "step2": "Ouvrez le lien dans Safari",
+    "step3": "Suivez les instructions d'installation"
+  },
+  "safari": {
+    "addToHomeScreen": "Ajouter à l'écran d'accueil",
+    "description": "Installez Stakly sur votre iPhone pour une meilleure expérience - plus rapide, fonctionne hors ligne et ressemble à une application native!",
+    "step1": {
+      "title": "1. Appuyez sur le bouton Partager",
+      "description": "Recherchez l'icône de partage dans la barre inférieure de Safari"
+    },
+    "step2": {
+      "title": "2. Sélectionnez \"Sur l'écran d'accueil\"",
+      "description": "Faites défiler le menu et appuyez sur l'option"
+    },
+    "step3": {
+      "title": "3. Appuyez sur \"Ajouter\"",
+      "description": "Appuyez sur \"Ajouter\" dans le coin supérieur droit pour confirmer. L'application apparaîtra sur votre écran d'accueil!"
+    },
+    "tip": "Après l'installation, ouvrez Stakly depuis votre écran d'accueil pour la meilleure expérience - elle fonctionnera comme une application native!"
+  },
+  "buttons": {
+    "goToLogin": "Aller à la connexion",
+    "doItLater": "Je le ferai plus tard"
+  }
+}

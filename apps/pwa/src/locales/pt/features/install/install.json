@@ -1,0 +1,48 @@
+{
+  "title": "Instalar",
+  "header": "Instalar Stakly",
+  "button": "Instalar App",
+  "notIOS": {
+    "title": "Acesse pelo iPhone",
+    "description": "Este guia de instalação é para dispositivos iOS (iPhone/iPad).",
+    "hint": "Abra este link no seu iPhone usando o Safari para instalar o app.",
+    "currentDevice": "Dispositivo atual",
+    "deviceType": "Desktop/Android"
+  },
+  "inAppBrowser": {
+    "title": "Navegador In-App Detectado",
+    "description": "Você está usando {{browser}}. A instalação de PWA requer o Safari.",
+    "howToOpen": "Como abrir no Safari:",
+    "step1": "Toque no botão de menu (•••) no topo ou na parte inferior",
+    "step2": "Selecione \"Abrir no Safari\" ou \"Abrir no Navegador\""
+  },
+  "notSafari": {
+    "title": "Safari Necessário",
+    "description": "A instalação de PWA no iOS requer o navegador Safari. Você está usando {{browser}}.",
+    "howToInstall": "Como instalar:",
+    "step1": "Copie a URL desta página ou compartilhe com o Safari",
+    "step2": "Abra o link no Safari",
+    "step3": "Siga as instruções de instalação"
+  },
+  "safari": {
+    "addToHomeScreen": "Adicionar à Tela Inicial",
+    "description": "Instale o Stakly no seu iPhone para uma melhor experiência - mais rápido, funciona offline e parece um app nativo!",
+    "step1": {
+      "title": "1. Toque no botão Compartilhar",
+      "description": "Procure o ícone de compartilhar na barra inferior do Safari"
+    },
+    "step2": {
+      "title": "2. Selecione \"Adicionar à Tela de Início\"",
+      "description": "Role para baixo no menu e toque na opção"
+    },
+    "step3": {
+      "title": "3. Toque em \"Adicionar\"",
+      "description": "Toque em \"Adicionar\" no canto superior direito para confirmar. O app aparecerá na sua tela inicial!"
+    },
+    "tip": "Após a instalação, abra o Stakly pela tela inicial para a melhor experiência - funcionará como um app nativo!"
+  },
+  "buttons": {
+    "goToLogin": "Ir para Login",
+    "doItLater": "Fazer depois"
+  }
+}

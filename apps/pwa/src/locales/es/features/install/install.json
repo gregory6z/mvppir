@@ -1,0 +1,48 @@
+{
+  "title": "Instalar",
+  "header": "Instalar Stakly",
+  "button": "Instalar App",
+  "notIOS": {
+    "title": "Accede desde iPhone",
+    "description": "Esta guía de instalación es para dispositivos iOS (iPhone/iPad).",
+    "hint": "Por favor, abre este enlace en tu iPhone usando Safari para instalar la app.",
+    "currentDevice": "Dispositivo actual",
+    "deviceType": "Desktop/Android"
+  },
+  "inAppBrowser": {
+    "title": "Navegador In-App Detectado",
+    "description": "Estás usando {{browser}}. La instalación de PWA requiere Safari.",
+    "howToOpen": "Cómo abrir en Safari:",
+    "step1": "Toca el botón de menú (•••) en la parte superior o inferior",
+    "step2": "Selecciona \"Abrir en Safari\" o \"Abrir en Navegador\""
+  },
+  "notSafari": {
+    "title": "Se Requiere Safari",
+    "description": "La instalación de PWA en iOS requiere el navegador Safari. Estás usando {{browser}}.",
+    "howToInstall": "Cómo instalar:",
+    "step1": "Copia la URL de esta página o compártela con Safari",
+    "step2": "Abre el enlace en Safari",
+    "step3": "Sigue las instrucciones de instalación"
+  },
+  "safari": {
+    "addToHomeScreen": "Añadir a Pantalla de Inicio",
+    "description": "¡Instala Stakly en tu iPhone para una mejor experiencia - más rápido, funciona sin conexión y se siente como una app nativa!",
+    "step1": {
+      "title": "1. Toca el botón Compartir",
+      "description": "Busca el ícono de compartir en la barra inferior de Safari"
+    },
+    "step2": {
+      "title": "2. Selecciona \"Añadir a Pantalla de Inicio\"",
+      "description": "Desplázate hacia abajo en el menú y toca la opción"
+    },
+    "step3": {
+      "title": "3. Toca \"Añadir\"",
+      "description": "Toca \"Añadir\" en la esquina superior derecha para confirmar. ¡La app aparecerá en tu pantalla de inicio!"
+    },
+    "tip": "Después de la instalación, abre Stakly desde tu pantalla de inicio para la mejor experiencia - ¡funcionará como una app nativa!"
+  },
+  "buttons": {
+    "goToLogin": "Ir a Login",
+    "doItLater": "Lo haré después"
+  }
+}

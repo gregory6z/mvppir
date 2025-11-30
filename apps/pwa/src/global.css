@@ -21,6 +21,15 @@ body {
   overflow-x: hidden;
 }
 
+/* Limita elementos fixed ao container no desktop */
+@media (min-width: 431px) {
+  /* Calcula a posição left para centralizar elementos fixed */
+  :root {
+    --app-max-width: 430px;
+    --app-left: calc(50% - (var(--app-max-width) / 2));
+  }
+}
+
 /* Desktop: centraliza e adiciona sombra */
 @media (min-width: 431px) {
   body {

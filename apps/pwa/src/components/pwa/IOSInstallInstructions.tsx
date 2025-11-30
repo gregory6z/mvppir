@@ -1,25 +1,25 @@
 import { Share, Plus, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { useBrowserDetection } from "@/hooks/useBrowserDetection"
 
 interface IOSInstallInstructionsProps {
   onClose: () => void
-  appName?: string
 }
 
 export function IOSInstallInstructions({
   onClose,
-  appName = "Stakly",
 }: IOSInstallInstructionsProps) {
+  const { t } = useTranslation("features.install.install")
   const { browserName, isInAppBrowser } = useBrowserDetection()
 
   // If in-app browser (Instagram, Facebook, etc.), show special message
   if (isInAppBrowser) {
     return (
-      <div className="fixed inset-0 z-50 flex items-end bg-black/60 backdrop-blur-sm">
+      <div className="fixed inset-y-0 left-[var(--app-left,0)] w-full max-w-[var(--app-max-width,100%)] z-50 flex items-end bg-black/60 backdrop-blur-sm">
         <div className="w-full bg-zinc-900 rounded-t-3xl border-t border-zinc-800 p-6 pb-safe">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-white text-xl font-bold">Install {appName}</h2>
+            <h2 className="text-white text-xl font-bold">{t("header")}</h2>
             <button
               onClick={onClose}
               className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
@@ -32,9 +32,9 @@ export function IOSInstallInstructions({
           {/* Warning */}
           <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4 mb-6">
             <p className="text-orange-400 text-sm leading-relaxed">
-              <strong className="font-semibold">Installation not available</strong>
+              <strong className="font-semibold">⚠️ {t("inAppBrowser.title")}</strong>
               <br />
-              You're using an in-app browser ({browserName}). To install {appName}:
+              {t("inAppBrowser.description", { browser: browserName })}
             </p>
           </div>
 
@@ -45,8 +45,7 @@ export function IOSInstallInstructions({
                 <span className="text-white font-semibold text-sm">1</span>
               </div>
               <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-                Tap the <strong className="text-white">menu button</strong> (•••) and select{" "}
-                <strong className="text-white">"Open in Safari"</strong>
+                {t("inAppBrowser.step1")}
               </p>
             </div>
 
@@ -55,7 +54,7 @@ export function IOSInstallInstructions({
                 <span className="text-white font-semibold text-sm">2</span>
               </div>
               <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-                Follow the installation instructions in Safari
+                {t("inAppBrowser.step2")}
               </p>
             </div>
           </div>
@@ -65,7 +64,7 @@ export function IOSInstallInstructions({
             onClick={onClose}
             className="w-full mt-6 py-4 rounded-xl bg-violet-500 hover:bg-violet-600 active:scale-[0.99] transition-all"
           >
-            <span className="text-white font-semibold">Got it</span>
+            <span className="text-white font-semibold">{t("buttons.goToLogin")}</span>
           </button>
         </div>
       </div>
@@ -74,11 +73,11 @@ export function IOSInstallInstructions({
 
   // If not Safari, show message to open in Safari
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-y-0 left-[var(--app-left,0)] w-full max-w-[var(--app-max-width,100%)] z-50 flex items-end bg-black/60 backdrop-blur-sm">
       <div className="w-full bg-zinc-900 rounded-t-3xl border-t border-zinc-800 p-6 pb-safe">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white text-xl font-bold">Install {appName}</h2>
+          <h2 className="text-white text-xl font-bold">{t("header")}</h2>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
@@ -97,8 +96,7 @@ export function IOSInstallInstructions({
 
         {/* Description */}
         <p className="text-center text-zinc-300 text-sm mb-8 leading-relaxed">
-          Install {appName} on your iPhone for a better experience - faster, works offline,
-          and feels like a native app!
+          {t("safari.description")}
         </p>
 
         {/* Instructions */}
@@ -110,14 +108,10 @@ export function IOSInstallInstructions({
             </div>
             <div className="flex-1 pt-1">
               <p className="text-white font-semibold text-sm mb-1">
-                1. Tap the Share button
+                {t("safari.step1.title")}
               </p>
               <p className="text-zinc-400 text-xs leading-relaxed">
-                Look for the{" "}
-                <span className="inline-flex items-center">
-                  <Share size={12} className="inline mx-1" />
-                </span>{" "}
-                icon in Safari's bottom toolbar
+                {t("safari.step1.description")}
               </p>
             </div>
           </div>
@@ -129,14 +123,10 @@ export function IOSInstallInstructions({
             </div>
             <div className="flex-1 pt-1">
               <p className="text-white font-semibold text-sm mb-1">
-                2. Select "Add to Home Screen"
+                {t("safari.step2.title")}
               </p>
               <p className="text-zinc-400 text-xs leading-relaxed">
-                Scroll down in the menu and tap{" "}
-                <span className="inline-flex items-center">
-                  <Plus size={12} className="inline mx-1" />
-                </span>{" "}
-                "Add to Home Screen"
+                {t("safari.step2.description")}
               </p>
             </div>
           </div>
@@ -147,9 +137,9 @@ export function IOSInstallInstructions({
               <span className="text-white font-bold text-lg">3</span>
             </div>
             <div className="flex-1 pt-1">
-              <p className="text-white font-semibold text-sm mb-1">3. Tap "Add"</p>
+              <p className="text-white font-semibold text-sm mb-1">{t("safari.step3.title")}</p>
               <p className="text-zinc-400 text-xs leading-relaxed">
-                Confirm the installation and the app will appear on your home screen
+                {t("safari.step3.description")}
               </p>
             </div>
           </div>
@@ -158,8 +148,7 @@ export function IOSInstallInstructions({
         {/* Visual hint */}
         <div className="mt-8 p-4 bg-zinc-800/50 rounded-xl border border-zinc-700">
           <p className="text-zinc-400 text-xs text-center leading-relaxed">
-            💡 <strong className="text-zinc-300">Tip:</strong> After installation, open the app
-            from your home screen for the best experience!
+            💡 {t("safari.tip")}
           </p>
         </div>
 
@@ -168,7 +157,7 @@ export function IOSInstallInstructions({
           onClick={onClose}
           className="w-full mt-6 py-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.99] transition-all"
         >
-          <span className="text-white font-semibold">Got it</span>
+          <span className="text-white font-semibold">{t("buttons.doItLater")}</span>
         </button>
       </div>
     </div>

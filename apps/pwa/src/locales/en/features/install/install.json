@@ -1,0 +1,48 @@
+{
+  "title": "Install",
+  "header": "Install Stakly",
+  "button": "Install App",
+  "notIOS": {
+    "title": "Access from iPhone",
+    "description": "This installation guide is designed for iOS devices (iPhone/iPad).",
+    "hint": "Please open this link on your iPhone using Safari to install the app.",
+    "currentDevice": "Current device",
+    "deviceType": "Desktop/Android"
+  },
+  "inAppBrowser": {
+    "title": "In-App Browser Detected",
+    "description": "You're using {{browser}}. PWA installation requires Safari.",
+    "howToOpen": "How to open in Safari:",
+    "step1": "Tap the menu button (•••) at the top or bottom",
+    "step2": "Select \"Open in Safari\" or \"Open in Browser\""
+  },
+  "notSafari": {
+    "title": "Safari Required",
+    "description": "PWA installation on iOS requires Safari browser. You're currently using {{browser}}.",
+    "howToInstall": "How to install:",
+    "step1": "Copy this page's URL or share it to Safari",
+    "step2": "Open the link in Safari",
+    "step3": "Follow the installation instructions"
+  },
+  "safari": {
+    "addToHomeScreen": "Add to Home Screen",
+    "description": "Install Stakly on your iPhone for a better experience - faster, works offline, and feels like a native app!",
+    "step1": {
+      "title": "1. Tap the Share button",
+      "description": "Look for the share icon in Safari's bottom toolbar"
+    },
+    "step2": {
+      "title": "2. Select \"Add to Home Screen\"",
+      "description": "Scroll down in the menu and tap the option"
+    },
+    "step3": {
+      "title": "3. Tap \"Add\"",
+      "description": "Tap \"Add\" in the top right corner to confirm. The app will appear on your home screen!"
+    },
+    "tip": "After installation, open Stakly from your home screen for the best experience - it will work just like a native app!"
+  },
+  "buttons": {
+    "goToLogin": "Go to Login",
+    "doItLater": "I'll do it later"
+  }
+}

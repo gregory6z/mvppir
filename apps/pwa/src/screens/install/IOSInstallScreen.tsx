@@ -1,11 +1,13 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Share, Plus, Smartphone, ArrowLeft } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { usePWAInstallStatus } from "@/hooks/usePWAInstallStatus"
 import { useBrowserDetection } from "@/hooks/useBrowserDetection"
 
 export function IOSInstallScreen() {
   const navigate = useNavigate()
+  const { t } = useTranslation("features.install.install")
   const { isInstalled, isIOS } = usePWAInstallStatus()
   const { isSafari, browserName, isInAppBrowser } = useBrowserDetection()
 
@@ -33,7 +35,7 @@ export function IOSInstallScreen() {
           >
             <ArrowLeft size={24} className="text-white" />
           </button>
-          <h1 className="text-white text-xl font-bold ml-2">Install Stakly</h1>
+          <h1 className="text-white text-xl font-bold ml-2">{t("header")}</h1>
         </div>
 
         {/* Content */}
@@ -43,19 +45,19 @@ export function IOSInstallScreen() {
           </div>
 
           <h2 className="text-white text-2xl font-bold mb-3 text-center">
-            Access from iPhone
+            {t("notIOS.title")}
           </h2>
 
           <p className="text-zinc-400 text-sm text-center max-w-sm leading-relaxed">
-            This installation guide is designed for iOS devices (iPhone/iPad).
+            {t("notIOS.description")}
             <br />
             <br />
-            Please open this link on your iPhone using Safari to install the app.
+            {t("notIOS.hint")}
           </p>
 
           <div className="mt-8 p-4 bg-zinc-900 rounded-2xl border border-zinc-800">
             <p className="text-zinc-400 text-xs text-center">
-              <strong className="text-white">Current device:</strong> Desktop/Android
+              <strong className="text-white">{t("notIOS.currentDevice")}:</strong> {t("notIOS.deviceType")}
             </p>
           </div>
 
@@ -64,7 +66,7 @@ export function IOSInstallScreen() {
             onClick={handleBack}
             className="mt-8 px-6 py-3 rounded-xl bg-violet-500 hover:bg-violet-600 active:scale-[0.99] transition-all"
           >
-            <span className="text-white font-semibold">Go to Login</span>
+            <span className="text-white font-semibold">{t("buttons.goToLogin")}</span>
           </button>
         </div>
       </div>
@@ -84,30 +86,29 @@ export function IOSInstallScreen() {
           >
             <ArrowLeft size={24} className="text-white" />
           </button>
-          <h1 className="text-white text-xl font-bold ml-2">Install Stakly</h1>
+          <h1 className="text-white text-xl font-bold ml-2">{t("header")}</h1>
         </div>
 
         {/* Warning */}
         <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-5 mb-6">
           <h3 className="text-orange-400 font-semibold text-base mb-2">
-            ⚠️ In-App Browser Detected
+            ⚠️ {t("inAppBrowser.title")}
           </h3>
           <p className="text-orange-300 text-sm leading-relaxed">
-            You're using {browserName}. PWA installation requires Safari.
+            {t("inAppBrowser.description", { browser: browserName })}
           </p>
         </div>
 
         {/* Instructions to open in Safari */}
         <div className="space-y-4">
-          <h2 className="text-white text-lg font-semibold">How to open in Safari:</h2>
+          <h2 className="text-white text-lg font-semibold">{t("inAppBrowser.howToOpen")}</h2>
 
           <div className="flex items-start">
             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center mr-3">
               <span className="text-white font-semibold text-sm">1</span>
             </div>
             <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-              Tap the <strong className="text-white">menu button</strong> (•••) at the top or
-              bottom
+              {t("inAppBrowser.step1")}
             </p>
           </div>
 
@@ -116,8 +117,7 @@ export function IOSInstallScreen() {
               <span className="text-white font-semibold text-sm">2</span>
             </div>
             <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-              Select <strong className="text-white">"Open in Safari"</strong> or{" "}
-              <strong className="text-white">"Open in Browser"</strong>
+              {t("inAppBrowser.step2")}
             </p>
           </div>
 
@@ -126,7 +126,7 @@ export function IOSInstallScreen() {
               <span className="text-white font-semibold text-sm">3</span>
             </div>
             <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-              Follow the installation instructions in Safari
+              {t("notSafari.step3")}
             </p>
           </div>
         </div>
@@ -136,7 +136,7 @@ export function IOSInstallScreen() {
           onClick={handleBack}
           className="mt-8 w-full py-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.99] transition-all"
         >
-          <span className="text-white font-semibold">Go to Login</span>
+          <span className="text-white font-semibold">{t("buttons.goToLogin")}</span>
         </button>
       </div>
     )
@@ -155,30 +155,29 @@ export function IOSInstallScreen() {
           >
             <ArrowLeft size={24} className="text-white" />
           </button>
-          <h1 className="text-white text-xl font-bold ml-2">Install Stakly</h1>
+          <h1 className="text-white text-xl font-bold ml-2">{t("header")}</h1>
         </div>
 
         {/* Warning */}
         <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-5 mb-6">
           <h3 className="text-blue-400 font-semibold text-base mb-2">
-            Safari Required
+            {t("notSafari.title")}
           </h3>
           <p className="text-blue-300 text-sm leading-relaxed">
-            PWA installation on iOS requires Safari browser. You're currently using{" "}
-            {browserName}.
+            {t("notSafari.description", { browser: browserName })}
           </p>
         </div>
 
         {/* Instructions */}
         <div className="space-y-4">
-          <h2 className="text-white text-lg font-semibold">How to install:</h2>
+          <h2 className="text-white text-lg font-semibold">{t("notSafari.howToInstall")}</h2>
 
           <div className="flex items-start">
             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center mr-3">
               <span className="text-white font-semibold text-sm">1</span>
             </div>
             <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-              Copy this page's URL or share it to Safari
+              {t("notSafari.step1")}
             </p>
           </div>
 
@@ -187,7 +186,7 @@ export function IOSInstallScreen() {
               <span className="text-white font-semibold text-sm">2</span>
             </div>
             <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-              Open the link in <strong className="text-white">Safari</strong>
+              {t("notSafari.step2")}
             </p>
           </div>
 
@@ -196,7 +195,7 @@ export function IOSInstallScreen() {
               <span className="text-white font-semibold text-sm">3</span>
             </div>
             <p className="text-zinc-300 text-sm leading-relaxed pt-1">
-              Follow the installation instructions
+              {t("notSafari.step3")}
             </p>
           </div>
         </div>
@@ -206,7 +205,7 @@ export function IOSInstallScreen() {
           onClick={handleBack}
           className="mt-8 w-full py-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.99] transition-all"
         >
-          <span className="text-white font-semibold">Go to Login</span>
+          <span className="text-white font-semibold">{t("buttons.goToLogin")}</span>
         </button>
       </div>
     )
@@ -224,7 +223,7 @@ export function IOSInstallScreen() {
         >
           <ArrowLeft size={24} className="text-white" />
         </button>
-        <h1 className="text-white text-xl font-bold ml-2">Install Stakly</h1>
+        <h1 className="text-white text-xl font-bold ml-2">{t("header")}</h1>
       </div>
 
       {/* App Icon */}
@@ -236,13 +235,12 @@ export function IOSInstallScreen() {
 
       {/* Title */}
       <h2 className="text-white text-2xl font-bold text-center mb-3">
-        Add Stakly to Home Screen
+        {t("safari.addToHomeScreen")}
       </h2>
 
       {/* Description */}
       <p className="text-center text-zinc-300 text-sm mb-10 leading-relaxed max-w-md mx-auto">
-        Install Stakly on your iPhone for a better experience - faster, works offline, and feels
-        like a native app!
+        {t("safari.description")}
       </p>
 
       {/* Instructions */}
@@ -253,14 +251,9 @@ export function IOSInstallScreen() {
             <Share size={24} className="text-white" strokeWidth={2.5} />
           </div>
           <div className="flex-1 pt-1">
-            <p className="text-white font-semibold text-base mb-2">1. Tap the Share button</p>
+            <p className="text-white font-semibold text-base mb-2">{t("safari.step1.title")}</p>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              Look for the{" "}
-              <span className="inline-flex items-center px-2 py-1 rounded bg-blue-500/20">
-                <Share size={14} className="inline mr-1" />
-                <span className="text-blue-400 text-xs">Share</span>
-              </span>{" "}
-              icon in Safari's bottom toolbar
+              {t("safari.step1.description")}
             </p>
           </div>
         </div>
@@ -272,15 +265,10 @@ export function IOSInstallScreen() {
           </div>
           <div className="flex-1 pt-1">
             <p className="text-white font-semibold text-base mb-2">
-              2. Select "Add to Home Screen"
+              {t("safari.step2.title")}
             </p>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              Scroll down in the menu and tap the{" "}
-              <span className="inline-flex items-center px-2 py-1 rounded bg-violet-500/20">
-                <Plus size={14} className="inline mr-1" />
-                <span className="text-violet-400 text-xs">Add to Home Screen</span>
-              </span>{" "}
-              option
+              {t("safari.step2.description")}
             </p>
           </div>
         </div>
@@ -291,10 +279,9 @@ export function IOSInstallScreen() {
             <span className="text-white font-bold text-xl">3</span>
           </div>
           <div className="flex-1 pt-1">
-            <p className="text-white font-semibold text-base mb-2">3. Tap "Add"</p>
+            <p className="text-white font-semibold text-base mb-2">{t("safari.step3.title")}</p>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              Tap <strong className="text-green-400">"Add"</strong> in the top right corner to
-              confirm. The app will appear on your home screen!
+              {t("safari.step3.description")}
             </p>
           </div>
         </div>
@@ -303,8 +290,7 @@ export function IOSInstallScreen() {
       {/* Visual hint */}
       <div className="mt-10 p-5 bg-zinc-900 rounded-2xl border border-zinc-800 max-w-md mx-auto w-full">
         <p className="text-zinc-400 text-xs text-center leading-relaxed">
-          💡 <strong className="text-zinc-300">Tip:</strong> After installation, open Stakly from
-          your home screen for the best experience - it will work just like a native app!
+          💡 {t("safari.tip")}
         </p>
       </div>
 
@@ -314,7 +300,7 @@ export function IOSInstallScreen() {
           onClick={handleBack}
           className="w-full py-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.99] transition-all"
         >
-          <span className="text-white font-semibold">I'll do it later</span>
+          <span className="text-white font-semibold">{t("buttons.doItLater")}</span>
         </button>
       </div>
 

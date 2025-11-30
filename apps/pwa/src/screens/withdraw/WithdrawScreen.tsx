@@ -420,7 +420,7 @@ export function WithdrawScreen() {
 
       {/* Success Modal */}
       {successModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
+        <div className="fixed inset-y-0 left-[var(--app-left,0)] w-full max-w-[var(--app-max-width,100%)] bg-black/50 flex items-center justify-center z-50 p-6">
           <div className="bg-zinc-900 rounded-3xl p-8 max-w-sm w-full border border-zinc-800">
             <div className="flex flex-col items-center">
               <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
