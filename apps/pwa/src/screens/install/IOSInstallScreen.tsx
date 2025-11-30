@@ -8,7 +8,7 @@ import { Logo } from "@/components/ui/logo"
 
 export function IOSInstallScreen() {
   const navigate = useNavigate()
-  const { t } = useTranslation("features.install.install")
+  const { t } = useTranslation("install.install")
   const { isInstalled, isIOS } = usePWAInstallStatus()
   const { isSafari, browserName, isInAppBrowser } = useBrowserDetection()
 

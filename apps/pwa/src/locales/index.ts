@@ -17,6 +17,7 @@ import ptWithdraw from "./pt/features/withdraw/withdraw.json"
 import ptNotifications from "./pt/features/notifications/notifications.json"
 import ptCommissionDrawer from "./pt/features/commission/drawer.json"
 import ptTransactionDetail from "./pt/features/transactions/detail.json"
+import ptInstall from "./pt/features/install/install.json"
 
 // English translations
 import enCommon from "./en/common.json"
@@ -34,6 +35,7 @@ import enWithdraw from "./en/features/withdraw/withdraw.json"
 import enNotifications from "./en/features/notifications/notifications.json"
 import enCommissionDrawer from "./en/features/commission/drawer.json"
 import enTransactionDetail from "./en/features/transactions/detail.json"
+import enInstall from "./en/features/install/install.json"
 
 // Spanish translations
 import esCommon from "./es/common.json"
@@ -51,6 +53,7 @@ import esWithdraw from "./es/features/withdraw/withdraw.json"
 import esNotifications from "./es/features/notifications/notifications.json"
 import esCommissionDrawer from "./es/features/commission/drawer.json"
 import esTransactionDetail from "./es/features/transactions/detail.json"
+import esInstall from "./es/features/install/install.json"
 
 // French translations
 import frCommon from "./fr/common.json"
@@ -68,6 +71,7 @@ import frWithdraw from "./fr/features/withdraw/withdraw.json"
 import frNotifications from "./fr/features/notifications/notifications.json"
 import frCommissionDrawer from "./fr/features/commission/drawer.json"
 import frTransactionDetail from "./fr/features/transactions/detail.json"
+import frInstall from "./fr/features/install/install.json"
 
 const resources = {
   pt: {
@@ -87,6 +91,7 @@ const resources = {
     "notifications.notifications": ptNotifications,
     "commission.drawer": ptCommissionDrawer,
     "transactions.detail": ptTransactionDetail,
+    "install.install": ptInstall,
   },
   en: {
     "common.greetings": enCommon.greetings,
@@ -105,6 +110,7 @@ const resources = {
     "notifications.notifications": enNotifications,
     "commission.drawer": enCommissionDrawer,
     "transactions.detail": enTransactionDetail,
+    "install.install": enInstall,
   },
   es: {
     "common.greetings": esCommon.greetings,
@@ -123,6 +129,7 @@ const resources = {
     "notifications.notifications": esNotifications,
     "commission.drawer": esCommissionDrawer,
     "transactions.detail": esTransactionDetail,
+    "install.install": esInstall,
   },
   fr: {
     "common.greetings": frCommon.greetings,
@@ -141,6 +148,7 @@ const resources = {
     "notifications.notifications": frNotifications,
     "commission.drawer": frCommissionDrawer,
     "transactions.detail": frTransactionDetail,
+    "install.install": frInstall,
   },
 }
 

@@ -4,7 +4,7 @@ import { useInstallPWA } from "@/hooks/useInstallPWA"
 import { Button } from "./button"
 
 export function InstallButton() {
-  const { t } = useTranslation("features.install.install")
+  const { t } = useTranslation("install.install")
   const { isInstallable, installPWA } = useInstallPWA()
 
   if (!isInstallable) {

@@ -10,7 +10,7 @@ interface IOSInstallInstructionsProps {
 export function IOSInstallInstructions({
   onClose,
 }: IOSInstallInstructionsProps) {
-  const { t } = useTranslation("features.install.install")
+  const { t } = useTranslation("install.install")
   const { browserName, isInAppBrowser } = useBrowserDetection()
 
   // If in-app browser (Instagram, Facebook, etc.), show special message
