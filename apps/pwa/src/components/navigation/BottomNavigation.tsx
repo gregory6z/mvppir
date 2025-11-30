@@ -39,7 +39,7 @@ export function BottomNavigation() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-[var(--app-left,0)] w-full max-w-[var(--app-max-width,100%)] bg-zinc-900/95 backdrop-blur-xl border-t border-zinc-800 z-50">
+    <nav className="fixed bottom-0 left-[var(--app-left)] w-[var(--app-max-width)] bg-zinc-900/95 backdrop-blur-xl border-t border-zinc-800 z-50">
       <div className="px-2">
         <div className="flex items-center justify-around h-20">
           {tabs.map((tab) => {

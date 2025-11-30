@@ -9,7 +9,7 @@ export function PWAStatus() {
   }
 
   return (
-    <div className="fixed bottom-24 left-[calc(var(--app-left,0px)+16px)] bg-zinc-900/95 border border-zinc-700 rounded-lg p-4 text-xs text-white z-50 max-w-xs">
+    <div className="fixed bottom-24 left-[calc(var(--app-left)+16px)] bg-zinc-900/95 border border-zinc-700 rounded-lg p-4 text-xs text-white z-50 max-w-xs">
       <h3 className="font-bold mb-2 text-purple-400">PWA Status (Dev Only)</h3>
       <div className="space-y-1">
         <div>

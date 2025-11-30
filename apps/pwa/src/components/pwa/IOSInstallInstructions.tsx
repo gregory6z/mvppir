@@ -1,6 +1,7 @@
 import { Share, Plus, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useBrowserDetection } from "@/hooks/useBrowserDetection"
+import { Logo } from "@/components/ui/logo"
 
 interface IOSInstallInstructionsProps {
   onClose: () => void
@@ -15,7 +16,7 @@ export function IOSInstallInstructions({
   // If in-app browser (Instagram, Facebook, etc.), show special message
   if (isInAppBrowser) {
     return (
-      <div className="fixed inset-y-0 left-[var(--app-left,0)] w-full max-w-[var(--app-max-width,100%)] z-50 flex items-end bg-black/60 backdrop-blur-sm">
+      <div className="fixed inset-y-0 left-[var(--app-left)] w-[var(--app-max-width)] z-50 flex items-end bg-black/60 backdrop-blur-sm">
         <div className="w-full bg-zinc-900 rounded-t-3xl border-t border-zinc-800 p-6 pb-safe">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -90,7 +91,7 @@ export function IOSInstallInstructions({
         {/* App icon */}
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shadow-2xl">
-            <span className="text-white text-4xl font-bold">S</span>
+            <Logo width={48} height={48} color="white" />
           </div>
         </div>
 

@@ -11,6 +11,12 @@ body {
   padding: 0;
 }
 
+/* CSS Variables for fixed elements positioning */
+:root {
+  --app-max-width: 100%;
+  --app-left: 0px;
+}
+
 /* Container mobile-first - limita largura no desktop */
 #root {
   width: 100%;
@@ -21,17 +27,13 @@ body {
   overflow-x: hidden;
 }
 
-/* Limita elementos fixed ao container no desktop */
-@media (min-width: 431px) {
-  /* Calcula a posição left para centralizar elementos fixed */
-  :root {
-    --app-max-width: 430px;
-    --app-left: calc(50% - (var(--app-max-width) / 2));
-  }
-}
-
 /* Desktop: centraliza e adiciona sombra */
 @media (min-width: 431px) {
+  :root {
+    --app-max-width: 430px;
+    --app-left: calc(50vw - 215px);
+  }
+
   body {
     background-color: #000;
   }

@@ -4,6 +4,7 @@ import { Share, Plus, Smartphone, ArrowLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { usePWAInstallStatus } from "@/hooks/usePWAInstallStatus"
 import { useBrowserDetection } from "@/hooks/useBrowserDetection"
+import { Logo } from "@/components/ui/logo"
 
 export function IOSInstallScreen() {
   const navigate = useNavigate()
@@ -229,7 +230,7 @@ export function IOSInstallScreen() {
       {/* App Icon */}
       <div className="flex justify-center mb-6">
         <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shadow-2xl">
-          <span className="text-white text-5xl font-bold">S</span>
+          <Logo width={56} height={56} color="white" />
         </div>
       </div>
 
