@@ -14,10 +14,10 @@ export const Route = createFileRoute("/app")({
 
 function AppLayout() {
   return (
-    <div className="min-h-screen bg-zinc-950 flex">
+    <div className="min-h-screen bg-zinc-950">
       <UserSidebar />
-      <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto">
+      <main className="lg:ml-64 min-h-screen p-6 lg:p-8 overflow-y-auto">
+        <div className="max-w-6xl mx-auto pt-14 lg:pt-0">
           <Outlet />
         </div>
       </main>
