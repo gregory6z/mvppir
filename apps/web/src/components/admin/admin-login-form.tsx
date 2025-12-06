@@ -49,15 +49,12 @@ export function AdminLoginForm() {
     }
 
     try {
-      await signInEmail(
+      const result = await signInEmail(
         {
           email: data.email,
           password: data.password,
         },
         {
-          onSuccess: () => {
-            navigate({ to: "/admin/dashboard" })
-          },
           onError: (ctx) => {
             const errorMessage = ctx.error?.message || ""
             if (errorMessage.includes("Invalid credentials")) {
@@ -73,6 +70,14 @@ export function AdminLoginForm() {
           },
         }
       )
+
+      // Se não houve erro, redireciona
+      if (result && !result.error) {
+        navigate({ to: "/admin/dashboard" })
+      } else if (result?.error) {
+        setError("INVALID_CREDENTIALS")
+        setIsLoading(false)
+      }
     } catch (err) {
       console.error("❌ Erro no login:", err)
       setError("NETWORK_ERROR")
