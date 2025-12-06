@@ -17,10 +17,8 @@ function AppLayout() {
     <div className="min-h-screen bg-zinc-950">
       <UserSidebar />
       {/* Main content - ml-64 on desktop to account for fixed sidebar */}
-      <main className="min-h-screen lg:ml-64">
-        <div className="p-4 pt-16 lg:pt-8 lg:p-8 max-w-6xl mx-auto">
-          <Outlet />
-        </div>
+      <main className="min-h-screen lg:ml-64 p-4 pt-16 lg:pt-8 lg:p-8">
+        <Outlet />
       </main>
     </div>
   )
