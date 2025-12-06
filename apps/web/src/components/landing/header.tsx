@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "@tanstack/react-router"
 import { Menu, X } from "lucide-react"
 
 export const Header = () => {
@@ -47,16 +48,19 @@ export const Header = () => {
                 {link.label}
               </button>
             ))}
-            {/* CTA Button */}
-            <button
-              onClick={() => {
-                const section = document.querySelector("#hero")
-                section?.scrollIntoView({ behavior: "smooth" })
-              }}
-              className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 rounded-lg text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-purple-500/30 cursor-pointer"
+            {/* Auth Buttons */}
+            <Link
+              to="/login"
+              className="text-sm text-zinc-400 hover:text-white transition-colors font-medium"
             >
-              Baixar App
-            </button>
+              Entrar
+            </Link>
+            <Link
+              to="/signup"
+              className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 rounded-lg text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-purple-500/30"
+            >
+              Criar Conta
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -84,17 +88,21 @@ export const Header = () => {
                 {link.label}
               </button>
             ))}
-            {/* Mobile CTA Button */}
-            <button
-              onClick={() => {
-                const section = document.querySelector("#hero")
-                section?.scrollIntoView({ behavior: "smooth" })
-                setMobileMenuOpen(false)
-              }}
-              className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 rounded-lg text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-purple-500/30 cursor-pointer"
+            {/* Mobile Auth Buttons */}
+            <Link
+              to="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full text-left text-sm text-zinc-400 hover:text-white transition-colors py-3 px-4 hover:bg-white/5 rounded-lg font-medium"
             >
-              Baixar App
-            </button>
+              Entrar
+            </Link>
+            <Link
+              to="/signup"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full mt-4 px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 rounded-lg text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-purple-500/30 text-center"
+            >
+              Criar Conta
+            </Link>
           </div>
         )}
       </nav>

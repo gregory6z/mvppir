@@ -12,6 +12,9 @@ export const { signOut, useSession } = authClient
 // Sign in helper
 export const signInEmail = authClient.signIn.email
 
+// Sign up helper
+export const signUpEmail = authClient.signUp.email
+
 // Exporta tipos inferidos
 export type Session = typeof authClient.$Infer.Session
 export type User = typeof authClient.$Infer.Session.user
