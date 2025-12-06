@@ -162,7 +162,7 @@ export interface WithdrawalLimits {
 }
 
 export async function getWithdrawalLimits(): Promise<ApiResponse<WithdrawalLimits>> {
-  return request<WithdrawalLimits>("/withdrawal/limits")
+  return request<WithdrawalLimits>("/user/withdrawals/limits")
 }
 
 export interface WithdrawalFee {
@@ -178,7 +178,7 @@ export async function calculateWithdrawalFee(
   tokenSymbol: string
 ): Promise<ApiResponse<WithdrawalFee>> {
   const params = new URLSearchParams({ amount, tokenSymbol })
-  return request<WithdrawalFee>(`/withdrawal/calculate-fee?${params}`)
+  return request<WithdrawalFee>(`/user/withdrawals/calculate-fee?${params}`)
 }
 
 export interface WithdrawalRequest {
@@ -200,7 +200,7 @@ export interface WithdrawalResponse {
 export async function requestWithdrawal(
   data: WithdrawalRequest
 ): Promise<ApiResponse<WithdrawalResponse>> {
-  return request<WithdrawalResponse>("/withdrawal/request", {
+  return request<WithdrawalResponse>("/user/withdrawals/request", {
     method: "POST",
     body: JSON.stringify(data),
   })
@@ -237,7 +237,7 @@ export async function getMyWithdrawals(
     page: String(page),
     limit: String(limit),
   })
-  return request<UserWithdrawalsResponse>(`/withdrawal/?${params}`)
+  return request<UserWithdrawalsResponse>(`/user/withdrawals?${params}`)
 }
 
 // ============== Unblock Balance ==============
