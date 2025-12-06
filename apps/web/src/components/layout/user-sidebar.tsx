@@ -82,8 +82,8 @@ export function UserSidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-40
-          w-64 h-screen bg-zinc-900 border-r border-zinc-800
+          fixed top-0 left-0 bottom-0 z-40
+          w-64 bg-zinc-900 border-r border-zinc-800
           transform transition-transform duration-200 ease-in-out
           flex flex-col
           ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
