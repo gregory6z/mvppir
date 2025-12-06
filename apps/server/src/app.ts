@@ -100,7 +100,7 @@ export async function buildApp() {
   })
 
   // Register CORS plugin
-  const defaultOrigins = env.isDevelopment
+  const corsOrigins = env.isDevelopment
     ? [
         'http://localhost:3000',
         'http://localhost:3001',
@@ -111,8 +111,10 @@ export async function buildApp() {
       ]
     : [env.FRONTEND_URL, env.PWA_URL].filter(Boolean) as string[]
 
+  console.log('🌐 CORS origins:', corsOrigins)
+
   await app.register(cors, {
-    origin: env.CORS_ORIGINS || defaultOrigins,
+    origin: corsOrigins,
     credentials: true,
   })
 
