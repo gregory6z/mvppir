@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -17,114 +20,253 @@ import { Route as AdminWithdrawalsRouteImport } from './routes/admin/withdrawals
 import { Route as AdminGlobalWalletRouteImport } from './routes/admin/global-wallet'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminBatchCollectRouteImport } from './routes/admin/batch-collect'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppDashboardRouteImport } from './routes/app/dashboard'
+import { Route as AppDepositRouteImport } from './routes/app/deposit'
+import { Route as AppWithdrawRouteImport } from './routes/app/withdraw'
+import { Route as AppWithdrawalsRouteImport } from './routes/app/withdrawals'
+import { Route as AppTransactionsRouteImport } from './routes/app/transactions'
+import { Route as AppReferralRouteImport } from './routes/app/referral'
 
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
   path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+
 const AdminWithdrawalsRoute = AdminWithdrawalsRouteImport.update({
   id: '/withdrawals',
   path: '/withdrawals',
   getParentRoute: () => AdminRoute,
 } as any)
+
 const AdminGlobalWalletRoute = AdminGlobalWalletRouteImport.update({
   id: '/global-wallet',
   path: '/global-wallet',
   getParentRoute: () => AdminRoute,
 } as any)
+
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
+
 const AdminBatchCollectRoute = AdminBatchCollectRouteImport.update({
   id: '/batch-collect',
   path: '/batch-collect',
   getParentRoute: () => AdminRoute,
 } as any)
 
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppDepositRoute = AppDepositRouteImport.update({
+  id: '/deposit',
+  path: '/deposit',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppWithdrawRoute = AppWithdrawRouteImport.update({
+  id: '/withdraw',
+  path: '/withdraw',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppWithdrawalsRoute = AppWithdrawalsRouteImport.update({
+  id: '/withdrawals',
+  path: '/withdrawals',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppTransactionsRoute = AppTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppReferralRoute = AppReferralRouteImport.update({
+  id: '/referral',
+  path: '/referral',
+  getParentRoute: () => AppRoute,
+} as any)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/batch-collect': typeof AdminBatchCollectRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/global-wallet': typeof AdminGlobalWalletRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
   '/admin/': typeof AdminIndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/deposit': typeof AppDepositRoute
+  '/app/withdraw': typeof AppWithdrawRoute
+  '/app/withdrawals': typeof AppWithdrawalsRoute
+  '/app/transactions': typeof AppTransactionsRoute
+  '/app/referral': typeof AppReferralRoute
+  '/app/': typeof AppIndexRoute
 }
+
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/admin/batch-collect': typeof AdminBatchCollectRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/global-wallet': typeof AdminGlobalWalletRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
   '/admin': typeof AdminIndexRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/deposit': typeof AppDepositRoute
+  '/app/withdraw': typeof AppWithdrawRoute
+  '/app/withdrawals': typeof AppWithdrawalsRoute
+  '/app/transactions': typeof AppTransactionsRoute
+  '/app/referral': typeof AppReferralRoute
+  '/app': typeof AppIndexRoute
 }
+
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/batch-collect': typeof AdminBatchCollectRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/global-wallet': typeof AdminGlobalWalletRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
   '/admin/': typeof AdminIndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/deposit': typeof AppDepositRoute
+  '/app/withdraw': typeof AppWithdrawRoute
+  '/app/withdrawals': typeof AppWithdrawalsRoute
+  '/app/transactions': typeof AppTransactionsRoute
+  '/app/referral': typeof AppReferralRoute
+  '/app/': typeof AppIndexRoute
 }
+
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/$'
+    | '/login'
+    | '/signup'
     | '/admin'
     | '/admin/batch-collect'
     | '/admin/dashboard'
     | '/admin/global-wallet'
     | '/admin/withdrawals'
     | '/admin/'
+    | '/app'
+    | '/app/dashboard'
+    | '/app/deposit'
+    | '/app/withdraw'
+    | '/app/withdrawals'
+    | '/app/transactions'
+    | '/app/referral'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/$'
+    | '/login'
+    | '/signup'
     | '/admin/batch-collect'
     | '/admin/dashboard'
     | '/admin/global-wallet'
     | '/admin/withdrawals'
     | '/admin'
+    | '/app/dashboard'
+    | '/app/deposit'
+    | '/app/withdraw'
+    | '/app/withdrawals'
+    | '/app/transactions'
+    | '/app/referral'
+    | '/app'
   id:
     | '__root__'
     | '/'
     | '/$'
+    | '/login'
+    | '/signup'
     | '/admin'
     | '/admin/batch-collect'
     | '/admin/dashboard'
     | '/admin/global-wallet'
     | '/admin/withdrawals'
     | '/admin/'
+    | '/app'
+    | '/app/dashboard'
+    | '/app/deposit'
+    | '/app/withdraw'
+    | '/app/withdrawals'
+    | '/app/transactions'
+    | '/app/referral'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
+
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -134,6 +276,27 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$': {
@@ -185,6 +348,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBatchCollectRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/deposit': {
+      id: '/app/deposit'
+      path: '/deposit'
+      fullPath: '/app/deposit'
+      preLoaderRoute: typeof AppDepositRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/withdraw': {
+      id: '/app/withdraw'
+      path: '/withdraw'
+      fullPath: '/app/withdraw'
+      preLoaderRoute: typeof AppWithdrawRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/withdrawals': {
+      id: '/app/withdrawals'
+      path: '/withdrawals'
+      fullPath: '/app/withdrawals'
+      preLoaderRoute: typeof AppWithdrawalsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/transactions': {
+      id: '/app/transactions'
+      path: '/transactions'
+      fullPath: '/app/transactions'
+      preLoaderRoute: typeof AppTransactionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/referral': {
+      id: '/app/referral'
+      path: '/referral'
+      fullPath: '/app/referral'
+      preLoaderRoute: typeof AppReferralRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -206,11 +418,37 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface AppRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppDepositRoute: typeof AppDepositRoute
+  AppWithdrawRoute: typeof AppWithdrawRoute
+  AppWithdrawalsRoute: typeof AppWithdrawalsRoute
+  AppTransactionsRoute: typeof AppTransactionsRoute
+  AppReferralRoute: typeof AppReferralRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppDashboardRoute: AppDashboardRoute,
+  AppDepositRoute: AppDepositRoute,
+  AppWithdrawRoute: AppWithdrawRoute,
+  AppWithdrawalsRoute: AppWithdrawalsRoute,
+  AppTransactionsRoute: AppTransactionsRoute,
+  AppReferralRoute: AppReferralRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
   AdminRoute: AdminRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
 }
+
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()

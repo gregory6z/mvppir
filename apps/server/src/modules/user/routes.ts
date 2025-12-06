@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { authMiddleware } from "@/middlewares/auth.middleware";
 import { getAccountController } from "./controllers/get-account-controller";
 import { getBalanceController } from "./controllers/get-balance-controller";
+import { getOnChainBalanceController } from "./controllers/get-onchain-balance-controller";
 import { getTransactionsController } from "./controllers/get-transactions-controller";
 import { getUnifiedTransactionsController } from "./controllers/get-unified-transactions-controller";
 import { getActivationStatusController } from "./controllers/get-activation-status-controller";
@@ -18,6 +19,9 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   // GET /user/balance - Get user balance por token
   fastify.get("/balance", getBalanceController);
+
+  // GET /user/balance/onchain - Get user balance directly from blockchain
+  fastify.get("/balance/onchain", getOnChainBalanceController);
 
   // GET /user/transactions - Get user transaction history (wallet only - deprecated)
   fastify.get("/transactions", getTransactionsController);
