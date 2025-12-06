@@ -31,7 +31,8 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
         process.env.FRONTEND_URL || "http://localhost:3000",
         "http://localhost:3001", // PWA development
         "http://localhost:5173", // Vite default port
-        "https://mvppir-pwa.vercel.app", // PWA production (CRITICAL for Bearer token)
+        "https://mvppir-pwa.vercel.app", // PWA production
+        "https://mvppir-web-o3i5.vercel.app", // Admin web production
       ],
   secret: process.env.AUTH_SECRET!,
   baseURL: process.env.API_BASE_URL || "http://localhost:3333",
@@ -66,7 +67,8 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   // Advanced options for cookie configuration
   advanced: {
     useSecureCookies: process.env.NODE_ENV === "production",
-    cookieSameSite: process.env.NODE_ENV === "development" ? "lax" : "lax",
+    // "none" is required for cross-site cookies (Vercel frontend <-> Railway backend)
+    cookieSameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
   },
 
   // Database hooks para processar referral code e gerar código próprio
