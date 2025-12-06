@@ -49,35 +49,31 @@ export function AdminLoginForm() {
     }
 
     try {
-      const result = await signInEmail(
-        {
-          email: data.email,
-          password: data.password,
-        },
-        {
-          onError: (ctx) => {
-            const errorMessage = ctx.error?.message || ""
-            if (errorMessage.includes("Invalid credentials")) {
-              setError("INVALID_CREDENTIALS")
-            } else if (errorMessage.includes("not admin")) {
-              setError("NOT_ADMIN")
-            } else if (errorMessage.includes("blocked")) {
-              setError("ACCOUNT_BLOCKED")
-            } else {
-              setError("UNKNOWN_ERROR")
-            }
-            setIsLoading(false)
-          },
-        }
-      )
+      const result = await signInEmail({
+        email: data.email,
+        password: data.password,
+      })
 
-      // Se não houve erro, redireciona
-      if (result && !result.error) {
-        navigate({ to: "/admin/dashboard" })
-      } else if (result?.error) {
-        setError("INVALID_CREDENTIALS")
+      console.log("Login result:", result)
+
+      // better-auth retorna { data, error }
+      if (result.error) {
+        const errorMessage = result.error.message || ""
+        if (errorMessage.includes("Invalid credentials")) {
+          setError("INVALID_CREDENTIALS")
+        } else if (errorMessage.includes("not admin")) {
+          setError("NOT_ADMIN")
+        } else if (errorMessage.includes("blocked")) {
+          setError("ACCOUNT_BLOCKED")
+        } else {
+          setError("UNKNOWN_ERROR")
+        }
         setIsLoading(false)
+        return
       }
+
+      // Login bem-sucedido - redireciona
+      navigate({ to: "/admin/dashboard" })
     } catch (err) {
       console.error("❌ Erro no login:", err)
       setError("NETWORK_ERROR")
