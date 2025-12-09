@@ -66,9 +66,11 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
 
   // Advanced options for cookie configuration
   advanced: {
-    useSecureCookies: process.env.NODE_ENV === "production",
-    // "none" is required for cross-site cookies (Vercel frontend <-> Railway backend)
-    cookieSameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
+    // Always use secure cookies when not in development (HTTPS required)
+    useSecureCookies: process.env.NODE_ENV !== "development",
+    // "none" is REQUIRED for cross-site cookies (Vercel frontend <-> Railway backend)
+    // Without "none", browser won't send cookies on cross-origin requests
+    cookieSameSite: "none" as const,
   },
 
   // Database hooks para processar referral code e gerar código próprio
