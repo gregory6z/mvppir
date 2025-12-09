@@ -9,8 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as LoginRouteImport } from './routes/login'
+import { Route as E001153aEa554aaf939aFeac4a3aea86RouteImport } from './routes/e001153a-ea55-4aaf-939a-feac4a3aea86'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as SplatRouteImport } from './routes/$'
@@ -28,16 +27,12 @@ import { Route as AdminGlobalWalletRouteImport } from './routes/admin/global-wal
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminBatchCollectRouteImport } from './routes/admin/batch-collect'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const E001153aEa554aaf939aFeac4a3aea86Route =
+  E001153aEa554aaf939aFeac4a3aea86RouteImport.update({
+    id: '/e001153a-ea55-4aaf-939a-feac4a3aea86',
+    path: '/e001153a-ea55-4aaf-939a-feac4a3aea86',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -124,8 +119,7 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/e001153a-ea55-4aaf-939a-feac4a3aea86': typeof E001153aEa554aaf939aFeac4a3aea86Route
   '/admin/batch-collect': typeof AdminBatchCollectRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/global-wallet': typeof AdminGlobalWalletRoute
@@ -142,8 +136,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/e001153a-ea55-4aaf-939a-feac4a3aea86': typeof E001153aEa554aaf939aFeac4a3aea86Route
   '/admin/batch-collect': typeof AdminBatchCollectRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/global-wallet': typeof AdminGlobalWalletRoute
@@ -163,8 +156,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/e001153a-ea55-4aaf-939a-feac4a3aea86': typeof E001153aEa554aaf939aFeac4a3aea86Route
   '/admin/batch-collect': typeof AdminBatchCollectRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/global-wallet': typeof AdminGlobalWalletRoute
@@ -185,8 +177,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/app'
-    | '/login'
-    | '/signup'
+    | '/e001153a-ea55-4aaf-939a-feac4a3aea86'
     | '/admin/batch-collect'
     | '/admin/dashboard'
     | '/admin/global-wallet'
@@ -203,8 +194,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$'
-    | '/login'
-    | '/signup'
+    | '/e001153a-ea55-4aaf-939a-feac4a3aea86'
     | '/admin/batch-collect'
     | '/admin/dashboard'
     | '/admin/global-wallet'
@@ -223,8 +213,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/admin'
     | '/app'
-    | '/login'
-    | '/signup'
+    | '/e001153a-ea55-4aaf-939a-feac4a3aea86'
     | '/admin/batch-collect'
     | '/admin/dashboard'
     | '/admin/global-wallet'
@@ -244,24 +233,16 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  SignupRoute: typeof SignupRoute
+  E001153aEa554aaf939aFeac4a3aea86Route: typeof E001153aEa554aaf939aFeac4a3aea86Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/e001153a-ea55-4aaf-939a-feac4a3aea86': {
+      id: '/e001153a-ea55-4aaf-939a-feac4a3aea86'
+      path: '/e001153a-ea55-4aaf-939a-feac4a3aea86'
+      fullPath: '/e001153a-ea55-4aaf-939a-feac4a3aea86'
+      preLoaderRoute: typeof E001153aEa554aaf939aFeac4a3aea86RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -424,8 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
-  LoginRoute: LoginRoute,
-  SignupRoute: SignupRoute,
+  E001153aEa554aaf939aFeac4a3aea86Route: E001153aEa554aaf939aFeac4a3aea86Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

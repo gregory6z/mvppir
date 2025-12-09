@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { Link } from "@tanstack/react-router"
 import { Menu, X } from "lucide-react"
 
 export const Header = () => {
@@ -48,21 +47,6 @@ export const Header = () => {
                 {link.label}
               </button>
             ))}
-            {/* Auth Buttons */}
-            <Link
-              to="/login"
-              search={{ redirect: "/app/dashboard" }}
-              className="text-sm text-zinc-400 hover:text-white transition-colors font-medium"
-            >
-              Entrar
-            </Link>
-            <Link
-              to="/signup"
-              search={{ ref: "" }}
-              className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 rounded-lg text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-purple-500/30"
-            >
-              Criar Conta
-            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -90,23 +74,6 @@ export const Header = () => {
                 {link.label}
               </button>
             ))}
-            {/* Mobile Auth Buttons */}
-            <Link
-              to="/login"
-              search={{ redirect: "/app/dashboard" }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block w-full text-left text-sm text-zinc-400 hover:text-white transition-colors py-3 px-4 hover:bg-white/5 rounded-lg font-medium"
-            >
-              Entrar
-            </Link>
-            <Link
-              to="/signup"
-              search={{ ref: "" }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block w-full mt-4 px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 rounded-lg text-white text-sm font-semibold transition-all duration-200 shadow-lg shadow-purple-500/30 text-center"
-            >
-              Criar Conta
-            </Link>
           </div>
         )}
       </nav>
