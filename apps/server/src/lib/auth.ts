@@ -68,8 +68,9 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   advanced: {
     // Always use secure cookies when not in development (HTTPS required)
     useSecureCookies: process.env.NODE_ENV !== "development",
-    // "none" is REQUIRED for cross-site cookies (Vercel frontend <-> Railway backend)
-    // Without "none", browser won't send cookies on cross-origin requests
+    // TODO: [VPS Migration] Mudar para "lax" quando frontend e API estiverem no mesmo domínio
+    // Atualmente "none" é OBRIGATÓRIO porque Vercel (.vercel.app) e Railway (.railway.app) são domínios diferentes
+    // Após migrar para VPS com mesmo domínio (ex: api.stakly.com + app.stakly.com), usar "lax" que é mais seguro
     cookieSameSite: "none" as const,
   },
 
