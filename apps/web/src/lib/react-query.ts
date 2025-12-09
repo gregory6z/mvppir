@@ -5,8 +5,7 @@ export const queryKeys = {
   // Admin
   admin: {
     all: ["admin"] as const,
-    globalWallet: (page?: number, limit?: number) =>
-      [...queryKeys.admin.all, "global-wallet", { page, limit }] as const,
+    globalWallet: () => [...queryKeys.admin.all, "global-wallet"] as const,
     withdrawals: (status?: string, page?: number) =>
       [...queryKeys.admin.all, "withdrawals", { status, page }] as const,
     batchCollect: {

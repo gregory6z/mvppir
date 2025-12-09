@@ -127,7 +127,7 @@ function LoginPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-zinc-500">
                 Não tem uma conta?{" "}
-                <Link to="/signup" className="text-purple-400 hover:text-purple-300">
+                <Link to="/signup" search={{ ref: "" }} className="text-purple-400 hover:text-purple-300">
                   Cadastre-se
                 </Link>
               </p>

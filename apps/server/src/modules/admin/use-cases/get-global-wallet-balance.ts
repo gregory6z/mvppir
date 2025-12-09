@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getPrices } from "@/providers/price/price.provider";
+import { getAllOnChainBalances } from "@/providers/blockchain/balance.provider";
 
 interface GlobalWalletBalance {
   address: string;
@@ -11,89 +12,57 @@ interface GlobalWalletBalance {
     lastUpdated: string;
   }>;
   totalUsd: string;
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
-interface GetGlobalWalletBalanceParams {
-  page?: number;
-  limit?: number;
+  maticBalance: string;
+  maticUsdValue: string;
 }
 
 /**
- * Busca saldos de todos os tokens na Global Wallet com paginação
+ * Busca saldos on-chain da Global Wallet diretamente da rede Polygon
  */
-export async function getGlobalWalletBalance(
-  params: GetGlobalWalletBalanceParams = {}
-): Promise<GlobalWalletBalance> {
-  const page = params.page && params.page > 0 ? params.page : 1;
-  const limit = params.limit && params.limit > 0 ? params.limit : 10;
-  const skip = (page - 1) * limit;
-
-  // 1. Buscar Global Wallet
+export async function getGlobalWalletBalance(): Promise<GlobalWalletBalance> {
+  // 1. Buscar Global Wallet do banco (apenas para pegar o endereço)
   const globalWallet = await prisma.globalWallet.findFirst();
 
   if (!globalWallet) {
     throw new Error("GLOBAL_WALLET_NOT_FOUND");
   }
 
-  // 2. Contar total de tokens
-  const totalTokens = await prisma.globalWalletBalance.count({
-    where: { globalWalletId: globalWallet.id },
-  });
+  // 2. Buscar saldos diretamente da blockchain
+  const onChainBalances = await getAllOnChainBalances(
+    globalWallet.polygonAddress
+  );
 
-  // 3. Buscar tokens paginados
-  const balanceRecords = await prisma.globalWalletBalance.findMany({
-    where: { globalWalletId: globalWallet.id },
-    skip,
-    take: limit,
-    orderBy: { updatedAt: "desc" },
-  });
-
-  // 4. Buscar preços em USD (CoinGecko)
-  const tokenSymbols = balanceRecords.map((b) => b.tokenSymbol);
+  // 3. Buscar preços em USD (CoinGecko)
+  const tokenSymbols = onChainBalances.balances.map((b) => b.tokenSymbol);
   const prices = await getPrices(tokenSymbols);
 
-  // 5. Calcular USD values
-  const balances = balanceRecords.map((b) => {
+  // 4. Calcular USD values para cada token
+  let totalUsd = 0;
+  const balances = onChainBalances.balances.map((b) => {
     const usdPrice = prices[b.tokenSymbol] || 0;
     const usdValue = Number(b.balance) * usdPrice;
+    totalUsd += usdValue;
 
     return {
       tokenSymbol: b.tokenSymbol,
       tokenAddress: b.tokenAddress,
-      balance: b.balance.toString(),
+      balance: b.balance,
       usdValue: usdValue.toFixed(2),
-      lastUpdated: b.updatedAt.toISOString(),
+      lastUpdated: onChainBalances.timestamp,
     };
   });
 
-  // 6. Calcular total USD de TODOS os tokens (não apenas da página atual)
-  const allBalances = await prisma.globalWalletBalance.findMany({
-    where: { globalWalletId: globalWallet.id },
-  });
-
-  const allTokenSymbols = allBalances.map((b) => b.tokenSymbol);
-  const allPrices = await getPrices(allTokenSymbols);
-
-  const totalUsd = allBalances.reduce((sum, b) => {
-    const usdPrice = allPrices[b.tokenSymbol] || 0;
-    return sum + Number(b.balance) * usdPrice;
-  }, 0);
+  // 5. Extrair saldo de MATIC separadamente para o card de gas
+  const maticBalance = onChainBalances.totalMaticBalance;
+  const maticUsdValue = (Number(maticBalance) * (prices["MATIC"] || 0)).toFixed(
+    2
+  );
 
   return {
     address: globalWallet.polygonAddress,
     balances,
     totalUsd: totalUsd.toFixed(2),
-    pagination: {
-      page,
-      limit,
-      total: totalTokens,
-      totalPages: Math.ceil(totalTokens / limit),
-    },
+    maticBalance,
+    maticUsdValue,
   };
 }

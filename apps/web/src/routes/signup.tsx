@@ -195,7 +195,7 @@ function SignupPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-zinc-500">
                 Já tem uma conta?{" "}
-                <Link to="/login" className="text-purple-400 hover:text-purple-300">
+                <Link to="/login" search={{ redirect: "/app/dashboard" }} className="text-purple-400 hover:text-purple-300">
                   Entrar
                 </Link>
               </p>

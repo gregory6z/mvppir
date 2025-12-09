@@ -12,18 +12,14 @@ export interface GlobalWalletBalance {
     lastUpdated: string
   }>
   totalUsd: string
-  pagination: {
-    page: number
-    limit: number
-    total: number
-    totalPages: number
-  }
+  maticBalance: string
+  maticUsdValue: string
 }
 
-export function useGlobalWalletBalance(page = 1, limit = 10) {
+export function useGlobalWalletBalance() {
   return useQuery<GlobalWalletBalance>({
-    queryKey: queryKeys.admin.globalWallet(page, limit),
-    queryFn: () => getGlobalWalletBalance(page, limit),
+    queryKey: queryKeys.admin.globalWallet(),
+    queryFn: () => getGlobalWalletBalance(),
     refetchInterval: 60000, // Atualiza a cada 1 minuto
     staleTime: 30000, // Considera dados obsoletos após 30s
   })

@@ -18,6 +18,9 @@ type ExtendedUser = {
   updatedAt: Date
 }
 
+// Export signOut directly for components that need it outside of hook
+export const signOut = betterAuthSignOut
+
 export function useAuth() {
   const session = useSession()
   const user = session.data?.user as ExtendedUser | undefined
