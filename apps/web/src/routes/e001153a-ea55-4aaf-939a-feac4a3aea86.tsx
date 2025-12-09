@@ -61,6 +61,8 @@ function AdminLoginPage() {
         password: data.password,
       })
 
+      console.log("Login result:", result)
+
       if (result.error) {
         if (result.error.message?.includes("Invalid credentials")) {
           setError("INVALID_CREDENTIALS")
@@ -75,8 +77,11 @@ function AdminLoginPage() {
         return
       }
 
-      // Login bem-sucedido - redirecionar para dashboard admin
-      navigate({ to: "/admin/dashboard" })
+      // Login bem-sucedido - aguarda um pouco para o cookie ser setado
+      // e depois redireciona usando window.location para garantir reload completo
+      setTimeout(() => {
+        window.location.href = "/admin/dashboard"
+      }, 100)
     } catch (err) {
       console.error("Erro no login:", err)
       setError("NETWORK_ERROR")
