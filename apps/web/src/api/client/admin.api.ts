@@ -48,7 +48,7 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
 }
 
 export async function executeBatchCollect(): Promise<{ jobId: string; status: string }> {
-  return request<{ jobId: string; status: string }>("/transfer/batch-collect", {
+  return request<{ jobId: string; status: string }>("/admin/transfers/batch-collect", {
     method: "POST",
   })
 }

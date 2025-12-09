@@ -44,7 +44,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <div className="flex h-full w-64 flex-col border-r border-white/10 bg-zinc-950">
+    <div className="fixed top-0 left-0 bottom-0 w-64 flex flex-col border-r border-white/10 bg-zinc-950 z-40">
       {/* Header */}
       <div className="flex h-16 items-center border-b border-white/10 px-6">
         <Link to="/admin/dashboard">
