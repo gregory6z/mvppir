@@ -21,7 +21,7 @@ export async function getOnChainBalance({
   // Busca endereço de depósito do usuário
   const depositAddress = await prisma.depositAddress.findUnique({
     where: { userId },
-    select: { address: true },
+    select: { polygonAddress: true },
   });
 
   if (!depositAddress) {
@@ -32,9 +32,9 @@ export async function getOnChainBalance({
   }
 
   try {
-    console.log(`🔗 Fetching on-chain balance for user ${userId} at address ${depositAddress.address}`);
+    console.log(`🔗 Fetching on-chain balance for user ${userId} at address ${depositAddress.polygonAddress}`);
 
-    const onChainBalances = await getAllOnChainBalances(depositAddress.address);
+    const onChainBalances = await getAllOnChainBalances(depositAddress.polygonAddress);
 
     console.log(`✅ On-chain balance fetched successfully:`, {
       address: onChainBalances.address,

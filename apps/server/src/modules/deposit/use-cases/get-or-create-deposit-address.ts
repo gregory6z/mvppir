@@ -29,6 +29,15 @@ export async function getOrCreateDepositAddress({
   });
 
   if (existingAddress) {
+    // Fallback: ensure address is registered with Moralis Stream
+    // (in case it wasn't registered during signup)
+    try {
+      await addAddressToStream(existingAddress.polygonAddress);
+      console.log(`✅ Verified/added ${existingAddress.polygonAddress} to Moralis Stream`);
+    } catch (error) {
+      // If already exists in stream, Moralis may throw - that's ok
+      console.log(`ℹ️ Address ${existingAddress.polygonAddress} - Moralis response:`, error instanceof Error ? error.message : error);
+    }
     return existingAddress;
   }
 

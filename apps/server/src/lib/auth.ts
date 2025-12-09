@@ -104,20 +104,32 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
           try {
             const { Wallet } = await import("ethers");
             const { encryptPrivateKey } = await import("./encryption");
+            const { addAddressToStream } = await import("@/providers/moralis/stream.provider");
 
             const wallet = Wallet.createRandom();
             const encryptedKey = encryptPrivateKey(wallet.privateKey);
+            const polygonAddress = wallet.address.toLowerCase();
 
             await prisma.depositAddress.create({
               data: {
                 userId: user.id,
-                polygonAddress: wallet.address.toLowerCase(),
+                polygonAddress,
                 privateKey: encryptedKey,
                 status: "ACTIVE",
               },
             });
 
-            console.log(`✅ Created deposit address for ${user.name}: ${wallet.address.toLowerCase()}`);
+            console.log(`✅ Created deposit address for ${user.name}: ${polygonAddress}`);
+
+            // Register address with Moralis Stream for webhook monitoring
+            try {
+              await addAddressToStream(polygonAddress);
+              console.log(`✅ Address ${polygonAddress} registered with Moralis Stream`);
+            } catch (moralisError) {
+              console.error(`⚠️ Failed to register address with Moralis (will retry on deposit page):`, moralisError);
+              // Don't block - user can still see their address
+              // The address will be added when they visit the deposit page
+            }
           } catch (error) {
             console.error(`❌ Failed to create deposit address for user ${user.id}:`, error);
             // Don't block user creation if address generation fails

@@ -23,7 +23,8 @@
     "seed:history": "tsx seed-batch-collect-history.ts",
     "seed:withdrawals": "tsx seed-withdrawals.ts",
     "seed:all": "npm run seed:preview && npm run seed:matic && npm run seed:history && npm run seed:withdrawals",
-    "clean:mocks": "tsx clean-all-mocks.ts"
+    "clean:mocks": "tsx clean-all-mocks.ts",
+    "import:wallet": "tsx import-global-wallet.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
