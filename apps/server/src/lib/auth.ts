@@ -65,13 +65,17 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
   },
 
   // Advanced options for cookie configuration
+  // TODO: [VPS Migration] Mudar sameSite para "lax" quando frontend e API estiverem no mesmo domínio
+  // Atualmente "none" é OBRIGATÓRIO porque Vercel (.vercel.app) e Railway (.railway.app) são domínios diferentes
+  // Após migrar para VPS com mesmo domínio (ex: api.stakly.com + app.stakly.com), usar "lax" que é mais seguro
   advanced: {
     // Always use secure cookies when not in development (HTTPS required)
     useSecureCookies: process.env.NODE_ENV !== "development",
-    // TODO: [VPS Migration] Mudar para "lax" quando frontend e API estiverem no mesmo domínio
-    // Atualmente "none" é OBRIGATÓRIO porque Vercel (.vercel.app) e Railway (.railway.app) são domínios diferentes
-    // Após migrar para VPS com mesmo domínio (ex: api.stakly.com + app.stakly.com), usar "lax" que é mais seguro
-    cookieSameSite: "none" as const,
+    // Configure default cookie attributes for cross-origin requests
+    defaultCookieAttributes: {
+      sameSite: "none" as const,
+      secure: true,
+    },
   },
 
   // Database hooks para processar referral code e gerar código próprio
