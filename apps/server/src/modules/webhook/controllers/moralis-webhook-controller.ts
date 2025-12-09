@@ -51,10 +51,13 @@ export async function moralisWebhookController(
     const isValid = validateMoralisSignature(rawBody, signature);
 
     if (!isValid) {
-      request.log.warn({ signature, rawBodyLength: rawBody.length }, "Invalid Moralis webhook signature");
-      return reply.status(401).send({
-        error: "Unauthorized",
-        message: "Invalid signature",
+      // IMPORTANTE: Retornamos 200 mesmo com assinatura inválida para permitir
+      // que o Moralis verifique o endpoint durante criação/atualização de streams.
+      // Mas NÃO processamos os dados - apenas logamos e retornamos.
+      request.log.warn({ signature, rawBodyLength: rawBody.length }, "Invalid Moralis webhook signature - ignoring payload");
+      return reply.status(200).send({
+        message: "Webhook received but signature invalid - payload ignored",
+        processed: false,
       });
     }
 
