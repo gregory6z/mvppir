@@ -33,15 +33,19 @@ async function main() {
 
     // Verifica se o endereço de teste está sendo monitorado
     const targetAddress = "0xbe9b58870c378652f425716d53cb3f4413899a44".toLowerCase();
-    const isMonitored = addresses.result.some(
-      (a: any) => a.address.toLowerCase() === targetAddress
-    );
-    console.log(`  Endereço ${targetAddress} monitorado: ${isMonitored ? "✅ SIM" : "❌ NÃO"}`);
+    console.log(`\n  📍 Endereços no stream:`);
+    for (const a of addresses.result) {
+      console.log(`     - ${JSON.stringify(a)}`);
+    }
+    const isMonitored = addresses.result.some((a: any) => {
+      const addr = a?.address?.checksum || a?.address || a;
+      return String(addr).toLowerCase() === targetAddress;
+    });
+    console.log(`\n  Endereço ${targetAddress} monitorado: ${isMonitored ? "✅ SIM" : "❌ NÃO"}`);
 
     // Busca histórico de webhooks (se disponível)
     try {
       const history = await Moralis.Streams.getHistory({
-        id: stream.id,
         limit: 10,
       });
       console.log(`\n  📜 Últimos webhooks enviados:`);
@@ -49,7 +53,11 @@ async function main() {
         console.log("     Nenhum webhook recente");
       } else {
         for (const h of history.result) {
-          console.log(`     - ${h.id} | ${h.createdAt} | Delivered: ${h.delivered}`);
+          console.log(`     - ID: ${h.id}`);
+          console.log(`       Data: ${h.createdAt}`);
+          console.log(`       Delivered: ${h.delivered}`);
+          console.log(`       Error: ${h.errorMessage || 'none'}`);
+          console.log(`       ---`);
         }
       }
     } catch (e: any) {

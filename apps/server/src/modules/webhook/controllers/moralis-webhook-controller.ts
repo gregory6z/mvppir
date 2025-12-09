@@ -17,29 +17,22 @@ export async function moralisWebhookController(
       hasSignature: !!signature,
     }, "Moralis webhook request received");
 
-    // Moralis test requests: allow empty body or test payload without signature
-    if (!body || Object.keys(body).length === 0 || body.test === true) {
-      request.log.info("Moralis webhook test request - returning 200");
-      return reply.status(200).send({
-        message: "Webhook endpoint is reachable",
-      });
-    }
+    // Moralis test requests: allow empty body, test payload, or requests without signature
+    // Moralis sends various test payloads when verifying/updating streams
+    const isTestRequest =
+      !body ||
+      Object.keys(body).length === 0 ||
+      body.test === true ||
+      !signature; // Any request without signature is treated as test
 
-    // ⚠️ SEGURANÇA CRÍTICA: Webhooks sem signature NÃO são processados
-    // Durante criação do Stream, o Moralis envia webhook de teste sem signature
-    // Retornamos 200 para passar na validação, mas NÃO processamos os dados
-    // NUNCA cria transações, NUNCA credita saldos, NUNCA modifica banco de dados
-    if (!signature) {
-      request.log.warn({
-        ip: request.ip,
-        userAgent: request.headers["user-agent"],
+    if (isTestRequest && !signature) {
+      request.log.info({
+        hasBody: !!body,
         bodyKeys: body ? Object.keys(body) : [],
-      }, "⚠️ Webhook sem signature detectado - retornando 200 mas SEM processar dados");
-
+      }, "Moralis webhook test request (no signature) - returning 200");
       return reply.status(200).send({
         message: "Webhook endpoint is reachable",
-        processed: false, // Explícito: não processamos
-        reason: "Missing signature - test mode only",
+        processed: false,
       });
     }
 
