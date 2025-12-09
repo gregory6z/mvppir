@@ -25,32 +25,45 @@ export async function getOrCreateDepositAddress({
       polygonAddress: true,
       status: true,
       createdAt: true,
+      moralisRegistered: true,
     },
   });
 
   if (existingAddress) {
     // Fallback: ensure address is registered with Moralis Stream
     // (in case it wasn't registered during signup)
-    try {
-      await addAddressToStream(existingAddress.polygonAddress);
-      console.log(`✅ Verified/added ${existingAddress.polygonAddress} to Moralis Stream`);
-    } catch (error) {
-      // If already exists in stream, Moralis may throw - that's ok
-      console.log(`ℹ️ Address ${existingAddress.polygonAddress} - Moralis response:`, error instanceof Error ? error.message : error);
+    if (!existingAddress.moralisRegistered) {
+      try {
+        await addAddressToStream(existingAddress.polygonAddress);
+        await prisma.depositAddress.update({
+          where: { id: existingAddress.id },
+          data: { moralisRegistered: true },
+        });
+        console.log(`✅ Registered ${existingAddress.polygonAddress} with Moralis Stream (fallback)`);
+      } catch (error) {
+        console.error(`⚠️ Failed to register ${existingAddress.polygonAddress} with Moralis:`, error instanceof Error ? error.message : error);
+      }
     }
-    return existingAddress;
+    return {
+      id: existingAddress.id,
+      polygonAddress: existingAddress.polygonAddress,
+      status: existingAddress.status,
+      createdAt: existingAddress.createdAt,
+    };
   }
 
   // Cria novo endereço Polygon
   const wallet = Wallet.createRandom();
   const encryptedPrivateKey = encryptPrivateKey(wallet.privateKey);
+  const polygonAddress = wallet.address.toLowerCase();
 
   const newAddress = await prisma.depositAddress.create({
     data: {
       userId,
-      polygonAddress: wallet.address.toLowerCase(), // Sempre em lowercase
+      polygonAddress,
       privateKey: encryptedPrivateKey,
       status: "ACTIVE",
+      moralisRegistered: false,
     },
     select: {
       id: true,
@@ -62,15 +75,15 @@ export async function getOrCreateDepositAddress({
 
   // Adiciona o endereço ao Moralis Stream para monitoramento automático
   try {
-    await addAddressToStream(wallet.address.toLowerCase());
-    console.log(`✅ Endereço ${wallet.address.toLowerCase()} adicionado ao Moralis Stream`);
+    await addAddressToStream(polygonAddress);
+    await prisma.depositAddress.update({
+      where: { id: newAddress.id },
+      data: { moralisRegistered: true },
+    });
+    console.log(`✅ Endereço ${polygonAddress} adicionado ao Moralis Stream`);
   } catch (error) {
-    console.error(
-      `⚠️  Erro ao adicionar endereço ${wallet.address} ao Moralis Stream:`,
-      error
-    );
-    // Não falha a operação se o Moralis Stream falhar
-    // O endereço foi criado com sucesso no banco de dados
+    console.error(`⚠️ Erro ao adicionar endereço ${polygonAddress} ao Moralis Stream:`, error);
+    // Não falha - cron job vai tentar novamente
   }
 
   return newAddress;

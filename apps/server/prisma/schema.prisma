@@ -213,13 +213,14 @@ model Verification {
 }
 
 model DepositAddress {
-  id             String                @id @default(uuid())
-  userId         String                @unique // 1 endereço por usuário
-  polygonAddress String                @unique
-  privateKey     String // Encrypted (apenas plataforma tem acesso)
-  status         DepositAddressStatus  @default(ACTIVE)
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
+  id                String               @id @default(uuid())
+  userId            String               @unique // 1 endereço por usuário
+  polygonAddress    String               @unique
+  privateKey        String // Encrypted (apenas plataforma tem acesso)
+  status            DepositAddressStatus @default(ACTIVE)
+  moralisRegistered Boolean              @default(false) // Se foi registrado no Moralis Stream
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
 
   user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions WalletTransaction[]
