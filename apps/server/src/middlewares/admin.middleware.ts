@@ -64,6 +64,7 @@ export async function requireAdmin(
 
     // Adiciona user completo no request para uso nos controllers
     request.user = user;
+    console.log(`🛡️ [AdminMiddleware] ✅ Passed! User: ${user.email}, Role: ${user.role}`);
   } catch (error) {
     request.log.error({ error }, "Admin authentication error");
     return reply.status(401).send({

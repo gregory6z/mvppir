@@ -17,9 +17,9 @@ export async function batchCollectController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  console.log(`🚀 [BatchCollect] Request received`);
-  console.log(`🚀 [BatchCollect] Method: ${request.method}`);
-  console.log(`🚀 [BatchCollect] URL: ${request.url}`);
+  console.log(`🚀 [BatchCollect] Controller called!`);
+  console.log(`🚀 [BatchCollect] Headers: ${JSON.stringify(request.headers)}`);
+  console.log(`🚀 [BatchCollect] Body: ${JSON.stringify(request.body)}`);
   console.log(`🚀 [BatchCollect] User: ${JSON.stringify(request.user)}`);
 
   try {
