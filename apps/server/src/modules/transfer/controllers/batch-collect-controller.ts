@@ -17,6 +17,11 @@ export async function batchCollectController(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
+  console.log(`🚀 [BatchCollect] Request received`);
+  console.log(`🚀 [BatchCollect] Method: ${request.method}`);
+  console.log(`🚀 [BatchCollect] URL: ${request.url}`);
+  console.log(`🚀 [BatchCollect] User: ${JSON.stringify(request.user)}`);
+
   try {
     const adminId = request.user!.id;
 

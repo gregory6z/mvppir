@@ -9,6 +9,8 @@ export async function requireAdmin(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
+  console.log(`🛡️ [AdminMiddleware] Request: ${request.method} ${request.url}`);
+
   try {
     // Extrai session do cookie/header
     const session = await auth.api.getSession({
