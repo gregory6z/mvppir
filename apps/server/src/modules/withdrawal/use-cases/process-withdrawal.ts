@@ -136,24 +136,34 @@ export async function processWithdrawal({
         },
       });
 
-      // Cria WalletTransaction tipo DEBIT (histórico)
-      await tx.walletTransaction.create({
-        data: {
-          userId: withdrawal.userId,
-          depositAddressId: "", // TODO: buscar depositAddressId do usuário
-          type: "DEBIT",
-          tokenSymbol: withdrawal.tokenSymbol,
-          tokenAddress: withdrawal.tokenAddress,
-          tokenDecimals: withdrawal.tokenSymbol === "MATIC" ? 18 : 6, // TODO: buscar do contrato
-          amount: withdrawal.amount,
-          rawAmount: parseUnits(
-            withdrawal.amount.toString(),
-            withdrawal.tokenSymbol === "MATIC" ? 18 : 6
-          ).toString(),
-          txHash,
-          status: "CONFIRMED",
-        },
+      // Verifica se já existe WalletTransaction com esse txHash
+      // (pode acontecer se o destinatário for um DepositAddress monitorado pelo Moralis)
+      const existingTx = await tx.walletTransaction.findUnique({
+        where: { txHash },
       });
+
+      if (!existingTx) {
+        // Cria WalletTransaction tipo DEBIT (histórico)
+        await tx.walletTransaction.create({
+          data: {
+            userId: withdrawal.userId,
+            depositAddressId: "", // TODO: buscar depositAddressId do usuário
+            type: "DEBIT",
+            tokenSymbol: withdrawal.tokenSymbol,
+            tokenAddress: withdrawal.tokenAddress,
+            tokenDecimals: withdrawal.tokenSymbol === "MATIC" ? 18 : 6, // TODO: buscar do contrato
+            amount: withdrawal.amount,
+            rawAmount: parseUnits(
+              withdrawal.amount.toString(),
+              withdrawal.tokenSymbol === "MATIC" ? 18 : 6
+            ).toString(),
+            txHash,
+            status: "CONFIRMED",
+          },
+        });
+      } else {
+        console.log(`⚠️ WalletTransaction already exists for txHash ${txHash}, skipping creation`);
+      }
 
       // Atualiza Balance (decrementa lockedBalance)
       await tx.balance.update({
