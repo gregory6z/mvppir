@@ -429,59 +429,51 @@ async function processAddress(
 }
 
 /**
- * Busca todos os endereços com saldo > 0 DIRETAMENTE NA BLOCKCHAIN
- * Não depende mais da tabela Balance - consulta on-chain
+ * Busca todos os endereços com saldo > 0
  */
 async function getAddressesWithBalances(): Promise<AddressWithBalances[]> {
-  console.log("🔍 Buscando endereços com saldo on-chain...");
-
-  // 1. Busca todos os endereços de depósito ativos com suas chaves privadas
-  const depositAddresses = await prisma.depositAddress.findMany({
-    where: { status: "ACTIVE" },
-    select: {
-      polygonAddress: true,
-      privateKey: true,
-      userId: true,
+  // Busca todos os usuários com saldo
+  const balances = await prisma.balance.findMany({
+    where: {
+      OR: [
+        { availableBalance: { gt: 0 } },
+        { lockedBalance: { gt: 0 } },
+      ],
+    },
+    include: {
+      user: {
+        include: {
+          depositAddresses: {
+            where: {
+              status: "ACTIVE",
+            },
+            select: {
+              polygonAddress: true,
+              privateKey: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  console.log(`📬 Encontrados ${depositAddresses.length} endereços de depósito ativos`);
-
-  if (depositAddresses.length === 0) {
-    return [];
-  }
-
-  // 2. Consulta saldos on-chain de todos os endereços
-  const { getBatchOnChainBalances } = await import("@/providers/blockchain/balance.provider");
-  const addresses = depositAddresses.map(d => d.polygonAddress);
-  const onChainBalances = await getBatchOnChainBalances(addresses);
-
-  // 3. Mapeia os saldos on-chain para o formato esperado
+  // Agrupa por endereço (userId)
   const addressMap = new Map<string, AddressWithBalances>();
 
-  for (const depositAddress of depositAddresses) {
-    const onChainResult = onChainBalances.get(depositAddress.polygonAddress);
+  for (const balance of balances) {
+    const depositAddress = balance.user.depositAddresses[0];
 
-    if (!onChainResult) {
+    if (!depositAddress) {
+      console.warn(`⚠️  Usuário ${balance.userId} sem endereço de depósito`);
       continue;
     }
 
-    // Verifica se tem saldo significativo
-    const hasMatic = parseFloat(onChainResult.totalMaticBalance) > 0.001;
-    const hasTokens = onChainResult.balances.some(
-      b => b.tokenSymbol !== "MATIC" && parseFloat(b.balance) > 0.01
-    );
-
-    if (!hasMatic && !hasTokens) {
-      continue;
-    }
-
-    const key = depositAddress.userId;
+    const key = balance.userId;
 
     if (!addressMap.has(key)) {
       addressMap.set(key, {
         address: depositAddress.polygonAddress,
-        userId: depositAddress.userId,
+        userId: balance.userId,
         privateKey: depositAddress.privateKey,
         tokens: [],
       });
@@ -489,25 +481,18 @@ async function getAddressesWithBalances(): Promise<AddressWithBalances[]> {
 
     const addressData = addressMap.get(key)!;
 
-    // Adiciona saldos on-chain
-    for (const balance of onChainResult.balances) {
-      const amount = parseFloat(balance.balance);
+    // Calcula saldo total (available + locked)
+    const totalBalance = balance.availableBalance.add(balance.lockedBalance);
 
-      // Ignora saldos muito pequenos
-      if (balance.tokenSymbol === "MATIC" && amount < 0.001) continue;
-      if (balance.tokenSymbol !== "MATIC" && amount < 0.01) continue;
-
+    if (totalBalance.gt(0)) {
       addressData.tokens.push({
         symbol: balance.tokenSymbol,
         address: balance.tokenAddress,
-        decimals: balance.decimals,
-        balance: new Decimal(balance.balance),
+        decimals: balance.tokenSymbol === "MATIC" ? 18 : 6, // TODO: buscar decimals do contrato
+        balance: totalBalance,
       });
     }
   }
 
-  const result = Array.from(addressMap.values()).filter(a => a.tokens.length > 0);
-  console.log(`✅ ${result.length} endereços com saldo significativo encontrados`);
-
-  return result;
+  return Array.from(addressMap.values());
 }

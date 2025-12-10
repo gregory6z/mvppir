@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { getTokenPriceUSD } from "@/providers/price/price.provider";
-import { getBatchOnChainBalances, OnChainBalanceResult } from "@/providers/blockchain/balance.provider";
 import { JsonRpcProvider, formatEther, formatUnits } from "ethers";
 import { env } from "@/config/env";
 
@@ -14,7 +13,6 @@ interface GasBreakdown {
 interface BatchCollectPreview {
   tokens: Array<{
     tokenSymbol: string;
-    tokenAddress: string | null;
     walletsCount: number;
     totalAmount: string;
     gasEstimate: string;
@@ -30,8 +28,6 @@ interface BatchCollectPreview {
   gasPriceGwei: string;
   maticPriceUsd: number;
   totalGasCostUsd: number;
-  walletsWithBalance: number;
-  source: "blockchain"; // Indica que dados vêm da blockchain
 }
 
 // Gas units estimados (valores típicos na Polygon)
@@ -42,11 +38,9 @@ const GAS_UNITS = {
 
 /**
  * Preview do que será coletado no próximo batch collect
- * CONSULTA DIRETAMENTE NA BLOCKCHAIN - não depende de dados no banco
+ * Calcula gas preciso usando preço atual da rede
  */
 export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
-  console.log("🔍 [BatchCollectPreview] Iniciando consulta on-chain...");
-
   // 1. Conectar ao provider para buscar gas price atual
   const provider = new JsonRpcProvider(env.POLYGON_RPC_URL);
 
@@ -57,68 +51,36 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
     const feeData = await provider.getFeeData();
     gasPriceWei = feeData.gasPrice || 30000000000n; // 30 gwei fallback
     gasPriceGwei = formatUnits(gasPriceWei, "gwei");
-    console.log(`⛽ Gas price: ${gasPriceGwei} gwei`);
   } catch {
     gasPriceWei = 30000000000n; // 30 gwei fallback
     gasPriceGwei = "30";
   }
 
-  // 2. Buscar TODOS os endereços de depósito ativos do banco
-  const depositAddresses = await prisma.depositAddress.findMany({
-    where: { status: "ACTIVE" },
-    select: { polygonAddress: true },
+  // 2. Buscar todas as transações CONFIRMED que ainda não foram transferidas
+  const confirmedTransactions = await prisma.walletTransaction.findMany({
+    where: {
+      status: "CONFIRMED",
+      isTest: false,
+    },
+    include: {
+      depositAddress: true,
+    },
   });
 
-  console.log(`📬 Encontrados ${depositAddresses.length} endereços de depósito ativos`);
-
-  if (depositAddresses.length === 0) {
-    return emptyPreview(gasPriceGwei, 0, 0);
-  }
-
-  // 3. Consultar saldos ON-CHAIN de todos os endereços
-  const addresses = depositAddresses.map(d => d.polygonAddress);
-  const onChainBalances = await getBatchOnChainBalances(addresses);
-
-  // 4. Filtrar endereços com saldo significativo e agrupar por token
-  const tokenGroups: Record<string, {
-    wallets: Set<string>;
-    totalAmount: number;
-    tokenAddress: string | null;
-  }> = {};
-
-  let walletsWithBalance = 0;
-
-  for (const [address, result] of onChainBalances.entries()) {
-    const hasSignificantBalance = hasAnySignificantBalance(result);
-
-    if (!hasSignificantBalance) continue;
-
-    walletsWithBalance++;
-
-    // Processa cada saldo do endereço
-    for (const balance of result.balances) {
-      const amount = parseFloat(balance.balance);
-
-      // Ignora saldos muito pequenos
-      if (balance.tokenSymbol === "MATIC" && amount < 0.001) continue;
-      if (balance.tokenSymbol !== "MATIC" && amount < 0.01) continue;
-
-      if (!tokenGroups[balance.tokenSymbol]) {
-        tokenGroups[balance.tokenSymbol] = {
-          wallets: new Set<string>(),
-          totalAmount: 0,
-          tokenAddress: balance.tokenAddress,
-        };
-      }
-
-      tokenGroups[balance.tokenSymbol].wallets.add(address);
-      tokenGroups[balance.tokenSymbol].totalAmount += amount;
+  // 3. Agrupar por token e carteira
+  const tokenGroups = confirmedTransactions.reduce((acc, tx) => {
+    if (!acc[tx.tokenSymbol]) {
+      acc[tx.tokenSymbol] = {
+        wallets: new Set<string>(),
+        totalAmount: 0,
+      };
     }
-  }
+    acc[tx.tokenSymbol].wallets.add(tx.depositAddress.polygonAddress);
+    acc[tx.tokenSymbol].totalAmount += Number(tx.amount);
+    return acc;
+  }, {} as Record<string, { wallets: Set<string>; totalAmount: number }>);
 
-  console.log(`💰 ${walletsWithBalance} endereços com saldo, ${Object.keys(tokenGroups).length} tokens diferentes`);
-
-  // 5. Contar carteiras únicas e tokens ERC20
+  // 4. Contar carteiras únicas e tokens ERC20
   const uniqueWallets = new Set<string>();
   let erc20TokenCount = 0;
 
@@ -131,11 +93,7 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
 
   const walletsCount = uniqueWallets.size;
 
-  if (walletsCount === 0) {
-    return emptyPreview(gasPriceGwei, 0, 0);
-  }
-
-  // 6. Calcular gas breakdown (em MATIC)
+  // 5. Calcular gas breakdown (em MATIC)
   // Fase 1: Distribuir MATIC (1 tx por carteira com tokens ERC20)
   const distributeGasUnits = BigInt(walletsCount) * GAS_UNITS.NATIVE_TRANSFER;
   const distributeGasCost = distributeGasUnits * gasPriceWei;
@@ -160,7 +118,7 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
       : "0",
   };
 
-  // 7. Calcular gas estimate por token
+  // 6. Calcular gas estimate por token
   const tokensWithoutPrices = Object.entries(tokenGroups).map(([tokenSymbol, data]) => {
     const tokenWalletsCount = data.wallets.size;
 
@@ -182,14 +140,13 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
 
     return {
       tokenSymbol,
-      tokenAddress: data.tokenAddress,
       walletsCount: tokenWalletsCount,
       totalAmount: data.totalAmount.toFixed(8),
       gasEstimate: gasEstimateMatic,
     };
   });
 
-  // 8. Buscar preços dos tokens em USD
+  // 7. Buscar preços dos tokens em USD
   const [maticPriceUsd, ...tokenPrices] = await Promise.all([
     getTokenPriceUSD("MATIC"),
     ...tokensWithoutPrices.map(t => getTokenPriceUSD(t.tokenSymbol)),
@@ -210,7 +167,7 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
   const totalValueUsd = tokens.reduce((sum, t) => sum + t.valueUsd, 0);
   const totalGasCostUsd = totalGasEstimate * maticPriceUsd;
 
-  // 9. Buscar saldo de MATIC na Global Wallet (banco)
+  // 8. Buscar saldo de MATIC na Global Wallet (banco)
   const globalWallet = await prisma.globalWallet.findFirst({
     include: {
       balances: {
@@ -221,7 +178,7 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
 
   const maticBalance = globalWallet?.balances[0]?.balance || 0;
 
-  // 10. Buscar saldo de MATIC on-chain (real) da Global Wallet
+  // 9. Buscar saldo de MATIC on-chain (real)
   let maticBalanceOnChain = "0";
   if (globalWallet?.polygonAddress) {
     try {
@@ -232,12 +189,10 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
     }
   }
 
-  // 11. Verificar se pode executar (precisa de 20% de margem)
+  // 10. Verificar se pode executar (precisa de 20% de margem)
   const marginMultiplier = 1.2; // 20% de margem de segurança
   const requiredMatic = totalGasEstimate * marginMultiplier;
   const canExecute = Number(maticBalanceOnChain) >= requiredMatic;
-
-  console.log(`✅ Preview completo: ${tokens.length} tokens, ${walletsWithBalance} carteiras, canExecute: ${canExecute}`);
 
   return {
     tokens,
@@ -250,48 +205,5 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
     gasPriceGwei,
     maticPriceUsd,
     totalGasCostUsd,
-    walletsWithBalance,
-    source: "blockchain",
-  };
-}
-
-/**
- * Verifica se um endereço tem saldo significativo
- */
-function hasAnySignificantBalance(result: OnChainBalanceResult): boolean {
-  // Tem MATIC > 0.001 ou tem tokens ERC20 com saldo
-  const hasMatic = parseFloat(result.totalMaticBalance) > 0.001;
-  const hasTokens = result.balances.some(
-    b => b.tokenSymbol !== "MATIC" && parseFloat(b.balance) > 0.01
-  );
-  return hasMatic || hasTokens;
-}
-
-/**
- * Retorna preview vazio quando não há nada para coletar
- */
-function emptyPreview(
-  gasPriceGwei: string,
-  maticPriceUsd: number,
-  maticBalanceOnChain: number
-): BatchCollectPreview {
-  return {
-    tokens: [],
-    totalGasEstimate: "0",
-    maticBalance: "0",
-    maticBalanceOnChain: maticBalanceOnChain.toString(),
-    canExecute: false,
-    totalValueUsd: 0,
-    gasBreakdown: {
-      distributeMaticGas: "0",
-      collectTokensGas: "0",
-      recoverMaticGas: "0",
-      totalPerWallet: "0",
-    },
-    gasPriceGwei,
-    maticPriceUsd,
-    totalGasCostUsd: 0,
-    walletsWithBalance: 0,
-    source: "blockchain",
   };
 }
