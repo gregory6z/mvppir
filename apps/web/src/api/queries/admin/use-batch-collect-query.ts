@@ -4,6 +4,7 @@ import {
   executeBatchCollect,
   getBatchCollectHistory,
   getBatchCollectStatus,
+  getActiveBatchCollectJob,
 } from "@/api/client/admin.api"
 import { queryKeys } from "@/lib/react-query"
 
@@ -49,5 +50,13 @@ export function useBatchCollectJobStatus(jobId: string | null, enabled = false) 
       }
       return false // Parar polling quando COMPLETED ou FAILED
     },
+  })
+}
+
+export function useActiveBatchCollectJob() {
+  return useQuery({
+    queryKey: ["admin", "batchCollect", "active"],
+    queryFn: getActiveBatchCollectJob,
+    staleTime: 5000,
   })
 }

@@ -4,6 +4,7 @@ import { getGlobalWalletBalanceController } from "@/modules/admin/controllers/ge
 import { getBatchCollectPreviewController } from "@/modules/admin/controllers/get-batch-collect-preview-controller";
 import { getBatchCollectStatusController } from "@/modules/admin/controllers/get-batch-collect-status-controller";
 import { getBatchCollectHistoryController } from "@/modules/admin/controllers/get-batch-collect-history-controller";
+import { getActiveBatchCollectController } from "@/modules/admin/controllers/get-active-batch-collect-controller";
 import { getMaticStatusController } from "@/modules/admin/controllers/get-matic-status-controller";
 import { getMaticRechargeHistoryController } from "@/modules/admin/controllers/get-matic-recharge-history-controller";
 import { getWorkersStatus } from "@/modules/admin/controllers/get-workers-status";
@@ -24,6 +25,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
   // Batch Collect
   app.get("/batch-collect/preview", getBatchCollectPreviewController);
+  app.get("/batch-collect/active", getActiveBatchCollectController);
   app.get("/batch-collect/status/:jobId", getBatchCollectStatusController);
   app.get("/batch-collect/history", getBatchCollectHistoryController);
 

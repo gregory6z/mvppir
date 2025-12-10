@@ -75,6 +75,25 @@ export async function getBatchCollectStatus(jobId: string): Promise<BatchCollect
   return request<BatchCollectJobStatus>(`/admin/batch-collect/status/${jobId}`)
 }
 
+export interface ActiveBatchCollectJob {
+  hasActiveJob: boolean
+  job: {
+    jobId: string
+    status: "PENDING" | "IN_PROGRESS"
+    progress: {
+      completed: number
+      total: number
+      failed: number
+    }
+    startedAt: string | null
+    createdAt: string
+  } | null
+}
+
+export async function getActiveBatchCollectJob(): Promise<ActiveBatchCollectJob> {
+  return request<ActiveBatchCollectJob>("/admin/batch-collect/active")
+}
+
 export interface BatchCollectHistoryItem {
   id: string
   createdAt: string

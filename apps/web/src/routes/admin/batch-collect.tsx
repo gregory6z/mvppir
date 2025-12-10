@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   useBatchCollectPreview,
   useExecuteBatchCollect,
   useBatchCollectHistory,
   useBatchCollectJobStatus,
+  useActiveBatchCollectJob,
 } from "@/api/queries/admin/use-batch-collect-query"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -38,7 +39,15 @@ function BatchCollectPage() {
   const { data: preview, isLoading: previewLoading, refetch: refetchPreview } = useBatchCollectPreview()
   const { data: history, isLoading: historyLoading, refetch: refetchHistory } = useBatchCollectHistory()
   const { data: jobStatus } = useBatchCollectJobStatus(activeJobId, !!activeJobId)
+  const { data: activeJobData } = useActiveBatchCollectJob()
   const executeMutation = useExecuteBatchCollect()
+
+  // Recupera job ativo ao carregar a página
+  useEffect(() => {
+    if (activeJobData?.hasActiveJob && activeJobData.job && !activeJobId) {
+      setActiveJobId(activeJobData.job.jobId)
+    }
+  }, [activeJobData, activeJobId])
 
   const handleExecute = async () => {
     try {
