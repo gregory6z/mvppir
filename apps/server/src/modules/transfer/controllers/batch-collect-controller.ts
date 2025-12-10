@@ -1,6 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { batchCollectQueue } from "@/lib/queues";
 
+console.log("📦 [BatchCollect] Controller module loaded");
+
 /**
  * POST /admin/transfers/batch-collect
  * Admin executa transferência em lote de todos os endereços para Global Wallet
