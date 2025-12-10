@@ -433,10 +433,13 @@ async function processAddress(
       value: parseEther(maticToSend.toFixed(18)),
     });
 
-    await tx.wait(1);
+    // NÃO espera confirmação - só registra e segue (fire-and-forget)
     result.maticDistributed = maticToSend.toFixed(6);
 
-    console.log(`  ✅ MATIC distribuído: ${tx.hash}`);
+    console.log(`  ✅ MATIC enviado (fire-and-forget): ${tx.hash}`);
+
+    // Aguarda um pouco para o nonce ser reconhecido pelo RPC antes de continuar
+    await new Promise(resolve => setTimeout(resolve, 2000));
   } else {
     console.log(
       `  ⏭️  MATIC suficiente (tem ${currentMaticFormatted.toFixed(6)}, precisa ${maticNeeded.toFixed(6)})`
