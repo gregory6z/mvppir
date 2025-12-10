@@ -83,6 +83,9 @@ export function startBatchCollectWorker() {
     {
       connection: redis,
       concurrency: 1, // Process one batch collect at a time (blockchain operations)
+      // Very long timeouts for blockchain operations (practically infinite)
+      lockDuration: 86400000, // 24 hours - lock won't expire during long tx.wait()
+      stalledInterval: 0, // Disable stall detection entirely
     }
   );
 
