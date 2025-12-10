@@ -10,6 +10,13 @@ const ERC20_ABI = [
 
 // Tokens conhecidos na Polygon para consultar
 const TOKENS_TO_CHECK = [
+  // Testnet (Amoy)
+  {
+    address: "0xd7acd2a9fd159e69bb102a1ca21c9a3e3a5f771b", // TestUSDC (Amoy Testnet)
+    symbol: "USDC",
+    decimals: 6,
+  },
+  // Mainnet
   {
     address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC (Native)
     symbol: "USDC",
