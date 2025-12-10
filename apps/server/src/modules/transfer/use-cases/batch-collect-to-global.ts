@@ -20,7 +20,7 @@ const MIN_MATIC_TO_SEND = 0.001; // Só envia se precisar > 0.001 MATIC
 const RESERVE_AFTER_TRANSFER = 0.001; // Deixa 0.001 de reserva no endereço
 const MIN_GLOBAL_MATIC = 5.0; // Mínimo de MATIC na Global Wallet para iniciar
 const GAS_PRICE_MULTIPLIER = 1.3; // 30% buffer para variação de gas price
-const TX_TIMEOUT_MS = 30000; // 30 segundos timeout para transações
+const TX_TIMEOUT_MS = 60000; // 60 segundos timeout para transações
 
 /**
  * Executa uma promise com timeout
