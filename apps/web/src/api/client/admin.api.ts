@@ -50,6 +50,7 @@ export async function getBatchCollectPreview(): Promise<BatchCollectPreview> {
 export async function executeBatchCollect(): Promise<{ jobId: string; status: string }> {
   return request<{ jobId: string; status: string }>("/admin/transfers/batch-collect", {
     method: "POST",
+    body: JSON.stringify({}),
   })
 }
 
@@ -153,6 +154,7 @@ export async function getWithdrawals(
 export async function approveWithdrawal(id: string): Promise<{ success: boolean; withdrawal: Withdrawal }> {
   return request<{ success: boolean; withdrawal: Withdrawal }>(`/admin/withdrawals/${id}/approve`, {
     method: "POST",
+    body: JSON.stringify({}),
   })
 }
 
