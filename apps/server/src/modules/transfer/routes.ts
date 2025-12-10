@@ -10,5 +10,13 @@ export async function transferRoutes(app: FastifyInstance) {
   app.addHook("onRequest", requireAdmin);
 
   // Executar batch collect (transferência em lote para Global Wallet)
-  app.post("/batch-collect", batchCollectController);
+  // Nota: Este endpoint não requer body, mas aceita JSON vazio para compatibilidade
+  app.post("/batch-collect", {
+    schema: {
+      body: {
+        type: "object",
+        additionalProperties: false,
+      },
+    },
+  }, batchCollectController);
 }
