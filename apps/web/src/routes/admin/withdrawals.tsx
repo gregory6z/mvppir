@@ -178,6 +178,19 @@ function WithdrawalsPage() {
                           </div>
                         )}
 
+                        {withdrawal.admin && (
+                          <div className="mt-2 p-2 bg-green-950/30 rounded border border-green-900/30">
+                            <p className="text-xs text-green-400">
+                              Aprovado por: {withdrawal.admin.name || withdrawal.admin.email}
+                              {withdrawal.approvedAt && (
+                                <span className="text-zinc-500 ml-2">
+                                  em {new Date(withdrawal.approvedAt).toLocaleString("pt-BR")}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        )}
+
                         {withdrawal.rejectedReason && (
                           <div className="mt-2 p-2 bg-red-950/30 rounded border border-red-900/30">
                             <p className="text-xs text-red-400">Motivo: {withdrawal.rejectedReason}</p>

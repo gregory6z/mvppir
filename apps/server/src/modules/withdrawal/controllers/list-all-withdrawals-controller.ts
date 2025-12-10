@@ -55,8 +55,28 @@ export async function listAllWithdrawalsController(
       prisma.withdrawal.count({ where }),
     ]);
 
+    // Busca dados dos admins que aprovaram os saques
+    const adminIds = withdrawals
+      .filter((w) => w.approvedBy)
+      .map((w) => w.approvedBy as string);
+
+    const admins = adminIds.length > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: adminIds } },
+          select: { id: true, email: true, name: true },
+        })
+      : [];
+
+    const adminMap = new Map(admins.map((a) => [a.id, a]));
+
+    // Adiciona dados do admin a cada withdrawal
+    const withdrawalsWithAdmin = withdrawals.map((w) => ({
+      ...w,
+      admin: w.approvedBy ? adminMap.get(w.approvedBy) || null : null,
+    }));
+
     return reply.status(200).send({
-      withdrawals,
+      withdrawals: withdrawalsWithAdmin,
       pagination: {
         page: pageNum,
         limit: limitNum,
