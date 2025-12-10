@@ -13,11 +13,14 @@ export async function requireAdmin(
 
   try {
     // Extrai session do cookie/header
+    console.log(`🛡️ [AdminMiddleware] Getting session...`);
     const session = await auth.api.getSession({
       headers: request.headers as any,
     });
+    console.log(`🛡️ [AdminMiddleware] Session: ${session ? 'found' : 'null'}`);
 
     if (!session) {
+      console.log(`🛡️ [AdminMiddleware] No session, returning 401`);
       return reply.status(401).send({
         error: "UNAUTHORIZED",
         message: "Authentication required",
