@@ -46,6 +46,7 @@ interface TransferResult {
   address: string;
   success: boolean;
   tokensTransferred: string[];
+  txHashes: string[]; // Hashes das transações confirmadas on-chain
   maticDistributed: string;
   maticRecovered: string;
   error?: string;
@@ -198,6 +199,7 @@ export async function batchCollectToGlobal({
         address: addressData.address,
         success: false,
         tokensTransferred: [],
+        txHashes: [],
         maticDistributed: "0",
         maticRecovered: "0",
         error: error instanceof Error ? error.message : "Unknown error",
@@ -226,12 +228,14 @@ export async function batchCollectToGlobal({
     }
   > = {};
 
-  // Agrupa dados por token
+  // Agrupa dados por token e coleta txHashes confirmados on-chain
   for (const result of successfulResults) {
     for (const addressData of addressesWithBalances) {
       if (addressData.address === result.address) {
+        // Agrupa valores por token
         for (const token of addressData.tokens) {
           const tokenSymbol = token.symbol;
+          if (tokenSymbol === "MATIC") continue; // MATIC é tratado na Fase 3
 
           if (!tokenCollections[tokenSymbol]) {
             tokenCollections[tokenSymbol] = {
@@ -243,8 +247,25 @@ export async function batchCollectToGlobal({
 
           tokenCollections[tokenSymbol].totalAmount += Number(token.balance);
           tokenCollections[tokenSymbol].walletsCount += 1;
-          // txHashes seriam os hashes das transações reais, mas por simplicidade usamos placeholder
-          // Em produção, você deveria coletar os txHashes reais de cada transferência
+        }
+
+        // Adiciona os txHashes confirmados on-chain
+        // Estes hashes foram verificados com receipt.status === 1 na Fase 2
+        // Como cada transferência ERC20 gera 1 txHash, associamos ao token principal
+        for (let i = 0; i < result.tokensTransferred.length; i++) {
+          const tokenSymbol = result.tokensTransferred[i];
+          const txHash = result.txHashes[i];
+
+          if (tokenSymbol && txHash && tokenSymbol !== "MATIC") {
+            if (!tokenCollections[tokenSymbol]) {
+              tokenCollections[tokenSymbol] = {
+                totalAmount: 0,
+                walletsCount: 0,
+                txHashes: [],
+              };
+            }
+            tokenCollections[tokenSymbol].txHashes.push(txHash);
+          }
         }
       }
     }
@@ -335,6 +356,7 @@ async function processAddress(
     address: addressData.address,
     success: true,
     tokensTransferred: [],
+    txHashes: [],
     maticDistributed: "0",
     maticRecovered: "0",
   };
@@ -374,6 +396,9 @@ async function processAddress(
   // === FASE 2: Transferir Tokens ===
   console.log("  📦 Fase 2: Transferindo tokens...");
 
+  // Array para guardar os txHashes confirmados on-chain
+  const confirmedTxHashes: string[] = [];
+
   for (const token of addressData.tokens) {
     try {
       if (token.symbol === "MATIC") {
@@ -390,16 +415,29 @@ async function processAddress(
 
       const amountRaw = parseUnits(token.balance.toString(), token.decimals);
 
+      console.log(`  🔄 Transferindo ${token.symbol}...`);
       const tx = await tokenContract.transfer(globalAddress, amountRaw);
-      await tx.wait(1);
 
-      result.tokensTransferred.push(token.symbol);
-      console.log(`  ✅ ${token.symbol} transferido: ${tx.hash}`);
+      // Aguarda confirmação on-chain
+      const receipt = await tx.wait(1);
+
+      // Verifica se a transação foi bem-sucedida on-chain
+      if (receipt && receipt.status === 1) {
+        result.tokensTransferred.push(token.symbol);
+        confirmedTxHashes.push(tx.hash);
+        console.log(`  ✅ ${token.symbol} transferido e CONFIRMADO on-chain: ${tx.hash}`);
+      } else {
+        console.error(`  ❌ ${token.symbol} transação falhou on-chain: ${tx.hash}`);
+        throw new Error(`Transaction failed on-chain: ${tx.hash}`);
+      }
     } catch (error) {
       console.error(`  ❌ Erro ao transferir ${token.symbol}:`, error);
       throw error;
     }
   }
+
+  // Salva os txHashes confirmados no resultado
+  result.txHashes = confirmedTxHashes;
 
   // === FASE 3: Recuperar MATIC restante ===
   // Fase 3 é opcional - erros aqui não devem invalidar os tokens já transferidos
