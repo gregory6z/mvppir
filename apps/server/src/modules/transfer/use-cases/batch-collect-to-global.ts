@@ -14,10 +14,33 @@ import { Decimal } from "@prisma/client/runtime/library";
 import { env } from "@/config/env";
 
 // Constantes otimizadas
-const GAS_PER_ERC20_TRANSFER = 0.01; // MATIC por transferência ERC20
+const GAS_LIMIT_ERC20_TRANSFER = 65000n; // Gas limit típico para transfer ERC20
+const GAS_LIMIT_NATIVE_TRANSFER = 21000n; // Gas limit para transferência nativa
 const MIN_MATIC_TO_SEND = 0.001; // Só envia se precisar > 0.001 MATIC
 const RESERVE_AFTER_TRANSFER = 0.001; // Deixa 0.001 de reserva no endereço
 const MIN_GLOBAL_MATIC = 5.0; // Mínimo de MATIC na Global Wallet para iniciar
+const GAS_PRICE_MULTIPLIER = 1.3; // 30% buffer para variação de gas price
+
+/**
+ * Calcula o custo estimado de gas para transferências ERC20
+ * Usa o gas price atual da rede + buffer de segurança
+ */
+async function estimateGasCostForTransfers(
+  provider: JsonRpcProvider,
+  numErc20Transfers: number
+): Promise<number> {
+  const feeData = await provider.getFeeData();
+  const gasPrice = feeData.gasPrice || 50000000000n; // 50 gwei fallback
+
+  // Custo por transferência ERC20: gasPrice * gasLimit * multiplier
+  const costPerTransfer = gasPrice * GAS_LIMIT_ERC20_TRANSFER;
+  const totalCost = costPerTransfer * BigInt(numErc20Transfers);
+
+  // Adiciona buffer de segurança
+  const totalWithBuffer = (totalCost * BigInt(Math.floor(GAS_PRICE_MULTIPLIER * 100))) / 100n;
+
+  return parseFloat(formatEther(totalWithBuffer));
+}
 
 // ERC20 ABI mínimo
 const ERC20_ABI = [
@@ -361,21 +384,25 @@ async function processAddress(
     maticRecovered: "0",
   };
 
-  // === FASE 1: Distribuir MATIC (otimizado) ===
-  console.log("  📤 Fase 1: Verificando necessidade de MATIC...");
+  // === FASE 1: Distribuir MATIC (estimativa dinâmica) ===
+  console.log("  📤 Fase 1: Calculando MATIC necessário com gas price atual...");
 
   const currentMatic = await provider.getBalance(addressData.address);
   const currentMaticFormatted = parseFloat(formatEther(currentMatic));
 
   // Conta quantos tokens ERC20 (não MATIC) precisam ser transferidos
   const erc20Tokens = addressData.tokens.filter((t) => t.symbol !== "MATIC");
-  const maticNeeded = erc20Tokens.length * GAS_PER_ERC20_TRANSFER;
+
+  // Calcula custo estimado com base no gas price atual da rede
+  const maticNeeded = await estimateGasCostForTransfers(provider, erc20Tokens.length);
+
+  console.log(`  📊 Estimativa dinâmica: ${maticNeeded.toFixed(6)} MATIC para ${erc20Tokens.length} transferência(s)`);
 
   const maticToSend = maticNeeded - currentMaticFormatted;
 
   if (maticToSend > MIN_MATIC_TO_SEND) {
     console.log(
-      `  💸 Enviando ${maticToSend.toFixed(4)} MATIC (precisa de ${maticNeeded.toFixed(4)}, tem ${currentMaticFormatted.toFixed(4)})`
+      `  💸 Enviando ${maticToSend.toFixed(6)} MATIC (precisa de ${maticNeeded.toFixed(6)}, tem ${currentMaticFormatted.toFixed(6)})`
     );
 
     const tx = await globalWallet.sendTransaction({
@@ -384,12 +411,12 @@ async function processAddress(
     });
 
     await tx.wait(1);
-    result.maticDistributed = maticToSend.toFixed(4);
+    result.maticDistributed = maticToSend.toFixed(6);
 
     console.log(`  ✅ MATIC distribuído: ${tx.hash}`);
   } else {
     console.log(
-      `  ⏭️  MATIC suficiente (tem ${currentMaticFormatted.toFixed(4)}, precisa ${maticNeeded.toFixed(4)})`
+      `  ⏭️  MATIC suficiente (tem ${currentMaticFormatted.toFixed(6)}, precisa ${maticNeeded.toFixed(6)})`
     );
   }
 
