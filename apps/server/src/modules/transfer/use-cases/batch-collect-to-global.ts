@@ -397,29 +397,58 @@ async function processAddress(
   }
 
   // === FASE 3: Recuperar MATIC restante ===
+  // Fase 3 é opcional - erros aqui não devem invalidar os tokens já transferidos
   console.log("  💰 Fase 3: Recuperando MATIC restante...");
 
-  const finalMatic = await provider.getBalance(addressData.address);
-  const finalMaticFormatted = parseFloat(formatEther(finalMatic));
+  try {
+    const finalMatic = await provider.getBalance(addressData.address);
+    const finalMaticFormatted = parseFloat(formatEther(finalMatic));
 
-  if (finalMaticFormatted > RESERVE_AFTER_TRANSFER + 0.001) {
-    const maticToRecover = finalMaticFormatted - RESERVE_AFTER_TRANSFER;
+    // Estima o custo de gas para transferência nativa
+    const feeData = await provider.getFeeData();
+    const gasPrice = feeData.gasPrice || 50000000000n; // 50 gwei fallback
+    const gasLimit = 21000n; // Gas fixo para transferência nativa
+    const estimatedGasCost = gasPrice * gasLimit;
+    const gasCostFormatted = parseFloat(formatEther(estimatedGasCost));
 
-    const tx = await userWallet.sendTransaction({
-      to: globalAddress,
-      value: parseEther(maticToRecover.toFixed(18)),
-    });
+    // Buffer de segurança (20% extra para variação de gas)
+    const totalGasCost = gasCostFormatted * 1.2;
 
-    await tx.wait(1);
-    result.maticRecovered = maticToRecover.toFixed(4);
-    result.tokensTransferred.push("MATIC");
+    // Só recupera se tiver saldo suficiente para cobrir gas + reserva
+    const minRequired = totalGasCost + RESERVE_AFTER_TRANSFER;
 
-    console.log(
-      `  ✅ MATIC recuperado: ${maticToRecover.toFixed(4)} (${tx.hash})`
-    );
-  } else {
-    console.log(
-      `  ⏭️  MATIC insuficiente para recuperar (${finalMaticFormatted.toFixed(4)} MATIC)`
+    if (finalMaticFormatted > minRequired) {
+      // Envia tudo menos o custo de gas (deixa margem de segurança)
+      const maticToRecover = finalMaticFormatted - totalGasCost - RESERVE_AFTER_TRANSFER;
+
+      if (maticToRecover > 0.0001) {
+        const tx = await userWallet.sendTransaction({
+          to: globalAddress,
+          value: parseEther(maticToRecover.toFixed(18)),
+        });
+
+        await tx.wait(1);
+        result.maticRecovered = maticToRecover.toFixed(4);
+        result.tokensTransferred.push("MATIC");
+
+        console.log(
+          `  ✅ MATIC recuperado: ${maticToRecover.toFixed(4)} (${tx.hash})`
+        );
+      } else {
+        console.log(
+          `  ⏭️  MATIC a recuperar muito baixo (${maticToRecover.toFixed(6)} MATIC)`
+        );
+      }
+    } else {
+      console.log(
+        `  ⏭️  MATIC insuficiente para recuperar (tem ${finalMaticFormatted.toFixed(4)}, precisa ${minRequired.toFixed(4)} para gas+reserva)`
+      );
+    }
+  } catch (phase3Error) {
+    // Fase 3 falhou, mas tokens já foram transferidos - não falha o processo
+    console.warn(
+      `  ⚠️ Fase 3 falhou (MATIC não recuperado), mas tokens foram transferidos:`,
+      phase3Error instanceof Error ? phase3Error.message : phase3Error
     );
   }
 
