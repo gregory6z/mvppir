@@ -165,8 +165,11 @@ export async function batchCollectToGlobal({
 
       results.push(result);
 
+      console.log(`📊 Resultado processAddress: success=${result.success}, tokensTransferred=${result.tokensTransferred.join(',')}`);
+
       // Agrega estatísticas
       if (result.success) {
+        console.log(`💾 Salvando no banco para userId: ${addressData.userId}`);
         totalMaticDistributed += parseFloat(result.maticDistributed);
         totalMaticRecovered += parseFloat(result.maticRecovered);
 
@@ -175,6 +178,7 @@ export async function batchCollectToGlobal({
         }
 
         // Atualiza status das transações para SENT_TO_GLOBAL
+        console.log(`💾 Atualizando WalletTransaction para userId: ${addressData.userId}`);
         const updatedCount = await prisma.walletTransaction.updateMany({
           where: {
             userId: addressData.userId,
@@ -185,6 +189,7 @@ export async function batchCollectToGlobal({
           },
         });
 
+        console.log(`✅ WalletTransaction atualizado: ${updatedCount.count} transações`);
         transactionsUpdated += updatedCount.count;
       }
     } catch (error) {
