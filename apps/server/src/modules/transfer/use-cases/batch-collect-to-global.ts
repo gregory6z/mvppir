@@ -429,70 +429,78 @@ async function processAddress(
 }
 
 /**
- * Busca todos os endereços com saldo > 0
+ * Busca todos os endereços com saldo > 0 baseado em transações REAIS (não teste)
+ *
+ * IMPORTANTE: Filtra por isTest: false para ignorar depósitos de teste
+ * que existem no banco mas não têm tokens reais on-chain.
  */
 async function getAddressesWithBalances(): Promise<AddressWithBalances[]> {
-  // Busca todos os usuários com saldo
-  const balances = await prisma.balance.findMany({
+  // Busca transações CONFIRMED que NÃO são de teste
+  const confirmedTransactions = await prisma.walletTransaction.findMany({
     where: {
-      OR: [
-        { availableBalance: { gt: 0 } },
-        { lockedBalance: { gt: 0 } },
-      ],
+      status: "CONFIRMED",
+      isTest: false, // Ignora depósitos de teste
     },
     include: {
+      depositAddress: {
+        select: {
+          polygonAddress: true,
+          privateKey: true,
+        },
+      },
       user: {
-        include: {
-          depositAddresses: {
-            where: {
-              status: "ACTIVE",
-            },
-            select: {
-              polygonAddress: true,
-              privateKey: true,
-            },
-          },
+        select: {
+          id: true,
         },
       },
     },
   });
 
-  // Agrupa por endereço (userId)
+  // Agrupa por userId
   const addressMap = new Map<string, AddressWithBalances>();
 
-  for (const balance of balances) {
-    const depositAddress = balance.user.depositAddresses[0];
-
-    if (!depositAddress) {
-      console.warn(`⚠️  Usuário ${balance.userId} sem endereço de depósito`);
+  for (const tx of confirmedTransactions) {
+    if (!tx.depositAddress) {
+      console.warn(`⚠️  Transação ${tx.id} sem endereço de depósito`);
       continue;
     }
 
-    const key = balance.userId;
+    const key = tx.userId;
 
     if (!addressMap.has(key)) {
       addressMap.set(key, {
-        address: depositAddress.polygonAddress,
-        userId: balance.userId,
-        privateKey: depositAddress.privateKey,
+        address: tx.depositAddress.polygonAddress,
+        userId: tx.userId,
+        privateKey: tx.depositAddress.privateKey,
         tokens: [],
       });
     }
 
     const addressData = addressMap.get(key)!;
 
-    // Calcula saldo total (available + locked)
-    const totalBalance = balance.availableBalance.add(balance.lockedBalance);
+    // Encontra ou cria entrada para este token
+    let tokenEntry = addressData.tokens.find(t => t.symbol === tx.tokenSymbol);
 
-    if (totalBalance.gt(0)) {
-      addressData.tokens.push({
-        symbol: balance.tokenSymbol,
-        address: balance.tokenAddress,
-        decimals: balance.tokenSymbol === "MATIC" ? 18 : 6, // TODO: buscar decimals do contrato
-        balance: totalBalance,
-      });
+    if (!tokenEntry) {
+      tokenEntry = {
+        symbol: tx.tokenSymbol,
+        address: tx.tokenAddress,
+        decimals: tx.tokenSymbol === "MATIC" ? 18 : 6, // USDC/USDT = 6, MATIC = 18
+        balance: new Decimal(0),
+      };
+      addressData.tokens.push(tokenEntry);
     }
+
+    // Soma o valor da transação
+    tokenEntry.balance = tokenEntry.balance.add(tx.amount);
   }
 
-  return Array.from(addressMap.values());
+  // Filtra endereços que têm saldo > 0
+  const result = Array.from(addressMap.values()).filter(addr =>
+    addr.tokens.some(t => t.balance.gt(0))
+  );
+
+  console.log(`📊 Encontrados ${result.length} endereços com saldo real (não-teste)`);
+
+  return result;
 }
