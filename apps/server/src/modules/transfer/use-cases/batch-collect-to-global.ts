@@ -51,6 +51,7 @@ const ERC20_ABI = [
 
 interface BatchCollectRequest {
   adminId: string;
+  onProgress?: (current: number, total: number, failed: number) => Promise<void>;
 }
 
 interface AddressWithBalances {
@@ -89,6 +90,7 @@ interface TransferResult {
  */
 export async function batchCollectToGlobal({
   adminId,
+  onProgress,
 }: BatchCollectRequest) {
   console.log("🚀 Iniciando Batch Collect to Global Wallet...");
 
@@ -176,6 +178,14 @@ export async function batchCollectToGlobal({
   let totalMaticDistributed = 0;
   let totalMaticRecovered = 0;
   let transactionsUpdated = 0;
+  let processedCount = 0;
+  let failedCount = 0;
+  const totalCount = addressesWithBalances.length;
+
+  // Reporta progresso inicial
+  if (onProgress) {
+    await onProgress(0, totalCount, 0);
+  }
 
   for (const addressData of addressesWithBalances) {
     try {
@@ -216,6 +226,12 @@ export async function batchCollectToGlobal({
         console.log(`✅ WalletTransaction atualizado: ${updatedCount.count} transações`);
         transactionsUpdated += updatedCount.count;
       }
+
+      // Atualiza progresso após sucesso
+      processedCount++;
+      if (onProgress) {
+        await onProgress(processedCount, totalCount, failedCount);
+      }
     } catch (error) {
       console.error(`❌ Erro ao processar ${addressData.address}:`, error);
       results.push({
@@ -227,6 +243,13 @@ export async function batchCollectToGlobal({
         maticRecovered: "0",
         error: error instanceof Error ? error.message : "Unknown error",
       });
+
+      // Atualiza progresso após falha
+      processedCount++;
+      failedCount++;
+      if (onProgress) {
+        await onProgress(processedCount, totalCount, failedCount);
+      }
     }
   }
 

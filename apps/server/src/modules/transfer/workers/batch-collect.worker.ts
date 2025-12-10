@@ -27,8 +27,18 @@ async function processBatchCollect(job: Job<BatchCollectJobData>) {
   job.log("Starting batch collection to Global Wallet...");
 
   try {
-    // Call the existing batch collect use case
-    const result = await batchCollectToGlobal({ adminId });
+    // Progress callback to update job status
+    const onProgress = async (current: number, total: number, failed: number) => {
+      await job.updateProgress({
+        completed: current,
+        total,
+        failed,
+      });
+      job.log(`Progress: ${current}/${total} (${failed} failed)`);
+    };
+
+    // Call the existing batch collect use case with progress callback
+    const result = await batchCollectToGlobal({ adminId, onProgress });
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
@@ -39,14 +49,21 @@ async function processBatchCollect(job: Job<BatchCollectJobData>) {
 
     job.log(`Batch collect completed: ${JSON.stringify(summary)}`);
 
-    // Update progress to 100%
-    await job.updateProgress(100);
+    // Final progress update
+    await job.updateProgress({
+      completed: result.summary.successfulAddresses,
+      total: result.summary.totalAddresses,
+      failed: result.summary.failedAddresses,
+    });
 
     return {
       success: true,
       summary,
       details: result.details,
       errors: result.errors,
+      completed: result.summary.successfulAddresses,
+      total: result.summary.totalAddresses,
+      failed: result.summary.failedAddresses,
     };
   } catch (error) {
     job.log(

@@ -36,12 +36,22 @@ export async function getBatchCollectStatusController(
     const returnvalue = job.returnvalue;
     const failedReason = job.failedReason;
 
+    // Parse progress data (formato: { completed, total, failed })
+    const progressData = typeof progress === 'object' && progress !== null
+      ? progress as { completed: number; total: number; failed: number }
+      : { completed: 0, total: 0, failed: 0 };
+
     // Formata resposta baseada no estado
     if (state === "completed") {
+      const resultData = returnvalue as { completed?: number; total?: number; failed?: number } | null;
       return reply.status(200).send({
         jobId: job.id,
         status: "COMPLETED",
-        progress: 100,
+        progress: {
+          completed: resultData?.completed || progressData.completed || progressData.total,
+          total: resultData?.total || progressData.total,
+          failed: resultData?.failed || progressData.failed || 0,
+        },
         result: returnvalue,
         completedAt: job.finishedOn ? new Date(job.finishedOn).toISOString() : null,
       });
@@ -51,7 +61,7 @@ export async function getBatchCollectStatusController(
       return reply.status(200).send({
         jobId: job.id,
         status: "FAILED",
-        progress: progress || 0,
+        progress: progressData,
         error: failedReason || "Unknown error",
         failedAt: job.finishedOn ? new Date(job.finishedOn).toISOString() : null,
       });
@@ -60,8 +70,8 @@ export async function getBatchCollectStatusController(
     if (state === "active") {
       return reply.status(200).send({
         jobId: job.id,
-        status: "PROCESSING",
-        progress: progress || 0,
+        status: "IN_PROGRESS",
+        progress: progressData,
         startedAt: job.processedOn ? new Date(job.processedOn).toISOString() : null,
       });
     }
@@ -69,8 +79,8 @@ export async function getBatchCollectStatusController(
     // waiting, delayed, etc
     return reply.status(200).send({
       jobId: job.id,
-      status: "WAITING",
-      progress: 0,
+      status: "PENDING",
+      progress: { completed: 0, total: 0, failed: 0 },
       createdAt: new Date(job.timestamp).toISOString(),
     });
   } catch (error) {
