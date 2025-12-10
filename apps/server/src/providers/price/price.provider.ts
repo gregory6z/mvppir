@@ -18,7 +18,8 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 const TOKEN_IDS: Record<string, string> = {
   USDC: "usd-coin",
   USDT: "tether",
-  MATIC: "matic-network",
+  MATIC: "polygon-ecosystem-token", // Rebrand: MATIC -> POL
+  POL: "polygon-ecosystem-token",
   DAI: "dai",
   WETH: "weth",
   WBTC: "wrapped-bitcoin",
