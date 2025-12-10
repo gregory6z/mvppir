@@ -35,8 +35,8 @@ function BatchCollectPage() {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
   const [activeJobId, setActiveJobId] = useState<string | null>(null)
 
-  const { data: preview, isLoading: previewLoading, refetch } = useBatchCollectPreview()
-  const { data: history, isLoading: historyLoading } = useBatchCollectHistory()
+  const { data: preview, isLoading: previewLoading, refetch: refetchPreview } = useBatchCollectPreview()
+  const { data: history, isLoading: historyLoading, refetch: refetchHistory } = useBatchCollectHistory()
   const { data: jobStatus } = useBatchCollectJobStatus(activeJobId, !!activeJobId)
   const executeMutation = useExecuteBatchCollect()
 
@@ -51,9 +51,27 @@ function BatchCollectPage() {
     }
   }
 
-  // Close active job when completed
-  if (jobStatus?.status === "COMPLETED" || jobStatus?.status === "FAILED") {
-    if (activeJobId) {
+  // Handle job completion
+  const [notifiedJobId, setNotifiedJobId] = useState<string | null>(null)
+
+  if (jobStatus && activeJobId && activeJobId !== notifiedJobId) {
+    if (jobStatus.status === "COMPLETED") {
+      toast.success("Coleta concluída com sucesso!", {
+        description: `${jobStatus.progress.completed} endereços processados`,
+        duration: 5000,
+      })
+      setNotifiedJobId(activeJobId)
+      refetchPreview() // Auto-refresh preview
+      refetchHistory() // Auto-refresh history
+      setTimeout(() => setActiveJobId(null), 5000)
+    } else if (jobStatus.status === "FAILED") {
+      toast.error("Coleta falhou!", {
+        description: `${jobStatus.progress.failed} falhas de ${jobStatus.progress.total}`,
+        duration: 5000,
+      })
+      setNotifiedJobId(activeJobId)
+      refetchPreview() // Auto-refresh preview
+      refetchHistory() // Auto-refresh history
       setTimeout(() => setActiveJobId(null), 5000)
     }
   }
@@ -68,7 +86,7 @@ function BatchCollectPage() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => refetch()}
+          onClick={() => refetchPreview()}
           disabled={previewLoading}
           className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
         >
