@@ -468,18 +468,10 @@ async function processAddress(
       console.log(`  🔄 Transferindo ${token.symbol}...`);
       const tx = await tokenContract.transfer(globalAddress, amountRaw);
 
-      // Aguarda confirmação on-chain
-      const receipt = await tx.wait(1);
-
-      // Verifica se a transação foi bem-sucedida on-chain
-      if (receipt && receipt.status === 1) {
-        result.tokensTransferred.push(token.symbol);
-        confirmedTxHashes.push(tx.hash);
-        console.log(`  ✅ ${token.symbol} transferido e CONFIRMADO on-chain: ${tx.hash}`);
-      } else {
-        console.error(`  ❌ ${token.symbol} transação falhou on-chain: ${tx.hash}`);
-        throw new Error(`Transaction failed on-chain: ${tx.hash}`);
-      }
+      // NÃO espera confirmação - só registra o txHash e segue
+      result.tokensTransferred.push(token.symbol);
+      confirmedTxHashes.push(tx.hash);
+      console.log(`  ✅ ${token.symbol} enviado: ${tx.hash}`);
     } catch (error) {
       console.error(`  ❌ Erro ao transferir ${token.symbol}:`, error);
       throw error;
@@ -520,13 +512,11 @@ async function processAddress(
           value: parseEther(maticToRecover.toFixed(18)),
         });
 
-        await tx.wait(1);
+        // NÃO espera confirmação - só registra e segue
         result.maticRecovered = maticToRecover.toFixed(4);
         result.tokensTransferred.push("MATIC");
 
-        console.log(
-          `  ✅ MATIC recuperado: ${maticToRecover.toFixed(4)} (${tx.hash})`
-        );
+        console.log(`  ✅ MATIC enviado: ${maticToRecover.toFixed(4)} (${tx.hash})`);
       } else {
         console.log(
           `  ⏭️  MATIC a recuperar muito baixo (${maticToRecover.toFixed(6)} MATIC)`
