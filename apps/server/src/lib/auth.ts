@@ -104,39 +104,33 @@ export const auth: ReturnType<typeof betterAuth> = betterAuth({
           try {
             const { Wallet } = await import("ethers");
             const { encryptPrivateKey } = await import("./encryption");
-            const { addAddressToStream } = await import("@/providers/moralis/stream.provider");
+            const { addDepositAddressToCache } = await import("@/modules/deposit/listeners/blockchain-listener");
 
             const wallet = Wallet.createRandom();
             const encryptedKey = encryptPrivateKey(wallet.privateKey);
             const polygonAddress = wallet.address.toLowerCase();
 
-            const depositAddress = await prisma.depositAddress.create({
+            await prisma.depositAddress.create({
               data: {
                 userId: user.id,
                 polygonAddress,
                 privateKey: encryptedKey,
                 status: "ACTIVE",
-                moralisRegistered: false, // Will be updated after successful registration
               },
             });
 
-            console.log(`✅ Created deposit address for ${user.name}: ${polygonAddress}`);
+            console.log(`[Auth] Created deposit address for ${user.name}: ${polygonAddress}`);
 
-            // Register address with Moralis Stream for webhook monitoring
+            // Add to WebSocket listener cache for immediate monitoring
             try {
-              await addAddressToStream(polygonAddress);
-              // Mark as registered in database
-              await prisma.depositAddress.update({
-                where: { id: depositAddress.id },
-                data: { moralisRegistered: true },
-              });
-              console.log(`✅ Address ${polygonAddress} registered with Moralis Stream`);
-            } catch (moralisError) {
-              console.error(`⚠️ Failed to register address with Moralis (will retry via cron):`, moralisError);
-              // Don't block - cron job will retry later
+              addDepositAddressToCache(polygonAddress);
+              console.log(`[Auth] Address ${polygonAddress} added to WebSocket listener cache`);
+            } catch (cacheError) {
+              console.log(`[Auth] WebSocket cache not available, will be loaded on next refresh`);
+              // Don't block - cache will be refreshed periodically
             }
           } catch (error) {
-            console.error(`❌ Failed to create deposit address for user ${user.id}:`, error);
+            console.error(`[Auth] Failed to create deposit address for user ${user.id}:`, error);
             // Don't block user creation if address generation fails
           }
 

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Wallet } from "ethers";
 import { encryptPrivateKey } from "@/lib/encryption";
-import { addAddressToStream } from "@/providers/moralis/stream.provider";
+import { addDepositAddressToCache } from "@/modules/deposit/listeners/blockchain-listener";
 
 interface GetOrCreateDepositAddressRequest {
   userId: string;
@@ -25,25 +25,10 @@ export async function getOrCreateDepositAddress({
       polygonAddress: true,
       status: true,
       createdAt: true,
-      moralisRegistered: true,
     },
   });
 
   if (existingAddress) {
-    // Fallback: ensure address is registered with Moralis Stream
-    // (in case it wasn't registered during signup)
-    if (!existingAddress.moralisRegistered) {
-      try {
-        await addAddressToStream(existingAddress.polygonAddress);
-        await prisma.depositAddress.update({
-          where: { id: existingAddress.id },
-          data: { moralisRegistered: true },
-        });
-        console.log(`✅ Registered ${existingAddress.polygonAddress} with Moralis Stream (fallback)`);
-      } catch (error) {
-        console.error(`⚠️ Failed to register ${existingAddress.polygonAddress} with Moralis:`, error instanceof Error ? error.message : error);
-      }
-    }
     return {
       id: existingAddress.id,
       polygonAddress: existingAddress.polygonAddress,
@@ -63,7 +48,6 @@ export async function getOrCreateDepositAddress({
       polygonAddress,
       privateKey: encryptedPrivateKey,
       status: "ACTIVE",
-      moralisRegistered: false,
     },
     select: {
       id: true,
@@ -73,18 +57,15 @@ export async function getOrCreateDepositAddress({
     },
   });
 
-  // Adiciona o endereço ao Moralis Stream para monitoramento automático
+  // Adiciona ao cache do WebSocket listener (imediato)
   try {
-    await addAddressToStream(polygonAddress);
-    await prisma.depositAddress.update({
-      where: { id: newAddress.id },
-      data: { moralisRegistered: true },
-    });
-    console.log(`✅ Endereço ${polygonAddress} adicionado ao Moralis Stream`);
+    addDepositAddressToCache(polygonAddress);
   } catch (error) {
-    console.error(`⚠️ Erro ao adicionar endereço ${polygonAddress} ao Moralis Stream:`, error);
-    // Não falha - cron job vai tentar novamente
+    // Não falha se o listener não estiver rodando
+    console.log(`[Deposit] WebSocket cache not available, will be loaded on next refresh`);
   }
+
+  console.log(`[Deposit] New address created: ${polygonAddress}`);
 
   return newAddress;
 }

@@ -7,7 +7,11 @@ import { updateNetworkVolume } from "@/modules/mlm/use-cases/update-network-volu
 import { identifyToken, KNOWN_TOKENS } from "@/lib/tokens";
 import { updateUserBlockedBalance } from "@/modules/mlm/helpers/update-blocked-balance";
 
-interface MoralisWebhookPayload {
+/**
+ * Deposit payload structure
+ * Used by both WebSocket listener and legacy webhook integrations
+ */
+interface DepositPayload {
   confirmed: boolean;
   chainId: string;
   txHash: string;
@@ -24,13 +28,19 @@ interface MoralisWebhookPayload {
   };
 }
 
-interface ProcessMoralisWebhookRequest {
-  payload: MoralisWebhookPayload;
+interface ProcessDepositRequest {
+  payload: DepositPayload;
 }
 
-export async function processMoralisWebhook({
+/**
+ * Process a blockchain deposit
+ *
+ * This is the core business logic for processing deposits detected
+ * by the blockchain WebSocket listener.
+ */
+export async function processDeposit({
   payload,
-}: ProcessMoralisWebhookRequest) {
+}: ProcessDepositRequest) {
   // Validações iniciais
   if (!payload.txHash) {
     throw new Error("INVALID_PAYLOAD: txHash missing");
@@ -41,7 +51,7 @@ export async function processMoralisWebhook({
   }
 
   if (!payload.value || payload.value === "0") {
-    console.warn("⚠️  Transação com valor zero ignorada:", payload.txHash);
+    console.warn("[Deposit] Zero value transaction ignored:", payload.txHash);
     return { message: "Zero value transaction ignored", txHash: payload.txHash };
   }
 
@@ -52,7 +62,7 @@ export async function processMoralisWebhook({
 
   // Se já existe e está confirmada, ignora
   if (existingTx && existingTx.status === "CONFIRMED") {
-    console.log(`ℹ️  Transação já confirmada: ${payload.txHash}`);
+    console.log(`[Deposit] Transaction already confirmed: ${payload.txHash}`);
     return { message: "Transaction already confirmed", txHash: payload.txHash };
   }
 
@@ -94,7 +104,7 @@ export async function processMoralisWebhook({
       return updatedTx;
     });
 
-    console.log(`✅ Transação confirmada pela blockchain:`, {
+    console.log(`[Deposit] Transaction confirmed:`, {
       transactionId: updated.id,
       txHash: payload.txHash,
       previousStatus: "PENDING",
@@ -103,15 +113,14 @@ export async function processMoralisWebhook({
 
     // Atualiza lifetimeVolume da rede (apenas para USDC/USDT)
     if (existingTx.tokenSymbol === "USDC" || existingTx.tokenSymbol === "USDT") {
-      console.log(`📊 Atualizando volume da rede para usuário ${existingTx.userId}, token: ${existingTx.tokenSymbol}, amount: ${existingTx.amount}`);
+      console.log(`[Deposit] Updating network volume for user ${existingTx.userId}`);
       try {
         await updateNetworkVolume({
           userId: existingTx.userId,
           amount: existingTx.amount,
         });
       } catch (error) {
-        console.error("❌ ERRO CRÍTICO ao atualizar volume da rede:", error);
-        // Re-throw para não engolir o erro
+        console.error("[Deposit] CRITICAL ERROR updating network volume:", error);
         throw error;
       }
     }
@@ -123,10 +132,10 @@ export async function processMoralisWebhook({
       });
 
       if (activationResult.activated) {
-        console.log(`🎉 Conta ativada! Total depositado: $${activationResult.currentTotalUSD.toFixed(2)} USD`);
+        console.log(`[Deposit] Account activated! Total: $${activationResult.currentTotalUSD.toFixed(2)} USD`);
       }
     } catch (error) {
-      console.error("⚠️  Erro ao verificar ativação de conta:", error);
+      console.error("[Deposit] Error checking account activation:", error);
     }
 
     // Verifica progressão de rank (MLM)
@@ -134,10 +143,10 @@ export async function processMoralisWebhook({
       const promoted = await autoCheckAndPromote(existingTx.userId);
 
       if (promoted) {
-        console.log(`🎖️  Usuário promovido de rank automaticamente!`);
+        console.log(`[Deposit] User promoted automatically!`);
       }
     } catch (error) {
-      console.error("⚠️  Erro ao verificar progressão de rank:", error);
+      console.error("[Deposit] Error checking rank progression:", error);
     }
 
     // Auto-bloqueia saldo para upgrade de rank (USDC ou USDT)
@@ -146,16 +155,14 @@ export async function processMoralisWebhook({
         const blockResult = await autoBlockBalance({ userId: existingTx.userId });
 
         if (blockResult.blocked) {
-          console.log(`🔒 Saldo bloqueado automaticamente:`, {
+          console.log(`[Deposit] Balance auto-blocked:`, {
             amountBlocked: blockResult.amountBlocked,
             previousRank: blockResult.previousRank,
             newRank: blockResult.newRank,
-            blockedBalance: blockResult.blockedBalance,
-            availableBalance: blockResult.availableBalance,
           });
         }
       } catch (error) {
-        console.error("⚠️  Erro ao bloquear saldo automaticamente:", error);
+        console.error("[Deposit] Error auto-blocking balance:", error);
       }
     }
 
@@ -168,7 +175,7 @@ export async function processMoralisWebhook({
 
   // Se já existe como PENDING mas confirmed ainda é false, ignora (aguarda confirmação)
   if (existingTx && existingTx.status === "PENDING" && !payload.confirmed) {
-    console.log(`⏳ Transação ainda aguardando confirmação: ${payload.txHash}`);
+    console.log(`[Deposit] Transaction still pending: ${payload.txHash}`);
     return { message: "Transaction already pending confirmation", txHash: payload.txHash };
   }
 
@@ -179,16 +186,13 @@ export async function processMoralisWebhook({
   });
 
   if (!depositAddress) {
-    console.error(`❌ Endereço de depósito não encontrado: ${payload.to}`);
+    console.error(`[Deposit] Deposit address not found: ${payload.to}`);
     throw new Error(`DEPOSIT_ADDRESS_NOT_FOUND: ${payload.to}`);
   }
 
   // Verifica se o endereço está ativo
   if (depositAddress.status !== "ACTIVE") {
-    console.warn(
-      `⚠️  Depósito em endereço inativo (${depositAddress.status}):`,
-      payload.to
-    );
+    console.warn(`[Deposit] Deposit to inactive address (${depositAddress.status}):`, payload.to);
     return {
       message: "Deposit address is not active",
       status: depositAddress.status,
@@ -203,7 +207,7 @@ export async function processMoralisWebhook({
 
   // Log informativo para tokens desconhecidos
   if (token.symbol === "UNKNOWN" || (!KNOWN_TOKENS[tokenAddress as keyof typeof KNOWN_TOKENS] && tokenAddress)) {
-    console.log(`ℹ️  Token não-padrão detectado:`, {
+    console.log(`[Deposit] Non-standard token detected:`, {
       symbol: token.symbol,
       name: token.name,
       decimals: token.decimals,
@@ -218,7 +222,7 @@ export async function processMoralisWebhook({
   // Validação de amount mínimo (exemplo: não aceitar micro-transações)
   const MIN_AMOUNT = new Decimal(0.000001);
   if (amount.lt(MIN_AMOUNT)) {
-    console.warn(`⚠️  Valor muito pequeno ignorado: ${amount.toString()} ${token.symbol}`);
+    console.warn(`[Deposit] Value too small ignored: ${amount.toString()} ${token.symbol}`);
     return {
       message: "Transaction value too small",
       amount: amount.toString(),
@@ -233,7 +237,7 @@ export async function processMoralisWebhook({
   const isTest = payload.txHash.toLowerCase().startsWith("0xt3st4");
 
   if (isTest) {
-    console.log(`🧪 Transação de TESTE detectada: ${payload.txHash}`);
+    console.log(`[Deposit] TEST transaction detected: ${payload.txHash}`);
   }
 
   // Cria transação (e atualiza saldo se CONFIRMED)
@@ -251,7 +255,7 @@ export async function processMoralisWebhook({
         rawAmount,
         txHash: payload.txHash,
         status: initialStatus,
-        isTest, // Marca como teste se txHash começa com "0xTEST"
+        isTest,
       },
     });
 
@@ -286,7 +290,7 @@ export async function processMoralisWebhook({
   });
 
   if (initialStatus === "PENDING") {
-    console.log(`⏳ Transação registrada (aguardando confirmação):`, {
+    console.log(`[Deposit] Transaction registered (pending):`, {
       transactionId: transaction.id,
       userId: depositAddress.userId,
       amount: amount.toString(),
@@ -295,7 +299,7 @@ export async function processMoralisWebhook({
       status: "PENDING",
     });
   } else {
-    console.log(`✅ Transação confirmada e registrada:`, {
+    console.log(`[Deposit] Transaction confirmed and registered:`, {
       transactionId: transaction.id,
       userId: depositAddress.userId,
       amount: amount.toString(),
@@ -309,15 +313,14 @@ export async function processMoralisWebhook({
   if (initialStatus === "CONFIRMED") {
     // Atualiza lifetimeVolume da rede (apenas para USDC/USDT)
     if (token.symbol === "USDC" || token.symbol === "USDT") {
-      console.log(`📊 Atualizando volume da rede para usuário ${depositAddress.userId}, token: ${token.symbol}, amount: ${amount}`);
+      console.log(`[Deposit] Updating network volume for user ${depositAddress.userId}`);
       try {
         await updateNetworkVolume({
           userId: depositAddress.userId,
           amount: amount,
         });
       } catch (error) {
-        console.error("❌ ERRO CRÍTICO ao atualizar volume da rede:", error);
-        // Re-throw para não engolir o erro
+        console.error("[Deposit] CRITICAL ERROR updating network volume:", error);
         throw error;
       }
     }
@@ -328,15 +331,12 @@ export async function processMoralisWebhook({
       });
 
       if (activationResult.activated) {
-        console.log(`🎉 Conta ativada! Total depositado: $${activationResult.currentTotalUSD.toFixed(2)} USD`);
+        console.log(`[Deposit] Account activated! Total: $${activationResult.currentTotalUSD.toFixed(2)} USD`);
       } else {
-        console.log(
-          `⏳ Faltam $${activationResult.missingUSD.toFixed(2)} USD para ativar a conta`
-        );
+        console.log(`[Deposit] Missing $${activationResult.missingUSD.toFixed(2)} USD to activate`);
       }
     } catch (error) {
-      // Não falha a operação se a verificação de ativação falhar
-      console.error("⚠️  Erro ao verificar ativação de conta:", error);
+      console.error("[Deposit] Error checking account activation:", error);
     }
 
     // Verifica progressão de rank (MLM)
@@ -344,10 +344,10 @@ export async function processMoralisWebhook({
       const promoted = await autoCheckAndPromote(depositAddress.userId);
 
       if (promoted) {
-        console.log(`🎖️  Usuário promovido de rank automaticamente!`);
+        console.log(`[Deposit] User promoted automatically!`);
       }
     } catch (error) {
-      console.error("⚠️  Erro ao verificar progressão de rank:", error);
+      console.error("[Deposit] Error checking rank progression:", error);
     }
 
     // Auto-bloqueia saldo para upgrade de rank (USDC ou USDT)
@@ -356,16 +356,14 @@ export async function processMoralisWebhook({
         const blockResult = await autoBlockBalance({ userId: depositAddress.userId });
 
         if (blockResult.blocked) {
-          console.log(`🔒 Saldo bloqueado automaticamente:`, {
+          console.log(`[Deposit] Balance auto-blocked:`, {
             amountBlocked: blockResult.amountBlocked,
             previousRank: blockResult.previousRank,
             newRank: blockResult.newRank,
-            blockedBalance: blockResult.blockedBalance,
-            availableBalance: blockResult.availableBalance,
           });
         }
       } catch (error) {
-        console.error("⚠️  Erro ao bloquear saldo automaticamente:", error);
+        console.error("[Deposit] Error auto-blocking balance:", error);
       }
     }
   }
@@ -377,3 +375,6 @@ export async function processMoralisWebhook({
     tokenSymbol: token.symbol,
   };
 }
+
+// Export alias for backwards compatibility
+export { processDeposit as processMoralisWebhook };

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { Decimal } from "@prisma/client/runtime/library"
-import { processMoralisWebhook } from "@/modules/webhook/use-cases/process-moralis-webhook"
+import { processDeposit } from "@/modules/deposit/use-cases/process-deposit"
 
 interface InjectTestDepositInput {
   userEmail: string
@@ -97,8 +97,8 @@ export async function injectTestDeposit(
 
   console.log(`📦 Full webhook payload:`, JSON.stringify(fakeWebhookPayload, null, 2))
 
-  // 5. Processar via webhook handler (faz TUDO automaticamente)
-  const result = await processMoralisWebhook({
+  // 5. Processar via deposit handler (faz TUDO automaticamente)
+  const result = await processDeposit({
     payload: fakeWebhookPayload,
   })
 

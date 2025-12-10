@@ -7,7 +7,6 @@ import authPlugin from './plugins/auth.plugin'
 import { bullBoardPlugin } from './plugins/bull-board.plugin'
 import { userRoutes } from './modules/user/routes'
 import { depositRoutes } from './modules/deposit/routes'
-import { webhookRoutes } from './modules/webhook/routes'
 import { userWithdrawalRoutes, adminWithdrawalRoutes } from './modules/withdrawal/routes'
 import { transferRoutes } from './modules/transfer/routes'
 import { mlmRoutes } from './modules/mlm/routes'
@@ -91,8 +90,6 @@ export async function buildApp() {
     keyGenerator: (request) => request.ip,
     // Rotas mais sensíveis têm limites próprios
     allowList: (request) => {
-      // Webhooks têm rate limit próprio no Nginx
-      if (request.url.startsWith('/webhooks')) return true
       // Health check sem limite
       if (request.url === '/health') return true
       return false
@@ -169,7 +166,6 @@ export async function buildApp() {
   // Register module routes
   await app.register(userRoutes, { prefix: '/user' })
   await app.register(depositRoutes, { prefix: '/deposit' })
-  await app.register(webhookRoutes, { prefix: '/webhooks' })
 
   // Withdrawal routes
   await app.register(userWithdrawalRoutes, { prefix: '/user/withdrawals' })

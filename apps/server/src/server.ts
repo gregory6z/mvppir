@@ -5,7 +5,8 @@ import { startDailyCommissionsWorker } from './modules/mlm/workers/daily-commiss
 import { startMonthlyMaintenanceWorker } from './modules/mlm/workers/monthly-maintenance.worker'
 import { startGracePeriodRecoveryWorker } from './modules/mlm/workers/grace-period-recovery.worker'
 import { startBatchCollectWorker } from './modules/transfer/workers/batch-collect.worker'
-import { startMoralisWebhookWorker } from './modules/webhook/workers/moralis-webhook.worker'
+import { startDepositWorker } from './modules/deposit/workers/deposit.worker'
+import { startBlockchainListener, stopBlockchainListener } from './modules/deposit/listeners/blockchain-listener'
 
 async function start() {
   const app = await buildApp()
@@ -24,9 +25,13 @@ async function start() {
     startMonthlyMaintenanceWorker()
     startGracePeriodRecoveryWorker()
     startBatchCollectWorker() // Manual execution (no cron)
-    startMoralisWebhookWorker() // Webhook processing (concurrency: 3)
+    startDepositWorker() // Deposit processing (concurrency: 3)
 
-    app.log.info('✅ All workers started successfully')
+    // Start blockchain listener (WebSocket direct to Polygon)
+    app.log.info('Starting Blockchain WebSocket Listener...')
+    await startBlockchainListener()
+
+    app.log.info('✅ All workers and listeners started successfully')
   } catch (err) {
     app.log.error(err)
     process.exit(1)
@@ -40,6 +45,9 @@ async function start() {
       app.log.info(`Received ${signal}, closing server gracefully...`)
 
       try {
+        // Stop blockchain listener first
+        stopBlockchainListener()
+
         await app.close()
         app.log.info('Server closed successfully')
         process.exit(0)

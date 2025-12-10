@@ -32,13 +32,10 @@ const envSchema = z.object({
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
   PWA_URL: z.string().url().optional(),
 
-  // Moralis (Blockchain Integration)
-  MORALIS_API_KEY: z.string().min(1, {
-    message: 'MORALIS_API_KEY is required',
-  }),
-  MORALIS_STREAM_SECRET: z.string().min(1, {
-    message: 'MORALIS_STREAM_SECRET is required (found in Moralis Settings)',
-  }),
+  // Moralis (DEPRECATED - now using direct WebSocket to Polygon)
+  // These vars are kept for backwards compatibility but are no longer required
+  MORALIS_API_KEY: z.string().optional(),
+  MORALIS_STREAM_SECRET: z.string().optional(),
 
   // Encryption (AES-256-GCM for private keys)
   ENCRYPTION_KEY: z.string().length(64, {

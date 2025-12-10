@@ -13,7 +13,7 @@ export const QUEUE_NAMES = {
   MONTHLY_MAINTENANCE: "mlm-monthly-maintenance",
   GRACE_PERIOD_RECOVERY: "mlm-grace-period-recovery",
   BATCH_COLLECT: "admin-batch-collect",
-  WEBHOOK_MORALIS: "webhook-moralis",
+  DEPOSITS: "deposits",
 } as const;
 
 // Redis connection config for BullMQ
@@ -119,22 +119,22 @@ export const batchCollectQueue = new Queue(QUEUE_NAMES.BATCH_COLLECT, {
 });
 
 /**
- * Moralis Webhook Queue
+ * Deposits Queue
  *
- * Processes incoming Moralis webhooks (deposits) asynchronously.
- * Allows API to respond quickly while processing in background.
+ * Processes incoming deposits detected by blockchain WebSocket listener.
+ * Deposits are detected in real-time and added to this queue for processing.
  */
-export const webhookMoralisQueue = new Queue(QUEUE_NAMES.WEBHOOK_MORALIS, {
+export const depositsQueue = new Queue(QUEUE_NAMES.DEPOSITS, {
   connection,
   defaultJobOptions: {
-    attempts: 3, // Retry failed webhooks
+    attempts: 3, // Retry failed deposits
     backoff: {
       type: "exponential",
       delay: 5000, // Start with 5 seconds
     },
     removeOnComplete: {
       age: 86400, // Keep completed for 24 hours
-      count: 1000, // Keep last 1000 webhooks
+      count: 1000, // Keep last 1000 deposits
     },
     removeOnFail: {
       age: 604800, // Keep failed for 7 days
@@ -201,6 +201,6 @@ export async function cleanupQueues() {
   await monthlyMaintenanceQueue.close();
   await gracePeriodRecoveryQueue.close();
   await batchCollectQueue.close();
-  await webhookMoralisQueue.close();
+  await depositsQueue.close();
   console.log("✅ All queues closed");
 }
