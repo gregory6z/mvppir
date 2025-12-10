@@ -20,6 +20,26 @@ const MIN_MATIC_TO_SEND = 0.001; // Só envia se precisar > 0.001 MATIC
 const RESERVE_AFTER_TRANSFER = 0.001; // Deixa 0.001 de reserva no endereço
 const MIN_GLOBAL_MATIC = 5.0; // Mínimo de MATIC na Global Wallet para iniciar
 const GAS_PRICE_MULTIPLIER = 1.3; // 30% buffer para variação de gas price
+const TX_TIMEOUT_MS = 30000; // 30 segundos timeout para transações
+
+/**
+ * Executa uma promise com timeout
+ */
+async function withTimeout<T>(promise: Promise<T>, ms: number, errorMsg: string): Promise<T> {
+  let timeoutId: NodeJS.Timeout;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(errorMsg)), ms);
+  });
+
+  try {
+    const result = await Promise.race([promise, timeoutPromise]);
+    clearTimeout(timeoutId!);
+    return result;
+  } catch (error) {
+    clearTimeout(timeoutId!);
+    throw error;
+  }
+}
 
 /**
  * Calcula o custo estimado de gas para transferências ERC20
@@ -428,18 +448,20 @@ async function processAddress(
       `  💸 Enviando ${maticToSend.toFixed(6)} MATIC (precisa de ${maticNeeded.toFixed(6)}, tem ${currentMaticFormatted.toFixed(6)})`
     );
 
-    const tx = await globalWallet.sendTransaction({
-      to: addressData.address,
-      value: parseEther(maticToSend.toFixed(18)),
-    });
+    const tx = await withTimeout(
+      globalWallet.sendTransaction({
+        to: addressData.address,
+        value: parseEther(maticToSend.toFixed(18)),
+      }),
+      TX_TIMEOUT_MS,
+      `Timeout ao enviar MATIC para ${addressData.address}`
+    );
 
-    // NÃO espera confirmação - só registra e segue (fire-and-forget)
     result.maticDistributed = maticToSend.toFixed(6);
-
-    console.log(`  ✅ MATIC enviado (fire-and-forget): ${tx.hash}`);
+    console.log(`  ✅ MATIC enviado: ${tx.hash}`);
 
     // Aguarda um pouco para o nonce ser reconhecido pelo RPC antes de continuar
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
   } else {
     console.log(
       `  ⏭️  MATIC suficiente (tem ${currentMaticFormatted.toFixed(6)}, precisa ${maticNeeded.toFixed(6)})`
@@ -469,9 +491,12 @@ async function processAddress(
       const amountRaw = parseUnits(token.balance.toString(), token.decimals);
 
       console.log(`  🔄 Transferindo ${token.symbol}...`);
-      const tx = await tokenContract.transfer(globalAddress, amountRaw);
+      const tx = await withTimeout(
+        tokenContract.transfer(globalAddress, amountRaw),
+        TX_TIMEOUT_MS,
+        `Timeout ao transferir ${token.symbol}`
+      );
 
-      // NÃO espera confirmação - só registra o txHash e segue
       result.tokensTransferred.push(token.symbol);
       confirmedTxHashes.push(tx.hash);
       console.log(`  ✅ ${token.symbol} enviado: ${tx.hash}`);
@@ -510,16 +535,18 @@ async function processAddress(
       const maticToRecover = finalMaticFormatted - totalGasCost - RESERVE_AFTER_TRANSFER;
 
       if (maticToRecover > 0.0001) {
-        const tx = await userWallet.sendTransaction({
-          to: globalAddress,
-          value: parseEther(maticToRecover.toFixed(18)),
-        });
+        const tx = await withTimeout(
+          userWallet.sendTransaction({
+            to: globalAddress,
+            value: parseEther(maticToRecover.toFixed(18)),
+          }),
+          TX_TIMEOUT_MS,
+          `Timeout ao recuperar MATIC de ${addressData.address}`
+        );
 
-        // NÃO espera confirmação - só registra e segue
         result.maticRecovered = maticToRecover.toFixed(4);
         result.tokensTransferred.push("MATIC");
-
-        console.log(`  ✅ MATIC enviado: ${maticToRecover.toFixed(4)} (${tx.hash})`);
+        console.log(`  ✅ MATIC recuperado: ${maticToRecover.toFixed(4)} (${tx.hash})`);
       } else {
         console.log(
           `  ⏭️  MATIC a recuperar muito baixo (${maticToRecover.toFixed(6)} MATIC)`
