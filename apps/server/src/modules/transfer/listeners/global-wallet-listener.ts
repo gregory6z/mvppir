@@ -91,31 +91,7 @@ async function handleTransferToGlobalWallet(
   const txHash = event.transactionHash;
   const amount = ethers.formatUnits(value, token.decimals);
 
-  console.log(`[Global Wallet Listener] 💰 Received ${amount} ${token.symbol}`, {
-    txHash,
-    from: from.slice(0, 10) + "...",
-    amount,
-  });
-
-  // Update BatchCollect txHashes if this is part of a batch collect
-  // The txHash will match one we stored during fire-and-forget
-  try {
-    const updated = await prisma.batchCollect.updateMany({
-      where: {
-        txHashes: { has: txHash },
-        status: { not: "CONFIRMED" },
-      },
-      data: {
-        status: "CONFIRMED",
-      },
-    });
-
-    if (updated.count > 0) {
-      console.log(`[Global Wallet Listener] ✅ Confirmed batch collect for txHash: ${txHash}`);
-    }
-  } catch (error) {
-    console.error("[Global Wallet Listener] Error updating batch collect:", error);
-  }
+  console.log(`[Global Wallet Listener] 💰 Received ${amount} ${token.symbol} from ${from.slice(0, 10)}... (tx: ${txHash.slice(0, 10)}...)`);
 }
 
 /**
