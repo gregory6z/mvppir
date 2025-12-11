@@ -21,6 +21,7 @@ const RESERVE_AFTER_TRANSFER = 0.001; // Deixa 0.001 de reserva no endereço
 const MIN_GLOBAL_MATIC = 5.0; // Mínimo de MATIC na Global Wallet para iniciar
 const GAS_PRICE_MULTIPLIER = 1.3; // 30% buffer para variação de gas price
 const TX_TIMEOUT_MS = 60000; // 60 segundos timeout para transações
+const PARALLEL_WALLETS = 5; // Número de wallets processadas em paralelo
 
 /**
  * Executa uma promise com timeout
@@ -39,6 +40,17 @@ async function withTimeout<T>(promise: Promise<T>, ms: number, errorMsg: string)
     clearTimeout(timeoutId!);
     throw error;
   }
+}
+
+/**
+ * Divide array em chunks para processamento paralelo
+ */
+function chunkArray<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
 }
 
 /**
@@ -192,7 +204,7 @@ export async function batchCollectToGlobal({
     `📊 Encontrados ${addressesWithBalances.length} endereços com saldo`
   );
 
-  // 4. Processa cada endereço (3 fases)
+  // 4. Processa endereços em paralelo (chunks de PARALLEL_WALLETS)
   const results: TransferResult[] = [];
   const tokensTransferred: Record<string, number> = {};
   let totalMaticDistributed = 0;
@@ -207,23 +219,51 @@ export async function batchCollectToGlobal({
     await onProgress(0, totalCount, 0);
   }
 
-  for (const addressData of addressesWithBalances) {
-    try {
-      console.log(`\n🔄 Processando ${addressData.address}...`);
+  // Divide em chunks para processamento paralelo
+  const chunks = chunkArray(addressesWithBalances, PARALLEL_WALLETS);
+  console.log(`🚀 Processando ${totalCount} endereços em ${chunks.length} chunks de ${PARALLEL_WALLETS}`);
 
-      const result = await processAddress(
-        addressData,
-        globalWallet,
-        globalAddress
-      );
+  for (const chunk of chunks) {
+    console.log(`\n📦 Processando chunk com ${chunk.length} wallets em paralelo...`);
 
+    // Processa todas as wallets do chunk em paralelo
+    const chunkPromises = chunk.map(async (addressData) => {
+      try {
+        console.log(`  🔄 Iniciando ${addressData.address.slice(0, 10)}...`);
+
+        const result = await processAddress(
+          addressData,
+          globalWallet,
+          globalAddress
+        );
+
+        return { addressData, result, error: null };
+      } catch (error) {
+        console.error(`  ❌ Erro ${addressData.address.slice(0, 10)}:`, error instanceof Error ? error.message : error);
+        return {
+          addressData,
+          result: {
+            address: addressData.address,
+            success: false,
+            tokensTransferred: [],
+            txHashes: [],
+            maticDistributed: "0",
+            maticRecovered: "0",
+            error: error instanceof Error ? error.message : "Unknown error",
+          } as TransferResult,
+          error,
+        };
+      }
+    });
+
+    // Aguarda todas as wallets do chunk completarem
+    const chunkResults = await Promise.all(chunkPromises);
+
+    // Processa resultados do chunk
+    for (const { addressData, result } of chunkResults) {
       results.push(result);
 
-      console.log(`📊 Resultado processAddress: success=${result.success}, tokensTransferred=${result.tokensTransferred.join(',')}`);
-
-      // Agrega estatísticas
       if (result.success) {
-        console.log(`💾 Salvando no banco para userId: ${addressData.userId}`);
         totalMaticDistributed += parseFloat(result.maticDistributed);
         totalMaticRecovered += parseFloat(result.maticRecovered);
 
@@ -232,7 +272,6 @@ export async function batchCollectToGlobal({
         }
 
         // Atualiza status das transações para SENT_TO_GLOBAL
-        console.log(`💾 Atualizando WalletTransaction para userId: ${addressData.userId}`);
         const updatedCount = await prisma.walletTransaction.updateMany({
           where: {
             userId: addressData.userId,
@@ -243,33 +282,19 @@ export async function batchCollectToGlobal({
           },
         });
 
-        console.log(`✅ WalletTransaction atualizado: ${updatedCount.count} transações`);
         transactionsUpdated += updatedCount.count;
+        console.log(`  ✅ ${addressData.address.slice(0, 10)}: ${result.tokensTransferred.join(', ')}`);
+      } else {
+        failedCount++;
+        console.log(`  ❌ ${addressData.address.slice(0, 10)}: ${result.error}`);
       }
 
-      // Atualiza progresso após sucesso
       processedCount++;
-      if (onProgress) {
-        await onProgress(processedCount, totalCount, failedCount);
-      }
-    } catch (error) {
-      console.error(`❌ Erro ao processar ${addressData.address}:`, error);
-      results.push({
-        address: addressData.address,
-        success: false,
-        tokensTransferred: [],
-        txHashes: [],
-        maticDistributed: "0",
-        maticRecovered: "0",
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
+    }
 
-      // Atualiza progresso após falha
-      processedCount++;
-      failedCount++;
-      if (onProgress) {
-        await onProgress(processedCount, totalCount, failedCount);
-      }
+    // Atualiza progresso após cada chunk
+    if (onProgress) {
+      await onProgress(processedCount, totalCount, failedCount);
     }
   }
 

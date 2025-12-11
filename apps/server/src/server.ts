@@ -7,6 +7,7 @@ import { startGracePeriodRecoveryWorker } from './modules/mlm/workers/grace-peri
 import { startBatchCollectWorker } from './modules/transfer/workers/batch-collect.worker'
 import { startDepositWorker } from './modules/deposit/workers/deposit.worker'
 import { startBlockchainListener, stopBlockchainListener } from './modules/deposit/listeners/blockchain-listener'
+import { startGlobalWalletListener, stopGlobalWalletListener } from './modules/transfer/listeners/global-wallet-listener'
 
 async function start() {
   const app = await buildApp()
@@ -31,6 +32,10 @@ async function start() {
     app.log.info('Starting Blockchain WebSocket Listener...')
     await startBlockchainListener()
 
+    // Start Global Wallet listener (monitors batch collect confirmations)
+    app.log.info('Starting Global Wallet Listener...')
+    await startGlobalWalletListener()
+
     app.log.info('✅ All workers and listeners started successfully')
   } catch (err) {
     app.log.error(err)
@@ -45,8 +50,9 @@ async function start() {
       app.log.info(`Received ${signal}, closing server gracefully...`)
 
       try {
-        // Stop blockchain listener first
+        // Stop listeners first
         stopBlockchainListener()
+        stopGlobalWalletListener()
 
         await app.close()
         app.log.info('Server closed successfully')
