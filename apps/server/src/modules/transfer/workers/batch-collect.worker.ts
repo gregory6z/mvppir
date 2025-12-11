@@ -83,9 +83,9 @@ export function startBatchCollectWorker() {
     {
       connection: redis,
       concurrency: 1,
-      // Desabilita completamente stall detection para operações blockchain
-      lockDuration: 600000, // 10 minutos
-      stalledInterval: 0, // Não verifica stall
+      // Configuração para operações blockchain longas
+      lockDuration: 600000, // 10 minutos - tempo máximo por job
+      stalledInterval: 600000, // Verifica stall a cada 10 minutos (mesmo que lockDuration)
       maxStalledCount: 0, // Nunca marca como stalled
     }
   );
