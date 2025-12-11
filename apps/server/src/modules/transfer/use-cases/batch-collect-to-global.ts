@@ -483,10 +483,20 @@ async function processAddress(
     );
 
     result.maticDistributed = maticToSend.toFixed(6);
-    console.log(`  ✅ MATIC enviado: ${tx.hash}`);
+    console.log(`  ⏳ MATIC tx enviada: ${tx.hash}, aguardando confirmação...`);
 
-    // Aguarda um pouco para o nonce ser reconhecido pelo RPC antes de continuar
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Aguarda a transação ser minerada antes de prosseguir para Fase 2
+    const receipt = await withTimeout(
+      tx.wait(1), // Aguarda 1 confirmação
+      TX_TIMEOUT_MS,
+      `Timeout aguardando confirmação de MATIC para ${addressData.address}`
+    );
+
+    if (!receipt || receipt.status !== 1) {
+      throw new Error(`Transação de MATIC falhou: ${tx.hash}`);
+    }
+
+    console.log(`  ✅ MATIC confirmado no bloco ${receipt.blockNumber}`);
   } else {
     console.log(
       `  ⏭️  MATIC suficiente (tem ${currentMaticFormatted.toFixed(6)}, precisa ${maticNeeded.toFixed(6)})`
