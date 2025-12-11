@@ -106,7 +106,11 @@ export async function buildApp() {
         'http://127.0.0.1:3001',
         'http://127.0.0.1:5173',
       ]
-    : [env.FRONTEND_URL, env.PWA_URL].filter(Boolean) as string[]
+    : [
+        env.FRONTEND_URL,
+        env.PWA_URL,
+        'https://mvppir-web-o3i5.vercel.app',
+      ].filter(Boolean) as string[]
 
   console.log('🌐 CORS origins:', corsOrigins)
 
