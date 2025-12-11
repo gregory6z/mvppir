@@ -40,11 +40,11 @@ export async function approveWithdrawalController(
 
     // Erro de validação do Zod (parâmetros inválidos)
     if (error instanceof ZodError) {
-      console.log(`❌ [ApproveWithdrawal] Validation error:`, error.errors);
+      console.log(`❌ [ApproveWithdrawal] Validation error:`, error.issues);
       return reply.status(400).send({
         error: "VALIDATION_ERROR",
         message: "Invalid withdrawal ID format",
-        details: error.errors,
+        details: error.issues,
       });
     }
 
