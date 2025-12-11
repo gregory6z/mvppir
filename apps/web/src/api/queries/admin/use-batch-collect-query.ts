@@ -5,6 +5,7 @@ import {
   getBatchCollectHistory,
   getBatchCollectStatus,
   getActiveBatchCollectJob,
+  clearBatchCollectJobs,
 } from "@/api/client/admin.api"
 import { queryKeys } from "@/lib/react-query"
 
@@ -58,5 +59,17 @@ export function useActiveBatchCollectJob() {
     queryKey: ["admin", "batchCollect", "active"],
     queryFn: getActiveBatchCollectJob,
     staleTime: 5000,
+  })
+}
+
+export function useClearBatchCollectJobs() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: clearBatchCollectJobs,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.admin.all })
+      queryClient.invalidateQueries({ queryKey: ["admin", "batchCollect", "active"] })
+    },
   })
 }

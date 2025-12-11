@@ -117,6 +117,18 @@ export async function getBatchCollectHistory(
   )
 }
 
+export interface ClearJobsResponse {
+  success: boolean
+  removedCount: number
+  message: string
+}
+
+export async function clearBatchCollectJobs(): Promise<ClearJobsResponse> {
+  return request<ClearJobsResponse>("/admin/batch-collect/clear", {
+    method: "DELETE",
+  })
+}
+
 // Admin Withdrawals Services
 export interface Withdrawal {
   id: string

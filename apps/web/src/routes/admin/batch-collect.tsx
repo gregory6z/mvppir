@@ -6,6 +6,7 @@ import {
   useBatchCollectHistory,
   useBatchCollectJobStatus,
   useActiveBatchCollectJob,
+  useClearBatchCollectJobs,
 } from "@/api/queries/admin/use-batch-collect-query"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -25,6 +26,7 @@ import {
   XCircle,
   RefreshCw,
   Fuel,
+  Trash2,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -41,6 +43,19 @@ function BatchCollectPage() {
   const { data: jobStatus } = useBatchCollectJobStatus(activeJobId, !!activeJobId)
   const { data: activeJobData } = useActiveBatchCollectJob()
   const executeMutation = useExecuteBatchCollect()
+  const clearJobsMutation = useClearBatchCollectJobs()
+
+  const handleClearJobs = async () => {
+    try {
+      const result = await clearJobsMutation.mutateAsync()
+      setActiveJobId(null)
+      toast.success(`${result.removedCount} jobs removidos`, {
+        description: result.message,
+      })
+    } catch (error) {
+      toast.error("Erro ao limpar jobs")
+    }
+  }
 
   // Recupera job ativo ao carregar a página
   useEffect(() => {
@@ -92,16 +107,32 @@ function BatchCollectPage() {
           <h1 className="text-3xl font-bold text-white">Coleta em Lote</h1>
           <p className="text-zinc-400 mt-2">Consolidar fundos das carteiras de usuários</p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => refetchPreview()}
-          disabled={previewLoading}
-          className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${previewLoading ? "animate-spin" : ""}`} />
-          Atualizar
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleClearJobs}
+            disabled={clearJobsMutation.isPending}
+            className="border-red-800 text-red-400 hover:bg-red-950/50"
+          >
+            {clearJobsMutation.isPending ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4 mr-2" />
+            )}
+            Limpar Jobs
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetchPreview()}
+            disabled={previewLoading}
+            className="border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${previewLoading ? "animate-spin" : ""}`} />
+            Atualizar
+          </Button>
+        </div>
       </div>
 
       {/* Active Job Status */}
